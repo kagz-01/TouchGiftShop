@@ -21,12 +21,33 @@ const OrderInput = z.object({
   quantity: z.number().int().positive().default(1),
 });
 
+// GET /api/orders?phone=0712345678 — fetch orders by sender phone
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const phone = searchParams.get("phone");
+
+  if (!phone) {
+    return NextResponse.json(
+      { error: "phone query param required" },
+      { status: 400 }
+    );
+  }
+
+  const { data: orders, error } = await supabaseAdmin
+    .from("orders")
+    .select("id, total_amount, status, recipient_name, created_at, pre_dispatch_photo_url, quantity")
+    .eq("sender_phone", phone)
+    .order("created_at", { ascending: false })
+    .limit(50);
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ orders: orders ?? [] });
+}
+
 // POST /api/orders
-// 1. Insert the order as pending_payment.
-// 2. Trigger an M-Pesa STK push to the sender's phone.
-// 3. Store the checkoutRequestId so the callback can find this order again.
-// The order is NOT marked paid here — only /api/mpesa/callback does that,
-// once Safaricom confirms the payment actually went through.
 export async function POST(req: Request) {
   const parsed = OrderInput.safeParse(await req.json());
   if (!parsed.success) {
@@ -81,8 +102,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ order, checkoutRequestId });
   } catch (err) {
-    // Order stays as pending_payment — the buyer can retry payment for the
-    // same order rather than us silently losing it.
     return NextResponse.json(
       {
         order,

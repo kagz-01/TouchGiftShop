@@ -75,6 +75,12 @@ export async function POST(
       transactionDesc: `Pool: ${pool.title}`.slice(0, 13),
     });
 
+    // Store checkout request ID so the callback can find this contribution
+    await supabaseAdmin
+      .from("pool_contributions")
+      .update({ mpesa_checkout_request_id: checkoutRequestId })
+      .eq("id", contribution.id);
+
     return NextResponse.json({
       contribution,
       checkoutRequestId,
