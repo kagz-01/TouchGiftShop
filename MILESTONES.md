@@ -151,6 +151,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Corporate ordering | | | Done |
 | Loyalty tier | | | Done |
 | Design pass (brand, icons, polish) | | | Done |
+| Error handling + 404 | | | Done |
+| SEO + social metadata | | | Done |
+| PWA icons + favicon | | | Done |
 | Recipient pin drop (Google Maps) | | | Planned |
 | Real-time courier tracking | | | Planned |
 | Play Store packaging | | | Planned |
@@ -167,10 +170,24 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `e8215f0` | M-Pesa callback for pools + Orders pages |
 | `b4751c0` | Stage 1 completion — auth, delivery, countdown, guarantees |
 | `979e55f` | Stage 2 — Hamper builder, Reminders, Wishlists, Gift Cards, Referrals |
+| `23d25ec` | Stage 3 + Design — Corporate, Loyalty, Brand, Icons, Skeletons |
+| `29b0059` | Launch polish — 404, error boundary, loading, OG metadata, PWA icons |
 
 ---
 
-## Stage 3 — Scale & Design
+## Stage 4 — Launch Polish
+
+### 26. Error Handling & 404
+- **What:** Custom 404 page, client error boundary with reset, global loading spinner.
+- **Advantage:** Professional failure states. Users can recover from errors. No blank white screens.
+
+### 27. SEO & Social Sharing
+- **What:** OpenGraph + Twitter card metadata, proper title template, viewport config, Google Fonts (Inter).
+- **Advantage:** Links shared on WhatsApp/Twitter show branded preview cards. Better search ranking.
+
+### 28. PWA Icons & Favicon
+- **What:** Generated 192px and 512px icons from logo, favicon for browser tab, manifest with brand colors.
+- **Advantage:** Installable as PWA. Browser tab shows brand. Consistent branding across all touchpoints.
 
 ### 21. Corporate / Bulk Ordering
 - **What:** Send the same gift to multiple recipients — employee appreciation, client thank-yous. Upload a CSV or add recipients manually. One payment, many deliveries.
@@ -231,4 +248,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 3 + Design Pass completion*
+*Last updated: Launch polish complete*
