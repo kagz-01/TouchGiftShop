@@ -39,6 +39,15 @@ export interface GiftPool {
   expiresAt: string;
 }
 
+export interface PoolContribution {
+  id: string;
+  contributorName: string;
+  contributorPhone: string;
+  amount: number;
+  isVerified: boolean;
+  createdAt: string;
+}
+
 // Note: matches Supabase's raw snake_case column names, since /api/products
 // currently passes the query result straight through without remapping.
 // TODO: decide whether to remap to camelCase in the API layer as the app
