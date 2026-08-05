@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createServerSupabase } from "@/lib/supabase-server";
 import LogoutButton from "@/components/account/LogoutButton";
 import AccountPrefs from "@/components/account/AccountPrefs";
+import ReferralSection from "@/components/account/ReferralSection";
 
 export default async function AccountPage() {
   const supabase = createServerSupabase();
@@ -50,10 +51,24 @@ export default async function AccountPage() {
           >
             Start a gift pool
           </Link>
+          <Link
+            href="/gift-cards"
+            className="block rounded-lg border border-gray-200 p-3 text-sm hover:border-gray-400 transition-colors"
+          >
+            Buy a gift card
+          </Link>
+          <Link
+            href="/wishlist/create"
+            className="block rounded-lg border border-gray-200 p-3 text-sm hover:border-gray-400 transition-colors"
+          >
+            Create a wishlist
+          </Link>
         </div>
       </section>
 
       <AccountPrefs />
+
+      <ReferralSection />
 
       <a
         href="https://wa.me/254700000000"

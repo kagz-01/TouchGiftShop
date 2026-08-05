@@ -120,3 +120,40 @@ ALTER TABLE products ADD COLUMN synced_at TIMESTAMPTZ;
 ALTER TABLE categories ADD COLUMN woocommerce_id INTEGER UNIQUE;
 
 CREATE INDEX idx_products_woocommerce_id ON products(woocommerce_id);
+
+-- ---------------------------------------------------------------------
+-- Reminders (Stage 2 — saved occasion dates + nudge scheduling)
+-- ---------------------------------------------------------------------
+
+CREATE TABLE reminders (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    recipient_name VARCHAR(100) NOT NULL,
+    relationship VARCHAR(50),
+    occasion_date DATE NOT NULL,
+    occasion_type VARCHAR(50),
+    reminder_sent BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_reminders_user_date ON reminders(user_id, occasion_date);
+
+-- ---------------------------------------------------------------------
+-- Digital gift cards (Stage 2)
+-- ---------------------------------------------------------------------
+
+CREATE TABLE gift_cards (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    code VARCHAR(20) UNIQUE NOT NULL,
+    initial_amount DECIMAL(10,2) NOT NULL,
+    balance DECIMAL(10,2) NOT NULL,
+    sender_name VARCHAR(100),
+    recipient_name VARCHAR(100),
+    recipient_phone VARCHAR(20),
+    message TEXT,
+    is_redeemed BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_gift_cards_code ON gift_cards(code);
