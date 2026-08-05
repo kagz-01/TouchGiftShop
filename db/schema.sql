@@ -1,0 +1,122 @@
+-- TouchGift core schema — see implementation plan Section 7.
+-- Add products/categories tables (standard e-commerce shape) before Stage 1
+-- launch; omitted here since they're conventional and not the differentiated
+-- part of the system.
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TYPE order_status_enum AS ENUM (
+  'pending_payment', 'processing', 'wrapped', 'dispatched', 'delivered', 'failed'
+);
+CREATE TYPE pool_status_enum AS ENUM ('active', 'completed', 'expired');
+
+CREATE TABLE orders (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    total_amount DECIMAL(12,2) NOT NULL,
+    shipping_fee DECIMAL(10,2) DEFAULT 0.00,
+    status order_status_enum DEFAULT 'pending_payment',
+    sender_name VARCHAR(100) NOT NULL,
+    sender_phone VARCHAR(20) NOT NULL,
+    recipient_name VARCHAR(100) NOT NULL,
+    recipient_phone VARCHAR(20) NOT NULL,
+    is_anonymous BOOLEAN DEFAULT FALSE,
+    dont_call_recipient BOOLEAN DEFAULT FALSE,
+    delivery_lat DECIMAL(10,8),
+    delivery_lng DECIMAL(11,8),
+    delivery_landmark TEXT,
+    recipient_pin_requested BOOLEAN DEFAULT FALSE,
+    pre_dispatch_photo_url TEXT,
+    gift_note TEXT,
+    engraving TEXT,
+    quantity INTEGER DEFAULT 1,
+    mpesa_checkout_request_id VARCHAR(50) UNIQUE,
+    mpesa_receipt_number VARCHAR(50),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE group_gifting_pools (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    creator_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    target_amount DECIMAL(12,2) NOT NULL,
+    current_balance DECIMAL(12,2) DEFAULT 0.00,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    status pool_status_enum DEFAULT 'active',
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE pool_contributions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    pool_id UUID REFERENCES group_gifting_pools(id) ON DELETE CASCADE,
+    contributor_name VARCHAR(100) NOT NULL,
+    contributor_phone VARCHAR(20) NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    mpesa_receipt_number VARCHAR(50) UNIQUE,
+    is_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE wishlists (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    owner_name VARCHAR(100) NOT NULL,
+    slug VARCHAR(255) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE wishlist_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    wishlist_id UUID REFERENCES wishlists(id) ON DELETE CASCADE,
+    product_id UUID NOT NULL,
+    note TEXT,
+    is_fulfilled BOOLEAN DEFAULT FALSE
+);
+
+CREATE INDEX idx_orders_recipient_phone ON orders(recipient_phone);
+CREATE INDEX idx_group_pools_slug ON group_gifting_pools(slug);
+CREATE INDEX idx_orders_status ON orders(status);
+CREATE INDEX idx_wishlists_slug ON wishlists(slug);
+
+-- ---------------------------------------------------------------------
+-- Catalog tables (added once product data entry became the next chunk)
+-- ---------------------------------------------------------------------
+
+CREATE TABLE categories (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    kind VARCHAR(20) NOT NULL DEFAULT 'practical' -- 'practical' | 'narrative'
+);
+
+CREATE TABLE products (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(200) NOT NULL,
+    slug VARCHAR(200) UNIQUE NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    image_url TEXT,
+    is_personalizable BOOLEAN DEFAULT FALSE,
+    in_stock BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE product_categories (
+    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+    category_id UUID REFERENCES categories(id) ON DELETE CASCADE,
+    PRIMARY KEY (product_id, category_id)
+);
+
+CREATE INDEX idx_products_slug ON products(slug);
+
+-- ---------------------------------------------------------------------
+-- WooCommerce sync support (products/categories are entered in
+-- WooCommerce; this is how they arrive here — see lib/woocommerce.ts)
+-- ---------------------------------------------------------------------
+
+ALTER TABLE products ADD COLUMN woocommerce_id INTEGER UNIQUE;
+ALTER TABLE products ADD COLUMN synced_at TIMESTAMPTZ;
+
+ALTER TABLE categories ADD COLUMN woocommerce_id INTEGER UNIQUE;
+
+CREATE INDEX idx_products_woocommerce_id ON products(woocommerce_id);

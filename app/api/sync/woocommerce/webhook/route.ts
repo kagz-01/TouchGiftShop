@@ -1,0 +1,40 @@
+import { NextResponse } from "next/server";
+import crypto from "crypto";
+import { syncProductToSupabase } from "@/lib/sync-product";
+import { fetchWcProduct } from "@/lib/woocommerce";
+
+/**
+ * WooCommerce webhook target — set this up in wp-admin under
+ * WooCommerce > Settings > Advanced > Webhooks:
+ *   Topic: Product created / Product updated
+ *   Delivery URL: https://touchgift.co.ke/api/sync/woocommerce/webhook
+ *   Secret: same value as WOOCOMMERCE_WEBHOOK_SECRET
+ *
+ * WooCommerce signs the payload with the secret; we verify it before
+ * trusting anything in the body. This means staff editing a product in
+ * wp-admin shows up on the live TouchGift site within seconds, with no
+ * manual re-sync needed.
+ */
+export async function POST(req: Request) {
+  const rawBody = await req.text();
+  const signature = req.headers.get("x-wc-webhook-signature") ?? "";
+
+  const expected = crypto
+    .createHmac("sha256", process.env.WOOCOMMERCE_WEBHOOK_SECRET!)
+    .update(rawBody)
+    .digest("base64");
+
+  if (signature !== expected) {
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+  }
+
+  const payload = JSON.parse(rawBody);
+
+  // WooCommerce's "product updated" webhook payload is the product itself,
+  // but re-fetching by ID guarantees we get the full, current object
+  // (including categories) rather than trusting a possibly-partial payload.
+  const wcProduct = await fetchWcProduct(payload.id);
+  await syncProductToSupabase(wcProduct);
+
+  return NextResponse.json({ ok: true });
+}

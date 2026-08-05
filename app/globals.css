@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-brand: #111111; /* placeholder, see tailwind.config.ts */
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
