@@ -148,11 +148,13 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Referral program | | Done | |
 | Recipient pin drop (Google Maps) | | | Planned |
 | Real-time courier tracking | | | Planned |
-| Corporate ordering | | | Planned |
-| Loyalty tier | | | Planned |
+| Corporate ordering | | | Done |
+| Loyalty tier | | | Done |
+| Design pass (brand, icons, polish) | | | Done |
+| Recipient pin drop (Google Maps) | | | Planned |
+| Real-time courier tracking | | | Planned |
 | Play Store packaging | | | Planned |
 | WhatsApp order confirmations | | | Planned |
-| Design pass (brand, icons, polish) | | | Planned |
 
 ---
 
@@ -165,6 +167,35 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `e8215f0` | M-Pesa callback for pools + Orders pages |
 | `b4751c0` | Stage 1 completion — auth, delivery, countdown, guarantees |
 | `979e55f` | Stage 2 — Hamper builder, Reminders, Wishlists, Gift Cards, Referrals |
+
+---
+
+## Stage 3 — Scale & Design
+
+### 21. Corporate / Bulk Ordering
+- **What:** Send the same gift to multiple recipients — employee appreciation, client thank-yous. Upload a CSV or add recipients manually. One payment, many deliveries.
+- **Advantage:** Opens B2B revenue stream. Corporate clients have higher order values and repeat rates. CSV upload makes large orders practical.
+- **Tech:** `/corporate` page, `CorporateOrder` component (3-step flow)
+
+### 22. Loyalty Tier System
+- **What:** Automatic tier progression (Bronze → Silver → Gold → Platinum) based on order count and spend. Discounts, free delivery, priority support at higher tiers.
+- **Advantage:** Increases repeat purchases. Customers spend more to reach the next tier. Visual progress bar motivates continued engagement.
+- **Tech:** `lib/loyalty.ts`, `LoyaltyBadge` component on account page
+
+### 23. Design Pass — Brand System
+- **What:** Complete brand design system: warm magenta (#B8336A) primary, golden amber accent, proper typography (Inter), card shadows, border radius, skeleton loading states.
+- **Advantage:** Professional, trustworthy appearance. Consistent visual language across all pages. Warm colors communicate gifting/celebration.
+- **Tech:** Updated `tailwind.config.ts`, `globals.css`, custom animations
+
+### 24. Bottom Nav Icons
+- **What:** Replaced text-only bottom navigation with SVG icons + labels. Each tab has a unique icon (Home, Flask, Clipboard, Bell, User).
+- **Advantage:** Faster navigation recognition. Modern mobile app feel. Accessibility improvement.
+- **Tech:** `BottomNav.tsx` with inline SVG icons
+
+### 25. Loading Skeletons
+- **What:** Shimmer-animated skeleton placeholders for product grids, order cards, and page content. Replaces blank white screens during data loading.
+- **Advantage:** Perceived performance improvement. Users see structure before content loads. Reduces bounce rate on slow connections.
+- **Tech:** `components/ui/Skeletons.tsx` (ProductCardSkeleton, OrderCardSkeleton, PageSkeleton)
 
 ---
 
@@ -200,4 +231,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 2 completion*
+*Last updated: Stage 3 + Design Pass completion*

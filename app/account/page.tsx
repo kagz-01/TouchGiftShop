@@ -3,6 +3,7 @@ import { createServerSupabase } from "@/lib/supabase-server";
 import LogoutButton from "@/components/account/LogoutButton";
 import AccountPrefs from "@/components/account/AccountPrefs";
 import ReferralSection from "@/components/account/ReferralSection";
+import LoyaltyBadge from "@/components/account/LoyaltyBadge";
 
 export default async function AccountPage() {
   const supabase = createServerSupabase();
@@ -67,6 +68,8 @@ export default async function AccountPage() {
       </section>
 
       <AccountPrefs />
+
+      <LoyaltyBadge />
 
       <ReferralSection />
 

@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import CountdownBanner from "@/components/home/CountdownBanner";
 import OccasionFilter from "@/components/home/OccasionFilter";
 import ProductGrid from "@/components/home/ProductGrid";
+import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 
 export default async function HomePage({
   searchParams,
@@ -16,7 +17,9 @@ export default async function HomePage({
       <Suspense fallback={null}>
         <OccasionFilter />
       </Suspense>
-      <ProductGrid searchParams={Promise.resolve(params)} />
+      <Suspense fallback={<ProductGridSkeleton />}>
+        <ProductGrid searchParams={Promise.resolve(params)} />
+      </Suspense>
     </div>
   );
 }
