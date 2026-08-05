@@ -3,9 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// The 5-tab structure from the implementation plan:
-// Home | Gift Lab | Orders | Reminders | Account
-// Cart/Checkout is a flow launched from Home or Gift Lab, not a persistent tab.
 const TABS = [
   { href: "/", label: "Home" },
   { href: "/gift-lab", label: "Gift Lab" },
@@ -33,7 +30,6 @@ export default function BottomNav() {
               active ? "text-brand font-semibold" : "text-brand-muted"
             }`}
           >
-            {/* TODO: swap for real icon set once brand/design pass is done */}
             {tab.label}
           </Link>
         );
