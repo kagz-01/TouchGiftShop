@@ -4,14 +4,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
-  { label: "Birthdays", icon: "🎂", slug: "birthdays" },
-  { label: "Anniversaries", icon: "💍", slug: "anniversaries" },
-  { label: "Weddings", icon: "💒", slug: "weddings" },
-  { label: "Condolences", icon: "🕊️", slug: "condolences" },
-  { label: "Corporate", icon: "🏢", slug: "corporate" },
-  { label: "Apology", icon: "💐", slug: "apology" },
-  { label: "Milestone", icon: "🏆", slug: "milestone" },
-  { label: "Just Because", icon: "💝", slug: "just-because" },
+  { label: "Birthdays", icon: "🎂", slug: "birthdays", color: "from-pink-400 to-rose-500" },
+  { label: "Anniversaries", icon: "💍", slug: "anniversaries", color: "from-red-400 to-pink-500" },
+  { label: "Weddings", icon: "💒", slug: "weddings", color: "from-purple-400 to-violet-500" },
+  { label: "Baby Shower", icon: "👶", slug: "baby", color: "from-blue-400 to-cyan-500" },
+  { label: "Corporate", icon: "🏢", slug: "corporate", color: "from-slate-500 to-gray-700" },
+  { label: "Condolences", icon: "🕊️", slug: "condolences", color: "from-gray-400 to-gray-600" },
+  { label: "Graduation", icon: "🎓", slug: "graduation", color: "from-amber-400 to-orange-500" },
+  { label: "Just Because", icon: "💝", slug: "just-because", color: "from-rose-400 to-red-500" },
 ];
 
 export default function OccasionFilter() {
@@ -30,57 +30,47 @@ export default function OccasionFilter() {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold">Shop by Occasion</h2>
-        {active && (
-          <button
-            onClick={() => setCategory("")}
-            className="text-xs text-brand hover:text-brand-light transition-colors"
-          >
-            Clear filter
-          </button>
-        )}
+    <section>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="font-display text-2xl md:text-3xl font-bold">Shop by Occasion</h2>
+          <p className="text-sm text-brand-muted mt-1">Find the perfect gift for every moment</p>
+        </div>
       </div>
 
-      <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
-        {CATEGORIES.map((cat) => {
-          const isActive = cat.slug === active;
-          return (
-            <button
-              key={cat.slug}
-              onClick={() => setCategory(cat.slug)}
+      <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.slug}
+            onClick={() => setCategory(cat.slug)}
+            className={cn(
+              "group flex flex-col items-center gap-2 p-3 md:p-4 rounded-2xl border-2 transition-all duration-300",
+              active === cat.slug
+                ? "border-brand bg-brand/5 shadow-ribbon scale-105"
+                : "border-transparent bg-white hover:border-brand/20 hover:shadow-card hover:-translate-y-1"
+            )}
+          >
+            <div
               className={cn(
-                "relative flex flex-col items-center gap-2 min-w-[80px] pt-4 pb-3 px-3 rounded-xl transition-all duration-300",
-                isActive
-                  ? "bg-brand text-white shadow-ribbon scale-105"
-                  : "bg-white border border-surface-border hover:border-brand/30 hover:shadow-soft hover:-translate-y-1"
+                "w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-2xl md:text-3xl transition-transform duration-300",
+                active === cat.slug
+                  ? "scale-110"
+                  : "group-hover:scale-110"
               )}
             >
-              {/* String */}
-              <div
-                className={cn(
-                  "absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-3",
-                  isActive ? "bg-white/50" : "bg-brand/20"
-                )}
-              />
-
-              {/* Icon */}
-              <span className="text-2xl">{cat.icon}</span>
-
-              {/* Label */}
-              <span className="text-xs font-medium whitespace-nowrap">
-                {cat.label}
-              </span>
-
-              {/* Active indicator */}
-              {isActive && (
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 bg-gold rounded-full" />
+              {cat.icon}
+            </div>
+            <span
+              className={cn(
+                "text-[10px] md:text-xs font-semibold transition-colors",
+                active === cat.slug ? "text-brand" : "text-brand-muted"
               )}
-            </button>
-          );
-        })}
+            >
+              {cat.label}
+            </span>
+          </button>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
