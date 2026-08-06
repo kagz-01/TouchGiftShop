@@ -69,7 +69,7 @@ function Reveal({
   );
 }
 
-function useTypewriter(messages: string[], typingSpeed = 220, pauseMs = 1400) {
+function useTypewriter(messages: string[], typingSpeed = 260, pauseMs = 1700) {
   const [messageIndex, setMessageIndex] = useState(0);
   const [wordCount, setWordCount] = useState(0);
   const [deleting, setDeleting] = useState(false);
@@ -151,7 +151,7 @@ function highlightDeliveryCopy(text: string) {
 function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   const deliveryMessage = useTypewriter([
-    "TouchGift makes gifting feel easy.",
+    "TouchGift makes gifting feel thoughtful.",
     "Order before 3 PM for same-day gift delivery in Nairobi.",
     "After 3 PM? We deliver tomorrow.",
     "Wrapped beautifully. Delivered with care.",
@@ -180,12 +180,12 @@ function HeroCinematic() {
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         {/* Typewriter delivery note */}
         <div className={`inline-flex flex-col items-center bg-white/10 backdrop-blur-md rounded-full px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <span className="text-[10px] uppercase tracking-[0.35em] text-gold/80 mb-1">
+          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
             TouchGift promise
           </span>
-          <div className="flex items-center justify-center gap-2 text-sm text-white/85 min-h-[1.5rem] text-center leading-snug">
+          <div className="flex items-center justify-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] text-center leading-snug">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
-            <span className="whitespace-normal">
+            <span className="whitespace-normal tracking-tight">
               {highlightDeliveryCopy(deliveryMessage)}
               <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
             </span>
@@ -197,7 +197,7 @@ function HeroCinematic() {
           Send something
           <br />
           <span className="relative inline-block">
-            <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+            <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
               they&apos;ll remember
             </span>
             <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
@@ -214,8 +214,8 @@ function HeroCinematic() {
 
         {/* Subheadline */}
         <p className={`text-lg md:text-xl text-white/60 max-w-xl mx-auto mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          Curated gifts for birthdays, milestones, apologies, and just-because
-          moments - wrapped beautifully and delivered with care.
+          Thoughtful gifts for birthdays, milestones, apologies, and just-because
+          moments, wrapped beautifully and delivered with care.
         </p>
 
         {/* CTA */}

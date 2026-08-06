@@ -20,6 +20,13 @@ const SUPPORT_LINKS = [
   { href: "mailto:support@touchgift.co.ke", label: "Email Support" },
 ];
 
+const POLICY_LINKS = [
+  { href: "/privacy", label: "Privacy Policy" },
+  { href: "/terms", label: "Terms & Conditions" },
+  { href: "/returns", label: "Return & Refund Policy" },
+  { href: "/delivery", label: "Delivery Policy" },
+];
+
 const SOCIALS = [
   {
     href: "https://www.facebook.com/share/185SzXR7nv/",
@@ -98,7 +105,7 @@ export default function Footer() {
         <div className="max-w-6xl mx-auto px-4 md:px-8 py-10">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Brand + Newsletter */}
-            <div className="md:col-span-5 space-y-5">
+            <div className="md:col-span-4 space-y-5">
               <div>
                 <h3 className="font-display text-lg font-bold mb-1">TouchGift</h3>
                 <p className="text-white/50 text-sm">Just say it. We&apos;ll make it happen.</p>
@@ -169,7 +176,7 @@ export default function Footer() {
             </div>
 
             {/* Support */}
-            <div className="md:col-span-4">
+            <div className="md:col-span-2">
               <h4 className="text-xs text-gold font-semibold uppercase tracking-wider mb-3">
                 Support
               </h4>
@@ -180,6 +187,25 @@ export default function Footer() {
                       href={link.href}
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
+                      className="text-sm text-white/60 hover:text-gold transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Policies */}
+            <div className="md:col-span-3">
+              <h4 className="text-xs text-gold font-semibold uppercase tracking-wider mb-3">
+                Policies
+              </h4>
+              <ul className="space-y-2">
+                {POLICY_LINKS.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
                       className="text-sm text-white/60 hover:text-gold transition-colors"
                     >
                       {link.label}
@@ -207,6 +233,12 @@ export default function Footer() {
               </Link>
               <Link href="/terms" className="hover:text-white/60 transition-colors">
                 Terms
+              </Link>
+              <Link href="/returns" className="hover:text-white/60 transition-colors">
+                Returns
+              </Link>
+              <Link href="/delivery" className="hover:text-white/60 transition-colors">
+                Delivery
               </Link>
               <a href="https://wa.me/254142677898" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">
                 Contact
