@@ -151,10 +151,10 @@ function highlightDeliveryCopy(text: string) {
 function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   const deliveryMessage = useTypewriter([
-    "Order before 3 PM for same-day delivery in Nairobi.",
-    "After 3 PM, your order moves to next day delivery.",
-    "Need it today? Beat the cutoff and we’ll handle the rest.",
-    "Missed the cutoff? No stress. Tomorrow’s delivery is ready.",
+    "TouchGift makes gifting feel easy.",
+    "Order before 3 PM for same-day gift delivery in Nairobi.",
+    "After 3 PM? We deliver tomorrow.",
+    "Wrapped beautifully. Delivered with care.",
   ]);
 
   useEffect(() => { setLoaded(true); }, []);
@@ -181,7 +181,7 @@ function HeroCinematic() {
         {/* Typewriter delivery note */}
         <div className={`inline-flex flex-col items-center bg-white/10 backdrop-blur-md rounded-full px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <span className="text-[10px] uppercase tracking-[0.35em] text-gold/80 mb-1">
-            Delivery window
+            TouchGift promise
           </span>
           <div className="flex items-center justify-center gap-2 text-sm text-white/85 min-h-[1.5rem] text-center leading-snug">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
@@ -198,7 +198,7 @@ function HeroCinematic() {
           <br />
           <span className="relative inline-block">
             <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-              they&apos;ll love
+              they&apos;ll remember
             </span>
             <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
               <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
@@ -214,8 +214,8 @@ function HeroCinematic() {
 
         {/* Subheadline */}
         <p className={`text-lg md:text-xl text-white/60 max-w-xl mx-auto mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          Curated gifts, delivered same-day. No guessing, no stress — just the
-          perfect gift, every time.
+          Curated gifts for birthdays, milestones, apologies, and just-because
+          moments - wrapped beautifully and delivered with care.
         </p>
 
         {/* CTA */}
