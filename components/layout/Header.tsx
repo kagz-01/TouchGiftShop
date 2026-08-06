@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
+import CategoryTabs from "@/components/layout/CategoryTabs";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,13 +19,14 @@ export default function Header() {
   return (
     <header
       className={cn(
-        "hidden md:block transition-all duration-300 sticky top-0 z-50",
+        "hidden md:block sticky top-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-soft border-b border-surface-border"
-          : "bg-white border-b border-transparent"
+          ? "bg-white/95 backdrop-blur-md shadow-soft"
+          : "bg-white"
       )}
     >
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
+      {/* Upper section — Logo + Nav */}
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between border-b border-surface-border">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
@@ -62,6 +64,11 @@ export default function Header() {
             Sign in
           </Link>
         </div>
+      </div>
+
+      {/* Lower section — Category Tabs */}
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
+        <CategoryTabs />
       </div>
     </header>
   );
