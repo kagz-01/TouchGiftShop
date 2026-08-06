@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { createPaymentOrder } from "@/lib/payment";
 
 // POST /api/payment/create-order — creates a PesaPal checkout session.
-// Called by the client after the order is saved to our DB.
+// Called by the client after the order/contribution is saved to our DB.
 export async function POST(req: Request) {
-  const { amount, merchantReference, description, phoneNumber, email } =
+  const { amount, merchantReference, description, phoneNumber, email, callbackUrl } =
     await req.json();
 
   if (!amount || !merchantReference) {
@@ -16,12 +16,15 @@ export async function POST(req: Request) {
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 
+  // Use custom callback URL if provided, otherwise default to /payment-success
+  const finalCallbackUrl = callbackUrl || `${siteUrl}/payment-success?ref=${merchantReference}`;
+
   try {
     const result = await createPaymentOrder({
       amount,
       merchantReference,
       description: description || "TouchGift payment",
-      callbackUrl: `${siteUrl}/payment-success?ref=${merchantReference}`,
+      callbackUrl: finalCallbackUrl,
       phoneNumber,
       email,
     });

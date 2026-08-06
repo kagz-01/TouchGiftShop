@@ -41,7 +41,7 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
 
     const contributionId = data.contribution.id;
 
-    // 2. Create PesaPal checkout session
+    // 2. Create PesaPal checkout session — redirect back to pool page with ?paid=true
     const paymentRes = await fetch("/api/payment/create-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -50,6 +50,7 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
         merchantReference: `pool-${contributionId}`,
         description: `Pool contribution — ${data.poolSlug}`,
         phoneNumber: form.get("phone"),
+        callbackUrl: `${window.location.origin}/gift-lab/pool/${slug}?paid=true`,
       }),
     });
 
