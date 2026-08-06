@@ -1,0 +1,123 @@
+import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabase";
+import { getTransactionStatus } from "@/lib/payment";
+
+// POST /api/payment/ipn — PesaPal sends IPN (Instant Payment Notification)
+// when a transaction status changes.
+//
+// PesaPal IPN payload:
+// { order_tracking_id, order_merchant_reference, status }
+//
+// We query PesaPal for full details, then update our order or pool contribution.
+
+export async function POST(req: Request) {
+  const payload = await req.json();
+
+  const orderTrackingId = payload.order_tracking_id;
+  if (!orderTrackingId) {
+    console.error("Malformed PesaPal IPN payload", payload);
+    return NextResponse.json({ success: true });
+  }
+
+  // Query PesaPal for full transaction details
+  let status;
+  try {
+    status = await getTransactionStatus(orderTrackingId);
+  } catch (err) {
+    console.error("Failed to query PesaPal status:", err);
+    // Still return 200 so PesaPal doesn't retry aggressively
+    return NextResponse.json({ success: true });
+  }
+
+  const merchantReference = payload.order_merchant_reference || "";
+
+  if (status.status === "completed") {
+    // Check if this is an order or a pool contribution
+    // Pool contributions use "pool-{slug}-{id}" as merchant reference
+    if (merchantReference.startsWith("pool-")) {
+      await handlePoolPayment(merchantReference, status.receiptNumber);
+    } else {
+      await handleOrderPayment(merchantReference, status.receiptNumber);
+    }
+  } else if (status.status === "failed") {
+    if (merchantReference.startsWith("pool-")) {
+      await handlePoolFailure(merchantReference);
+    } else {
+      await handleOrderFailure(merchantReference);
+    }
+  }
+
+  return NextResponse.json({ success: true });
+}
+
+async function handleOrderPayment(
+  orderId: string,
+  receiptNumber: string | undefined
+) {
+  const { error } = await supabaseAdmin
+    .from("orders")
+    .update({
+      status: "processing",
+      mpesa_receipt_number: receiptNumber ?? null,
+    })
+    .eq("id", orderId)
+    .in("status", ["pending_payment", "pending"]);
+
+  if (error) {
+    console.error("Failed to update order from IPN:", error);
+  }
+}
+
+async function handleOrderFailure(orderId: string) {
+  await supabaseAdmin
+    .from("orders")
+    .update({ status: "failed" })
+    .eq("id", orderId)
+    .in("status", ["pending_payment", "pending"]);
+}
+
+async function handlePoolPayment(
+  reference: string,
+  receiptNumber: string | undefined
+) {
+  // reference format: "pool-{contributionId}"
+  const contributionId = reference.replace("pool-", "");
+
+  const { data: contribution } = await supabaseAdmin
+    .from("pool_contributions")
+    .update({
+      is_verified: true,
+      mpesa_receipt_number: receiptNumber ?? null,
+    })
+    .eq("id", contributionId)
+    .select("amount, pool_id")
+    .single();
+
+  if (contribution) {
+    const { data: pool } = await supabaseAdmin
+      .from("group_gifting_pools")
+      .select("current_balance, target_amount")
+      .eq("id", contribution.pool_id)
+      .single();
+
+    if (pool) {
+      const newBalance = pool.current_balance + contribution.amount;
+      const updates: Record<string, unknown> = { current_balance: newBalance };
+      if (newBalance >= pool.target_amount) {
+        updates.status = "completed";
+      }
+      await supabaseAdmin
+        .from("group_gifting_pools")
+        .update(updates)
+        .eq("id", contribution.pool_id);
+    }
+  }
+}
+
+async function handlePoolFailure(reference: string) {
+  const contributionId = reference.replace("pool-", "");
+  await supabaseAdmin
+    .from("pool_contributions")
+    .delete()
+    .eq("id", contributionId);
+}

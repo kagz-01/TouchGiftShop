@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
-import { initiateStkPush } from "@/lib/mpesa";
 
 const ContributeInput = z.object({
   contributorName: z.string().min(1).max(100),
@@ -23,7 +22,6 @@ export async function POST(
 
   const { contributorName, contributorPhone, amount } = parsed.data;
 
-  // Find the pool
   const { data: pool, error: poolError } = await supabaseAdmin
     .from("group_gifting_pools")
     .select("*")
@@ -38,7 +36,6 @@ export async function POST(
     );
   }
 
-  // Check if pool has expired
   if (new Date(pool.expires_at) < new Date()) {
     return NextResponse.json(
       { error: "This pool has expired" },
@@ -46,7 +43,6 @@ export async function POST(
     );
   }
 
-  // Insert contribution as pending
   const { data: contribution, error: insertError } = await supabaseAdmin
     .from("pool_contributions")
     .insert({
@@ -66,34 +62,6 @@ export async function POST(
     );
   }
 
-  // Trigger M-Pesa STK push to the contributor's phone
-  try {
-    const { checkoutRequestId } = await initiateStkPush({
-      phoneNumber: contributorPhone,
-      amount,
-      accountReference: `pool-${pool.slug}`.slice(0, 12),
-      transactionDesc: `Pool: ${pool.title}`.slice(0, 13),
-    });
-
-    // Store checkout request ID so the callback can find this contribution
-    await supabaseAdmin
-      .from("pool_contributions")
-      .update({ mpesa_checkout_request_id: checkoutRequestId })
-      .eq("id", contribution.id);
-
-    return NextResponse.json({
-      contribution,
-      checkoutRequestId,
-    });
-  } catch (err) {
-    // Contribution stays pending — contributor can retry
-    return NextResponse.json(
-      {
-        contribution,
-        error:
-          err instanceof Error ? err.message : "STK push failed to start",
-      },
-      { status: 502 }
-    );
-  }
+  // Return contribution ID — client handles PesaPal checkout redirect
+  return NextResponse.json({ contribution, poolSlug: params.slug });
 }

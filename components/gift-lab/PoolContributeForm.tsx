@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { formatKsh } from "@/lib/utils";
 
-type Step = "form" | "awaiting_payment" | "error" | "success";
+type Step = "form" | "redirecting" | "error" | "success";
 
 export default function PoolContributeForm({ slug }: { slug: string }) {
   const [step, setStep] = useState<Step>("form");
@@ -12,12 +12,13 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStep("awaiting_payment");
+    setStep("redirecting");
     setErrorMessage("");
 
     const form = new FormData(e.currentTarget);
     const contributorAmount = Number(form.get("amount"));
 
+    // 1. Create contribution record
     const res = await fetch(`/api/pools/${slug}/contribute`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,36 +39,30 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
       return;
     }
 
-    // Poll until contribution is verified (M-Pesa callback confirms)
-    pollUntilVerified(slug, data.contribution.id);
-  }
+    const contributionId = data.contribution.id;
 
-  async function pollUntilVerified(slug: string, contributionId: string) {
-    const start = Date.now();
-    const TIMEOUT_MS = 90_000;
+    // 2. Create PesaPal checkout session
+    const paymentRes = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: contributorAmount,
+        merchantReference: `pool-${contributionId}`,
+        description: `Pool contribution — ${data.poolSlug}`,
+        phoneNumber: form.get("phone"),
+      }),
+    });
 
-    const check = async () => {
-      const res = await fetch(`/api/pools/${slug}`, { cache: "no-store" });
-      const data = await res.json();
-      const contribution = data.contributions?.find(
-        (c: { id: string }) => c.id === contributionId
-      );
+    const paymentData = await paymentRes.json();
 
-      if (contribution?.is_verified) {
-        setStep("success");
-        return;
-      }
-      if (Date.now() - start > TIMEOUT_MS) {
-        setStep("error");
-        setErrorMessage(
-          "We didn't receive confirmation in time. Check your phone for a missed M-Pesa prompt."
-        );
-        return;
-      }
-      setTimeout(check, 3000);
-    };
+    if (!paymentRes.ok) {
+      setStep("error");
+      setErrorMessage(paymentData.error ?? "Failed to start payment.");
+      return;
+    }
 
-    check();
+    // 3. Redirect to PesaPal
+    window.location.href = paymentData.redirectUrl;
   }
 
   if (step === "success") {
@@ -90,12 +85,13 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
     );
   }
 
-  if (step === "awaiting_payment") {
+  if (step === "redirecting") {
     return (
       <div className="rounded-lg border border-gray-200 p-6 text-center space-y-2">
-        <p className="font-medium">Check your phone</p>
+        <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="font-medium">Redirecting to payment…</p>
         <p className="text-sm text-brand-muted">
-          Enter your M-Pesa PIN on the prompt sent to your phone.
+          You&apos;ll complete your contribution on PesaPal.
         </p>
       </div>
     );
@@ -120,7 +116,7 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
         <input
           name="phone"
           required
-          placeholder="Your M-Pesa phone number"
+          placeholder="Your phone number"
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm"
         />
         <input
@@ -136,7 +132,7 @@ export default function PoolContributeForm({ slug }: { slug: string }) {
           type="submit"
           className="w-full rounded-lg bg-brand text-white py-3 text-sm font-medium"
         >
-          Contribute {amount > 0 ? formatKsh(amount) : ""} via M-Pesa
+          Contribute {amount > 0 ? formatKsh(amount) : ""}
         </button>
       </form>
     </div>

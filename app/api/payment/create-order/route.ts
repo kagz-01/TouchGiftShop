@@ -1,0 +1,37 @@
+import { NextResponse } from "next/server";
+import { createPaymentOrder } from "@/lib/payment";
+
+// POST /api/payment/create-order — creates a PesaPal checkout session.
+// Called by the client after the order is saved to our DB.
+export async function POST(req: Request) {
+  const { amount, merchantReference, description, phoneNumber, email } =
+    await req.json();
+
+  if (!amount || !merchantReference) {
+    return NextResponse.json(
+      { error: "amount and merchantReference required" },
+      { status: 400 }
+    );
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
+
+  try {
+    const result = await createPaymentOrder({
+      amount,
+      merchantReference,
+      description: description || "TouchGift payment",
+      callbackUrl: `${siteUrl}/payment-success?ref=${merchantReference}`,
+      phoneNumber,
+      email,
+    });
+
+    return NextResponse.json(result);
+  } catch (err) {
+    console.error("PesaPal create-order error:", err);
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Payment init failed" },
+      { status: 502 }
+    );
+  }
+}

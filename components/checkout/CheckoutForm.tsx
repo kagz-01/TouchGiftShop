@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import MapPinPicker from "./MapPinPicker";
 import SurpriseToggle from "./SurpriseToggle";
 import { formatKsh } from "@/lib/utils";
 
-type Step = "form" | "awaiting_payment" | "error";
+type Step = "form" | "redirecting" | "error";
 
 interface DeliveryZone {
   name: string;
@@ -27,7 +26,6 @@ export default function CheckoutForm({
   engraving?: string;
   giftNote?: string;
 }) {
-  const router = useRouter();
   const [step, setStep] = useState<Step>("form");
   const [errorMessage, setErrorMessage] = useState("");
   const [safeguards, setSafeguards] = useState({
@@ -58,12 +56,13 @@ export default function CheckoutForm({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStep("awaiting_payment");
+    setStep("redirecting");
     setErrorMessage("");
 
     const form = new FormData(e.currentTarget);
 
-    const res = await fetch("/api/orders", {
+    // 1. Create order in our DB
+    const orderRes = await fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -83,62 +82,51 @@ export default function CheckoutForm({
       }),
     });
 
-    const data = await res.json();
+    const orderData = await orderRes.json();
 
-    if (!res.ok) {
+    if (!orderRes.ok) {
       setStep("error");
       setErrorMessage(
-        data.error?.formErrors?.join(", ") ?? data.error ?? "Something went wrong."
+        orderData.error?.formErrors?.join(", ") ??
+          orderData.error ??
+          "Something went wrong."
       );
       return;
     }
 
-    pollUntilPaid(data.order.id);
+    const orderId = orderData.order.id;
+
+    // 2. Create PesaPal checkout session
+    const paymentRes = await fetch("/api/payment/create-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: total,
+        merchantReference: orderId,
+        description: `TouchGift order #${orderId.slice(0, 8)}`,
+        phoneNumber: form.get("senderPhone"),
+      }),
+    });
+
+    const paymentData = await paymentRes.json();
+
+    if (!paymentRes.ok) {
+      setStep("error");
+      setErrorMessage(paymentData.error ?? "Failed to start payment.");
+      return;
+    }
+
+    // 3. Redirect to PesaPal checkout
+    window.location.href = paymentData.redirectUrl;
   }
 
-  async function pollUntilPaid(orderId: string) {
-    const start = Date.now();
-    const TIMEOUT_MS = 90_000;
-
-    const check = async () => {
-      const res = await fetch(`/api/orders/${orderId}`, { cache: "no-store" });
-      const data = await res.json();
-      const status = data.order?.status;
-
-      if (
-        status === "processing" ||
-        status === "wrapped" ||
-        status === "dispatched" ||
-        status === "delivered"
-      ) {
-        router.push(`/orders/${orderId}`);
-        return;
-      }
-      if (status === "failed") {
-        setStep("error");
-        setErrorMessage("Payment was not completed. You can try again.");
-        return;
-      }
-      if (Date.now() - start > TIMEOUT_MS) {
-        setStep("error");
-        setErrorMessage(
-          "We didn't receive confirmation in time. Check your phone for a missed M-Pesa prompt, or try again."
-        );
-        return;
-      }
-      setTimeout(check, 3000);
-    };
-
-    check();
-  }
-
-  if (step === "awaiting_payment") {
+  if (step === "redirecting") {
     return (
       <div className="rounded-lg border border-gray-200 p-6 text-center space-y-2">
-        <p className="font-medium">Check your phone</p>
+        <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="font-medium">Redirecting to payment…</p>
         <p className="text-sm text-brand-muted">
-          Enter your M-Pesa PIN on the prompt sent to your phone to complete
-          this {formatKsh(total)} order.
+          You&apos;ll be taken to PesaPal to complete your {formatKsh(total)} payment.
         </p>
       </div>
     );
@@ -191,7 +179,7 @@ export default function CheckoutForm({
         />
       </div>
       <div>
-        <label className="text-sm font-medium">Your M-Pesa phone number</label>
+        <label className="text-sm font-medium">Your phone number</label>
         <input
           name="senderPhone"
           required
@@ -245,7 +233,7 @@ export default function CheckoutForm({
         type="submit"
         className="w-full rounded-lg bg-brand text-white py-3 font-medium"
       >
-        Pay {formatKsh(total)} with M-Pesa
+        Pay {formatKsh(total)}
       </button>
       <div className="rounded-lg bg-gray-50 border border-gray-200 p-3 text-xs text-center text-brand-muted space-y-1">
         <p>On-time delivery or it&apos;s free</p>

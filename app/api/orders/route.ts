@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
-import { initiateStkPush } from "@/lib/mpesa";
 
 const OrderInput = z.object({
   productId: z.string().uuid(),
@@ -19,6 +18,7 @@ const OrderInput = z.object({
   giftNote: z.string().optional(),
   engraving: z.string().optional(),
   quantity: z.number().int().positive().default(1),
+  shippingFee: z.number().default(0),
 });
 
 // GET /api/orders?phone=0712345678 — fetch orders by sender phone
@@ -47,7 +47,8 @@ export async function GET(req: Request) {
   return NextResponse.json({ orders: orders ?? [] });
 }
 
-// POST /api/orders
+// POST /api/orders — creates the order record. Payment is handled separately
+// via /api/payment/create-order (PesaPal checkout redirect).
 export async function POST(req: Request) {
   const parsed = OrderInput.safeParse(await req.json());
   if (!parsed.success) {
@@ -76,6 +77,7 @@ export async function POST(req: Request) {
       gift_note: input.giftNote ?? null,
       engraving: input.engraving ?? null,
       quantity: input.quantity,
+      shipping_fee: input.shippingFee,
     })
     .select()
     .single();
@@ -87,28 +89,5 @@ export async function POST(req: Request) {
     );
   }
 
-  try {
-    const { checkoutRequestId } = await initiateStkPush({
-      phoneNumber: input.senderPhone,
-      amount: input.totalAmount,
-      accountReference: order.id,
-      transactionDesc: "TouchGift order",
-    });
-
-    await supabaseAdmin
-      .from("orders")
-      .update({ mpesa_checkout_request_id: checkoutRequestId })
-      .eq("id", order.id);
-
-    return NextResponse.json({ order, checkoutRequestId });
-  } catch (err) {
-    return NextResponse.json(
-      {
-        order,
-        error:
-          err instanceof Error ? err.message : "STK push failed to start",
-      },
-      { status: 502 }
-    );
-  }
+  return NextResponse.json({ order });
 }
