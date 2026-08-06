@@ -70,14 +70,14 @@ function Reveal({
 }
 
 /* ══════════════════════════════════════════════════════════
-   SECTION 1: THE HOOK — Full-screen cinematic hero
+   SECTION 1: THE HOOK — 3/4 cinematic hero with logo reveal
    ══════════════════════════════════════════════════════════ */
 function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   useEffect(() => { setLoaded(true); }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-brand-deep">
+    <section className="relative h-[75vh] min-h-[560px] flex items-center justify-center overflow-hidden bg-brand-deep">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand/30 rounded-full blur-[120px] animate-pulse-soft" />
@@ -91,19 +91,36 @@ function HeroCinematic() {
         <div className="absolute top-40 right-[15%] text-4xl opacity-15 animate-float" style={{ animationDelay: "1s" }}>🎀</div>
         <div className="absolute bottom-32 left-[20%] text-5xl opacity-15 animate-float" style={{ animationDelay: "2s" }}>✨</div>
         <div className="absolute bottom-20 right-[10%] text-4xl opacity-20 animate-float" style={{ animationDelay: "3s" }}>💌</div>
-        <div className="absolute top-[60%] left-[60%] text-3xl opacity-10 animate-float" style={{ animationDelay: "1.5s" }}>🎊</div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+        {/* Logo animation */}
+        <div className={`mb-8 transition-all duration-1000 ${loaded ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-180"}`}>
+          <img
+            src="/logo.webp"
+            alt="TouchGift"
+            className="w-28 h-28 md:w-36 md:h-36 mx-auto rounded-full shadow-glow animate-float"
+          />
+        </div>
+
+        {/* Tagline */}
+        <div className={`mb-6 transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <span className="inline-block px-6 py-2 bg-white/10 backdrop-blur-sm border border-gold/30 rounded-full">
+            <span className="font-display text-gold text-lg md:text-xl font-semibold italic">
+              — Just say it —
+            </span>
+          </span>
+        </div>
+
         {/* Badge */}
-        <div className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2 mb-8 border border-white/10 transition-all duration-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+        <div className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
           <span className="text-sm text-white/80">Same-day delivery in Nairobi</span>
         </div>
 
         {/* Main headline */}
-        <h1 className={`font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           Send something
           <br />
           <span className="relative inline-block">
@@ -154,7 +171,7 @@ function HeroCinematic() {
         </div>
 
         {/* Scroll indicator */}
-        <div className={`mt-16 transition-all duration-1000 delay-700 ${loaded ? "opacity-100" : "opacity-0"}`}>
+        <div className={`mt-12 transition-all duration-1000 delay-700 ${loaded ? "opacity-100" : "opacity-0"}`}>
           <div className="flex flex-col items-center gap-2 text-white/40">
             <span className="text-xs tracking-widest uppercase">Scroll to explore</span>
             <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">

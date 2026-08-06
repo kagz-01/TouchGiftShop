@@ -30,18 +30,15 @@ export default function Header() {
           : "bg-white border-b border-transparent"
       )}
     >
-      <Link href="/" className="flex items-center gap-2 group">
+      <Link href="/" className="flex items-center group">
         <Image
           src="/logo.webp"
-          alt="TouchGift — Just say it"
-          width={50}
-          height={50}
+          alt="TouchGift"
+          width={48}
+          height={48}
           priority
-          className="rounded-full transition-transform duration-300 group-hover:scale-105"
+          className="rounded-full transition-all duration-500 group-hover:scale-110 group-hover:rotate-[360deg] group-hover:drop-shadow-[0_0_12px_rgba(155,27,90,0.4)]"
         />
-        <span className="font-display text-lg font-bold text-brand-deep hidden lg:block">
-          TouchGift
-        </span>
       </Link>
 
       <nav className="flex items-center gap-1">
