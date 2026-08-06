@@ -33,12 +33,15 @@ export default function Header() {
       <Link href="/" className="flex items-center gap-2 group">
         <Image
           src="/logo.webp"
-          alt="TouchGift"
-          width={140}
-          height={49}
+          alt="TouchGift — Just say it"
+          width={50}
+          height={50}
           priority
-          className="transition-transform duration-300 group-hover:scale-105"
+          className="rounded-full transition-transform duration-300 group-hover:scale-105"
         />
+        <span className="font-display text-lg font-bold text-brand-deep hidden lg:block">
+          TouchGift
+        </span>
       </Link>
 
       <nav className="flex items-center gap-1">

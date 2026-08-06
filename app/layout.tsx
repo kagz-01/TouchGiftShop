@@ -32,6 +32,7 @@ export const metadata: Metadata = {
     icon: "/favicon.png",
     apple: "/icons/icon-192.png",
   },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app"),
 };
 
 export const viewport: Viewport = {
