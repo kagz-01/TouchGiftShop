@@ -41,10 +41,14 @@ export async function POST(req: Request) {
     // Re-fetch by ID to get the full product with categories
     const wcProduct = await fetchWcProduct(payload.id);
     await syncProductToSupabase(wcProduct);
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Webhook sync error:", err);
-    // Return 200 so WooCommerce doesn't retry
+    return NextResponse.json({
+      ok: false,
+      error: err instanceof Error ? err.message : "Unknown error",
+      wcUrl: process.env.WOOCOMMERCE_URL,
+      hasKey: !!process.env.WOOCOMMERCE_CONSUMER_KEY,
+    });
   }
-
-  return NextResponse.json({ ok: true });
 }
