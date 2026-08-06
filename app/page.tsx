@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import StorytellingHome from "@/components/home/StorytellingHome";
 import OccasionFilter from "@/components/home/OccasionFilter";
 import ProductGrid from "@/components/home/ProductGrid";
+import Testimonials from "@/components/home/Testimonials";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 
 export default async function HomePage({
@@ -46,6 +47,9 @@ export default async function HomePage({
           </Suspense>
         </div>
       )}
+
+      {/* Testimonials */}
+      <Testimonials />
     </div>
   );
 }
