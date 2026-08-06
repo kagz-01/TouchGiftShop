@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import HandwrittenNote from "@/components/ai/HandwrittenNote";
+import type { NoteStyle } from "@/lib/handwritten-note";
 
 type Product = {
   id: string;
@@ -49,6 +51,7 @@ export default function HamperBuilder() {
   const [companyName, setCompanyName] = useState("");
   const [customMessage, setCustomMessage] = useState("");
   const [giftWrap, setGiftWrap] = useState("standard");
+  const [noteData, setNoteData] = useState<{ text: string; style: NoteStyle } | null>(null);
 
   // Fetch products
   useEffect(() => {
@@ -60,6 +63,9 @@ export default function HamperBuilder() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Product categories from fetched products
   const categories = [
@@ -496,6 +502,17 @@ Peter Odhiambo, 0755555555`}
               </div>
             </div>
 
+            {/* Handwritten Note */}
+            <HandwrittenNote
+              onNoteReady={(note) => {
+                setNoteData(note);
+                setCustomMessage(note.text);
+              }}
+              initialText={customMessage}
+              recipient="your recipients"
+              occasion="corporate gift"
+            />
+
             {/* Summary + nav */}
             <div className="bg-white rounded-2xl p-4 border border-surface-border sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
@@ -636,15 +653,53 @@ Peter Odhiambo, 0755555555`}
                 ← Back
               </button>
               <button
-                onClick={() => {
-                  // TODO: integrate with M-Pesa checkout API
-                  alert(`Order placed! Total: KSh ${discountedTotal.toLocaleString()}\n\nIn production, this would redirect to M-Pesa checkout.`);
+                onClick={async () => {
+                  setIsSubmitting(true);
+                  setSubmitError("");
+                  try {
+                    const validRecipients = recipients.filter((r) => r.name && r.phone);
+                    const res = await fetch("/api/orders/corporate", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        productId: hamperItems[0]?.product?.id,
+                        recipients: validRecipients.map((r) => ({
+                          name: r.name,
+                          phone: r.phone,
+                          note: r.note,
+                        })),
+                        senderName: companyName || "Corporate Client",
+                        senderPhone: validRecipients[0]?.phone || "",
+                        companyName,
+                        customMessage,
+                        giftWrap,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Failed to place order");
+                    // Redirect to PesaPal checkout
+                    window.location.href = data.payment.redirectUrl;
+                  } catch (err: unknown) {
+                    setSubmitError(err instanceof Error ? err.message : "Something went wrong");
+                    setIsSubmitting(false);
+                  }
                 }}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-xl font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300"
+                disabled={isSubmitting}
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-xl font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50"
               >
-                Pay with M-Pesa — KSh {discountedTotal.toLocaleString()}
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-5 h-5 border-2 border-brand-deep/30 border-t-brand-deep rounded-full animate-spin" />
+                    Processing...
+                  </span>
+                ) : (
+                  `Pay with M-Pesa — KSh ${discountedTotal.toLocaleString()}`
+                )}
               </button>
             </div>
+            {submitError && (
+              <p className="text-red-500 text-sm text-center mt-2">{submitError}</p>
+            )}
           </div>
         )}
       </div>

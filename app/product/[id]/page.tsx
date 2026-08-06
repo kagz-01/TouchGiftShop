@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatKsh } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/product/AddToCartButton";
+import ProductAIHelper from "@/components/product/ProductAIHelper";
 
 async function getProduct(id: string): Promise<Product | null> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -124,6 +125,9 @@ export default async function ProductPage({
 
           {/* Add to cart */}
           <AddToCartButton product={product} />
+
+          {/* AI Helper */}
+          <ProductAIHelper productName={product.name} productId={product.id} />
 
           {/* Guarantees */}
           <div className="bg-gradient-dark text-white rounded-2xl p-5 space-y-3">
