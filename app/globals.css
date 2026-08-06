@@ -97,6 +97,10 @@ html {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, #9B1B5A 0%, #D4A853 100%);
   }
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #D4A853 0%, #E8C97A 50%, #D4A853 100%);
+  }
 
   /* Gold Button */
   .btn-gold {

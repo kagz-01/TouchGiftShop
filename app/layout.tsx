@@ -3,6 +3,8 @@ import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
+import GiftChatWidget from "@/components/ai/GiftChatWidget";
 
 export const metadata: Metadata = {
   title: {
@@ -59,6 +61,8 @@ export default function RootLayout({
         <main className="flex-1 pb-20 md:pb-0">{children}</main>
         <Footer />
         <BottomNav />
+        <WhatsAppFloat />
+        <GiftChatWidget />
       </body>
     </html>
   );
