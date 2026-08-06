@@ -14,6 +14,8 @@ export async function POST(req: Request) {
     });
     return NextResponse.json(result);
   } catch (err) {
-    return NextResponse.json({ error: "Not implemented" }, { status: 501 });
+    const message = err instanceof Error ? err.message : "Payment failed";
+    console.error("STK push error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

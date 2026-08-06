@@ -1,17 +1,16 @@
 /**
- * M-Pesa Daraja API integration (STK Push / "Lipa na M-Pesa Online").
+ * Tuma Payment Gateway — STK Push integration.
  *
- * Docs: https://developer.safaricom.co.ke/APIs/MpesaExpressSimulate
+ * Docs: https://github.com/matatashadrack/tuma-mpesa-stk-push
  *
- * Flow: getAccessToken() -> initiateStkPush() -> Safaricom shows a prompt
- * on the payer's phone -> Safaricom POSTs the result to MPESA_CALLBACK_URL
+ * Flow: getAccessToken() -> initiateStkPush() -> customer gets
+ * an M-Pesa prompt -> Tuma POSTs the result to CALLBACK_URL
  * (handled in app/api/mpesa/callback/route.ts).
+ *
+ * Funds settle directly to your Family Bank account.
  */
 
-const BASE_URL =
-  process.env.MPESA_ENV === "production"
-    ? "https://api.safaricom.co.ke"
-    : "https://sandbox.safaricom.co.ke";
+const TUMA_BASE = "https://api.tuma.co.ke";
 
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
@@ -20,39 +19,30 @@ async function getAccessToken(): Promise<string> {
     return cachedToken.value;
   }
 
-  const key = process.env.MPESA_CONSUMER_KEY!;
-  const secret = process.env.MPESA_CONSUMER_SECRET!;
-  const credentials = Buffer.from(`${key}:${secret}`).toString("base64");
+  const email = process.env.TUMA_EMAIL!;
+  const apiKey = process.env.TUMA_API_KEY!;
 
-  const res = await fetch(
-    `${BASE_URL}/oauth/v1/generate?grant_type=client_credentials`,
-    { headers: { Authorization: `Basic ${credentials}` } }
-  );
+  const res = await fetch(`${TUMA_BASE}/auth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, api_key: apiKey }),
+  });
 
   if (!res.ok) {
-    throw new Error(`M-Pesa auth failed: ${res.status} ${await res.text()}`);
+    throw new Error(`Tuma auth failed: ${res.status} ${await res.text()}`);
   }
 
   const data = await res.json();
-  // Token is valid ~1hr; refresh a minute early to be safe.
+  if (!data.success) {
+    throw new Error(`Tuma auth rejected: ${data.message}`);
+  }
+
+  // Tuma JWT tokens are valid ~24h; refresh 5 min early
   cachedToken = {
-    value: data.access_token,
-    expiresAt: Date.now() + (parseInt(data.expires_in, 10) - 60) * 1000,
+    value: data.data.token,
+    expiresAt: Date.now() + 23 * 60 * 60 * 1000,
   };
   return cachedToken.value;
-}
-
-function timestampNow(): string {
-  const d = new Date();
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return (
-    d.getFullYear().toString() +
-    pad(d.getMonth() + 1) +
-    pad(d.getDate()) +
-    pad(d.getHours()) +
-    pad(d.getMinutes()) +
-    pad(d.getSeconds())
-  );
 }
 
 /** Normalizes 07XXXXXXXX / +2547XXXXXXXX / 2547XXXXXXXX to 2547XXXXXXXX. */
@@ -67,49 +57,34 @@ export function normalizeKenyanPhone(phone: string): string {
 export async function initiateStkPush(params: {
   phoneNumber: string;
   amount: number;
-  accountReference: string; // shows on the payer's STK prompt, e.g. order id
+  accountReference: string;
   transactionDesc: string;
 }): Promise<{ checkoutRequestId: string; merchantRequestId: string }> {
-  const shortcode = process.env.MPESA_SHORTCODE!;
-  const passkey = process.env.MPESA_PASSKEY!;
-  const timestamp = timestampNow();
-  const password = Buffer.from(`${shortcode}${passkey}${timestamp}`).toString(
-    "base64"
-  );
   const phone = normalizeKenyanPhone(params.phoneNumber);
   const token = await getAccessToken();
 
-  const res = await fetch(`${BASE_URL}/mpesa/stkpush/v1/processrequest`, {
+  const res = await fetch(`${TUMA_BASE}/payment/stk-push`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      BusinessShortCode: shortcode,
-      Password: password,
-      Timestamp: timestamp,
-      TransactionType: "CustomerPayBillOnline",
-      Amount: Math.round(params.amount), // M-Pesa doesn't accept decimals
-      PartyA: phone,
-      PartyB: shortcode,
-      PhoneNumber: phone,
-      CallBackURL: process.env.MPESA_CALLBACK_URL,
-      AccountReference: params.accountReference.slice(0, 12), // Safaricom limit
-      TransactionDesc: params.transactionDesc.slice(0, 13),
+      amount: Math.round(params.amount),
+      phone,
+      description: params.transactionDesc.slice(0, 255),
+      callback_url: process.env.TUMA_CALLBACK_URL,
     }),
   });
 
   const data = await res.json();
 
-  if (!res.ok || data.ResponseCode !== "0") {
-    throw new Error(
-      `STK push failed: ${data.errorMessage || data.ResponseDescription || res.status}`
-    );
+  if (!res.ok || !data.success) {
+    throw new Error(`Tuma STK push failed: ${data.message || res.status}`);
   }
 
   return {
-    checkoutRequestId: data.CheckoutRequestID,
-    merchantRequestId: data.MerchantRequestID,
+    checkoutRequestId: data.data.checkout_request_id,
+    merchantRequestId: data.data.merchant_request_id,
   };
 }

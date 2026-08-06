@@ -1,74 +1,74 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
-// POST /api/mpesa/callback — Safaricom calls this once the STK push
+// POST /api/mpesa/callback — Tuma calls this once the STK push
 // resolves (paid, cancelled, or timed out).
 //
-// Handles both:
-//   1. Order payments (AccountReference starts with order id)
-//   2. Pool contributions (AccountReference starts with "pool-")
+// Tuma callback payload (flat structure):
+// {
+//   "status": "completed" | "failed" | "cancelled",
+//   "checkout_request_id": "ws_CO_...",
+//   "merchant_request_id": "...",
+//   "result_code": 0,
+//   "result_desc": "...",
+//   "mpesa_receipt_number": "ABC123DEF",
+//   "amount": 100
+// }
 //
-// Payload shape (Daraja STK callback):
-// { Body: { stkCallback: { CheckoutRequestID, ResultCode, ResultDesc,
-//     CallbackMetadata: { Item: [{Name:"MpesaReceiptNumber", Value:...}, ...] } } } }
+// Handles both:
+//   1. Order payments
+//   2. Pool contributions
+
 export async function POST(req: Request) {
   const payload = await req.json();
-  const callback = payload?.Body?.stkCallback;
 
-  if (!callback?.CheckoutRequestID) {
-    console.error("Malformed M-Pesa callback payload", payload);
-    return NextResponse.json({ ResultCode: 1, ResultDesc: "Bad payload" });
+  const checkoutRequestId = payload.checkout_request_id;
+  if (!checkoutRequestId) {
+    console.error("Malformed Tuma callback payload", payload);
+    return NextResponse.json({ success: true, message: "Accepted" });
   }
 
-  const { CheckoutRequestID, ResultCode, CallbackMetadata } = callback;
-
-  // Extract receipt number from metadata
-  const items: { Name: string; Value: string | number }[] =
-    CallbackMetadata?.Item ?? [];
-  const receipt = items.find((i) => i.Name === "MpesaReceiptNumber")?.Value;
-
-  // Determine if this is a pool contribution or an order payment
-  // Pool contributions use "pool-{slug}" as the AccountReference
-  // We stored the checkout_request_id on both orders and pool_contributions
+  const resultCode = payload.result_code;
+  const receipt = payload.mpesa_receipt_number;
 
   // Try to find a matching order first
   const { data: order } = await supabaseAdmin
     .from("orders")
     .select("id")
-    .eq("mpesa_checkout_request_id", CheckoutRequestID)
+    .eq("mpesa_checkout_request_id", checkoutRequestId)
     .maybeSingle();
 
   if (order) {
-    return handleOrderCallback(CheckoutRequestID, ResultCode, receipt);
+    return handleOrderCallback(checkoutRequestId, resultCode, receipt);
   }
 
   // Try to find a matching pool contribution
   const { data: contribution } = await supabaseAdmin
     .from("pool_contributions")
     .select("id, pool_id")
-    .eq("mpesa_checkout_request_id", CheckoutRequestID)
+    .eq("mpesa_checkout_request_id", checkoutRequestId)
     .maybeSingle();
 
   if (contribution) {
     return handleContributionCallback(
-      CheckoutRequestID,
-      ResultCode,
+      checkoutRequestId,
+      resultCode,
       receipt,
       contribution.pool_id
     );
   }
 
   console.error(
-    "M-Pesa callback for unknown CheckoutRequestID:",
-    CheckoutRequestID
+    "Tuma callback for unknown checkout_request_id:",
+    checkoutRequestId
   );
-  return NextResponse.json({ ResultCode: 0, ResultDesc: "Accepted" });
+  return NextResponse.json({ success: true, message: "Accepted" });
 }
 
 async function handleOrderCallback(
   checkoutRequestId: string,
   resultCode: number,
-  receipt: string | number | undefined
+  receipt: string | undefined
 ) {
   if (resultCode !== 0) {
     await supabaseAdmin
@@ -76,7 +76,7 @@ async function handleOrderCallback(
       .update({ status: "failed" })
       .eq("mpesa_checkout_request_id", checkoutRequestId);
 
-    return NextResponse.json({ ResultCode: 0, ResultDesc: "Accepted" });
+    return NextResponse.json({ success: true, message: "Accepted" });
   }
 
   const { error } = await supabaseAdmin
@@ -88,29 +88,27 @@ async function handleOrderCallback(
     .eq("mpesa_checkout_request_id", checkoutRequestId);
 
   if (error) {
-    console.error("Failed to update order from M-Pesa callback:", error);
+    console.error("Failed to update order from Tuma callback:", error);
   }
 
-  return NextResponse.json({ ResultCode: 0, ResultDesc: "Accepted" });
+  return NextResponse.json({ success: true, message: "Accepted" });
 }
 
 async function handleContributionCallback(
   checkoutRequestId: string,
   resultCode: number,
-  receipt: string | number | undefined,
+  receipt: string | undefined,
   poolId: string
 ) {
   if (resultCode !== 0) {
-    // Delete the pending contribution on failure
     await supabaseAdmin
       .from("pool_contributions")
       .delete()
       .eq("mpesa_checkout_request_id", checkoutRequestId);
 
-    return NextResponse.json({ ResultCode: 0, ResultDesc: "Accepted" });
+    return NextResponse.json({ success: true, message: "Accepted" });
   }
 
-  // Mark contribution as verified
   const { data: contribution } = await supabaseAdmin
     .from("pool_contributions")
     .update({
@@ -122,7 +120,6 @@ async function handleContributionCallback(
     .single();
 
   if (contribution) {
-    // Update pool current_balance
     const { data: pool } = await supabaseAdmin
       .from("group_gifting_pools")
       .select("current_balance, target_amount")
@@ -135,7 +132,6 @@ async function handleContributionCallback(
         current_balance: newBalance,
       };
 
-      // Auto-complete pool if target reached
       if (newBalance >= pool.target_amount) {
         updates.status = "completed";
       }
@@ -147,5 +143,5 @@ async function handleContributionCallback(
     }
   }
 
-  return NextResponse.json({ ResultCode: 0, ResultDesc: "Accepted" });
+  return NextResponse.json({ success: true, message: "Accepted" });
 }
