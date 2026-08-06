@@ -4,6 +4,7 @@ import { formatKsh } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import ProductAIHelper from "@/components/product/ProductAIHelper";
+import WishlistButton from "@/components/product/WishlistButton";
 
 async function getProduct(id: string): Promise<Product | null> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -125,6 +126,9 @@ export default async function ProductPage({
 
           {/* Add to cart */}
           <AddToCartButton product={product} />
+
+          {/* Add to Wishlist */}
+          <WishlistButton productId={product.id} />
 
           {/* AI Helper */}
           <ProductAIHelper productName={product.name} productId={product.id} />

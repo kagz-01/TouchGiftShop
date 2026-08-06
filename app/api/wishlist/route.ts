@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { supabaseAdmin } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 function slugify(text: string): string {
   return text
@@ -12,9 +17,11 @@ function slugify(text: string): string {
 
 const CreateWishlistInput = z.object({
   ownerName: z.string().min(1).max(100),
+  occasion: z.string().optional(),
+  message: z.string().max(200).optional(),
 });
 
-// POST /api/wishlist — create a wishlist
+// POST /api/wishlist -- create a wishlist
 export async function POST(req: Request) {
   const parsed = CreateWishlistInput.safeParse(await req.json());
   if (!parsed.success) {
@@ -24,11 +31,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const { ownerName } = parsed.data;
+  const { ownerName, occasion, message } = parsed.data;
   const baseSlug = slugify(ownerName) || "wishlist";
   let slug = baseSlug;
 
-  const { data: existing } = await supabaseAdmin
+  const { data: existing } = await supabase
     .from("wishlists")
     .select("id")
     .eq("slug", slug)
@@ -38,9 +45,14 @@ export async function POST(req: Request) {
     slug = `${baseSlug}-${Date.now().toString(36)}`;
   }
 
-  const { data: wishlist, error } = await supabaseAdmin
+  const { data: wishlist, error } = await supabase
     .from("wishlists")
-    .insert({ owner_name: ownerName, slug })
+    .insert({
+      owner_name: ownerName,
+      slug,
+      occasion: occasion || null,
+      message: message || null,
+    })
     .select()
     .single();
 
