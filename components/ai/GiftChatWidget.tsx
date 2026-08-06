@@ -18,13 +18,25 @@ type Message = {
   provider?: string;
 };
 
-const SUGGESTIONS = [
-  "Gift for my girlfriend's birthday",
-  "Something for my mom",
-  "Corporate client gift",
-  "Wedding gift under KSh 5,000",
-  "Help me write a note",
+const LANGUAGES = [
+  { code: "auto", label: "Auto-detect", flag: "🌍" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "sw", label: "Kiswahili", flag: "🇰🇪" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "ar", label: "العربية", flag: "🇸🇦" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+  { code: "ja", label: "日本語", flag: "🇯🇵" },
+  { code: "so", label: "Soomaali", flag: "🇸🇴" },
 ];
+
+const SUGGESTIONS: Record<string, string[]> = {
+  en: ["Gift for my girlfriend's birthday", "Something for my mom", "Corporate client gift", "Wedding gift under KSh 5,000", "Help me write a note"],
+  sw: ["Zawadi kwa birthday ya mpenzi wangu", "Kitu kwa mama yangu", "Zawili ya mteja", "Zawadi ya harusi chini ya KSh 5,000", "Nisaidie kuandika ujumbe"],
+  fr: ["Cadeau pour l'anniversaire de ma copine", "Quelque chose pour ma maman", "Cadeau client entreprise", "Cadeau de mariage moins de 5000 KSh", "Aide-moi à écrire une note"],
+};
 
 export default function GiftChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,6 +51,8 @@ export default function GiftChatWidget() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [selectedLang, setSelectedLang] = useState("auto");
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -159,9 +173,33 @@ export default function GiftChatWidget() {
                 <p className="font-semibold text-sm">Zawadi — Gift Concierge</p>
                 <p className="text-white/70 text-xs">Ask me anything about gifting</p>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                <span className="text-xs text-white/70">Online</span>
+              {/* Language selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangMenu(!showLangMenu)}
+                  className="flex items-center gap-1 bg-white/10 hover:bg-white/20 rounded-lg px-2 py-1.5 transition-colors text-xs"
+                >
+                  <span>{LANGUAGES.find((l) => l.code === selectedLang)?.flag || "🌍"}</span>
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {showLangMenu && (
+                  <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-card-hover border border-surface-border py-1 z-50 w-40 max-h-60 overflow-y-auto">
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => { setSelectedLang(lang.code); setShowLangMenu(false); }}
+                        className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-brand/5 transition-colors ${
+                          selectedLang === lang.code ? "bg-brand/10 text-brand font-semibold" : "text-brand-deep"
+                        }`}
+                      >
+                        <span>{lang.flag}</span>
+                        <span>{lang.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -237,7 +275,7 @@ export default function GiftChatWidget() {
             {/* Quick suggestions */}
             {showSuggestions && (
               <div className="px-4 pb-2 flex flex-wrap gap-2">
-                {SUGGESTIONS.map((s) => (
+                {(SUGGESTIONS[selectedLang] || SUGGESTIONS.en).map((s) => (
                   <button
                     key={s}
                     onClick={() => sendMessage(s)}

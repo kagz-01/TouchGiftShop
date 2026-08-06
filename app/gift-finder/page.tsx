@@ -18,6 +18,20 @@ type Message = {
   provider?: string;
 };
 
+const LANGUAGES = [
+  { code: "auto", label: "Auto-detect", flag: "🌍" },
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "sw", label: "Kiswahili", flag: "🇰🇪" },
+  { code: "fr", label: "Français", flag: "🇫🇷" },
+  { code: "de", label: "Deutsch", flag: "🇩🇪" },
+  { code: "es", label: "Español", flag: "🇪🇸" },
+  { code: "ar", label: "العربية", flag: "🇸🇦" },
+  { code: "zh", label: "中文", flag: "🇨🇳" },
+  { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
+  { code: "ja", label: "日本語", flag: "🇯🇵" },
+  { code: "so", label: "Soomaali", flag: "🇸🇴" },
+];
+
 export default function GiftChatPage() {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -29,6 +43,8 @@ export default function GiftChatPage() {
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedLang, setSelectedLang] = useState("auto");
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -131,12 +147,37 @@ export default function GiftChatPage() {
             </div>
             <div>
               <h1 className="font-display font-bold">Gift Finder</h1>
-              <p className="text-xs text-brand-muted">Powered by AI • English, Kiswahili, Sheng</p>
+              <p className="text-xs text-brand-muted">15+ languages supported • Powered by AI</p>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-xs text-brand-muted">Online</span>
+          {/* Language selector */}
+          <div className="relative">
+            <button
+              onClick={() => setShowLangMenu(!showLangMenu)}
+              className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-surface-border rounded-xl px-3 py-2 text-sm transition-colors"
+            >
+              <span>{LANGUAGES.find((l) => l.code === selectedLang)?.flag || "🌍"}</span>
+              <span className="hidden sm:inline text-brand-muted text-xs">{LANGUAGES.find((l) => l.code === selectedLang)?.label}</span>
+              <svg className="w-3 h-3 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {showLangMenu && (
+              <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-card-hover border border-surface-border py-1 z-50 w-44 max-h-60 overflow-y-auto">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => { setSelectedLang(lang.code); setShowLangMenu(false); }}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-xs text-left hover:bg-brand/5 transition-colors ${
+                      selectedLang === lang.code ? "bg-brand/10 text-brand font-semibold" : "text-brand-deep"
+                    }`}
+                  >
+                    <span>{lang.flag}</span>
+                    <span>{lang.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

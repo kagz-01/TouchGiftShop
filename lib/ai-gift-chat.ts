@@ -1,7 +1,10 @@
 /* ══════════════════════════════════════════════════════════
    AI Gift Chat Service — Multi-provider, Multi-language
    Routes to OpenAI / Gemini / Grok based on strength
+   Supports 15+ languages via LibreTranslate
    ══════════════════════════════════════════════════════════ */
+
+import { translateForChat, translateFromChat } from "@/lib/translate";
 
 export type AIProvider = "openai" | "gemini" | "grok";
 
@@ -21,8 +24,9 @@ export type ChatResponse = {
   reply: string;
   provider: AIProvider;
   recommendations?: GiftRecommendation[];
-  language: "en" | "sw" | "sheng";
+  language: string;
   noteSuggestion?: string;
+  translatedFrom?: string;
 };
 
 /* ─── System Prompt — The Gift Concierge ─── */
@@ -147,14 +151,19 @@ function detectLanguage(message: string): "en" | "sw" | "sheng" {
 
 /* ══════════════════════════════════════════════════════════
    MAIN: Send chat message to best AI provider
+   Handles translation for non-native languages
    ══════════════════════════════════════════════════════════ */
 export async function sendGiftChat(
   message: string,
   history: ChatMessage[],
   products: Array<{ id: string; name: string; price: number; categories: string[]; short_description: string }>
 ): Promise<ChatResponse> {
-  const provider = selectProvider(message, history);
-  const language = detectLanguage(message);
+  // Step 1: Translate if needed (French, Arabic, etc. → English)
+  const { translatedMessage, userLanguage, needsTranslation } = await translateForChat(message);
+  const workingMessage = needsTranslation ? translatedMessage : message;
+
+  const provider = selectProvider(workingMessage, history);
+  const language = detectLanguage(workingMessage);
 
   // Build context with products
   const productList = products.slice(0, 30).map(
@@ -171,19 +180,26 @@ Remember: Only recommend products that exist in the catalog above. Use their exa
   const messages: ChatMessage[] = [
     { role: "system", content: systemWithContext },
     ...history.slice(-10), // Last 10 messages for context
-    { role: "user", content: message },
+    { role: "user", content: workingMessage },
   ];
 
   try {
     const reply = await callProvider(provider, messages);
     const { cleanReply, recommendations, noteSuggestion } = parseResponse(reply);
 
+    // Step 3: Translate response back to user's language
+    let finalReply = cleanReply;
+    if (needsTranslation) {
+      finalReply = await translateFromChat(cleanReply, userLanguage);
+    }
+
     return {
-      reply: cleanReply,
+      reply: finalReply,
       provider,
       recommendations,
-      language,
+      language: needsTranslation ? userLanguage : language,
       noteSuggestion,
+      translatedFrom: needsTranslation ? userLanguage : undefined,
     };
   } catch (error) {
     console.error(`AI Gift Chat error (${provider}):`, error);
@@ -192,16 +208,23 @@ Remember: Only recommend products that exist in the catalog above. Use their exa
     try {
       const reply = await callProvider(fallback, messages);
       const { cleanReply, recommendations, noteSuggestion } = parseResponse(reply);
-      return { reply: cleanReply, provider: fallback, recommendations, language, noteSuggestion };
+      let finalReply = cleanReply;
+      if (needsTranslation) {
+        finalReply = await translateFromChat(cleanReply, userLanguage);
+      }
+      return { reply: finalReply, provider: fallback, recommendations, language: needsTranslation ? userLanguage : language, noteSuggestion, translatedFrom: needsTranslation ? userLanguage : undefined };
     } catch {
-      return {
-        reply: language === "sw"
+      const errorMsg = needsTranslation
+        ? await translateFromChat("Sorry, I'm having a technical hiccup. Try again in a moment — I'm here to help you find the perfect gift! 🎁", userLanguage)
+        : language === "sw"
           ? "Pole sana, kuna hitumu la kiufundi. Jaribu tena baadaye. Niko hapa kukusaidia! 🎁"
           : language === "sheng"
           ? "Acha, kuna issue ya technical. Try again later bana. Niko hapa for you! 🎁"
-          : "Sorry, I'm having a technical hiccup. Try again in a moment — I'm here to help you find the perfect gift! 🎁",
+          : "Sorry, I'm having a technical hiccup. Try again in a moment — I'm here to help you find the perfect gift! 🎁";
+      return {
+        reply: errorMsg,
         provider: fallback,
-        language,
+        language: needsTranslation ? userLanguage : language,
       };
     }
   }
