@@ -1,5 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import type { WcProduct, WcCategory } from "@/lib/woocommerce";
+import sharp from "sharp";
 
 /**
  * Upserts one WooCommerce product (and its categories) into Supabase.
@@ -15,6 +16,19 @@ import type { WcProduct, WcCategory } from "@/lib/woocommerce";
  *   assigned manually in Supabase or layered on top of the synced ones.
  */
 export async function syncProductToSupabase(wcProduct: WcProduct) {
+  let imageUrl = wcProduct.images?.[0]?.src ?? null;
+
+  // Convert image to WebP and store in Supabase Storage
+  if (imageUrl) {
+    try {
+      imageUrl = await convertAndStoreImage(wcProduct.id, imageUrl);
+    } catch (err) {
+      console.error(`Image conversion failed for product ${wcProduct.id}:`, err);
+      // Fall back to original URL
+      imageUrl = wcProduct.images?.[0]?.src ?? null;
+    }
+  }
+
   const { data: product, error: productError } = await supabaseAdmin
     .from("products")
     .upsert(
@@ -24,7 +38,7 @@ export async function syncProductToSupabase(wcProduct: WcProduct) {
         slug: wcProduct.slug,
         description: stripHtml(wcProduct.description),
         price: parseFloat(wcProduct.price || "0"),
-        image_url: wcProduct.images?.[0]?.src ?? null,
+        image_url: imageUrl,
         in_stock: wcProduct.stock_status === "instock",
         synced_at: new Date().toISOString(),
       },
@@ -76,4 +90,46 @@ async function upsertCategory(wcCategory: WcCategory) {
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
+}
+
+async function convertAndStoreImage(
+  wcProductId: number,
+  imageUrl: string
+): Promise<string> {
+  const bucket = "products";
+  const path = `${wcProductId}.webp`;
+
+  // Check if already converted
+  const { data: existing } = supabaseAdmin.storage
+    .from(bucket)
+    .getPublicUrl(path);
+  if (existing?.publicUrl) {
+    // Verify it exists
+    const { data: list } = await supabaseAdmin.storage
+      .from(bucket)
+      .list("", { search: `${wcProductId}.webp` });
+    if (list && list.length > 0) return existing.publicUrl;
+  }
+
+  // Download original image
+  const res = await fetch(imageUrl);
+  if (!res.ok) throw new Error(`Failed to download: ${imageUrl}`);
+  const input = Buffer.from(await res.arrayBuffer());
+
+  // Convert to WebP
+  const webpBuffer = await sharp(input).webp({ quality: 80 }).toBuffer();
+
+  // Upload to Supabase Storage
+  await supabaseAdmin.storage.from(bucket).remove([path]);
+  const { error } = await supabaseAdmin.storage
+    .from(bucket)
+    .upload(path, webpBuffer, {
+      contentType: "image/webp",
+      upsert: true,
+    });
+
+  if (error) throw new Error(`Upload failed: ${error.message}`);
+
+  const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
+  return data.publicUrl;
 }
