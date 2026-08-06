@@ -17,7 +17,7 @@ const QUICK_LINKS = [
 const SUPPORT_LINKS = [
   { href: "https://wa.me/254142677898", label: "WhatsApp Us", external: true },
   { href: "/login", label: "Sign In / Create Account" },
-  { href: "mailto:support@touchgift.co.ke", label: "Email Support" },
+  { href: "mailto:info@touchgiftshop.co.ke", label: "Email Support" },
 ];
 
 const POLICY_LINKS = [

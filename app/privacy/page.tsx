@@ -35,8 +35,8 @@ export default function PrivacyPolicyPage() {
                   +254 142 677 898
                 </a>{" "}
                 or email{" "}
-                <a href="mailto:privacy@touchgift.co.ke" className="text-brand hover:underline">
-                  privacy@touchgift.co.ke
+                <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">
+                  info@touchgiftshop.co.ke
                 </a>.
               </p>
             </section>
@@ -174,8 +174,8 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p className="mt-3">
                 To exercise any of these rights, contact us at{" "}
-                <a href="mailto:privacy@touchgift.co.ke" className="text-brand hover:underline">
-                  privacy@touchgift.co.ke
+                <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">
+                  info@touchgiftshop.co.ke
                 </a>.
               </p>
             </section>
@@ -218,7 +218,7 @@ export default function PrivacyPolicyPage() {
               <p>If you have any questions about this privacy policy or our data practices, contact us:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a></li>
-                <li>Email: <a href="mailto:privacy@touchgift.co.ke" className="text-brand hover:underline">privacy@touchgift.co.ke</a></li>
+                <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Website: <a href="https://touchgift.co.ke" className="text-brand hover:underline">touchgift.co.ke</a></li>
               </ul>
             </section>

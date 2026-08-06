@@ -257,7 +257,7 @@ export default function DeliveryPolicyPage() {
               <p>For delivery questions or issues:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a> (fastest)</li>
-                <li>Email: <a href="mailto:delivery@touchgift.co.ke" className="text-brand hover:underline">delivery@touchgift.co.ke</a></li>
+                <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Live chat: Available on our website during business hours</li>
               </ul>
             </section>
