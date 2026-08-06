@@ -1,9 +1,18 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-const PRACTICAL = ["Birthdays", "Anniversaries", "Weddings", "Condolences", "Corporate"];
-const NARRATIVE = ["Apology", "Milestone", "Just Because"];
+const CATEGORIES = [
+  { label: "Birthdays", icon: "🎂", slug: "birthdays" },
+  { label: "Anniversaries", icon: "💍", slug: "anniversaries" },
+  { label: "Weddings", icon: "💒", slug: "weddings" },
+  { label: "Condolences", icon: "🕊️", slug: "condolences" },
+  { label: "Corporate", icon: "🏢", slug: "corporate" },
+  { label: "Apology", icon: "💐", slug: "apology" },
+  { label: "Milestone", icon: "🏆", slug: "milestone" },
+  { label: "Just Because", icon: "💝", slug: "just-because" },
+];
 
 export default function OccasionFilter() {
   const router = useRouter();
@@ -21,24 +30,57 @@ export default function OccasionFilter() {
   }
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-2">
-      {[...PRACTICAL, ...NARRATIVE].map((label) => {
-        const slug = label.toLowerCase().replace(/\s+/g, "-");
-        const isActive = slug === active;
-        return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-lg font-semibold">Shop by Occasion</h2>
+        {active && (
           <button
-            key={label}
-            onClick={() => setCategory(slug)}
-            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-sm border transition-colors ${
-              isActive
-                ? "bg-brand text-white border-brand"
-                : "border-gray-300 text-gray-700 hover:border-gray-400"
-            }`}
+            onClick={() => setCategory("")}
+            className="text-xs text-brand hover:text-brand-light transition-colors"
           >
-            {label}
+            Clear filter
           </button>
-        );
-      })}
+        )}
+      </div>
+
+      <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
+        {CATEGORIES.map((cat) => {
+          const isActive = cat.slug === active;
+          return (
+            <button
+              key={cat.slug}
+              onClick={() => setCategory(cat.slug)}
+              className={cn(
+                "relative flex flex-col items-center gap-2 min-w-[80px] pt-4 pb-3 px-3 rounded-xl transition-all duration-300",
+                isActive
+                  ? "bg-brand text-white shadow-ribbon scale-105"
+                  : "bg-white border border-surface-border hover:border-brand/30 hover:shadow-soft hover:-translate-y-1"
+              )}
+            >
+              {/* String */}
+              <div
+                className={cn(
+                  "absolute top-0 left-1/2 -translate-x-1/2 w-0.5 h-3",
+                  isActive ? "bg-white/50" : "bg-brand/20"
+                )}
+              />
+
+              {/* Icon */}
+              <span className="text-2xl">{cat.icon}</span>
+
+              {/* Label */}
+              <span className="text-xs font-medium whitespace-nowrap">
+                {cat.label}
+              </span>
+
+              {/* Active indicator */}
+              {isActive && (
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 bg-gold rounded-full" />
+              )}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

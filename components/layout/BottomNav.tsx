@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
@@ -43,40 +44,49 @@ function UserIcon({ active }: { active: boolean }) {
   );
 }
 
-const TABS = [
+const TABS: Array<{ href: string; label: string; Icon: ({ active }: { active: boolean }) => JSX.Element; highlight?: boolean }> = [
   { href: "/", label: "Home", Icon: HomeIcon },
-  { href: "/gift-lab", label: "Gift Lab", Icon: FlaskIcon },
+  { href: "/gift-lab", label: "Gift Lab", Icon: FlaskIcon, highlight: true },
   { href: "/orders", label: "Orders", Icon: ClipboardIcon },
   { href: "/reminders", label: "Reminders", Icon: BellIcon },
   { href: "/account", label: "Account", Icon: UserIcon },
-] as const;
+];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex md:hidden border-t border-gray-200 bg-white"
+      className="fixed bottom-4 left-4 right-4 z-50 flex md:hidden"
       aria-label="Primary"
     >
-      {TABS.map((tab) => {
-        const active =
-          tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
-        return (
-          <Link
-            key={tab.href}
-            href={tab.href}
-            className={`flex-1 flex flex-col items-center py-2 gap-0.5 ${
-              active ? "text-brand" : "text-gray-400"
-            }`}
-          >
-            <tab.Icon active={active} />
-            <span className={`text-[10px] ${active ? "font-semibold" : ""}`}>
-              {tab.label}
-            </span>
-          </Link>
-        );
-      })}
+      <div className="flex-1 flex items-center justify-around bg-white/95 backdrop-blur-xl rounded-full border border-surface-border shadow-card px-2 py-1.5">
+        {TABS.map((tab) => {
+          const active =
+            tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+          return (
+            <Link
+              key={tab.href}
+              href={tab.href}
+              className={cn(
+                "flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-full transition-all duration-300",
+                active
+                  ? "bg-gradient-brand text-white shadow-ribbon scale-105"
+                  : "text-brand-muted hover:text-brand hover:bg-brand/5",
+                tab.highlight && !active && "relative"
+              )}
+            >
+              {tab.highlight && !active && (
+                <span className="absolute -top-1 -right-0.5 w-1.5 h-1.5 bg-gold rounded-full animate-pulse-soft" />
+              )}
+              <tab.Icon active={active} />
+              <span className={cn("text-[10px]", active ? "font-semibold" : "")}>
+                {tab.label}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
