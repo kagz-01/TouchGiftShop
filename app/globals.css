@@ -300,3 +300,33 @@ html {
   .backface-hidden { backface-visibility: hidden; }
   .preserve-3d { transform-style: preserve-3d; }
 }
+
+/* ========================
+   LEAFLET PIN DROP MAP
+   ======================== */
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  font-family: inherit;
+}
+
+.custom-pin {
+  background: transparent !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+  color: var(--color-brand) !important;
+  border-color: #e5e7eb !important;
+}
+
+.leaflet-control-attribution {
+  font-size: 9px !important;
+  background: rgba(255,255,255,0.7) !important;
+}

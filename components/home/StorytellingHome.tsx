@@ -69,11 +69,94 @@ function Reveal({
   );
 }
 
+function useTypewriter(messages: string[], typingSpeed = 220, pauseMs = 1400) {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [wordCount, setWordCount] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!messages.length) return;
+
+    const currentWords = messages[messageIndex % messages.length].split(" ");
+    const isDoneTyping = wordCount === currentWords.length;
+    const isDoneDeleting = wordCount === 0;
+
+    const timeout = window.setTimeout(() => {
+      if (!deleting && isDoneTyping) {
+        setDeleting(true);
+        return;
+      }
+
+      if (deleting && isDoneDeleting) {
+        setDeleting(false);
+        setMessageIndex((value) => (value + 1) % messages.length);
+        return;
+      }
+
+      setWordCount((value) => value + (deleting ? -1 : 1));
+    }, deleting ? typingSpeed * 0.6 : isDoneTyping ? pauseMs : typingSpeed);
+
+    return () => window.clearTimeout(timeout);
+  }, [deleting, messageIndex, messages, pauseMs, typingSpeed, wordCount]);
+
+  return messages.length
+    ? messages[messageIndex % messages.length]
+        .split(" ")
+        .slice(0, wordCount)
+        .join(" ")
+    : "";
+}
+
+function highlightDeliveryCopy(text: string) {
+  const highlights = ["3 PM", "same-day delivery", "tomorrow", "next day", "today", "today’s"];
+  const parts: React.ReactNode[] = [];
+  let cursor = 0;
+
+  while (cursor < text.length) {
+    let matchStart = -1;
+    let matchText = "";
+
+    for (const phrase of highlights) {
+      const index = text.toLowerCase().indexOf(phrase.toLowerCase(), cursor);
+      if (index !== -1 && (matchStart === -1 || index < matchStart)) {
+        matchStart = index;
+        matchText = text.slice(index, index + phrase.length);
+      }
+    }
+
+    if (matchStart === -1) {
+      parts.push(text.slice(cursor));
+      break;
+    }
+
+    if (matchStart > cursor) {
+      parts.push(text.slice(cursor, matchStart));
+    }
+
+    parts.push(
+      <span key={`${matchStart}-${matchText}`} className="text-gold font-semibold">
+        {matchText}
+      </span>
+    );
+
+    cursor = matchStart + matchText.length;
+  }
+
+  return parts;
+}
+
 /* ══════════════════════════════════════════════════════════
    SECTION 1: THE HOOK — 3/4 cinematic hero with logo reveal
    ══════════════════════════════════════════════════════════ */
 function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
+  const deliveryMessage = useTypewriter([
+    "Order before 3 PM for same-day delivery in Nairobi.",
+    "After 3 PM, your order moves to next day delivery.",
+    "Need it today? Beat the cutoff and we’ll handle the rest.",
+    "Missed the cutoff? No stress. Tomorrow’s delivery is ready.",
+  ]);
+
   useEffect(() => { setLoaded(true); }, []);
 
   return (
@@ -95,28 +178,18 @@ function HeroCinematic() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-        {/* Logo animation */}
-        <div className={`mb-8 transition-all duration-1000 ${loaded ? "opacity-100 scale-100 rotate-0" : "opacity-0 scale-50 -rotate-180"}`}>
-          <img
-            src="/logo.webp"
-            alt="TouchGift"
-            className="w-28 h-28 md:w-36 md:h-36 mx-auto rounded-full shadow-glow animate-float"
-          />
-        </div>
-
-        {/* Tagline */}
-        <div className={`mb-6 transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <span className="inline-block px-6 py-2 bg-white/10 backdrop-blur-sm border border-gold/30 rounded-full">
-            <span className="font-display text-gold text-lg md:text-xl font-semibold italic">
-              — Just say it —
-            </span>
+        {/* Typewriter delivery note */}
+        <div className={`inline-flex flex-col items-center bg-white/10 backdrop-blur-md rounded-full px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <span className="text-[10px] uppercase tracking-[0.35em] text-gold/80 mb-1">
+            Delivery window
           </span>
-        </div>
-
-        {/* Badge */}
-        <div className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-5 py-2 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-          <span className="text-sm text-white/80">Same-day delivery in Nairobi</span>
+          <div className="flex items-center justify-center gap-2 text-sm text-white/85 min-h-[1.5rem] text-center leading-snug">
+            <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
+            <span className="whitespace-normal">
+              {highlightDeliveryCopy(deliveryMessage)}
+              <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
+            </span>
+          </div>
         </div>
 
         {/* Main headline */}

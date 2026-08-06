@@ -34,6 +34,7 @@ export default function CheckoutForm({
   });
   const [deliveryZone, setDeliveryZone] = useState<DeliveryZone | null>(null);
   const [landmark, setLandmark] = useState("");
+  const [usePinDrop, setUsePinDrop] = useState(false);
 
   const lookupDelivery = useCallback(async (value: string) => {
     setLandmark(value);
@@ -74,11 +75,12 @@ export default function CheckoutForm({
         recipientPhone: form.get("recipientPhone"),
         isAnonymous: safeguards.anonymous,
         dontCallRecipient: safeguards.dontCall,
-        deliveryLandmark: landmark,
+        deliveryLandmark: usePinDrop ? "" : landmark,
         giftNote: form.get("giftNote") || giftNote,
         engraving: engraving || undefined,
         quantity,
-        shippingFee: deliveryZone?.fee ?? 0,
+        shippingFee: usePinDrop ? 0 : (deliveryZone?.fee ?? 0),
+        recipientPinRequested: usePinDrop,
       }),
     });
 
@@ -116,7 +118,18 @@ export default function CheckoutForm({
       return;
     }
 
-    // 3. Redirect to PesaPal checkout
+    // 3. Send pin drop link if requested (fire-and-forget)
+    if (usePinDrop) {
+      fetch("/api/pin-drop/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId }),
+      }).catch(() => {
+        // Pin drop link send failed — admin can resend manually
+      });
+    }
+
+    // 4. Redirect to PesaPal checkout
     window.location.href = paymentData.redirectUrl;
   }
 
@@ -203,7 +216,9 @@ export default function CheckoutForm({
           className="w-full border border-gray-300 rounded-md px-3 py-2 mt-1"
         />
       </div>
-      <MapPinPicker />
+      <MapPinPicker
+        onPinDropToggle={setUsePinDrop}
+      />
       <div>
         <label className="text-sm font-medium">Delivery area / landmark</label>
         <input

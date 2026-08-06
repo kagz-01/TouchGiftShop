@@ -24,16 +24,16 @@ export default function Header() {
           : "bg-white border-b border-transparent"
       )}
     >
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
             src="/logo.webp"
             alt="TouchGift"
-            width={48}
-            height={48}
+            width={40}
+            height={40}
             priority
-            className="rounded-full transition-all duration-500 hover:scale-110 hover:rotate-[360deg] hover:drop-shadow-[0_0_12px_rgba(155,27,90,0.4)]"
+            className="h-10 w-10 rounded-full object-cover transition-all duration-500 hover:scale-110 hover:rotate-[360deg] hover:drop-shadow-[0_0_12px_rgba(155,27,90,0.4)]"
           />
         </Link>
 

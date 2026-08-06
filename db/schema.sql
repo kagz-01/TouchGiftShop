@@ -26,6 +26,8 @@ CREATE TABLE orders (
     delivery_lng DECIMAL(11,8),
     delivery_landmark TEXT,
     recipient_pin_requested BOOLEAN DEFAULT FALSE,
+    pin_drop_token VARCHAR(64) UNIQUE,
+    delivery_time_window VARCHAR(50),
     pre_dispatch_photo_url TEXT,
     gift_note TEXT,
     engraving TEXT,
