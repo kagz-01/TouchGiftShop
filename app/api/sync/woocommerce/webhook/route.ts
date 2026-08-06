@@ -33,11 +33,18 @@ export async function POST(req: Request) {
 
   const payload = JSON.parse(rawBody);
 
-  // WooCommerce's "product updated" webhook payload is the product itself,
-  // but re-fetching by ID guarantees we get the full, current object
-  // (including categories) rather than trusting a possibly-partial payload.
-  const wcProduct = await fetchWcProduct(payload.id);
-  await syncProductToSupabase(wcProduct);
+  if (!payload.id) {
+    return NextResponse.json({ ok: true, skipped: "no product id" });
+  }
+
+  try {
+    // Re-fetch by ID to get the full product with categories
+    const wcProduct = await fetchWcProduct(payload.id);
+    await syncProductToSupabase(wcProduct);
+  } catch (err) {
+    console.error("Webhook sync error:", err);
+    // Return 200 so WooCommerce doesn't retry
+  }
 
   return NextResponse.json({ ok: true });
 }
