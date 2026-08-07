@@ -182,8 +182,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Wishlist quick-save | | | | | | | | | | Done |
 | Pin Drop — recipient delivery location | | | | | | | | | | Done |
 | Homepage restructure — discovery flow | | | | | | | | | | Done |
+| Hamper builder redesign + animations | | | | | | | | | | Done |
 
-**Total features built: 66**
+**Total features built: 67**
 
 ---
 
@@ -217,6 +218,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `06456bd` | Pin-drop status, real-time notifications, migration, map preview |
 | `d166e24` | Pin-drop landing page with phone lookup |
 | `ba07f06` | Homepage restructure — discovery flow with curated rows |
+| `86dd1d8` | HamperBuilder redesign — split layout, compact grid, category filters |
+| `83df7ef` | Hamper animations — fly-to-basket, pulse, confetti, price count-up, shake |
 
 ---
 
@@ -486,6 +489,16 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
   - **Real-time:** `PinDropNotification` subscribes to Supabase realtime on the orders table, shows toast when recipient drops pin
   - **Database:** `pin_drop_token`, `delivery_lat`, `delivery_lng`, `delivery_landmark`, `delivery_time_window` columns on orders table
 
+### 66. Homepage Restructure — Discovery Flow
+- **What:** Replaced the 700+ product dump with curated horizontal rows (Trending, Under 2K, For Her, For Him). Added horizontal scrollable OccasionPills at the top. Moved HowItWorks up so users see the value prop early. Created `/shop` page for the full catalog.
+- **Advantage:** Homepage is now a discovery/inspiration page instead of an overwhelming catalog. Users see value proposition before products. Full catalog is one tap away via "Browse All Gifts" CTA.
+- **Tech:** `OccasionPills.tsx` (scrollable pills), `FeaturedRow.tsx` (reusable horizontal scroll), `app/shop/page.tsx` (full catalog)
+
+### 67. Hamper Builder Redesign + Animations
+- **What:** Complete UX overhaul of the Build a Hamper feature. Split layout with sticky hamper summary on left and product picker on right. Compact 3-4 column grid with search and category filters. 8 micro-animations: fly-to-basket (mini product image flies to hamper), basket pulse (scale bounce on add), color transition (border gray→brand→gold as it fills), progress bar (animated fill), confetti burst (20-piece confetti when full), glow button (pulsing shadow when full), price count-up (digit-by-digit animation), basket bob (idle float when empty), card press (scale 0.95), add button spin (90° rotate), remove shake (horizontal shake before fade), badge pop (spring scale-in).
+- **Advantage:** Hamper building feels alive and rewarding. Each add is a moment of delight. Confetti on completion creates a "finished!" celebration. The sticky summary means users always see their hamper without scrolling.
+- **Tech:** `HamperBuilder.tsx` (full rewrite with animations), CSS keyframes in `globals.css`, `ConfettiPiece` component, `FlyingItem` portal-based animation
+
 ---
 
 ## Database Schema (Running)
@@ -540,4 +553,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 12 — Homepage restructure + Pin Drop (66 features, 25 commits)*
+*Last updated: Stage 13 — Hamper builder redesign + animations (67 features, 27 commits)*
