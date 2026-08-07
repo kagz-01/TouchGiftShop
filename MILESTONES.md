@@ -125,40 +125,47 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ## What's Built vs. What's Planned
 
-| Feature | Stage 1 | Stage 2 | Stage 3 |
-|---------|---------|---------|---------|
-| Product catalog (WooCommerce sync) | Done | | |
-| Product detail page | Done | | |
-| Checkout + M-Pesa | Done | | |
-| M-Pesa callback | Done | | |
-| Pool a Gift | Done | | |
-| Surprise Safeguard | Done | | |
-| Auth (phone OTP) | Done | | |
-| Orders tracking | Done | | |
-| Delivery fee calculator | Done | | |
-| Same-day countdown | Done | | |
-| Occasion filtering | Done | | |
-| Guarantees + footer | Done | | |
-| WooCommerce integration | Done | | |
-| PWA | Done | | |
-| Build a Hamper | | Done | |
-| Reminders | | Done | |
-| Wishlists | | Done | |
-| Gift cards | | Done | |
-| Referral program | | Done | |
-| Recipient pin drop (Google Maps) | | | Planned |
-| Real-time courier tracking | | | Planned |
-| Corporate ordering | | | Done |
-| Loyalty tier | | | Done |
-| Design pass (brand, icons, polish) | | | Done |
-| Error handling + 404 | | | Done |
-| SEO + social metadata | | | Done |
-| PWA icons + favicon | | | Done |
-| Customer reviews & ratings | | | Done |
-| Recipient pin drop (Google Maps) | | | Planned |
-| Real-time courier tracking | | | Planned |
-| Play Store packaging | | | Planned |
-| WhatsApp order confirmations | | | Planned |
+| Feature | Stage 1 | Stage 2 | Stage 3 | Stage 5 |
+|---------|---------|---------|---------|---------|
+| Product catalog (WooCommerce sync) | Done | | | |
+| Product detail page | Done | | | |
+| Checkout + M-Pesa | Done | | | |
+| M-Pesa callback | Done | | | |
+| Pool a Gift | Done | | | |
+| Surprise Safeguard | Done | | | |
+| Auth (phone OTP) | Done | | | |
+| Orders tracking | Done | | | |
+| Delivery fee calculator | Done | | | |
+| Same-day countdown | Done | | | |
+| Occasion filtering | Done | | | |
+| Guarantees + footer | Done | | | |
+| WooCommerce integration | Done | | | |
+| PWA | Done | | | |
+| Build a Hamper | | Done | | |
+| Reminders | | Done | | |
+| Wishlists | | Done | | |
+| Gift cards | | Done | | |
+| Referral program | | Done | | |
+| Corporate ordering | | | Done | |
+| Loyalty tier | | | Done | |
+| Design pass (brand, icons, polish) | | | Done | |
+| Error handling + 404 | | | Done | |
+| SEO + social metadata | | | Done | |
+| PWA icons + favicon | | | Done | |
+| Customer reviews & ratings | | | Done | |
+| Category mapping system (3-tier) | | | | Done |
+| Budget filtering | | | | Done |
+| Smart sorting by category | | | | Done |
+| Cross-category suggestions | | | | Done |
+| Composite categories | | | | Done |
+| Missing categories (9 added) | | | | Done |
+| Category validation script | | | | Done |
+| Categories API endpoint | | | | Done |
+| API error handling | | | | Done |
+| Recipient pin drop (Google Maps) | | | Planned | |
+| Real-time courier tracking | | | Planned | |
+| Play Store packaging | | | Planned | |
+| WhatsApp order confirmations | | | Planned | |
 
 ---
 
@@ -173,6 +180,13 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `979e55f` | Stage 2 — Hamper builder, Reminders, Wishlists, Gift Cards, Referrals |
 | `23d25ec` | Stage 3 + Design — Corporate, Loyalty, Brand, Icons, Skeletons |
 | `29b0059` | Launch polish — 404, error boundary, loading, OG metadata, PWA icons |
+| `0459b38` | Customer reviews & ratings system |
+| `8dfd2d6` | Fix broken category mappings + add validation script |
+| `c5aa6eb` | Add 9 missing categories (beverages, plants, food-treats, etc.) |
+| `bcaa773` | Add budget filtering support (price tiers + API) |
+| `56f59c9` | Update all UI entry points with new categories |
+| `5efec37` | Hybrid intelligence — cross-category suggestions + smart sorting |
+| `34f8815` | Categories API + improved error handling |
 
 ---
 
@@ -227,6 +241,55 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
+## Stage 5 — Smart Filtering & Category Intelligence
+
+### 30. Category Mapping System (3-tier architecture)
+- **What:** A three-tier category architecture — UI categories (user-facing slugs), a mapping layer (`CATEGORY_MAP`), and database categories (WooCommerce slugs). A single UI concept like "For Her" or "Anniversaries" maps to multiple curated DB categories.
+- **Advantage:** **No competitor has this.** Users browse simple UI categories while the system automatically pulls products from multiple related WooCommerce categories. "Anniversaries" shows flowers + jewelry + occasion items together without manual tagging.
+- **Tech:** `lib/category-map.ts` — `CATEGORY_MAP` (46 DB slugs mapped to 30+ UI slugs), `getDbSlugs()` resolver
+
+### 31. Budget Filtering
+- **What:** Price-range filtering via `?budget=` URL parameter. Tiers: Below KSh 5,000 / Below KSh 10,000 / Below KSh 20,000 / Below KSh 50,000 / Big Gestures (50K+). Works alongside category filtering.
+- **Advantage:** MegaMenu already had budget links but they were broken. Now functional. Users can narrow by occasion AND budget simultaneously (e.g., "Birthday gifts under 5K").
+- **Tech:** `lib/budget-tiers.ts`, `GET /api/products?category=birthdays&budget=under-5k`, Supabase `gte`/`lte` price queries
+
+### 32. Smart Sorting by Category Context
+- **What:** Automatic sort order based on which category the user is browsing. Birthdays and Just Because sort price-ascending (budget-friendly first). Corporate, Hampers, Weddings sort price-descending (premium first).
+- **Advantage:** Matches buyer intent — casual "just because" browsers want affordable options; corporate buyers want premium. Reduces cognitive load.
+- **Tech:** `lib/smart-sort.ts`, `CATEGORY_SORT` rules, integrated into `/api/products`
+
+### 33. Cross-Category Suggestions
+- **What:** "Complete the gift" suggestion bar appears below category headings. Each category has curated complementary suggestions (e.g., condolences → flowers + cards, birthdays → chocolates + beverages, her → spa + jewellery).
+- **Advantage:** Increases average order value through intelligent cross-sell. Suggestions feel helpful, not pushy — they solve the "what else should I add?" problem.
+- **Tech:** `lib/category-suggestions.ts` (12 category rules), `CategorySuggestions` client component, integrated into `ProductGrid`
+
+### 34. Composite Categories (Curated Collections)
+- **What:** Two hand-curated composite categories that merge products from multiple DB categories: "Date Night" (flowers + chocolates + wine) and "Self Care" (spa + candles + perfumes).
+- **Advantage:** Tells a story instead of listing products. "Date Night" is a concept, not a category — it's the kind of browsing that inspires purchases.
+- **Tech:** Added to `CATEGORY_MAP` as composite entries
+
+### 35. Missing Categories Added
+- **What:** 9 new UI categories added: Beverages (alcoholic + non-alcoholic sub-types), Food & Treats, Plants, Books & Media, Experience Gifts, Subscriptions, Pet Gifts, Date Night, Self Care.
+- **Advantage:** Covers gift types that were previously invisible. Beverages alone is a major gifting category (wine, whiskey, juice hampers). Plants are distinct from cut flowers.
+- **Tech:** `CATEGORY_MAP` entries, updated all 4 UI entry points (CategoryTabs, OccasionFilter, MegaMenu, StorytellingHome)
+
+### 36. Category Health Validation Script
+- **What:** `scripts/validate-categories.ts` — queries the live Supabase DB for each CATEGORY_MAP entry and reports: empty categories, unreferenced DB slugs, unmapped UI slugs, product counts per category.
+- **Advantage:** Prevents silent failures. Without this, a misspelled WooCommerce slug returns zero products with no error. Catches issues before users do.
+- **Tech:** `scripts/validate-categories.ts` (runs via `npx tsx scripts/validate-categories.ts`)
+
+### 37. Categories API Endpoint
+- **What:** `GET /api/categories` — returns all UI categories with product counts and budget tiers. Enables dynamic UI generation.
+- **Advantage:** UI can render category badges with product counts ("Flowers — 24 items"). Budget tiers available for dynamic filter generation.
+- **Tech:** `app/api/categories/route.ts`, queries `categories` + `product_categories` tables
+
+### 38. Improved API Error Handling
+- **What:** `/api/products` now returns `emptyReason` message when a category returns zero products, explaining possible causes (no products assigned, slug mismatch).
+- **Advantage:** Debugging category issues no longer requires database access. The API response tells you exactly what's wrong.
+- **Tech:** Updated `app/api/products/route.ts` response shape
+
+---
+
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -265,4 +328,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Launch polish complete*
+*Last updated: Stage 5 — Smart Filtering & Category Intelligence complete*
