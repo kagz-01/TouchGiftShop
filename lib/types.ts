@@ -70,3 +70,53 @@ export interface WishlistItem {
   note: string | null;
   isFulfilled: boolean;
 }
+
+// ---------------------------------------------------------------------
+// Reviews
+// ---------------------------------------------------------------------
+
+export type ReviewStatus = "pending" | "approved" | "flagged" | "rejected";
+
+export interface Review {
+  id: string;
+  userId: string | null;
+  productId: string | null;
+  orderId: string | null;
+  rating: number;
+  title: string | null;
+  body: string | null;
+  reviewerName: string;
+  isVerifiedPurchase: boolean;
+  status: ReviewStatus;
+  sellerReply: string | null;
+  sellerRepliedAt: string | null;
+  helpfulCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReviewMedia {
+  id: string;
+  reviewId: string;
+  url: string;
+  mediaType: "image" | "video";
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface ReviewVote {
+  id: string;
+  reviewId: string;
+  voterIp: string;
+  createdAt: string;
+}
+
+export interface ReviewWithMedia extends Review {
+  media: ReviewMedia[];
+}
+
+export interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  distribution: { rating: number; count: number; percentage: number }[];
+}

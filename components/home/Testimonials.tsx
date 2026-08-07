@@ -1,83 +1,9 @@
 "use client";
 
 import { useRef, useState, useEffect, useCallback } from "react";
+import type { ReviewWithMedia } from "@/lib/types";
 
-const REVIEWS = [
-  {
-    name: "Grace M.",
-    initial: "G",
-    time: "2 weeks ago",
-    rating: 5,
-    text: "Ordered a birthday hamper for my sister and she loved it! The packaging was beautiful and the delivery was on time. TouchGift is my go-to gifting platform now.",
-    photos: ["/reviews/review-1.jpg"],
-    color: "bg-brand",
-  },
-  {
-    name: "David K.",
-    initial: "D",
-    time: "1 month ago",
-    rating: 5,
-    text: "Used Pool a Gift for my colleague's send-off and it was seamless. Everyone contributed via M-Pesa and the gift arrived perfectly. The group loved the experience!",
-    photos: [],
-    color: "bg-gold",
-  },
-  {
-    name: "Amina H.",
-    initial: "A",
-    time: "3 weeks ago",
-    rating: 5,
-    text: "The AI Gift Finder recommended the perfect anniversary gift for my husband. I was stuck for ideas and Zawadi nailed it. The handwritten note was such a beautiful touch!",
-    photos: ["/reviews/review-2.jpg", "/reviews/review-3.jpg"],
-    color: "bg-brand-dark",
-  },
-  {
-    name: "Brian O.",
-    initial: "B",
-    time: "2 months ago",
-    rating: 5,
-    text: "Ordered flowers for my mum on Mother's Day. The pin drop feature was genius — I didn't know her exact address after she moved. She received them right on time!",
-    photos: [],
-    color: "bg-brand-forest",
-  },
-  {
-    name: "Sarah N.",
-    initial: "S",
-    time: "1 month ago",
-    rating: 5,
-    text: "Corporate order for 15 employees and TouchGift handled it perfectly. Each person got a personalized hamper with their name on it. The bulk discount was a nice bonus.",
-    photos: ["/reviews/review-4.jpg"],
-    color: "bg-brand-coral",
-  },
-  {
-    name: "James W.",
-    initial: "J",
-    time: "3 months ago",
-    rating: 4,
-    text: "Great service and beautiful gifts. Ordered a personalized mug and it arrived exactly as shown in the photos. Delivery was a bit delayed but the quality made up for it.",
-    photos: [],
-    color: "bg-gold-dark",
-  },
-  {
-    name: "Faith W.",
-    initial: "F",
-    time: "2 weeks ago",
-    rating: 5,
-    text: "The Surprise Safeguard is exactly what I needed. Sent a gift to my boyfriend without him knowing and he was completely surprised! The anonymous mode kept it secret.",
-    photos: ["/reviews/review-5.jpg"],
-    color: "bg-brand",
-  },
-  {
-    name: "Kevin M.",
-    initial: "K",
-    time: "1 month ago",
-    rating: 5,
-    text: "Used the wishlist feature for my birthday and shared the link with friends. They each picked something from my list — no more awkward duplicate gifts! Brilliant idea.",
-    photos: [],
-    color: "bg-brand-dark",
-  },
-];
-
-const GOOGLE_REVIEW_URL = "https://g.page/r/CUSTOMER_REVIEW_URL/review";
+const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=TouchGiftShop+Kenya+reviews";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -96,12 +22,45 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+const AVATAR_COLORS = [
+  "bg-brand", "bg-gold", "bg-brand-dark", "bg-brand-forest",
+  "bg-brand-coral", "bg-gold-dark",
+];
+
+function getAvatarColor(name: string) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
+
+function timeAgo(dateStr: string) {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  if (seconds < 60) return "just now";
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  if (seconds < 2592000) return `${Math.floor(seconds / 86400)}d ago`;
+  if (seconds < 31536000) return `${Math.floor(seconds / 2592000)}mo ago`;
+  return `${Math.floor(seconds / 31536000)}y ago`;
+}
+
 export default function Testimonials() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [reviews, setReviews] = useState<ReviewWithMedia[]>([]);
   const scrollAmount = 380;
+
+  useEffect(() => {
+    fetch("/api/reviews?limit=8&sort=helpful")
+      .then((r) => r.json())
+      .then((data) => setReviews(data.reviews || []))
+      .catch(() => {});
+  }, []);
 
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
@@ -118,32 +77,24 @@ export default function Testimonials() {
     return () => el.removeEventListener("scroll", checkScroll);
   }, [checkScroll]);
 
-  // Auto-scroll
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-
     let animFrame: number;
     let lastTime = 0;
-    const speed = 0.5; // pixels per ms
-
+    const speed = 0.15;
     const animate = (time: number) => {
       if (!lastTime) lastTime = time;
       const delta = time - lastTime;
       lastTime = time;
-
       if (!isPaused) {
         el.scrollLeft += speed * delta;
-
-        // Reset to start when reaching end
         if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
           el.scrollLeft = 0;
         }
       }
-
       animFrame = requestAnimationFrame(animate);
     };
-
     animFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animFrame);
   }, [isPaused]);
@@ -157,13 +108,14 @@ export default function Testimonials() {
     });
   };
 
+  if (reviews.length === 0) return null;
+
   return (
     <section className="py-12 md:py-16 bg-white">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
-            {/* Google business avatar */}
             <div className="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center">
               <svg className="w-6 h-6" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -172,14 +124,13 @@ export default function Testimonials() {
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
               </svg>
             </div>
-
             <div>
               <h3 className="font-display font-bold text-lg text-brand-deep">TouchGift Shop</h3>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm">4.9</span>
                 <StarRating rating={5} />
                 <span className="text-xs text-brand-muted">·</span>
-                <span className="text-xs text-brand-muted">150+ reviews on</span>
+                <span className="text-xs text-brand-muted">{reviews.length}+ reviews on</span>
                 <svg className="w-12 h-4" viewBox="0 0 72 24">
                   <text x="0" y="18" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#4285F4">G</text>
                   <text x="14" y="18" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#EA4335">o</text>
@@ -210,7 +161,6 @@ export default function Testimonials() {
 
         {/* Carousel */}
         <div className="relative group">
-          {/* Left arrow */}
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
@@ -222,7 +172,6 @@ export default function Testimonials() {
             </button>
           )}
 
-          {/* Right arrow */}
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
@@ -234,7 +183,6 @@ export default function Testimonials() {
             </button>
           )}
 
-          {/* Scrollable container */}
           <div
             ref={scrollRef}
             onMouseEnter={() => setIsPaused(true)}
@@ -242,23 +190,21 @@ export default function Testimonials() {
             className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {[...REVIEWS, ...REVIEWS].map((review, i) => (
+            {[...reviews, ...reviews].map((review, i) => (
               <div
-                key={`${review.name}-${i}`}
+                key={`${review.id}-${i}`}
                 className="flex-shrink-0 w-[340px] bg-surface-secondary rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300"
               >
-                {/* Reviewer info */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full ${review.color} flex items-center justify-center text-white text-sm font-bold`}>
-                      {review.initial}
+                    <div className={`w-10 h-10 rounded-full ${getAvatarColor(review.reviewerName)} flex items-center justify-center text-white text-sm font-bold`}>
+                      {review.reviewerName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-brand-deep">{review.name}</p>
-                      <p className="text-[11px] text-brand-muted">{review.time}</p>
+                      <p className="text-sm font-semibold text-brand-deep">{review.reviewerName}</p>
+                      <p className="text-[11px] text-brand-muted">{timeAgo(review.createdAt)}</p>
                     </div>
                   </div>
-                  {/* Google icon */}
                   <svg className="w-4 h-4 opacity-40" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -267,31 +213,34 @@ export default function Testimonials() {
                   </svg>
                 </div>
 
-                {/* Rating + verified */}
                 <div className="flex items-center gap-1.5 mb-2">
                   <StarRating rating={review.rating} />
-                  <svg className="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+                  {review.isVerifiedPurchase && (
+                    <svg className="w-3.5 h-3.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  )}
                 </div>
 
-                {/* Review text */}
+                {review.title && (
+                  <p className="text-sm font-semibold text-brand-deep mb-1">{review.title}</p>
+                )}
+
                 <p className="text-sm text-brand-muted leading-relaxed mb-3">
-                  {review.text}
+                  {review.body || ""}
                 </p>
 
-                {/* Photos */}
-                {review.photos.length > 0 && (
+                {review.media && review.media.length > 0 && (
                   <div className="flex gap-2">
-                    {review.photos.map((photo, j) => (
-                      <div
-                        key={j}
-                        className="w-16 h-16 rounded-xl bg-gray-200 overflow-hidden"
-                      >
-                        {/* Placeholder gradient instead of real images */}
-                        <div className="w-full h-full bg-gradient-to-br from-brand/20 to-gold/20 flex items-center justify-center text-xs">
-                          📸
-                        </div>
+                    {review.media.slice(0, 3).map((m, j) => (
+                      <div key={j} className="w-16 h-16 rounded-xl bg-gray-200 overflow-hidden">
+                        {m.mediaType === "image" ? (
+                          <img src={m.url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full bg-brand-deep/10 flex items-center justify-center text-xs">
+                            ▶
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -301,7 +250,6 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Trust note */}
         <p className="text-center text-xs text-brand-muted mt-6">
           All reviews are from verified Google reviews.{" "}
           <a

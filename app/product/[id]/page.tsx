@@ -5,6 +5,7 @@ import type { Product } from "@/lib/types";
 import AddToCartButton from "@/components/product/AddToCartButton";
 import ProductAIHelper from "@/components/product/ProductAIHelper";
 import WishlistButton from "@/components/product/WishlistButton";
+import ProductReviews from "@/components/reviews/ProductReviews";
 
 async function getProduct(id: string): Promise<Product | null> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -150,6 +151,9 @@ export default async function ProductPage({
           </div>
         </div>
       </div>
+
+      {/* Reviews section */}
+      <ProductReviews productId={product.id} />
     </div>
   );
 }

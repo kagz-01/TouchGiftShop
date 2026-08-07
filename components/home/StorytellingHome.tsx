@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
 function useInView(threshold = 0.2) {
@@ -448,6 +449,28 @@ function HowItWorks() {
    SECTION 5: SOCIAL PROOF — Numbers + testimonials
    ══════════════════════════════════════════════════════════ */
 function SocialProof() {
+  const [reviews, setReviews] = useState<ReviewWithMedia[]>([]);
+
+  useEffect(() => {
+    fetch("/api/reviews?limit=3&sort=helpful")
+      .then((r) => r.json())
+      .then((data) => setReviews(data.reviews || []))
+      .catch(() => {});
+  }, []);
+
+  // Fallback data if no reviews yet
+  const displayReviews = reviews.length > 0
+    ? reviews.map((r) => ({
+        name: r.reviewerName,
+        text: r.body || r.title || "",
+        occasion: "Gift",
+        stars: r.rating,
+      }))
+    : [
+        { name: "Wanjiku M.", text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!", occasion: "Birthday", stars: 5 },
+        { name: "Brian K.", text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.", occasion: "Corporate", stars: 5 },
+        { name: "Amina H.", text: "Anonymous mode is everything. Sent my ex a 'just because' gift without them knowing it was me. No drama, just vibes.", occasion: "Just Because", stars: 5 },
+      ];
   return (
     <section className="py-24 md:py-32 bg-white">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
@@ -483,26 +506,7 @@ function SocialProof() {
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              name: "Wanjiku M.",
-              text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!",
-              occasion: "Birthday",
-              stars: 5,
-            },
-            {
-              name: "Brian K.",
-              text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.",
-              occasion: "Corporate",
-              stars: 5,
-            },
-            {
-              name: "Amina H.",
-              text: "Anonymous mode is everything. Sent my ex a 'just because' gift without them knowing it was me. No drama, just vibes.",
-              occasion: "Just Because",
-              stars: 5,
-            },
-          ].map((t, i) => (
+          {displayReviews.map((t, i) => (
             <Reveal key={i} delay={200 + i * 150}>
               <div className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300">
                 <div className="flex gap-1 mb-3">

@@ -154,6 +154,7 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Error handling + 404 | | | Done |
 | SEO + social metadata | | | Done |
 | PWA icons + favicon | | | Done |
+| Customer reviews & ratings | | | Done |
 | Recipient pin drop (Google Maps) | | | Planned |
 | Real-time courier tracking | | | Planned |
 | Play Store packaging | | | Planned |
@@ -214,6 +215,16 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 - **Advantage:** Perceived performance improvement. Users see structure before content loads. Reduces bounce rate on slow connections.
 - **Tech:** `components/ui/Skeletons.tsx` (ProductCardSkeleton, OrderCardSkeleton, PageSkeleton)
 
+### 29. Customer Reviews & Ratings System
+- **What:** Full review system — 1-5 star ratings, text reviews (title + body), photo/video attachments (auto-converted to WebP via sharp), verified purchase badges, helpful vote buttons, seller replies, and admin moderation. Reviews appear on product detail pages, homepage testimonials, and the storytelling social proof section.
+- **Advantage:** **Social proof is the #1 conversion driver for e-commerce.** Verified purchase badges build trust. Photo/video reviews let buyers see real products. Helpful votes surface the best reviews. Admin moderation prevents spam. Replaces the old hardcoded testimonials with real customer voices.
+- **Tech:**
+  - **Database:** `reviews`, `review_media`, `review_votes` tables + `increment_helpful_count`/`decrement_helpful_count` RPCs
+  - **API (8 endpoints):** `POST/GET /api/reviews`, `GET/PATCH/DELETE /api/reviews/[id]`, `POST /api/reviews/[id]/vote`, `GET /api/reviews/stats`, `POST /api/reviews/upload` (WebP conversion), `GET /api/admin/reviews`
+  - **Components:** `StarRating`, `RatingDistribution`, `ReviewCard`, `ReviewForm`, `PhotoGallery` (lightbox), `ReviewList` (paginated + sorted), `ProductReviews`, `ReviewPrompt`
+  - **Pages:** Product detail page integration, admin moderation dashboard (`/admin/reviews`)
+  - **Media:** All images converted to WebP via sharp before Supabase Storage upload (matches product image pipeline)
+
 ---
 
 ## Database Schema (Running)
@@ -230,6 +241,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `wishlist_items` | Items in wishlists |
 | `reminders` | Saved occasion dates |
 | `gift_cards` | Stored-value codes |
+| `reviews` | Customer ratings + text |
+| `review_media` | Photos/videos per review |
+| `review_votes` | Helpful vote tracking |
 
 ---
 
@@ -245,6 +259,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Referral conversion | Growth efficiency |
 | Average order value | Revenue optimization |
 | Delivery on-time rate | Operational trust |
+| Average product rating | Social proof strength |
+| Review submission rate | Customer engagement |
+| Verified purchase % | Trust signal quality |
 
 ---
 
