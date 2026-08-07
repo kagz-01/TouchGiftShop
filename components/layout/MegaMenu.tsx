@@ -146,6 +146,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Popular",
         links: [
+          { href: "/gift-quiz", label: "Gift Finder Quiz", emoji: "🎯" },
           { href: "/gift-finder", label: "AI Gift Finder", emoji: "🤖" },
           { href: "/gift-lab", label: "Build a Hamper", emoji: "🧪" },
           { href: "/gift-lab/pool", label: "Pool a Gift", emoji: "👥" },

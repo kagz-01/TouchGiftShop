@@ -50,6 +50,31 @@ export default async function HomePage({
         </Suspense>
       </div>
 
+      {/* 3.5 Gift Quiz CTA */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pb-8">
+        <a
+          href="/gift-quiz"
+          className="block bg-gradient-to-r from-brand to-brand-deep rounded-2xl p-6 md:p-8 text-white hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center text-3xl shrink-0">
+              🎯
+            </div>
+            <div className="text-center md:text-left flex-1">
+              <h3 className="font-display text-lg md:text-xl font-bold mb-1">
+                Not sure what to gift?
+              </h3>
+              <p className="text-white/80 text-sm">
+                Take our 30-second quiz and get personalized gift recommendations
+              </p>
+            </div>
+            <div className="bg-white text-brand px-5 py-2.5 rounded-xl font-semibold text-sm shrink-0 hover:bg-white/90 transition-colors">
+              Find a Gift →
+            </div>
+          </div>
+        </a>
+      </div>
+
       {/* 4. Product grid */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 pb-10 md:pb-14 space-y-6">
         <div className="text-center">
