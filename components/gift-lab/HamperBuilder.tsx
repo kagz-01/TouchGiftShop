@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Image from "next/image";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -27,6 +27,34 @@ interface HamperItem {
   quantity: number;
 }
 
+interface FlyingItem {
+  id: string;
+  imageUrl: string;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
+function ConfettiPiece({ delay, color }: { delay: number; color: string }) {
+  const left = Math.random() * 100;
+  const size = 4 + Math.random() * 6;
+  return (
+    <div
+      className="absolute pointer-events-none"
+      style={{
+        left: `${left}%`,
+        top: "50%",
+        width: size,
+        height: size,
+        backgroundColor: color,
+        borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+        animation: `confetti-fall ${0.8 + Math.random() * 0.6}s ease-out ${delay}s forwards`,
+      }}
+    />
+  );
+}
+
 export default function HamperBuilder() {
   const [selectedBox, setSelectedBox] = useState(0);
   const [items, setItems] = useState<HamperItem[]>([]);
@@ -34,6 +62,17 @@ export default function HamperBuilder() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("");
   const [search, setSearch] = useState("");
+
+  // Animation states
+  const [flyingItems, setFlyingItems] = useState<FlyingItem[]>([]);
+  const [pulseKey, setPulseKey] = useState(0);
+  const [shakingId, setShakingId] = useState<string | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [prevItemCount, setPrevItemCount] = useState(0);
+
+  const hamperRef = useRef<HTMLDivElement>(null);
+  const prevTotalRef = useRef(0);
+  const [displayTotal, setDisplayTotal] = useState(0);
 
   const box = BOX_SIZES[selectedBox];
   const itemsTotal = items.reduce(
@@ -43,6 +82,38 @@ export default function HamperBuilder() {
   const total = box.price + itemsTotal;
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const canAddMore = itemCount < box.maxItems;
+  const fillPercent = Math.min((itemCount / box.maxItems) * 100, 100);
+  const isFull = itemCount >= box.maxItems;
+
+  // Price count-up animation
+  useEffect(() => {
+    const start = prevTotalRef.current;
+    const end = total;
+    if (start === end) return;
+
+    const duration = 400;
+    const startTime = Date.now();
+
+    function tick() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplayTotal(Math.round(start + (end - start) * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+    prevTotalRef.current = total;
+  }, [total]);
+
+  // Confetti trigger when hamper fills
+  useEffect(() => {
+    if (isFull && prevItemCount < box.maxItems) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 2000);
+    }
+    setPrevItemCount(itemCount);
+  }, [itemCount, isFull, box.maxItems, prevItemCount]);
 
   useEffect(() => {
     fetch("/api/products?limit=100")
@@ -71,8 +142,40 @@ export default function HamperBuilder() {
     return result;
   }, [products, activeCategory, search]);
 
-  function addItem(product: Product) {
+  const triggerFly = useCallback((imageUrl: string, cardEl: HTMLElement) => {
+    const hamperEl = hamperRef.current;
+    if (!hamperEl) return;
+
+    const cardRect = cardEl.getBoundingClientRect();
+    const hamperRect = hamperEl.getBoundingClientRect();
+
+    const flyItem: FlyingItem = {
+      id: `${Date.now()}-${Math.random()}`,
+      imageUrl,
+      startX: cardRect.left + cardRect.width / 2,
+      startY: cardRect.top + cardRect.height / 2,
+      endX: hamperRect.left + hamperRect.width / 2,
+      endY: hamperRect.top + 40,
+    };
+
+    setFlyingItems((prev) => [...prev, flyItem]);
+    setTimeout(() => {
+      setFlyingItems((prev) => prev.filter((f) => f.id !== flyItem.id));
+    }, 700);
+  }, []);
+
+  function addItem(product: Product, e: React.MouseEvent) {
     if (!canAddMore) return;
+
+    // Fly animation
+    const cardEl = (e.currentTarget as HTMLElement).closest("button");
+    if (cardEl && product.image_url) {
+      triggerFly(product.image_url, cardEl);
+    }
+
+    // Pulse the hamper
+    setPulseKey((k) => k + 1);
+
     setItems((prev) => {
       const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
@@ -87,18 +190,22 @@ export default function HamperBuilder() {
   }
 
   function removeItem(productId: string) {
-    setItems((prev) => {
-      const existing = prev.find((i) => i.product.id === productId);
-      if (!existing) return prev;
-      if (existing.quantity > 1) {
-        return prev.map((i) =>
-          i.product.id === productId
-            ? { ...i, quantity: i.quantity - 1 }
-            : i
-        );
-      }
-      return prev.filter((i) => i.product.id !== productId);
-    });
+    setShakingId(productId);
+    setTimeout(() => {
+      setShakingId(null);
+      setItems((prev) => {
+        const existing = prev.find((i) => i.product.id === productId);
+        if (!existing) return prev;
+        if (existing.quantity > 1) {
+          return prev.map((i) =>
+            i.product.id === productId
+              ? { ...i, quantity: i.quantity - 1 }
+              : i
+          );
+        }
+        return prev.filter((i) => i.product.id !== productId);
+      });
+    }, 350);
   }
 
   function goToCheckout() {
@@ -114,9 +221,60 @@ export default function HamperBuilder() {
     window.location.href = `/checkout?${params.toString()}`;
   }
 
+  // Hamper border/fill color based on progress
+  const hamperBorderColor = isFull
+    ? "border-gold"
+    : fillPercent >= 60
+    ? "border-brand"
+    : fillPercent > 0
+    ? "border-brand/40"
+    : "border-surface-border";
+
+  const hamperGlow = isFull
+    ? "shadow-[0_0_20px_rgba(212,168,83,0.3)]"
+    : fillPercent >= 60
+    ? "shadow-[0_0_15px_rgba(155,27,90,0.15)]"
+    : "";
+
   return (
     <div className="flex flex-col lg:flex-row gap-6">
-      {/* LEFT: Hamper summary (sticky on desktop) */}
+      {/* Flying items portal */}
+      {flyingItems.map((f) => {
+        const dx = f.endX - f.startX;
+        const dy = f.endY - f.startY;
+        return (
+          <div
+            key={f.id}
+            className="fixed z-[9999] pointer-events-none"
+            style={{
+              left: f.startX - 24,
+              top: f.startY - 24,
+              width: 48,
+              height: 48,
+              animation: "fly-to-basket 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
+              "--fly-x": `${dx}px`,
+              "--fly-y": `${dy}px`,
+            } as React.CSSProperties}
+          >
+            <div
+              className="w-12 h-12 rounded-xl overflow-hidden border-2 border-brand shadow-lg"
+              style={{
+                animation: "fly-to-basket 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
+              }}
+            >
+              <Image
+                src={f.imageUrl}
+                alt=""
+                width={48}
+                height={48}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        );
+      })}
+
+      {/* LEFT: Hamper summary */}
       <div className="lg:w-[340px] shrink-0">
         <div className="lg:sticky lg:top-4 space-y-4">
           {/* Box selector */}
@@ -145,13 +303,24 @@ export default function HamperBuilder() {
             </div>
           </div>
 
-          {/* Hamper contents */}
-          <div className="bg-white rounded-2xl border border-surface-border p-4 space-y-3">
+          {/* Hamper contents — the basket */}
+          <div
+            ref={hamperRef}
+            className={cn(
+              "bg-white rounded-2xl border-2 p-4 space-y-3 transition-all duration-300",
+              hamperBorderColor,
+              hamperGlow,
+              pulseKey > 0 && "animate-hamper-pulse"
+            )}
+            key={pulseKey}
+          >
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">Your hamper</p>
               <span className={cn(
-                "text-xs font-bold px-2.5 py-1 rounded-full",
-                itemCount >= box.maxItems
+                "text-xs font-bold px-2.5 py-1 rounded-full transition-colors duration-300",
+                isFull
+                  ? "bg-gold/20 text-brand-deep"
+                  : fillPercent >= 60
                   ? "bg-brand/10 text-brand"
                   : "bg-gray-100 text-brand-muted"
               )}>
@@ -159,9 +328,24 @@ export default function HamperBuilder() {
               </span>
             </div>
 
+            {/* Progress bar */}
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className={cn(
+                  "h-full rounded-full transition-all duration-500 ease-out",
+                  isFull
+                    ? "bg-gradient-to-r from-gold to-gold-light"
+                    : fillPercent >= 60
+                    ? "bg-gradient-to-r from-brand to-brand-light"
+                    : "bg-brand/40"
+                )}
+                style={{ width: `${fillPercent}%` }}
+              />
+            </div>
+
             {items.length === 0 ? (
               <div className="text-center py-6">
-                <span className="text-3xl block mb-2">🧺</span>
+                <span className="text-4xl block mb-2 animate-basket-bob">🧺</span>
                 <p className="text-xs text-brand-muted">
                   Tap products on the right to add them
                 </p>
@@ -171,7 +355,10 @@ export default function HamperBuilder() {
                 {items.map((item) => (
                   <div
                     key={item.product.id}
-                    className="flex items-center gap-3 p-2 rounded-xl bg-gray-50"
+                    className={cn(
+                      "flex items-center gap-3 p-2 rounded-xl bg-gray-50 transition-all duration-200",
+                      shakingId === item.product.id && "animate-shake"
+                    )}
                   >
                     <div className="w-10 h-10 rounded-lg overflow-hidden relative shrink-0 bg-gray-100">
                       {item.product.image_url && (
@@ -191,17 +378,19 @@ export default function HamperBuilder() {
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         onClick={() => removeItem(item.product.id)}
-                        className="w-7 h-7 rounded-full bg-white border border-surface-border flex items-center justify-center text-brand-muted hover:text-brand hover:border-brand/30 transition-colors"
+                        className="w-7 h-7 rounded-full bg-white border border-surface-border flex items-center justify-center text-brand-muted hover:text-brand hover:border-brand/30 transition-colors active:scale-90"
                       >
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                         </svg>
                       </button>
-                      <span className="w-6 text-center text-xs font-bold">{item.quantity}</span>
+                      <span className="w-6 text-center text-xs font-bold animate-badge-pop" key={item.quantity}>
+                        {item.quantity}
+                      </span>
                       <button
-                        onClick={() => canAddMore && addItem(item.product)}
+                        onClick={(e) => canAddMore && addItem(item.product, e)}
                         disabled={!canAddMore}
-                        className="w-7 h-7 rounded-full bg-brand text-white flex items-center justify-center disabled:opacity-30 hover:bg-brand-dark transition-colors"
+                        className="w-7 h-7 rounded-full bg-brand text-white flex items-center justify-center disabled:opacity-30 hover:bg-brand-dark transition-colors active:scale-90"
                       >
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -213,7 +402,7 @@ export default function HamperBuilder() {
               </div>
             )}
 
-            {/* Totals */}
+            {/* Totals with animated price */}
             <div className="border-t border-surface-border pt-3 space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-brand-muted text-xs">Box ({box.name})</span>
@@ -225,17 +414,39 @@ export default function HamperBuilder() {
               </div>
               <div className="flex justify-between font-bold border-t border-surface-border pt-2">
                 <span className="text-sm">Total</span>
-                <span className="text-brand text-sm">{formatKsh(total)}</span>
+                <span className="text-brand text-sm animate-price-count" key={displayTotal}>
+                  {formatKsh(displayTotal)}
+                </span>
               </div>
             </div>
 
             <button
               onClick={goToCheckout}
               disabled={items.length === 0}
-              className="w-full py-3 bg-gradient-to-r from-brand to-brand-light text-white rounded-xl font-semibold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg transition-all"
+              className={cn(
+                "w-full py-3 bg-gradient-to-r from-brand to-brand-light text-white rounded-xl font-semibold text-sm transition-all duration-300",
+                items.length === 0
+                  ? "opacity-40 cursor-not-allowed"
+                  : isFull
+                  ? "animate-glow-button hover:shadow-xl"
+                  : "hover:shadow-lg hover:-translate-y-0.5"
+              )}
             >
-              Send this hamper — {formatKsh(total)}
+              {isFull ? "🎉 " : ""}Send this hamper — {formatKsh(displayTotal)}
             </button>
+
+            {/* Confetti overlay */}
+            {showConfetti && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-2xl">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <ConfettiPiece
+                    key={i}
+                    delay={i * 0.05}
+                    color={["#9B1B5A", "#D4A853", "#C4297A", "#E8C97A", "#FF6B6B"][i % 5]}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -293,10 +504,10 @@ export default function HamperBuilder() {
                 return (
                   <button
                     key={product.id}
-                    onClick={() => addItem(product)}
+                    onClick={(e) => addItem(product, e)}
                     disabled={disabled}
                     className={cn(
-                      "group rounded-xl border-2 overflow-hidden text-left transition-all duration-200",
+                      "group rounded-xl border-2 overflow-hidden text-left transition-all duration-200 active:scale-[0.95]",
                       disabled
                         ? "opacity-40 cursor-not-allowed border-transparent"
                         : "border-transparent hover:border-brand/30 hover:shadow-card",
@@ -319,7 +530,7 @@ export default function HamperBuilder() {
                       {/* Add button */}
                       {!disabled && (
                         <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-200 translate-y-1 group-hover:translate-y-0">
-                          <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center shadow-lg">
+                          <div className="w-8 h-8 bg-brand text-white rounded-full flex items-center justify-center shadow-lg group-active:rotate-90 transition-transform duration-300">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                             </svg>
@@ -329,7 +540,7 @@ export default function HamperBuilder() {
 
                       {/* In-hamper badge */}
                       {inHamper && (
-                        <div className="absolute top-2 right-2 w-6 h-6 bg-brand text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
+                        <div className="absolute top-2 right-2 w-6 h-6 bg-brand text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg animate-badge-pop">
                           {inHamper.quantity}
                         </div>
                       )}
