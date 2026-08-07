@@ -118,15 +118,21 @@ export default function CheckoutForm({
       return;
     }
 
-    // 3. Send pin drop link if requested (fire-and-forget)
+    // 3. Send pin drop link if requested
     if (usePinDrop) {
-      fetch("/api/pin-drop/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
-      }).catch(() => {
-        // Pin drop link send failed — admin can resend manually
-      });
+      try {
+        const pinRes = await fetch("/api/pin-drop/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
+        });
+        const pinData = await pinRes.json();
+        if (pinData.whatsappUrl) {
+          window.open(pinData.whatsappUrl, "_blank");
+        }
+      } catch {
+        // Pin drop link send failed — admin can resend from order detail
+      }
     }
 
     // 4. Redirect to PesaPal checkout

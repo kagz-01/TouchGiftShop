@@ -303,7 +303,7 @@ export default function MegaMenu() {
                 onClick={() => setActiveMenu(null)}
                 className="text-xs text-brand font-semibold hover:text-brand-dark transition-colors flex items-center gap-1"
               >
-                🤖 Can&apos;t decide? Ask Zawadi — our AI Gift Finder
+                🤖 Can&apos;t decide? Ask T-Gifter — our AI Gift Finder
               </Link>
               <Link
                 href="/corporate"

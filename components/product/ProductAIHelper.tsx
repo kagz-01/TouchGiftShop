@@ -44,7 +44,7 @@ export default function ProductAIHelper({ productName, productId }: Props) {
         className="w-full flex items-center justify-center gap-2 py-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-sm font-medium text-brand transition-all"
       >
         <span className="text-lg">🤖</span>
-        Need help? Ask Zawadi about this gift
+        Need help? Ask T-Gifter about this gift
       </button>
 
       {isOpen && (
@@ -57,7 +57,7 @@ export default function ProductAIHelper({ productName, productId }: Props) {
               href={`/gift-finder?prefill=Tell me about ${encodeURIComponent(productName)}`}
               className="flex-1 py-2.5 bg-brand text-white rounded-xl text-xs font-semibold text-center hover:bg-brand-dark transition-colors"
             >
-              Chat with Zawadi
+              Chat with T-Gifter
             </Link>
             <button
               onClick={generateNote}

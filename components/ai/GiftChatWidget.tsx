@@ -34,7 +34,7 @@ const LANGUAGES = [
 
 const SUGGESTIONS: Record<string, string[]> = {
   en: ["Gift for my girlfriend's birthday", "Something for my mom", "Corporate client gift", "Wedding gift under KSh 5,000", "Help me write a note"],
-  sw: ["Zawadi kwa birthday ya mpenzi wangu", "Kitu kwa mama yangu", "Zawili ya mteja", "Zawadi ya harusi chini ya KSh 5,000", "Nisaidie kuandika ujumbe"],
+  sw: ["T-Gifter kwa birthday ya mpenzi wangu", "Kitu kwa mama yangu", "Zawili ya mteja", "T-Gifter ya harusi chini ya KSh 5,000", "Nisaidie kuandika ujumbe"],
   fr: ["Cadeau pour l'anniversaire de ma copine", "Quelque chose pour ma maman", "Cadeau client entreprise", "Cadeau de mariage moins de 5000 KSh", "Aide-moi à écrire une note"],
 };
 
@@ -44,7 +44,7 @@ export default function GiftChatWidget() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Habari! 👋 I'm Zawadi, your gift concierge. I can help you find the perfect gift, write a heartfelt note, or build a custom hamper. What can I help you with?",
+      content: "Habari! 👋 I'm T-Gifter, your gift concierge. I can help you find the perfect gift, write a heartfelt note, or build a custom hamper. What can I help you with?",
       timestamp: new Date(),
     },
   ]);
@@ -170,7 +170,7 @@ export default function GiftChatWidget() {
                 <span className="text-xl">🎁</span>
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-sm">Zawadi — Gift Concierge</p>
+                <p className="font-semibold text-sm">T-Gifter — Gift Concierge</p>
                 <p className="text-white/70 text-xs">Ask me anything about gifting</p>
               </div>
               {/* Language selector */}

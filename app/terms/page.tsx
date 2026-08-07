@@ -42,7 +42,7 @@ export default function TermsPage() {
                 <li>Pay via M-Pesa, credit/debit card, or Airtel Money through our payment partner PesaPal</li>
                 <li>Create group gift pools (Pool a Gift) where multiple people contribute</li>
                 <li>Create and share wishlists</li>
-                <li>Use our AI Gift Finder (Zawadi) for personalized gift recommendations</li>
+                <li>Use our AI Gift Finder (T-Gifter) for personalized gift recommendations</li>
                 <li>Generate AI-powered handwritten notes</li>
                 <li>Order corporate and bulk gifts with volume discounts</li>
               </ul>
@@ -159,9 +159,9 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-display text-lg font-bold text-brand-deep mb-3">9. AI Gift Finder (Zawadi)</h2>
+              <h2 className="font-display text-lg font-bold text-brand-deep mb-3">9. AI Gift Finder (T-Gifter)</h2>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>Zawadi is an AI-powered recommendation tool, not a human</li>
+                <li>T-Gifter is an AI-powered recommendation tool, not a human</li>
                 <li>Recommendations are based on your input and our product catalog</li>
                 <li>We do not guarantee that AI suggestions will be suitable or error-free</li>
                 <li>Queries may be processed by third-party AI providers (OpenAI, Google, xAI)</li>

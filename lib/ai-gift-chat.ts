@@ -30,7 +30,7 @@ export type ChatResponse = {
 };
 
 /* ─── System Prompt — The Gift Concierge ─── */
-const SYSTEM_PROMPT = `You are "Zawadi" — TouchGift's AI gift concierge. You help people find the perfect gift in Kenya.
+const SYSTEM_PROMPT = `You are "T-Gifter" — TouchGift's AI gift concierge. You help people find the perfect gift in Kenya.
 
 PERSONALITY:
 - Warm, friendly, like a trusted friend who knows gifts
@@ -214,13 +214,12 @@ Remember: Only recommend products that exist in the catalog above. Use their exa
       }
       return { reply: finalReply, provider: fallback, recommendations, language: needsTranslation ? userLanguage : language, noteSuggestion, translatedFrom: needsTranslation ? userLanguage : undefined };
     } catch {
-      const errorMsg = needsTranslation
-        ? await translateFromChat("Sorry, I'm having a technical hiccup. Try again in a moment — I'm here to help you find the perfect gift! 🎁", userLanguage)
-        : language === "sw"
-          ? "Pole sana, kuna hitumu la kiufundi. Jaribu tena baadaye. Niko hapa kukusaidia! 🎁"
-          : language === "sheng"
-          ? "Acha, kuna issue ya technical. Try again later bana. Niko hapa for you! 🎁"
-          : "Sorry, I'm having a technical hiccup. Try again in a moment — I'm here to help you find the perfect gift! 🎁";
+      // All providers failed — give helpful guidance
+      const errorMsg = language === "sw"
+        ? "Pole sana! AI ya T-Gifter haipo online sasa. Weka bidhaa kwenye cart na uendelee na malipo — unaweza pia kutumia Gift Quiz kupata mapendekezo! 🎁"
+        : language === "sheng"
+        ? "Acha! T-Gifter AI iko down saa hii. Add items to cart uendelee — au tumia Gift Quiz kupata picks bana! 🎁"
+        : "T-Gifter is temporarily offline — our AI providers need a quick top-up. In the meantime, try our Gift Quiz for personalized recommendations, or browse by category! 🎁";
       return {
         reply: errorMsg,
         provider: fallback,

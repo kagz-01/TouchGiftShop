@@ -37,7 +37,7 @@ export default function GiftChatPage() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Habari! 👋 I'm Zawadi, your personal gift concierge.\n\nTell me about the gift you're looking for — who is it for, what's the occasion, and any preferences you have. I'll help you find the perfect match.\n\nOr just say hi and we'll figure it out together!",
+      content: "Habari! 👋 I'm T-Gifter, your personal gift concierge.\n\nTell me about the gift you're looking for — who is it for, what's the occasion, and any preferences you have. I'll help you find the perfect match.\n\nOr just say hi and we'll figure it out together!",
       timestamp: new Date(),
     },
   ]);
@@ -306,7 +306,7 @@ export default function GiftChatPage() {
             </button>
           </div>
           <p className="text-[10px] text-brand-muted/50 text-center mt-2">
-            Zawadi uses AI to help you find gifts. Responses may vary.
+            T-Gifter uses AI to help you find gifts. Responses may vary.
           </p>
         </form>
       </div>

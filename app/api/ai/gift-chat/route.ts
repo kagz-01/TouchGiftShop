@@ -18,16 +18,32 @@ export async function POST(req: NextRequest) {
   // Fetch products from Supabase for context
   const { data: products } = await supabase
     .from("products")
-    .select("id, name, price, categories, short_description")
+    .select("id, name, price, description")
     .eq("in_stock", true)
     .limit(50);
+
+  // Fetch categories for each product
+  const productIds = (products || []).map((p) => p.id);
+  const { data: productCats } = await supabase
+    .from("product_categories")
+    .select("product_id, categories(slug)")
+    .in("product_id", productIds);
+
+  // Build category map
+  const catMap = new Map<string, string[]>();
+  for (const pc of productCats || []) {
+    const existing = catMap.get(pc.product_id) || [];
+    const cat = pc.categories as { slug?: string } | null;
+    if (cat?.slug) existing.push(cat.slug);
+    catMap.set(pc.product_id, existing);
+  }
 
   const chatProducts = (products || []).map((p) => ({
     id: p.id,
     name: p.name,
     price: p.price,
-    categories: p.categories || [],
-    short_description: p.short_description || "",
+    categories: catMap.get(p.id) || [],
+    short_description: p.description || "",
   }));
 
   // Streaming response

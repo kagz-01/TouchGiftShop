@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatKsh } from "@/lib/utils";
 import OrderStatusTimeline from "@/components/orders/OrderStatusTimeline";
 import SendTrackLinkButton from "@/components/orders/SendTrackLinkButton";
+import ResendPinDropButton from "@/components/pin-drop/ResendPinDropButton";
 
 async function getOrder(id: string) {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -128,13 +129,10 @@ export default async function OrderDetailPage({
           )}
 
           {hasPinDrop && (
-            <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4 flex items-center gap-3">
-              <span className="text-xl">📍</span>
-              <div>
-                <p className="text-xs font-semibold">Pin drop sent</p>
-                <p className="text-xs text-brand-muted">{order.recipient_name} has been sent a link to drop their delivery pin.</p>
-              </div>
-            </div>
+            <ResendPinDropButton
+              orderId={order.id}
+              recipientName={order.recipient_name}
+            />
           )}
 
           {/* Pre-dispatch photo */}

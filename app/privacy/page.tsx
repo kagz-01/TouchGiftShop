@@ -79,7 +79,7 @@ export default function PrivacyPolicyPage() {
                 <li>Process payments securely through PesaPal</li>
                 <li>Send pin drop links to recipients so they can set their delivery location</li>
                 <li>Send tracking links so recipients can follow their gift status</li>
-                <li>Provide AI-powered gift recommendations through our Gift Finder (Zawadi)</li>
+                <li>Provide AI-powered gift recommendations through our Gift Finder (T-Gifter)</li>
                 <li>Generate handwritten note content using AI services</li>
                 <li>Communicate with you about orders, support requests, and account issues</li>
                 <li>Send reminders about upcoming occasions you&apos;ve saved (if you opt in)</li>

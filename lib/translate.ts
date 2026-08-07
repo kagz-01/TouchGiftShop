@@ -17,6 +17,7 @@ export async function detectLanguage(text: string): Promise<string | null> {
 
     if (!res.ok) return null;
     const data = await res.json();
+    if (data.error) return null; // API key required or other error
     // Returns array of { language: "fr", confidence: 0.9 }
     return data?.[0]?.language || null;
   } catch {
@@ -45,6 +46,7 @@ export async function translate(
 
     if (!res.ok) return text;
     const data = await res.json();
+    if (data.error) return text; // API key required
     return data?.translatedText || text;
   } catch {
     return text;
@@ -118,17 +120,19 @@ export async function translateForChat(
   if (isNative || isSupportedNative) {
     return {
       translatedMessage: message,
-      userLanguage: detectedLang,
+      userLanguage: detectedLang === "sw" ? "sw" : "en",
       needsTranslation: false,
     };
   }
 
-  // Translate to English for AI processing
-  const translated = await translate(message, detectedLang, "en");
+  // If translation service unavailable, treat as English
+  const translated = await translate(message, detectedLang, "en").catch(() => message);
+  const didTranslate = translated !== message;
+
   return {
-    translatedMessage: translated,
-    userLanguage: detectedLang,
-    needsTranslation: true,
+    translatedMessage: didTranslate ? translated : message,
+    userLanguage: didTranslate ? detectedLang : "en",
+    needsTranslation: didTranslate,
   };
 }
 
