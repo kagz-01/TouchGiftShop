@@ -34,9 +34,21 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         title: "Smart Gifting",
         links: [
           { href: "/gift-finder", label: "T-Gifter AI", emoji: "💬" },
-          { href: "/gift-quiz", label: "Gift Quiz", emoji: "🎯" },
-          { href: "/gift-lab", label: "Build a Hamper", emoji: "🧪" },
-          { href: "/gift-lab/pool", label: "Group Gift", emoji: "👥" },
+          { href: "/gift-quiz", label: "Gift Quiz (30 sec)", emoji: "🎯" },
+          { href: "/?delivery=same-day", label: "Same-Day Delivery", emoji: "⚡" },
+          { href: "/gift-cards", label: "Gift Cards", emoji: "💳" },
+        ],
+      },
+      {
+        title: "By Occasion",
+        links: [
+          { href: "/?category=birthdays", label: "Birthday", emoji: "🎂" },
+          { href: "/?category=weddings", label: "Wedding", emoji: "💒" },
+          { href: "/?category=anniversaries", label: "Anniversary", emoji: "💕" },
+          { href: "/?category=baby", label: "New Baby", emoji: "👶" },
+          { href: "/?category=graduation", label: "Graduation", emoji: "🎓" },
+          { href: "/?category=condolences", label: "Condolences", emoji: "🕊️" },
+          { href: "/?category=just-because", label: "Just Because", emoji: "💝" },
         ],
       },
       {
@@ -51,12 +63,15 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         ],
       },
       {
-        title: "Quick Help",
+        title: "Collections",
         links: [
-          { href: "/?budget=under-5k", label: "Under KSh 5,000", emoji: "💰" },
-          { href: "/?budget=under-10k", label: "Under KSh 10,000", emoji: "💰💰" },
-          { href: "/?delivery=same-day", label: "Same-Day Delivery", emoji: "⚡" },
-          { href: "/gift-cards", label: "Gift Cards", emoji: "💳" },
+          { href: "/?category=hampers", label: "Hampers", emoji: "🧺" },
+          { href: "/?category=flowers", label: "Flowers", emoji: "🌸" },
+          { href: "/?category=personalised", label: "Personalised", emoji: "✨" },
+          { href: "/?category=wellness", label: "Wellness & Self Care", emoji: "🧘" },
+          { href: "/?category=home-decor", label: "Home & Living", emoji: "🏠" },
+          { href: "/?category=tech", label: "Tech & Gadgets", emoji: "📱" },
+          { href: "/?category=experiences", label: "Experiences", emoji: "🧖" },
         ],
       },
     ],
@@ -66,6 +81,77 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         description: "Tell T-Gifter who it's for and your budget. AI finds the perfect gift in seconds.",
         image: "/logo.webp",
         href: "/gift-finder",
+      },
+    ],
+  },
+  {
+    id: "lab",
+    label: "Gift Lab",
+    icon: "🧪",
+    sections: [
+      {
+        title: "Build & Create",
+        links: [
+          { href: "/gift-lab", label: "Build a Hamper", emoji: "🧪" },
+          { href: "/gift-lab/pool", label: "Group Gift (Pool)", emoji: "👥" },
+        ],
+      },
+      {
+        title: "Kenyan Traditions",
+        links: [
+          { href: "/?cultural=ruracio", label: "Ruracio Guide", emoji: "💍" },
+          { href: "/?cultural=dowry", label: "Dowry (Mahari)", emoji: "🐄" },
+          { href: "/?cultural=circumcision", label: "Circumcision", emoji: "🗡️" },
+          { href: "/?cultural=christening", label: "Christening", emoji: "⛪" },
+        ],
+      },
+      {
+        title: "By Budget",
+        links: [
+          { href: "/?budget=under-5k", label: "Under KSh 5,000", emoji: "💰" },
+          { href: "/?budget=under-10k", label: "Under KSh 10,000", emoji: "💰💰" },
+          { href: "/?budget=under-20k", label: "Under KSh 20,000", emoji: "💰💰💰" },
+          { href: "/?budget=premium", label: "Big Gestures (20k+)", emoji: "💎" },
+        ],
+      },
+    ],
+    featured: [
+      {
+        title: "Build the Perfect Hamper",
+        description: "Mix and match items, add a gift note, and we'll wrap it all together.",
+        image: "/logo.webp",
+        href: "/gift-lab",
+      },
+    ],
+  },
+  {
+    id: "my-stuff",
+    label: "My Stuff",
+    icon: "📋",
+    sections: [
+      {
+        title: "My Lists",
+        links: [
+          { href: "/wishlist", label: "Wishlist", emoji: "💝" },
+          { href: "/reminders", label: "Gift Reminders", emoji: "⏰" },
+          { href: "/gift-cards", label: "My Gift Cards", emoji: "💳" },
+        ],
+      },
+      {
+        title: "Smart Features",
+        links: [
+          { href: "/?feature=taste-profile", label: "Taste Profiles", emoji: "🎯" },
+          { href: "/?feature=smart-reorder", label: "Smart Reorder", emoji: "🔄" },
+          { href: "/?feature=gift-history", label: "Gift History", emoji: "📜" },
+        ],
+      },
+      {
+        title: "My Orders",
+        links: [
+          { href: "/orders", label: "All Orders", emoji: "📦" },
+          { href: "/track", label: "Track Delivery", emoji: "🚚" },
+          { href: "/returns", label: "Returns & Refunds", emoji: "↩️" },
+        ],
       },
     ],
   },
@@ -236,7 +322,7 @@ export default function MegaMenu() {
         <div
           onMouseEnter={() => handleMouseEnter(activeData.id)}
           onMouseLeave={handleMouseLeave}
-          className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-4xl mt-2 z-50"
+          className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl mt-2 z-50"
         >
           <div className="bg-white rounded-2xl shadow-card-hover border border-surface-border overflow-hidden animate-pop">
             <div className="grid grid-cols-12 gap-0">
@@ -248,7 +334,9 @@ export default function MegaMenu() {
                     ? "grid-cols-1"
                     : activeData.sections.length === 2
                     ? "grid-cols-2"
-                    : "grid-cols-3"
+                    : activeData.sections.length === 3
+                    ? "grid-cols-3"
+                    : "grid-cols-4"
                 } gap-0`}
               >
                 {activeData.sections.map((section) => (

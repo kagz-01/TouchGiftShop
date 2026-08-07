@@ -45,11 +45,13 @@ export default function Header() {
         {/* Right side */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <Link
-            href="/gift-finder"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-brand/5 hover:bg-brand/10 rounded-full text-xs font-medium text-brand transition-all"
+            href="/account"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand transition-colors hidden lg:flex"
           >
-            <span>💬</span>
-            <span className="hidden lg:inline">T-Gifter</span>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+            Account
           </Link>
           <Link
             href="/login"

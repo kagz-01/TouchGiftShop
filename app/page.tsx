@@ -8,6 +8,8 @@ import TrustSignals from "@/components/home/TrustSignals";
 import HowItWorks from "@/components/home/HowItWorks";
 import SurpriseSomeone from "@/components/home/SurpriseSomeone";
 import Testimonials from "@/components/home/Testimonials";
+import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
+import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { createClient } from "@supabase/supabase-js";
 
 async function getFeaturedProducts() {
@@ -61,15 +63,25 @@ export default async function HomePage() {
       {/* 1. Hero carousel */}
       <HeroCarousel />
 
-      {/* 2. Occasion pills — horizontal scroll, always visible */}
+      {/* 2. Seasonal prompt — upcoming events */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pt-4">
+        <SeasonalPromptBar />
+      </div>
+
+      {/* 3. Occasion pills — horizontal scroll, always visible */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 pt-6 md:pt-8">
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
       </div>
 
-      {/* 3. How it works — move up so users see value prop early */}
+      {/* 4. How it works — move up so users see value prop early */}
       <HowItWorks />
+
+      {/* 5. Smart Reorder — show if user has past gifts */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pb-4">
+        <SmartReorderBanner />
+      </div>
 
       {/* 4. Featured product rows — curated, not overwhelming */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 space-y-2">
