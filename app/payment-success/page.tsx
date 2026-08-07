@@ -1,4 +1,13 @@
 import Link from "next/link";
+import PaymentSuccessPinDrop from "@/components/pin-drop/PaymentSuccessPinDrop";
+
+async function getOrder(id: string) {
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const res = await fetch(`${base}/api/orders/${id}`, { cache: "no-store" });
+  if (!res.ok) return null;
+  const { order } = await res.json();
+  return order;
+}
 
 export default async function PaymentSuccessPage({
   searchParams,
@@ -10,6 +19,13 @@ export default async function PaymentSuccessPage({
 
   // Pool contributions use "pool-{contributionId}" as the reference
   const isPool = ref?.startsWith("pool-");
+
+  // Check if this is a pin-drop order
+  let isPinDrop = false;
+  if (ref && !isPool) {
+    const order = await getOrder(ref);
+    isPinDrop = order?.recipient_pin_requested ?? false;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
@@ -48,6 +64,10 @@ export default async function PaymentSuccessPage({
           Back to Home
         </Link>
       </div>
+
+      {isPinDrop && ref && (
+        <PaymentSuccessPinDrop orderId={ref} />
+      )}
     </div>
   );
 }
