@@ -543,6 +543,10 @@ function OccasionsGrid() {
     { icon: "🏆", label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
     { icon: "💝", label: "Just Because", slug: "just-because", color: "from-violet-400 to-purple-500" },
     { icon: "🕊️", label: "Condolences", slug: "condolences", color: "from-slate-400 to-gray-500" },
+    { icon: "🍷", label: "Beverages", slug: "beverages", color: "from-amber-500 to-red-500" },
+    { icon: "🪴", label: "Plants", slug: "plants", color: "from-green-400 to-emerald-500" },
+    { icon: "🍫", label: "Food & Treats", slug: "food-treats", color: "from-yellow-400 to-amber-500" },
+    { icon: "💕", label: "Date Night", slug: "date-night", color: "from-pink-500 to-rose-600" },
   ];
 
   return (

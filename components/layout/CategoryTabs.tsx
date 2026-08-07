@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 const CATEGORIES = [
   { id: "all", label: "All", emoji: "🎁" },
   { id: "birthdays", label: "Birthdays", emoji: "🎂" },
-  { id: "for-her", label: "For Her", emoji: "💐" },
-  { id: "for-him", label: "For Him", emoji: "🎁" },
+  { id: "her", label: "For Her", emoji: "💐" },
+  { id: "him", label: "For Him", emoji: "🎁" },
   { id: "weddings", label: "Weddings", emoji: "💒" },
   { id: "baby", label: "New Baby", emoji: "👶" },
   { id: "anniversaries", label: "Anniversaries", emoji: "💍" },
@@ -17,6 +17,9 @@ const CATEGORIES = [
   { id: "hampers", label: "Hampers", emoji: "🧺" },
   { id: "condolences", label: "Condolences", emoji: "🕊️" },
   { id: "just-because", label: "Just Because", emoji: "💝" },
+  { id: "beverages", label: "Beverages", emoji: "🍷" },
+  { id: "flowers", label: "Flowers", emoji: "🌸" },
+  { id: "plants", label: "Plants", emoji: "🪴" },
   { id: "gift-cards", label: "Gift Cards", emoji: "💳" },
 ];
 

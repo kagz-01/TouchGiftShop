@@ -158,8 +158,21 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         links: [
           { href: "/?category=personalised", label: "Personalised", emoji: "✨" },
           { href: "/?category=flowers", label: "Flowers", emoji: "🌸" },
-          { href: "/?category=chocolates", label: "Chocolates", emoji: "🍫" },
+          { href: "/?category=beverages", label: "Beverages", emoji: "🍷" },
+          { href: "/?category=plants", label: "Plants", emoji: "🪴" },
           { href: "/?category=candles", label: "Candles & Diffusers", emoji: "🕯️" },
+          { href: "/?category=date-night", label: "Date Night", emoji: "💕" },
+          { href: "/?category=self-care", label: "Self Care", emoji: "🧘" },
+        ],
+      },
+      {
+        title: "By Type",
+        links: [
+          { href: "/?category=food-treats", label: "Food & Treats", emoji: "🍫" },
+          { href: "/?category=books-media", label: "Books & Media", emoji: "📚" },
+          { href: "/?category=experience-gifts", label: "Experiences", emoji: " Spa" },
+          { href: "/?category=subscriptions", label: "Subscriptions", emoji: "📦" },
+          { href: "/?category=pet-gifts", label: "Pet Gifts", emoji: "🐾" },
         ],
       },
     ],
@@ -222,7 +235,7 @@ export default function MegaMenu() {
         <div
           onMouseEnter={() => handleMouseEnter(activeData.id)}
           onMouseLeave={handleMouseLeave}
-          className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl mt-2"
+          className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl mt-2 z-50"
         >
           <div className="bg-white rounded-2xl shadow-card-hover border border-surface-border overflow-hidden animate-pop">
             <div className="grid grid-cols-12 gap-0">

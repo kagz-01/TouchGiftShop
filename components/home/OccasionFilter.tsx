@@ -11,7 +11,11 @@ const CATEGORIES = [
   { label: "Corporate", icon: "🏢", slug: "corporate", color: "from-slate-500 to-gray-700" },
   { label: "Condolences", icon: "🕊️", slug: "condolences", color: "from-gray-400 to-gray-600" },
   { label: "Graduation", icon: "🎓", slug: "graduation", color: "from-amber-400 to-orange-500" },
+  { label: "Milestone", icon: "🏆", slug: "milestone", color: "from-emerald-400 to-teal-500" },
+  { label: "Apology", icon: "💐", slug: "apology", color: "from-amber-400 to-orange-500" },
   { label: "Just Because", icon: "💝", slug: "just-because", color: "from-rose-400 to-red-500" },
+  { label: "Beverages", icon: "🍷", slug: "beverages", color: "from-amber-500 to-red-500" },
+  { label: "Plants", icon: "🪴", slug: "plants", color: "from-green-400 to-emerald-500" },
 ];
 
 export default function OccasionFilter() {
@@ -38,7 +42,7 @@ export default function OccasionFilter() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
+      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.slug}
