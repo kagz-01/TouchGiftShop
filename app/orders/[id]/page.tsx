@@ -4,6 +4,8 @@ import { formatKsh } from "@/lib/utils";
 import OrderStatusTimeline from "@/components/orders/OrderStatusTimeline";
 import SendTrackLinkButton from "@/components/orders/SendTrackLinkButton";
 import ResendPinDropButton from "@/components/pin-drop/ResendPinDropButton";
+import PinDropStatus from "@/components/pin-drop/PinDropStatus";
+import PinDropNotification from "@/components/pin-drop/PinDropNotification";
 
 async function getOrder(id: string) {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -48,9 +50,15 @@ export default async function OrderDetailPage({
   const isAnonymous = order.is_anonymous;
   const dontCall = order.dont_call_recipient;
   const hasPinDrop = order.recipient_pin_requested;
+  const hasPinData = order.delivery_lat !== null;
 
   return (
     <div className="min-h-screen bg-gradient-warm">
+      {/* Real-time pin-drop notification */}
+      <PinDropNotification
+        orderId={order.id}
+        enabled={hasPinDrop && !hasPinData}
+      />
       {/* Header */}
       <div className="bg-gradient-to-br from-brand-dark to-brand px-4 py-8 md:py-10">
         <div className="max-w-lg mx-auto">
@@ -135,6 +143,20 @@ export default async function OrderDetailPage({
             />
           )}
 
+          {/* Pin-drop status (shows location, time, map when pin is dropped) */}
+          {hasPinDrop && (
+            <PinDropStatus
+              orderId={order.id}
+              recipientName={order.recipient_name}
+              deliveryLat={order.delivery_lat}
+              deliveryLng={order.delivery_lng}
+              deliveryLandmark={order.delivery_landmark}
+              deliveryTimeWindow={order.delivery_time_window}
+              pinDropToken={order.pin_drop_token}
+              pinRequested={order.recipient_pin_requested}
+            />
+          )}
+
           {/* Pre-dispatch photo */}
           {order.pre_dispatch_photo_url && (
             <div className="bg-white rounded-2xl p-5 border border-surface-border">
@@ -184,6 +206,13 @@ export default async function OrderDetailPage({
               <div className="flex justify-between text-sm">
                 <span className="text-brand-muted">Landmark</span>
                 <span>{order.delivery_landmark}</span>
+              </div>
+            )}
+
+            {order.delivery_time_window && (
+              <div className="flex justify-between text-sm">
+                <span className="text-brand-muted">Delivery window</span>
+                <span className="capitalize">{order.delivery_time_window}</span>
               </div>
             )}
 

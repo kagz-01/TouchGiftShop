@@ -180,8 +180,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Recently viewed products | | | | | | | | | | Done |
 | Related products (cross-sell) | | | | | | | | | | Done |
 | Wishlist quick-save | | | | | | | | | | Done |
+| Pin Drop — recipient delivery location | | | | | | | | | | Done |
 
-**Total features built: 64**
+**Total features built: 65**
 
 ---
 
@@ -211,6 +212,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `f9d76b4` | Checkout components (delivery picker, gift message, order summary) |
 | `3ceb23e` | Social features (share, gift reveal, referral banner) |
 | `1d471b7` | Personalization (recently viewed, related products, wishlist) |
+| `fd3fe08` | Pin-drop sender components (send modal, payment success, resend button) |
+| `pending` | Pin-drop status, real-time notifications, migration, map preview |
 
 ---
 
@@ -468,6 +471,20 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
+## Stage 12 — Delivery Intelligence
+
+### 65. Pin Drop — Recipient Delivery Location
+- **What:** Recipients drop their exact delivery pin via an interactive Leaflet map. Sender sends a secure link (WhatsApp or copy) after payment. Recipient taps the link, drops a pin on the map, optionally adds a landmark, picks a time window (morning/afternoon/evening), and confirms. Sender sees pin status in real-time via Supabase realtime with a toast notification. Order detail page shows the pin location, landmark, time window, and an inline map preview.
+- **Advantage:** **No competitor in Kenya offers this.** Eliminates "where exactly should I deliver?" phone calls. Recipients control their delivery experience. Senders get real-time peace of mind. Time-window selection reduces missed deliveries.
+- **Tech:**
+  - **API:** `POST /api/pin-drop/send` (token + WhatsApp link), `GET/POST /api/pin-drop/[orderId]` (fetch order info, save pin)
+  - **Recipient flow:** `/pin-drop/[orderId]` — Leaflet map → drop pin → landmark input → time window → confirmation
+  - **Sender flow:** `PinDropSendModal` (WhatsApp + copy link), `PaymentSuccessPinDrop` (post-payment prompt), `ResendPinDropButton` (from order page), `PinDropStatus` (location + time + map preview)
+  - **Real-time:** `PinDropNotification` subscribes to Supabase realtime on the orders table, shows toast when recipient drops pin
+  - **Database:** `pin_drop_token`, `delivery_lat`, `delivery_lng`, `delivery_landmark`, `delivery_time_window` columns on orders table
+
+---
+
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -515,10 +532,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | High | Corporate dashboard (bulk orders, CSV upload) | B2B revenue |
 | Medium | Loyalty tier discounts + free delivery | Repeat purchase rate |
 | Medium | Play Store packaging (TWA/Capacitor) | Distribution |
-| Medium | Recipient pin drop (Google Maps) | Delivery accuracy |
 | Low | Admin dashboard (orders, products, reviews) | Operations |
 | Low | Email notifications (order confirmation, dispatch) | Multi-channel comms |
 
 ---
 
-*Last updated: Stage 11 — Personalization & Discovery complete (64 features, 22 commits)*
+*Last updated: Stage 12 — Pin Drop delivery location complete (65 features, 23 commits)*

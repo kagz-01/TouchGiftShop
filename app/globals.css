@@ -274,6 +274,11 @@ html {
   100% { transform: translateX(-50%); }
 }
 
+@keyframes slide-down {
+  0% { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+  100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 20px rgba(155, 27, 90, 0.3); }
   50% { box-shadow: 0 0 40px rgba(155, 27, 90, 0.5); }
@@ -306,6 +311,7 @@ html {
   .perspective-1000 { perspective: 1000px; }
   .backface-hidden { backface-visibility: hidden; }
   .preserve-3d { transform-style: preserve-3d; }
+  .animate-slide-down { animation: slide-down 0.3s ease-out; }
 }
 
 /* ========================
