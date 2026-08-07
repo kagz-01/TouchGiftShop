@@ -3,6 +3,7 @@ import HeroCarousel from "@/components/home/HeroCarousel";
 import TrendingNow from "@/components/home/TrendingNow";
 import OccasionFilter from "@/components/home/OccasionFilter";
 import ProductGrid from "@/components/home/ProductGrid";
+import TrustSignals from "@/components/home/TrustSignals";
 import HowItWorks from "@/components/home/HowItWorks";
 import SurpriseSomeone from "@/components/home/SurpriseSomeone";
 import Testimonials from "@/components/home/Testimonials";
@@ -59,6 +60,9 @@ export default async function HomePage({
         <Suspense fallback={<ProductGridSkeleton />}>
           <ProductGrid searchParams={Promise.resolve(params)} />
         </Suspense>
+
+        {/* Trust signals */}
+        <TrustSignals />
       </div>
 
       {/* 5. Surprise Someone CTA */}

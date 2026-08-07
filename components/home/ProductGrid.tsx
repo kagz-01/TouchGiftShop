@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
 import { BUDGET_TIERS } from "@/lib/budget-tiers";
+import { getProductBadges } from "@/lib/product-badges";
 import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
 
@@ -18,8 +19,8 @@ async function getProducts(category?: string, budget?: string): Promise<Product[
   return products ?? [];
 }
 
-function ProductCard({ product, index }: { product: Product; index: number }) {
-  const isPopular = index < 4;
+function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
+  const badges = getProductBadges(product, index, categorySlug);
 
   return (
     <Link
@@ -54,19 +55,22 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
             </div>
           </div>
 
-          {/* Gift tag for popular items */}
-          {isPopular && (
-            <div className="gift-tag">
-              <span className="flex items-center gap-1">
-                <span className="animate-wiggle inline-block">🎁</span>
-                Popular
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+            {badges.map((badge) => (
+              <span
+                key={badge.label}
+                className={`${badge.color} text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1`}
+              >
+                <span>{badge.emoji}</span>
+                {badge.label}
               </span>
-            </div>
-          )}
+            ))}
+          </div>
 
           {/* Stock badge */}
           {!product.in_stock && (
-            <div className="absolute top-3 left-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg">
+            <div className="absolute top-3 right-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg">
               Out of stock
             </div>
           )}
@@ -137,7 +141,7 @@ export default async function ProductGrid({
       {/* Masonry-style Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((product, i) => (
-          <ProductCard key={product.id} product={product} index={i} />
+          <ProductCard key={product.id} product={product} index={i} categorySlug={params?.category} />
         ))}
       </div>
     </div>
