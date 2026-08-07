@@ -2,7 +2,16 @@
  * Run once to create the 'reviews' storage bucket.
  * npx tsx scripts/setup-reviews-bucket.ts
  */
-import { supabaseAdmin } from "@/lib/supabase";
+import { config } from "dotenv";
+import { resolve } from "path";
+import { createClient } from "@supabase/supabase-js";
+
+config({ path: resolve(__dirname, "../.env.local") });
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 async function main() {
   const BUCKET = "reviews";
