@@ -181,8 +181,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Related products (cross-sell) | | | | | | | | | | Done |
 | Wishlist quick-save | | | | | | | | | | Done |
 | Pin Drop — recipient delivery location | | | | | | | | | | Done |
+| Homepage restructure — discovery flow | | | | | | | | | | Done |
 
-**Total features built: 65**
+**Total features built: 66**
 
 ---
 
@@ -214,6 +215,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `1d471b7` | Personalization (recently viewed, related products, wishlist) |
 | `fd3fe08` | Pin-drop sender components (send modal, payment success, resend button) |
 | `06456bd` | Pin-drop status, real-time notifications, migration, map preview |
+| `d166e24` | Pin-drop landing page with phone lookup |
+| `ba07f06` | Homepage restructure — discovery flow with curated rows |
 
 ---
 
@@ -537,4 +540,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 12 — Pin Drop delivery location complete (65 features, 23 commits)*
+*Last updated: Stage 12 — Homepage restructure + Pin Drop (66 features, 25 commits)*
