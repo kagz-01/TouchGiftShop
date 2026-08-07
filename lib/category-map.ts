@@ -121,6 +121,41 @@ export const CATEGORY_MAP: Record<string, string[]> = {
   // Composite / Curated Collections
   "date-night": ["flowers-aromatics", "fresh-flower-bouquets", "chocolates-sweets-gifts", "wine-whiskey-beverage-hampers"],
   "self-care": ["wellness-self-care-hampers", "candle-holders-lanterns", "luxury-perfumes-fragrance-collection"],
+
+  // Fitness & Gym
+  fitness: ["fitness-equipment", "home-lifestyle", "fashion-accessories"],
+  "gym-accessories": ["fitness-equipment", "fashion-accessories"],
+
+  // Gaming
+  gaming: ["gaming-accessories", "board-games-puzzles", "home-lifestyle"],
+  "board-games": ["board-games-puzzles", "early-education-toys"],
+
+  // Music
+  music: ["vinyl-records", "musical-accessories", "home-lifestyle"],
+
+  // Outdoor & Camping
+  outdoor: ["camping-gear", "picnic-accessories", "home-lifestyle"],
+  camping: ["camping-gear", "home-lifestyle"],
+
+  // Home Decor
+  "home-decor": ["wall-art-decor", "home-lifestyle", "candle-holders-lanterns"],
+  "wall-art": ["wall-art-decor", "art-prints-canvas", "wall-hangings-sculptures"],
+
+  // Kitchen
+  kitchen: ["kitchen-tools", "luxury-kitchen-accessories", "home-lifestyle"],
+
+  // Wedding Registry
+  "wedding-registry": ["wedding-registry-items", "home-lifestyle", "personalized-gifts"],
+  "his-hers": ["wedding-registry-items", "personalized-gifts"],
+
+  // Professional Appreciation
+  "teacher-gifts": ["teacher-appreciation", "personalized-gifts", "greeting-cards-note-cards"],
+  "nurse-gifts": ["nurse-appreciation", "wellness-self-care-hampers", "personalized-gifts"],
+
+  // Seasonal
+  christmas: ["christmas-gifts", "hampers-gift-sets", "candle-holders-lanterns"],
+  valentines: ["valentines-gifts", "flowers-aromatics", "chocolates-sweets-gifts"],
+  easter: ["easter-gifts", "chocolates-sweets-gifts", "kids-baby-gifts"],
 };
 
 /**

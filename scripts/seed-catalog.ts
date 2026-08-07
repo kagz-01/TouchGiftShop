@@ -1983,6 +1983,699 @@ const PRODUCTS: ProductSeed[] = [
       "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
     ],
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // FITNESS & GYM (fitness-equipment, gym-accessories)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Premium Yoga Mat — Non-Slip",
+    slug: "premium-yoga-mat",
+    price: 3500,
+    description: "6mm thick TPE yoga mat with alignment lines. Non-slip, eco-friendly, includes carry strap.",
+    categorySlugs: ["fitness-equipment", "home-lifestyle"],
+    imageQuery: "yoga mat gift fitness",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Insulated Water Bottle — 750ml",
+    slug: "insulated-water-bottle-750",
+    price: 1800,
+    description: "Double-wall vacuum insulated bottle. Keeps water cold 24hrs, hot 12hrs. Stainless steel.",
+    categorySlugs: ["fitness-equipment", "fashion-accessories"],
+    imageQuery: "insulated water bottle fitness",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Gym Duffel Bag — Waterproof",
+    slug: "gym-duffel-bag",
+    price: 4500,
+    description: "Large capacity gym bag with shoe compartment, wet pocket, and USB charging port.",
+    categorySlugs: ["fitness-equipment", "fashion-accessories"],
+    imageQuery: "gym duffel bag",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Resistance Bands Set — 5 Pack",
+    slug: "resistance-bands-set-5",
+    price: 1500,
+    description: "Five resistance levels (5-50 lbs). Latex-free, with carry bag and exercise guide.",
+    categorySlugs: ["fitness-equipment", "home-lifestyle"],
+    imageQuery: "resistance bands set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Smart Fitness Tracker Band",
+    slug: "smart-fitness-tracker",
+    price: 5500,
+    description: "Heart rate, sleep tracking, step counter, waterproof. Works with iOS and Android.",
+    categorySlugs: ["fitness-equipment", "home-lifestyle"],
+    imageQuery: "fitness tracker smart band",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Foam Roller — Deep Tissue",
+    slug: "foam-roller-deep-tissue",
+    price: 2200,
+    description: "High-density EVA foam roller. 45cm, textured surface for muscle recovery.",
+    categorySlugs: ["fitness-equipment", "wellness-self-care-hampers"],
+    imageQuery: "foam roller fitness recovery",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // GAMING (gaming-accessories, board-games-puzzles)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Wireless Gaming Headset",
+    slug: "wireless-gaming-headset",
+    price: 6500,
+    description: "7.1 surround sound, noise-cancelling mic, 20hr battery. Works with PC, PS5, Xbox.",
+    categorySlugs: ["gaming-accessories", "home-lifestyle"],
+    imageQuery: "gaming headset wireless gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Pro Gaming Controller — Multi-Platform",
+    slug: "pro-gaming-controller",
+    price: 4500,
+    description: "Ergonomic wireless controller with programmable buttons and RGB lighting.",
+    categorySlugs: ["gaming-accessories", "home-lifestyle"],
+    imageQuery: "gaming controller wireless",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "1000-Piece Jigsaw Puzzle — Nairobi Skyline",
+    slug: "jigsaw-puzzle-nairobi-1000",
+    price: 1800,
+    description: "1000-piece puzzle featuring Nairobi cityscape. Thick cardboard, matte finish.",
+    categorySlugs: ["board-games-puzzles", "home-lifestyle"],
+    imageQuery: "jigsaw puzzle gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Strategy Board Game — Settlers Edition",
+    slug: "strategy-board-game-settlers",
+    price: 3500,
+    description: "Classic resource management board game for 3-4 players. Family game night essential.",
+    categorySlugs: ["board-games-puzzles", "home-lifestyle"],
+    imageQuery: "board game strategy gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Retro Arcade Console — 500 Games",
+    slug: "retro-arcade-console-500",
+    price: 4000,
+    description: "Mini retro console with 500 classic games. HDMI output, two wireless controllers.",
+    categorySlugs: ["gaming-accessories", "home-lifestyle"],
+    imageQuery: "retro arcade console gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "LED Gaming Mouse Pad — Extended",
+    slug: "led-gaming-mousepad",
+    price: 2500,
+    description: "900x400mm extended mouse pad with 16.8M RGB colours. Anti-slip rubber base.",
+    categorySlugs: ["gaming-accessories", "home-lifestyle"],
+    imageQuery: "gaming mouse pad led",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Card Game Bundle — Exploding Kittens + Expansion",
+    slug: "card-game-bundle-exploding",
+    price: 2200,
+    description: "Hilarious card game for 2-5 players. Includes base game and first expansion pack.",
+    categorySlugs: ["board-games-puzzles", "home-lifestyle"],
+    imageQuery: "card game gift explodin",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // MUSIC (vinyl-records, musical-accessories)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Classic Vinyl Record — Greatest Hits",
+    slug: "vinyl-record-greatest-hits",
+    price: 2500,
+    description: "180g vinyl pressing of timeless classics. Includes digital download code.",
+    categorySlugs: ["vinyl-records", "home-lifestyle"],
+    imageQuery: "vinyl record gift music",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Bluetooth Vinyl Turntable",
+    slug: "bluetooth-vinyl-turntable",
+    price: 8500,
+    description: "Belt-driven turntable with Bluetooth output, built-in speakers, and USB recording.",
+    categorySlugs: ["vinyl-records", "home-lifestyle"],
+    imageQuery: "vinyl turntable bluetooth gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Guitar Picks & Capo Set",
+    slug: "guitar-picks-capo-set",
+    price: 1200,
+    description: "12 guitar picks (various gauges), metal capo, and pick holder. Essential accessories.",
+    categorySlugs: ["musical-accessories", "hobby-craft-supplies"],
+    imageQuery: "guitar picks capo gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Studio Monitor Headphones",
+    slug: "studio-monitor-headphones",
+    price: 5500,
+    description: "Over-ear headphones with flat response. Detachable cable, foldable design.",
+    categorySlugs: ["musical-accessories", "home-lifestyle"],
+    imageQuery: "studio monitor headphones gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Music Gift Card — KSh 3000",
+    slug: "music-gift-card-3000",
+    price: 3000,
+    description: "Digital gift card for music streaming, vinyl records, or instrument accessories.",
+    categorySlugs: ["gift-cards-vouchers", "vinyl-records"],
+    imageQuery: "music gift card voucher",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Kalimba — 17 Keys Thumb Piano",
+    slug: "kalimba-17-keys-thumb-piano",
+    price: 2200,
+    description: "Mahogany kalimba with 17 tines. Includes tuning hammer, music book, and carrying bag.",
+    categorySlugs: ["musical-accessories", "handmade-crafts-fairs"],
+    imageQuery: "kalimba thumb piano gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // OUTDOOR & CAMPING (camping-gear, picnic-accessories)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Camping Hamper — Adventure Pack",
+    slug: "camping-hamper-adventure",
+    price: 8500,
+    description: "Tent, sleeping bag, headlamp, camping plates, and cutlery set. Ready for the wild.",
+    categorySlugs: ["camping-gear", "hampers-gift-sets"],
+    imageQuery: "camping hamper adventure gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Picnic Basket Set — 4 Person",
+    slug: "picnic-basket-set-4",
+    price: 4500,
+    description: "Wicker basket with plates, cutlery, wine glasses, and blanket. Insulated compartment.",
+    categorySlugs: ["picnic-accessories", "home-lifestyle"],
+    imageQuery: "picnic basket set gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Cooler Bag — 30L Premium",
+    slug: "cooler-bag-30l-premium",
+    price: 3500,
+    description: "Heavy-duty cooler bag with 72hr ice retention. Padded straps, bottle opener, pockets.",
+    categorySlugs: ["camping-gear", "picnic-accessories"],
+    imageQuery: "cooler bag premium gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Hammock — Double Outdoor",
+    slug: "hammock-double-outdoor",
+    price: 3000,
+    description: "Parachute nylon hammock, fits 2 people. Tree straps included, packs into carry bag.",
+    categorySlugs: ["camping-gear", "home-lifestyle"],
+    imageQuery: "outdoor hammock double gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "LED Camping Lantern — 2 Pack",
+    slug: "led-camping-lantern-2",
+    price: 1800,
+    description: "Rechargeable LED lanterns, 1000 lumens each. Water-resistant, collapsible design.",
+    categorySlugs: ["camping-gear", "home-lifestyle"],
+    imageQuery: "led camping lantern gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Portable Braai/BBQ Set",
+    slug: "portable-bbq-set",
+    price: 5500,
+    description: "Collapsible charcoal grill with tongs, fork, brush, and carry bag. Stainless steel.",
+    categorySlugs: ["camping-gear", "picnic-accessories"],
+    imageQuery: "portable braai bbq set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // HOME DECOR (wall-art-decor, art-prints-canvas, wall-hangings-sculptures)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Ceramic Vase — Handmade Terracotta",
+    slug: "ceramic-vase-terracotta",
+    price: 2800,
+    description: "Handcrafted terracotta vase with matte finish. 25cm tall, perfect for dried flowers.",
+    categorySlugs: ["home-lifestyle", "handmade-crafts-fairs"],
+    imageQuery: "ceramic vase handmade gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Framed Art Print — African Sunset",
+    slug: "framed-art-african-sunset",
+    price: 3500,
+    description: "A3 giclée print of an African savanna sunset. Black frame, museum-quality paper.",
+    categorySlugs: ["art-prints-canvas", "wall-art-decor"],
+    imageQuery: "framed art print african sunset",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Woven Wall Hanging — Macrame",
+    slug: "woven-wall-hanging-macrame",
+    price: 4500,
+    description: "Large macrame wall hanging in natural cotton. 90cm wide, bohemian chic.",
+    categorySlugs: ["wall-hangings-sculptures", "wall-art-decor"],
+    imageQuery: "macrame wall hanging gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Decorative Mirror — Sunburst Gold",
+    slug: "decorative-mirror-sunburst",
+    price: 5500,
+    description: "Gold metal sunburst mirror, 60cm diameter. Statement piece for living room or bedroom.",
+    categorySlugs: ["home-lifestyle", "wall-art-decor"],
+    imageQuery: "sunburst mirror gold decor",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Throw Cushion Set — 3 Pack",
+    slug: "throw-cushion-set-3",
+    price: 3000,
+    description: "Three African-inspired print cushion covers (45x45cm). Invisible zip, machine washable.",
+    categorySlugs: ["home-lifestyle", "wall-art-decor"],
+    imageQuery: "throw cushion set african print",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Wool Throw Blanket — Kenya",
+    slug: "wool-throw-blanket-kenya",
+    price: 4000,
+    description: "100% wool throw with Maasai-inspired pattern. 150x200cm, soft and warm.",
+    categorySlugs: ["home-lifestyle", "handmade-crafts-fairs"],
+    imageQuery: "wool throw blanket african",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1612198188708-27b227f8ab14?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1513519245088-0e12902e35ca?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Scented Candle Set — 3 Jars",
+    slug: "scented-candle-set-3",
+    price: 2500,
+    description: "Three soy wax candles: lavender, vanilla, sandalwood. 40hr burn time each.",
+    categorySlugs: ["candle-holders-lanterns", "home-lifestyle"],
+    imageQuery: "scented candle set gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1602028915047-37269d1a73f7?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1608181831718-2501d6b351a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Indoor Plant Pot — Concrete Modern",
+    slug: "indoor-plant-pot-concrete",
+    price: 1500,
+    description: "Minimalist concrete plant pot with drainage hole and saucer. 15cm diameter.",
+    categorySlugs: ["plants-succulents", "home-lifestyle"],
+    imageQuery: "concrete plant pot modern",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // KITCHEN TOOLS (kitchen-tools, luxury-kitchen-accessories)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Chef Knife Set — 3 Piece",
+    slug: "chef-knife-set-3",
+    price: 6500,
+    description: "8\" chef, 5\" utility, 3.5\" paring knife. German steel, ergonomic handles, block included.",
+    categorySlugs: ["kitchen-tools", "luxury-kitchen-accessories"],
+    imageQuery: "chef knife set gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "End-Grain Cutting Board — Acacia",
+    slug: "end-grain-cutting-board",
+    price: 4500,
+    description: "Large 45x35cm acacia wood cutting board. End-grain construction, juice groove.",
+    categorySlugs: ["kitchen-tools", "luxury-kitchen-accessories"],
+    imageQuery: "end grain cutting board gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Spice Rack — Bamboo 20 Jar",
+    slug: "spice-rack-bamboo-20",
+    price: 3500,
+    description: "Rotating bamboo spice rack with 20 glass jars and labels. Space-saving design.",
+    categorySlugs: ["kitchen-tools", "home-lifestyle"],
+    imageQuery: "spice rack bamboo gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Cast Iron Dutch Oven — 5L",
+    slug: "cast-iron-dutch-oven-5l",
+    price: 7500,
+    description: "Enameled cast iron pot. Oven safe to 260°C, self-basting lid, 5L capacity.",
+    categorySlugs: ["kitchen-tools", "luxury-kitchen-accessories"],
+    imageQuery: "cast iron dutch oven gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baking Set — Silicone 15 Piece",
+    slug: "baking-set-silicone-15",
+    price: 2800,
+    description: "Silicone bakeware set: muffin tray, loaf pan, cake moulds, spatulas, piping bags.",
+    categorySlugs: ["kitchen-tools", "home-lifestyle"],
+    imageQuery: "baking set silicone gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1593618998160-e34014e67546?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // WEDDING REGISTRY (wedding-registry-items, his-hers)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "His & Hers Robe Set",
+    slug: "his-hers-robe-set",
+    price: 5500,
+    description: "Matching terry cotton robes. His (XL charcoal), hers (L white). Embroidered initials optional.",
+    categorySlugs: ["wedding-registry-items", "personalized-gifts"],
+    imageQuery: "his hers robe set wedding",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Kitchen Starter Set — Newlyweds",
+    slug: "kitchen-starter-set-newlyweds",
+    price: 12000,
+    description: "Knife set, cutting board, pot set, utensils, and tea towels. Everything for a new kitchen.",
+    categorySlugs: ["wedding-registry-items", "kitchen-tools"],
+    imageQuery: "kitchen starter set wedding gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Luxury Bedding Set — King",
+    slug: "luxury-bedding-set-king",
+    price: 8500,
+    description: "300TC Egyptian cotton sheet set: fitted, flat, 4 pillowcases. Hypoallergenic, soft.",
+    categorySlugs: ["wedding-registry-items", "home-lifestyle"],
+    imageQuery: "luxury bedding set king wedding",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Personalised Photo Album — Wedding",
+    slug: "personalised-photo-album-wedding",
+    price: 3500,
+    description: "Leather-bound album with 'Mr & Mrs' embossing. 200 photos, acid-free pages.",
+    categorySlugs: ["wedding-registry-items", "personalized-gifts"],
+    imageQuery: "personalised wedding photo album",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Wine Decanter & Glasses Set",
+    slug: "wine-decanter-glasses-set",
+    price: 5000,
+    description: "Crystal decanter with 4 stemmed glasses. Gift boxed, perfect for anniversary toasts.",
+    categorySlugs: ["wedding-registry-items", "wine-whiskey-beverage-hampers"],
+    imageQuery: "wine decanter glasses set gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Couples Experience Voucher — Dinner",
+    slug: "couples-experience-voucher-dinner",
+    price: 10000,
+    description: "Fine dining experience for two at a top Nairobi restaurant. 3-course meal with wine.",
+    categorySlugs: ["dining-experience-vouchers", "wedding-registry-items"],
+    imageQuery: "couples dinner experience voucher",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // PROFESSIONAL APPRECIATION (teacher-appreciation, nurse-appreciation)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Teacher Appreciation Hamper",
+    slug: "teacher-appreciation-hamper",
+    price: 3500,
+    description: "Personalised mug, notebook, pen set, hand cream, and chocolates. Thank a great teacher.",
+    categorySlugs: ["teacher-appreciation", "personalized-gifts"],
+    imageQuery: "teacher appreciation hamper gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Nurse Appreciation Gift Box",
+    slug: "nurse-appreciation-gift-box",
+    price: 4000,
+    description: "Compression socks, scrub cap, badge reel, energy snacks, and thank-you card.",
+    categorySlugs: ["nurse-appreciation", "wellness-self-care-hampers"],
+    imageQuery: "nurse appreciation gift box",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Work Anniversary Gift Set",
+    slug: "work-anniversary-gift-set",
+    price: 3000,
+    description: "Engraved pen, leather notebook, and desk plant. Celebrate milestones at work.",
+    categorySlugs: ["teacher-appreciation", "personalized-gifts"],
+    imageQuery: "work anniversary gift set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Boss Appreciation Gift",
+    slug: "boss-appreciation-gift",
+    price: 5500,
+    description: "Premium desk accessory set: business card holder, pen stand, and leather blotter.",
+    categorySlugs: ["teacher-appreciation", "luxury-kitchen-accessories"],
+    imageQuery: "boss appreciation gift desk",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // SEASONAL (christmas-gifts, valentines-gifts, easter-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Christmas Hamper — Deluxe",
+    slug: "christmas-hamper-deluxe",
+    price: 7500,
+    description: "Festive hamper with wine, panettone, chocolates, cheese, crackers, and Christmas pudding.",
+    categorySlugs: ["christmas-gifts", "hampers-gift-sets"],
+    imageQuery: "christmas hamper deluxe gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1512389142960-503fb49d06f1?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f8?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Christmas Advent Calendar — Luxury",
+    slug: "christmas-advent-calendar-luxury",
+    price: 4500,
+    description: "24 doors of premium chocolates, mini wines, and beauty surprises. Countdown to Christmas.",
+    categorySlugs: ["christmas-gifts", "chocolates-sweets-gifts"],
+    imageQuery: "christmas advent calendar luxury",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1512389142960-503fb49d06f1?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f8?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Valentine's Day Gift Box — Premium",
+    slug: "valentines-gift-box-premium",
+    price: 6500,
+    description: "Red roses (24 stems), Belgian chocolates, prosecco, and a love letter card.",
+    categorySlugs: ["valentines-gifts", "flowers-aromatics", "chocolates-sweets-gifts"],
+    imageQuery: "valentines day gift box premium",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Valentine's Couple Experience",
+    slug: "valentines-couple-experience",
+    price: 12000,
+    description: "Couples spa day: massage, facial, champagne lunch. Full day of relaxation together.",
+    categorySlugs: ["valentines-gifts", "spa-experience-vouchers"],
+    imageQuery: "valentines couple spa experience",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Easter Hamper — Family",
+    slug: "easter-hamper-family",
+    price: 3500,
+    description: "Hot cross buns, Easter eggs, mini chicks, and a family game. Easter morning sorted.",
+    categorySlugs: ["easter-gifts", "hampers-gift-sets", "chocolates-sweets-gifts"],
+    imageQuery: "easter hamper family gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Easter Chocolate Egg — Giant",
+    slug: "easter-chocolate-egg-giant",
+    price: 2500,
+    description: "Handcrafted Belgian chocolate egg filled with truffles and pralines. 1kg.",
+    categorySlugs: ["easter-gifts", "chocolates-sweets-gifts"],
+    imageQuery: "easter chocolate egg giant gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
 ];
 
 // ─── Seed Logic ───────────────────────────────────────────────────
