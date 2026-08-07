@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getRecommendation, type QuizAnswer } from "@/lib/gift-quiz";
 import ProductGrid from "@/components/home/ProductGrid";
+import SmartQuizResults from "@/components/gift-quiz/SmartQuizResults";
 
 export const metadata = {
   title: "Your Gift Recommendations | TouchGift",
@@ -66,13 +67,15 @@ export default async function QuizResults({
           </div>
         </div>
 
-        {/* Product grid — show first category's products */}
-        <ProductGrid
-          searchParams={Promise.resolve({
-            category: recommendation.categories[0],
-            budget: answers.budget !== "any" ? answers.budget : undefined,
-          })}
-        />
+        {/* AI-powered results with smart follow-ups */}
+        <SmartQuizResults answers={answers}>
+          <ProductGrid
+            searchParams={Promise.resolve({
+              category: recommendation.categories[0],
+              budget: answers.budget !== "any" ? answers.budget : undefined,
+            })}
+          />
+        </SmartQuizResults>
       </div>
     </div>
   );
