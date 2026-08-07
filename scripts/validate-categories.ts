@@ -6,8 +6,12 @@
  * Usage: npx tsx scripts/validate-categories.ts
  */
 
+import { config } from "dotenv";
+import { resolve } from "path";
 import { createClient } from "@supabase/supabase-js";
 import { CATEGORY_MAP } from "../lib/category-map";
+
+config({ path: resolve(__dirname, "../.env.local") });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
