@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
 import CategoryTabs from "@/components/layout/CategoryTabs";
@@ -67,8 +67,10 @@ export default function Header() {
       </div>
 
       {/* Lower section — Category Tabs */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <CategoryTabs />
+      <div className="max-w-6xl mx-auto px-4 md:px-6 relative z-10">
+        <Suspense fallback={<div className="h-10" />}>
+          <CategoryTabs />
+        </Suspense>
       </div>
     </header>
   );
