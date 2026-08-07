@@ -240,7 +240,7 @@ export default function MegaMenu() {
           <div className="bg-white rounded-2xl shadow-card-hover border border-surface-border overflow-hidden animate-pop">
             <div className="grid grid-cols-12 gap-0">
               {/* Main columns */}
-              <div className={`col-span-${activeData.featured ? '8' : '12'} grid grid-cols-${Math.min(activeData.sections.length, 4)} gap-0`}>
+              <div className={`${activeData.featured ? 'col-span-8' : 'col-span-12'} grid ${activeData.sections.length === 1 ? 'grid-cols-1' : activeData.sections.length === 2 ? 'grid-cols-2' : activeData.sections.length === 3 ? 'grid-cols-3' : 'grid-cols-4'} gap-0`}>
                 {activeData.sections.map((section) => (
                   <div key={section.title} className="p-6 border-r border-surface-border last:border-r-0">
                     <h4 className="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-4">
