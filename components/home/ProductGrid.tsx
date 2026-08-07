@@ -3,6 +3,7 @@ import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
 import { BUDGET_TIERS } from "@/lib/budget-tiers";
 import type { Product } from "@/lib/types";
+import CategorySuggestions from "./CategorySuggestions";
 
 async function getProducts(category?: string, budget?: string): Promise<Product[]> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -129,6 +130,9 @@ export default async function ProductGrid({
         <h2 className="font-display text-lg font-semibold">{heading}</h2>
         <span className="text-sm text-brand-muted">{products.length} items</span>
       </div>
+
+      {/* Cross-category suggestions */}
+      {params?.category && <CategorySuggestions category={params.category} />}
 
       {/* Masonry-style Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

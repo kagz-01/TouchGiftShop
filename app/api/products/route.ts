@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
+import { getDefaultSort } from "@/lib/smart-sort";
 
 // GET /api/products?category=birthdays&budget=under-5k — reads the real products table.
 export async function GET(req: Request) {
@@ -29,6 +30,14 @@ export async function GET(req: Request) {
         query = query.lte("price", tier.max);
       }
     }
+  }
+
+  // Smart sorting by category context
+  const sort = getDefaultSort(category);
+  if (sort) {
+    query = query.order(sort.field, { ascending: sort.ascending });
+  } else {
+    query = query.order("created_at", { ascending: false });
   }
 
   const { data, error } = await query.eq("in_stock", true);
