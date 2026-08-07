@@ -213,7 +213,7 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `3ceb23e` | Social features (share, gift reveal, referral banner) |
 | `1d471b7` | Personalization (recently viewed, related products, wishlist) |
 | `fd3fe08` | Pin-drop sender components (send modal, payment success, resend button) |
-| `pending` | Pin-drop status, real-time notifications, migration, map preview |
+| `06456bd` | Pin-drop status, real-time notifications, migration, map preview |
 
 ---
 
