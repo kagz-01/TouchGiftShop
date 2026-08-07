@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
-import CategoryTabs from "@/components/layout/CategoryTabs";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,8 +24,7 @@ export default function Header() {
           : "bg-white"
       )}
     >
-      {/* Upper section — Logo + Nav */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between border-b border-surface-border">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
           <Image
@@ -60,13 +58,6 @@ export default function Header() {
             Sign in
           </Link>
         </div>
-      </div>
-
-      {/* Lower section — Category Tabs */}
-      <div className="max-w-6xl mx-auto px-4 md:px-6 relative z-10">
-        <Suspense fallback={<div className="h-10" />}>
-          <CategoryTabs />
-        </Suspense>
       </div>
     </header>
   );
