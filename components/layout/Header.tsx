@@ -45,17 +45,11 @@ export default function Header() {
         {/* Right side */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <Link
-            href="/corporate"
-            className="text-xs font-semibold text-brand-deep hover:text-brand transition-colors hidden lg:block"
-          >
-            Corporate
-          </Link>
-          <Link
             href="/gift-finder"
             className="flex items-center gap-1.5 px-3 py-1.5 bg-brand/5 hover:bg-brand/10 rounded-full text-xs font-medium text-brand transition-all"
           >
-            <span>🤖</span>
-            <span className="hidden lg:inline">Gift Finder</span>
+            <span>💬</span>
+            <span className="hidden lg:inline">T-Gifter</span>
           </Link>
           <Link
             href="/login"

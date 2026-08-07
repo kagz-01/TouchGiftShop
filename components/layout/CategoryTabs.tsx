@@ -5,28 +5,16 @@ import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const CATEGORIES = [
-  { id: "all", label: "All", emoji: "🎁" },
-  { id: "birthdays", label: "Birthdays", emoji: "🎂" },
-  { id: "her", label: "For Her", emoji: "💐" },
-  { id: "him", label: "For Him", emoji: "🎁" },
-  { id: "weddings", label: "Weddings", emoji: "💒" },
+const QUICK_LINKS = [
+  { id: "all", label: "All Gifts", emoji: "🎁" },
+  { id: "birthdays", label: "Birthday", emoji: "🎂" },
+  { id: "weddings", label: "Wedding", emoji: "💒" },
   { id: "baby", label: "New Baby", emoji: "👶" },
-  { id: "anniversaries", label: "Anniversaries", emoji: "💍" },
-  { id: "corporate", label: "Corporate", emoji: "🏢" },
   { id: "hampers", label: "Hampers", emoji: "🧺" },
+  { id: "flowers", label: "Flowers", emoji: "🌸" },
+  { id: "personalised", label: "Personalised", emoji: "✨" },
   { id: "condolences", label: "Condolences", emoji: "🕊️" },
   { id: "just-because", label: "Just Because", emoji: "💝" },
-  { id: "beverages", label: "Beverages", emoji: "🍷" },
-  { id: "flowers", label: "Flowers", emoji: "🌸" },
-  { id: "plants", label: "Plants", emoji: "🪴" },
-  { id: "fitness", label: "Fitness", emoji: "💪" },
-  { id: "gaming", label: "Gaming", emoji: "🎮" },
-  { id: "music", label: "Music", emoji: "🎵" },
-  { id: "outdoor", label: "Outdoor", emoji: "⛺" },
-  { id: "home-decor", label: "Home Decor", emoji: "🏠" },
-  { id: "kitchen", label: "Kitchen", emoji: "🍳" },
-  { id: "gift-cards", label: "Gift Cards", emoji: "💳" },
 ];
 
 export default function CategoryTabs() {
@@ -59,19 +47,14 @@ export default function CategoryTabs() {
 
   const getCategoryHref = (id: string) => {
     if (id === "all") return "/";
-    if (id === "gift-cards") return "/gift-cards";
-    if (id === "corporate") return "/corporate";
     return `/?category=${id}`;
   };
 
   return (
     <div className="relative">
-      {/* Left fade */}
       {showLeftFade && (
         <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
       )}
-
-      {/* Right fade */}
       {showRightFade && (
         <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
       )}
@@ -81,7 +64,7 @@ export default function CategoryTabs() {
         className="flex gap-1.5 overflow-x-auto scrollbar-hide py-2 px-1"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
-        {CATEGORIES.map((cat) => {
+        {QUICK_LINKS.map((cat) => {
           const isActive = isHome && activeCategory === cat.id;
           const href = getCategoryHref(cat.id);
 
