@@ -1537,6 +1537,452 @@ const PRODUCTS: ProductSeed[] = [
       "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&h=800&fit=crop",
     ],
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — NEWBORN ESSENTIALS (newborn-essentials, baby-shower-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Organic Cotton Swaddle Set — 3 Pack",
+    slug: "organic-swaddle-set-3",
+    price: 1800,
+    description: "Three muslin swaddle blankets in soft pastel prints. 100% organic cotton, breathable.",
+    categorySlugs: ["newborn-essentials", "baby-shower-gifts"],
+    imageQuery: "baby swaddle set gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Newborn Onesie Bundle — 5 Pack",
+    slug: "newborn-onesie-bundle-5",
+    price: 2200,
+    description: "Five organic cotton onesies in neutral colours. Envelope neckline for easy changes.",
+    categorySlugs: ["newborn-essentials", "baby-shower-gifts"],
+    imageQuery: "baby onesie bundle",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Bib Collection — 4 Pack",
+    slug: "baby-bib-collection-4",
+    price: 1200,
+    description: "Four waterproof bibs with food catch pockets. Machine washable, colourful prints.",
+    categorySlugs: ["newborn-essentials", "baby-feeding-sets"],
+    imageQuery: "baby bibs gift set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Knitted Baby Beanie & Booties Set",
+    slug: "knitted-beanie-booties-set",
+    price: 1500,
+    description: "Hand-knitted wool beanie and booties set. Warm, soft, and adorable for newborns.",
+    categorySlugs: ["newborn-essentials", "baby-shower-gifts"],
+    imageQuery: "knitted baby beanie booties",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Blanket & Comforter Set",
+    slug: "baby-blanket-comforter-set",
+    price: 2500,
+    description: "Plush fleece blanket with matching stuffed animal comforter. Hypoallergenic filling.",
+    categorySlugs: ["newborn-essentials", "baby-shower-gifts"],
+    imageQuery: "baby blanket comforter set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — TOYS 0-12MO (kids-baby-gifts, early-education-toys, baby-sensory-toys)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Wooden Rattle & Teether Set",
+    slug: "wooden-rattle-teether-set",
+    price: 1200,
+    description: "Three natural wood rattles and teethers. Non-toxic, smooth edges, Montessori-inspired.",
+    categorySlugs: ["baby-sensory-toys", "kids-baby-gifts"],
+    imageQuery: "wooden baby rattle teether",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Sensory Play Mat — Activity Gym",
+    slug: "sensory-play-mat-gym",
+    price: 4500,
+    description: "Foldable play mat with hanging toys, mirror, and crinkle pages. Develops motor skills.",
+    categorySlugs: ["baby-sensory-toys", "early-education-toys"],
+    imageQuery: "baby activity gym play mat",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Soft Cloth Book Collection — 5 Books",
+    slug: "soft-cloth-book-collection",
+    price: 1500,
+    description: "Five crinkle cloth books with bright colours and textures. Safe for chewing, washable.",
+    categorySlugs: ["baby-sensory-toys", "early-education-toys"],
+    imageQuery: "baby cloth books soft",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Stacking Rings & Shape Sorter",
+    slug: "stacking-rings-shape-sorter",
+    price: 1800,
+    description: "Classic wooden stacking rings with shape sorting cube. Teaches colours, shapes, and sizes.",
+    categorySlugs: ["early-education-toys", "kids-baby-gifts"],
+    imageQuery: "baby stacking toy wooden",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Musical Crib Mobile — Starry Night",
+    slug: "musical-crib-mobile-starry",
+    price: 3200,
+    description: "Rotating crib mobile with stars and moon. Plays lullabies, projects soft light.",
+    categorySlugs: ["baby-sensory-toys", "nursery-decor"],
+    imageQuery: "baby crib mobile musical",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — FEEDING SETS (baby-feeding-sets)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Baby Bottle Gift Set — 3 Pack",
+    slug: "baby-bottle-gift-set-3",
+    price: 2500,
+    description: "Three anti-colic bottles with different nipple flows. BPA-free, easy to clean.",
+    categorySlugs: ["baby-feeding-sets", "baby-shower-gifts"],
+    imageQuery: "baby bottle gift set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Sippy Cup & Snack Set",
+    slug: "sippy-cup-snack-set",
+    price: 1800,
+    description: "Training sippy cup, snack container, and spoon set. Drop-proof, dishwasher safe.",
+    categorySlugs: ["baby-feeding-sets", "kids-baby-gifts"],
+    imageQuery: "baby sippy cup snack set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "High Chair Feeding Bundle",
+    slug: "high-chair-feeding-bundle",
+    price: 3500,
+    description: "Suction bowl, plate, cup, bib, and utensils set. Everything for mealtime.",
+    categorySlugs: ["baby-feeding-sets", "kids-baby-gifts"],
+    imageQuery: "baby feeding set high chair",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — BATH TIME (baby-bath-time, kids-baby-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Baby Bath Time Gift Set",
+    slug: "baby-bath-time-gift-set",
+    price: 2200,
+    description: "Shampoo, body wash, lotion, rubber duck, and hooded towel. Tear-free formula.",
+    categorySlugs: ["baby-bath-time", "baby-shower-gifts"],
+    imageQuery: "baby bath gift set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Hooded Towel & Washcloth Set — Elephant",
+    slug: "hooded-towel-elephant-set",
+    price: 1800,
+    description: "Super-absorbent hooded towel with elephant face and matching washcloths. Organic cotton.",
+    categorySlugs: ["baby-bath-time", "kids-baby-gifts"],
+    imageQuery: "baby hooded towel elephant",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Bath Toy Set — Floating Animals",
+    slug: "bath-toy-floating-animals",
+    price: 1200,
+    description: "Six floating animal figures with a mesh storage bag. Mould-free, easy to dry.",
+    categorySlugs: ["baby-bath-time", "kids-baby-gifts"],
+    imageQuery: "baby bath toys floating",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — NURSERY DECOR (nursery-decor, baby-room-accessories)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Wooden Name Sign — Custom",
+    slug: "wooden-name-sign-custom",
+    price: 3500,
+    description: "Personalised wooden name sign for nursery wall. Choose font and paint colour.",
+    categorySlugs: ["nursery-decor", "personalized-gifts"],
+    imageQuery: "baby nursery name sign wooden",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Nursery Wall Art Set — Animals",
+    slug: "nursery-wall-art-animals",
+    price: 2200,
+    description: "Three framed animal prints (lion, elephant, giraffe). Watercolour style, A4 size.",
+    categorySlugs: ["nursery-decor", "baby-room-accessories"],
+    imageQuery: "nursery wall art animals",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Star Night Light Projector",
+    slug: "star-night-light-projector",
+    price: 2800,
+    description: "Projects stars and moon on ceiling. Rotates slowly, plays white noise, timer function.",
+    categorySlugs: ["nursery-decor", "baby-sensory-toys"],
+    imageQuery: "baby night light projector stars",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — KEEPSAKES (baby-keepsake-gifts, photo-frames-keepsakes)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Baby Milestone Cards — 20 Cards",
+    slug: "baby-milestone-cards-20",
+    price: 1200,
+    description: "20 illustrated milestone cards: first smile, first steps, first tooth, and more.",
+    categorySlugs: ["baby-keepsake-gifts", "baby-shower-gifts"],
+    imageQuery: "baby milestone cards",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Memory Book — First Year",
+    slug: "baby-memory-book-first-year",
+    price: 2500,
+    description: "Hardcover memory book with pages for photos, footprints, and memories from birth to 1 year.",
+    categorySlugs: ["baby-keepsake-gifts", "baby-shower-gifts"],
+    imageQuery: "baby memory book first year",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Handprint & Footprint Kit",
+    slug: "baby-handprint-footprint-kit",
+    price: 1800,
+    description: "Non-toxic ink pads and clay kit for making handprint and footprint keepsakes.",
+    categorySlugs: ["baby-keepsake-gifts", "personalized-gifts"],
+    imageQuery: "baby handprint footprint kit",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Photo Frame — First Year Monthly",
+    slug: "baby-photo-frame-monthly",
+    price: 2200,
+    description: "12-frame collage with month markers (1-12). Display baby's growth journey.",
+    categorySlugs: ["photo-frames-keepsakes", "baby-keepsake-gifts"],
+    imageQuery: "baby photo frame monthly",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — CLOTHING SETS (baby-clothing-sets, kids-baby-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Newborn Outfit Set — 0-3 Months",
+    slug: "newborn-outfit-set-0-3mo",
+    price: 2500,
+    description: "Three-piece set: onesie, pants, and beanie. Organic cotton, snap closures.",
+    categorySlugs: ["baby-clothing-sets", "kids-baby-gifts"],
+    imageQuery: "newborn outfit set baby",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Summer Clothes Set — 3-6 Months",
+    slug: "baby-summer-set-3-6mo",
+    price: 2200,
+    description: "Lightweight romper, sun hat, and socks. Breathable fabric for warm weather.",
+    categorySlugs: ["baby-clothing-sets", "kids-baby-gifts"],
+    imageQuery: "baby summer clothes set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Winter Warm Set — 6-12 Months",
+    slug: "baby-winter-warm-set-6-12mo",
+    price: 3000,
+    description: "Fleece-lined jacket, leggings, booties, and mittens. Warm and cosy for winter.",
+    categorySlugs: ["baby-clothing-sets", "kids-baby-gifts"],
+    imageQuery: "baby winter clothes set",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — HAMPERS (baby-shower-gifts, hampers-gift-sets, kids-baby-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Deluxe Baby Shower Hamper",
+    slug: "deluxe-baby-shower-hamper",
+    price: 6500,
+    description: "Wicker basket with swaddle, onesie, bib, toy, blanket, and card. The ultimate baby shower gift.",
+    categorySlugs: ["baby-shower-gifts", "hampers-gift-sets"],
+    imageQuery: "deluxe baby shower hamper",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Welcome Baby Gift Basket",
+    slug: "welcome-baby-gift-basket",
+    price: 4500,
+    description: "Essentials basket: newborn outfit, washcloths, lotion, diaper cream, and a toy.",
+    categorySlugs: ["baby-shower-gifts", "kids-baby-gifts"],
+    imageQuery: "welcome baby gift basket",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Christening Gift Set",
+    slug: "christening-gift-set",
+    price: 5500,
+    description: "Silver-plated picture frame, bib, and spoon set with personalised engraving.",
+    categorySlugs: ["baby-shower-gifts", "personalized-gifts"],
+    imageQuery: "christening gift set baby",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — JEWELLERY (baby-keepsake-gifts, jewelry-fine-pieces)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Baby Sterling Silver Bracelet",
+    slug: "baby-silver-bracelet",
+    price: 2500,
+    description: "925 sterling silver bracelet with heart charm. Adjustable, hypoallergenic.",
+    categorySlugs: ["baby-keepsake-gifts", "jewelry-fine-pieces"],
+    imageQuery: "baby silver bracelet gift",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1515562141589-67f0d569b986?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Baby Necklace — Birthstone",
+    slug: "baby-necklace-birthstone",
+    price: 2800,
+    description: "Delicate chain with birthstone pendant. Choose the baby's birth month.",
+    categorySlugs: ["baby-keepsake-gifts", "personalized-gifts"],
+    imageQuery: "baby birthstone necklace",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1515562141589-67f0d569b986?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=600&h=800&fit=crop",
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // BABY — PRAM ACCESSORIES (baby-room-accessories, kids-baby-gifts)
+  // ═══════════════════════════════════════════════════════════════
+
+  {
+    name: "Pram Footmuff — Universal Fit",
+    slug: "pram-footmuff-universal",
+    price: 3500,
+    description: "Cosy footmuff for strollers. Fleece-lined, waterproof, fits most prams.",
+    categorySlugs: ["baby-room-accessories", "kids-baby-gifts"],
+    imageQuery: "pram footmuff baby",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
+  {
+    name: "Pram Organiser Bag",
+    slug: "pram-organiser-bag",
+    price: 1800,
+    description: "Attaches to pram handle. Holds bottle, phone, keys, and nappies. Waterproof lining.",
+    categorySlugs: ["baby-room-accessories", "kids-baby-gifts"],
+    imageQuery: "pram organiser bag",
+    imageUrls: [
+      "https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&h=800&fit=crop",
+    ],
+  },
 ];
 
 // ─── Seed Logic ───────────────────────────────────────────────────
