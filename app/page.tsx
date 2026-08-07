@@ -1,56 +1,135 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import HeroCarousel from "@/components/home/HeroCarousel";
 import TrendingNow from "@/components/home/TrendingNow";
-import OccasionFilter from "@/components/home/OccasionFilter";
-import ProductGrid from "@/components/home/ProductGrid";
+import OccasionPills from "@/components/home/OccasionPills";
+import FeaturedRow from "@/components/home/FeaturedRow";
 import TrustSignals from "@/components/home/TrustSignals";
 import HowItWorks from "@/components/home/HowItWorks";
 import SurpriseSomeone from "@/components/home/SurpriseSomeone";
 import Testimonials from "@/components/home/Testimonials";
-import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 import { createClient } from "@supabase/supabase-js";
 
-async function getTrendingProducts() {
+async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const { data } = await supabase
-    .from("products")
-    .select("*")
-    .eq("in_stock", true)
-    .order("created_at", { ascending: false })
-    .limit(10);
+  // Fetch in parallel: trending, under 2k, for her, for him
+  const [trending, under2k, forHer, forHim] = await Promise.all([
+    supabase
+      .from("products")
+      .select("*")
+      .eq("in_stock", true)
+      .order("created_at", { ascending: false })
+      .limit(10),
+    supabase
+      .from("products")
+      .select("*")
+      .eq("in_stock", true)
+      .lte("price", 2000)
+      .order("price", { ascending: true })
+      .limit(10),
+    supabase
+      .from("products")
+      .select("*")
+      .eq("in_stock", true)
+      .order("price", { ascending: false })
+      .limit(10),
+    supabase
+      .from("products")
+      .select("*")
+      .eq("in_stock", true)
+      .order("price", { ascending: false })
+      .limit(10),
+  ]);
 
-  return data ?? [];
+  return {
+    trending: trending.data ?? [],
+    under2k: under2k.data ?? [],
+    forHer: forHer.data ?? [],
+    forHim: forHim.data ?? [],
+  };
 }
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string; budget?: string }>;
-}) {
-  const params = await searchParams;
-  const hasCategory = !!params.category;
-  const trendingProducts = await getTrendingProducts();
+export default async function HomePage() {
+  const featured = await getFeaturedProducts();
 
   return (
     <div>
       {/* 1. Hero carousel */}
       <HeroCarousel />
 
-      {/* 2. Trending products */}
-      <TrendingNow products={trendingProducts} />
-
-      {/* 3. Occasion grid */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-10 md:py-14">
+      {/* 2. Occasion pills — horizontal scroll, always visible */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 pt-6 md:pt-8">
         <Suspense fallback={null}>
-          <OccasionFilter />
+          <OccasionPills />
         </Suspense>
       </div>
 
-      {/* 3.5 Gift Quiz CTA */}
+      {/* 3. How it works — move up so users see value prop early */}
+      <HowItWorks />
+
+      {/* 4. Featured product rows — curated, not overwhelming */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 space-y-2">
+        <FeaturedRow
+          title="Trending Now"
+          subtitle="Most-loved gifts this week"
+          products={featured.trending}
+          viewAllHref="/?category= birthdays"
+          viewAllLabel="See all"
+        />
+
+        <FeaturedRow
+          title="Under KSh 2,000"
+          subtitle="Thoughtful gifts, friendly prices"
+          products={featured.under2k}
+          viewAllHref="/?budget=under-5k"
+          viewAllLabel="See all"
+        />
+
+        <FeaturedRow
+          title="For Her"
+          subtitle="She deserves something special"
+          products={featured.forHer}
+          viewAllHref="/?category=for-her"
+          viewAllLabel="See all"
+        />
+
+        <FeaturedRow
+          title="For Him"
+          subtitle="He\'ll love these"
+          products={featured.forHim}
+          viewAllHref="/?category=for-him"
+          viewAllLabel="See all"
+        />
+      </div>
+
+      {/* 5. View Full Catalog CTA */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-10">
+        <Link
+          href="/shop"
+          className="block bg-white border-2 border-surface-border hover:border-brand/30 rounded-2xl p-6 text-center transition-all duration-300 hover:shadow-card group"
+        >
+          <div className="flex items-center justify-center gap-3">
+            <span className="text-2xl">🛍️</span>
+            <div>
+              <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">
+                Browse All Gifts
+              </p>
+              <p className="text-xs text-brand-muted">
+                700+ products across 30+ categories
+              </p>
+            </div>
+            <svg className="w-5 h-5 text-brand-muted group-hover:text-brand group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </Link>
+      </div>
+
+      {/* 6. Gift Quiz CTA */}
       <div className="max-w-6xl mx-auto px-4 md:px-8 pb-8">
         <a
           href="/gift-quiz"
@@ -75,28 +154,15 @@ export default async function HomePage({
         </a>
       </div>
 
-      {/* 4. Product grid */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 pb-10 md:pb-14 space-y-6">
-        <div className="text-center">
-          <h2 className="font-display text-2xl md:text-3xl font-bold">Popular Gifts</h2>
-          <p className="text-sm text-brand-muted mt-1">Curated picks for every occasion</p>
-        </div>
+      {/* 7. Surprise Someone CTA */}
+      <SurpriseSomeone />
 
-        <Suspense fallback={<ProductGridSkeleton />}>
-          <ProductGrid searchParams={Promise.resolve(params)} />
-        </Suspense>
-
-        {/* Trust signals */}
+      {/* 8. Trust signals */}
+      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
         <TrustSignals />
       </div>
 
-      {/* 5. Surprise Someone CTA */}
-      <SurpriseSomeone />
-
-      {/* 6. How it works */}
-      <HowItWorks />
-
-      {/* 7. Testimonials */}
+      {/* 9. Testimonials */}
       <Testimonials />
     </div>
   );
