@@ -39,7 +39,6 @@ export const CATEGORY_MAP: Record<string, string[]> = {
     "name-printed-mugs-drinkware",
   ],
   flowers: ["flowers-aromatics", "fresh-flower-bouquets"],
-  chocolates: ["hampers-gift-sets", "customizable-hamper-kits"],
   jewellery: ["jewelry-fine-pieces", "handmade-jewelry", "watches-timepieces"],
   personalised: ["personalized-gifts", "personalized-desk-accessories", "personalized-journals-notebooks", "name-printed-mugs-drinkware"],
   spa: ["wellness-self-care-hampers"],
@@ -87,6 +86,34 @@ export const CATEGORY_MAP: Record<string, string[]> = {
 
   // Candles
   candles: ["candle-holders-lanterns", "home-lifestyle"],
+
+  // Beverages
+  beverages: ["wine-whiskey-beverage-hampers", "hampers-gift-sets", "customizable-hamper-kits"],
+  "alcoholic": ["wine-whiskey-beverage-hampers", "hampers-gift-sets"],
+  "non-alcoholic": ["juices-tea-coffee-gifts", "hampers-gift-sets", "customizable-hamper-kits"],
+
+  // Food & Treats
+  "food-treats": ["hampers-gift-sets", "customizable-hamper-kits", "chocolates-sweets-gifts"],
+  chocolates: ["hampers-gift-sets", "customizable-hamper-kits", "chocolates-sweets-gifts"],
+
+  // Plants
+  plants: ["plants-succulents", "flowers-aromatics", "home-lifestyle"],
+
+  // Books & Media
+  "books-media": ["books-magazines-gifts", "personalized-journals-notebooks"],
+
+  // Experience Gifts
+  "experience-gifts": ["spa-experience-vouchers", "wellness-self-care-hampers", "dining-experience-vouchers"],
+
+  // Subscriptions
+  subscriptions: ["monthly-subscription-boxes", "wellness-self-care-hampers"],
+
+  // Pet Gifts
+  "pet-gifts": ["pet-accessories-gifts", "home-lifestyle"],
+
+  // Composite / Curated Collections
+  "date-night": ["flowers-aromatics", "fresh-flower-bouquets", "chocolates-sweets-gifts", "wine-whiskey-beverage-hampers"],
+  "self-care": ["wellness-self-care-hampers", "candle-holders-lanterns", "luxury-perfumes-fragrance-collection"],
 };
 
 /**
