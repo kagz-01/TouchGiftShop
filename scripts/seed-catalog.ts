@@ -8,8 +8,12 @@
  * Safe to re-run — matches on slug, uses upsert.
  */
 
+import { config } from "dotenv";
+import { resolve } from "path";
 import { createClient } from "@supabase/supabase-js";
 import sharp from "sharp";
+
+config({ path: resolve(__dirname, "../.env.local") });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
