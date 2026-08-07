@@ -1,13 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
+import { BUDGET_TIERS } from "@/lib/budget-tiers";
 import type { Product } from "@/lib/types";
 
-async function getProducts(category?: string): Promise<Product[]> {
+async function getProducts(category?: string, budget?: string): Promise<Product[]> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const url = category
-    ? `${base}/api/products?category=${encodeURIComponent(category)}`
-    : `${base}/api/products`;
+  const params = new URLSearchParams();
+  if (category) params.set("category", category);
+  if (budget) params.set("budget", budget);
+  const qs = params.toString();
+  const url = qs ? `${base}/api/products?${qs}` : `${base}/api/products`;
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) return [];
   const { products } = await res.json();
@@ -92,10 +95,21 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 export default async function ProductGrid({
   searchParams,
 }: {
-  searchParams?: Promise<{ category?: string }>;
+  searchParams?: Promise<{ category?: string; budget?: string }>;
 }) {
   const params = searchParams ? await searchParams : {};
-  const products = await getProducts(params?.category);
+  const products = await getProducts(params?.category, params?.budget);
+
+  const budgetLabel = params?.budget
+    ? BUDGET_TIERS.find((t) => t.slug === params.budget)?.label
+    : null;
+
+  const heading = [
+    params?.category
+      ? `${params.category.charAt(0).toUpperCase() + params.category.slice(1).replace("-", " ")} Gifts`
+      : "All Gifts",
+    budgetLabel ? ` — ${budgetLabel}` : "",
+  ].join("");
 
   if (products.length === 0) {
     return (
@@ -112,11 +126,7 @@ export default async function ProductGrid({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold">
-          {params?.category
-            ? `${params.category.charAt(0).toUpperCase() + params.category.slice(1).replace("-", " ")} Gifts`
-            : "All Gifts"}
-        </h2>
+        <h2 className="font-display text-lg font-semibold">{heading}</h2>
         <span className="text-sm text-brand-muted">{products.length} items</span>
       </div>
 

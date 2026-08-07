@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getDbSlugs } from "@/lib/category-map";
+import { getBudgetRange } from "@/lib/budget-tiers";
 
-// GET /api/products?category=birthdays — reads the real products table.
+// GET /api/products?category=birthdays&budget=under-5k — reads the real products table.
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
+  const budget = searchParams.get("budget");
 
   let query = supabaseAdmin.from("products").select(
     category
@@ -13,7 +16,19 @@ export async function GET(req: Request) {
   );
 
   if (category) {
-    query = query.eq("product_categories.categories.slug", category);
+    const dbSlugs = getDbSlugs(category);
+    query = query.in("product_categories.categories.slug", dbSlugs);
+  }
+
+  // Budget filtering
+  if (budget) {
+    const tier = getBudgetRange(budget);
+    if (tier) {
+      query = query.gte("price", tier.min);
+      if (tier.max !== null) {
+        query = query.lte("price", tier.max);
+      }
+    }
   }
 
   const { data, error } = await query.eq("in_stock", true);
@@ -22,5 +37,5 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ products: data });
+  return NextResponse.json({ products: data, count: data?.length ?? 0 });
 }

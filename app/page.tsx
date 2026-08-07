@@ -28,7 +28,7 @@ async function getTrendingProducts() {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; budget?: string }>;
 }) {
   const params = await searchParams;
   const hasCategory = !!params.category;
