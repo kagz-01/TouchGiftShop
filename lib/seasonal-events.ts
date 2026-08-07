@@ -8,50 +8,13 @@ export type SeasonalEvent = {
   categories: string[];
   message: string;
   icon: string;
- daysBefore: number; // Days before to start prompting
+  daysBefore: number;
   tags: string[];
+  group: "kenyan" | "international" | "religious" | "life";
 };
 
 export const SEASONAL_EVENTS: SeasonalEvent[] = [
-  {
-    id: "valentines",
-    name: "Valentine's Day",
-    nameSw: "Siku ya Wapendanao",
-    date: "02-14",
-    month: 2,
-    day: 14,
-    categories: ["flowers", "chocolates-sweets-gifts", "jewelry-fine-pieces", "experience-gifts"],
-    message: "Valentine's Day is coming up! Show your love with the perfect gift.",
-    icon: "❤️",
-    daysBefore: 14,
-    tags: ["romantic", "partner"],
-  },
-  {
-    id: "mothers-day",
-    name: "Mother's Day",
-    nameSw: "Siku ya Mama",
-    date: "05-11", // Second Sunday of May (approx)
-    month: 5,
-    day: 11,
-    categories: ["personalized-gifts", "flowers", "wellness-self-care-hampers", "experience-gifts"],
-    message: "Mother's Day is near! Thank the most important woman in your life.",
-    icon: "👩",
-    daysBefore: 14,
-    tags: ["parent", "family"],
-  },
-  {
-    id: "fathers-day",
-    name: "Father's Day",
-    nameSw: "Siku ya Baba",
-    date: "06-15", // Third Sunday of June (approx)
-    month: 6,
-    day: 15,
-    categories: ["experience-gifts", "whisky-spirits-hampers", "gadgets", "personalized-gifts"],
-    message: "Father's Day is coming! Get Dad something he'll actually love.",
-    icon: "👨",
-    daysBefore: 14,
-    tags: ["parent", "family"],
-  },
+  // ─── KENYAN NATIONAL HOLIDAYS ───────────────────────────────
   {
     id: "madaraka",
     name: "Madaraka Day",
@@ -60,23 +23,39 @@ export const SEASONAL_EVENTS: SeasonalEvent[] = [
     month: 6,
     day: 1,
     categories: ["hampers-gift-sets", "personalized-gifts", "gourmet-gifts"],
-    message: "Celebrate Kenya's independence! Send a patriotic gift.",
+    message: "Self-rule, self-pride. Celebrate how far we've come with a gift that says 'I see you, Kenya.'",
     icon: "🇰🇪",
     daysBefore: 7,
     tags: ["national", "kenyan"],
+    group: "kenyan",
   },
   {
-    id: "harambee",
-    name: "Harambee Day",
-    nameSw: "Siku ya Harambee",
+    id: "mashujaa",
+    name: "Mashujaa Day",
+    nameSw: "Siku ya Mashujaa",
     date: "10-20",
     month: 10,
     day: 20,
-    categories: ["hampers-gift-sets", "corporate", "personalized-gifts"],
-    message: "Harambee Day! Celebrate unity with thoughtful gifts.",
-    icon: "🤲",
+    categories: ["hampers-gift-sets", "personalized-gifts", "experience-gifts"],
+    message: "Every family has a hero. Honour the ones who fought for us — and the ones who fight for us daily.",
+    icon: "🛡️",
     daysBefore: 7,
-    tags: ["national", "kenyan", "corporate"],
+    tags: ["national", "kenyan", "family"],
+    group: "kenyan",
+  },
+  {
+    id: "utamaduni",
+    name: "Utamaduni Day",
+    nameSw: "Siku ya Utamaduni",
+    date: "10-10",
+    month: 10,
+    day: 10,
+    categories: ["personalized-gifts", "hampers-gift-sets", "gourmet-gifts"],
+    message: "Our culture is our strength. Celebrate Kenyan heritage with gifts that tell our story.",
+    icon: "🎭",
+    daysBefore: 7,
+    tags: ["national", "kenyan", "cultural"],
+    group: "kenyan",
   },
   {
     id: "jamhuri",
@@ -86,10 +65,83 @@ export const SEASONAL_EVENTS: SeasonalEvent[] = [
     month: 12,
     day: 12,
     categories: ["hampers-gift-sets", "personalized-gifts", "gourmet-gifts"],
-    message: "Jamhuri Day! Celebrate Kenya's democracy with gifts that unite.",
+    message: "Independence day! 60+ years of Kenya. Gift something that screams 'Made in Kenya.'",
     icon: "🇰🇪",
     daysBefore: 7,
     tags: ["national", "kenyan"],
+    group: "kenyan",
+  },
+  {
+    id: "labour-day",
+    name: "Labour Day",
+    nameSw: "Siku ya Wafanyakazi",
+    date: "05-01",
+    month: 5,
+    day: 1,
+    categories: ["hampers-gift-sets", "wellness-self-care-hampers", "personalized-gifts"],
+    message: "Hard work deserves recognition. Thank the workers in your life — your mum, your shosho, your driver.",
+    icon: "⚒️",
+    daysBefore: 7,
+    tags: ["national", "kenyan", "appreciation"],
+    group: "kenyan",
+  },
+  {
+    id: "international-womens",
+    name: "International Women's Day",
+    nameSw: "Siku ya Kimataifa ya Wanawake",
+    date: "03-08",
+    month: 3,
+    day: 8,
+    categories: ["flowers", "jewelry-fine-pieces", "wellness-self-care-hampers", "personalized-gifts"],
+    message: "She runs the house, the office, the world. Show up for the women who show up for everyone.",
+    icon: "💪",
+    daysBefore: 7,
+    tags: ["women", "appreciation", "kenyan"],
+    group: "kenyan",
+  },
+
+  // ─── INTERNATIONAL HOLIDAYS ─────────────────────────────────
+  {
+    id: "valentines",
+    name: "Valentine's Day",
+    nameSw: "Siku ya Wapendanao",
+    date: "02-14",
+    month: 2,
+    day: 14,
+    categories: ["flowers", "chocolates-sweets-gifts", "jewelry-fine-pieces", "experience-gifts"],
+    message: "Love isn't just Feb 14. But since everyone's watching — make it count.",
+    icon: "❤️",
+    daysBefore: 14,
+    tags: ["romantic", "partner"],
+    group: "international",
+  },
+  {
+    id: "mothers-day",
+    name: "Mother's Day",
+    nameSw: "Siku ya Mama",
+    date: "05-11",
+    month: 5,
+    day: 11,
+    categories: ["personalized-gifts", "flowers", "wellness-self-care-hampers", "experience-gifts"],
+    message: "Mama doesn't want 'just anything.' She wants to know you thought about her. Prove it.",
+    icon: "👩",
+    daysBefore: 14,
+    tags: ["parent", "family"],
+    group: "international",
+  },
+  {
+    id: "fathers-day",
+    name: "Father's Day",
+    nameSw: "Siku ya Baba",
+    date: "06-15",
+    month: 6,
+    day: 15,
+    categories: ["experience-gifts", "whisky-spirits-hampers", "gadgets", "personalized-gifts"],
+    message: "Dad says 'I don't need anything.' He's lying. Get him that thing he'd never buy himself.",
+    icon: "👨",
+    daysBefore: 14,
+    tags: ["parent", "family"],
+    group: "international",
   },
   {
     id: "christmas",
@@ -99,10 +151,11 @@ export const SEASONAL_EVENTS: SeasonalEvent[] = [
     month: 12,
     day: 25,
     categories: ["christmas", "hampers-gift-sets", "chocolates-sweets-gifts", "experience-gifts"],
-    message: "Christmas is coming! Spread joy with perfect gifts for everyone.",
+    message: "Kenyans don't do Christmas small. Big hampers, bigger love, biggest family gatherings.",
     icon: "🎄",
     daysBefore: 30,
     tags: ["holiday", "family", "friends"],
+    group: "international",
   },
   {
     id: "new-year",
@@ -112,62 +165,113 @@ export const SEASONAL_EVENTS: SeasonalEvent[] = [
     month: 1,
     day: 1,
     categories: ["experience-gifts", "wellness-self-care-hampers", "hampers-gift-sets"],
-    message: "New Year, new gifts! Start the year with thoughtful surprises.",
+    message: "New year, new vibes. Start 2026 with intention — gift something meaningful.",
     icon: "🎆",
     daysBefore: 14,
     tags: ["holiday", "new beginnings"],
+    group: "international",
   },
   {
     id: "easter",
     name: "Easter",
     nameSw: "Pasaka",
-    date: "04-20", // Approximate
+    date: "04-20",
     month: 4,
     day: 20,
     categories: ["chocolates-sweets-gifts", "kids-baby-gifts", "hampers-gift-sets"],
-    message: "Easter blessings! Chocolate hampers and gifts for the family.",
+    message: "Easter is family time. Chocolate hampers for the kids, something special for the folks.",
     icon: "🐣",
     daysBefore: 14,
     tags: ["religious", "family"],
+    group: "religious",
   },
+
+  // ─── RELIGIOUS / CULTURAL ───────────────────────────────────
+  {
+    id: "eid-al-fitr",
+    name: "Eid al-Fitr",
+    nameSw: "Eid el-Fitr",
+    date: "03-30", // Approximate — varies by lunar calendar
+    month: 3,
+    day: 30,
+    categories: ["hampers-gift-sets", "chocolates-sweets-gifts", "personalized-gifts", "gourmet-gifts"],
+    message: "Eid Mubarak! After a month of reflection, celebrate with sweets, gifts, and joy.",
+    icon: "🌙",
+    daysBefore: 7,
+    tags: ["religious", "muslim", "family"],
+    group: "religious",
+  },
+  {
+    id: "eid-al-adha",
+    name: "Eid al-Adha",
+    nameSw: "Eid el-Adha",
+    date: "06-06", // Approximate — varies by lunar calendar
+    month: 6,
+    day: 6,
+    categories: ["hampers-gift-sets", "gourmet-gifts", "wine-whiskey-beverage-hampers", "personalized-gifts"],
+    message: "Eid Mubarak! A time of sacrifice and generosity. Share the blessing with loved ones.",
+    icon: "🕌",
+    daysBefore: 7,
+    tags: ["religious", "muslim", "family"],
+    group: "religious",
+  },
+  {
+    id: "diwali",
+    name: "Diwali",
+    nameSw: "Diwali",
+    date: "10-20", // Approximate — varies
+    month: 10,
+    day: 20,
+    categories: ["chocolates-sweets-gifts", "hampers-gift-sets", "personalized-gifts", "candles"],
+    message: "Happy Diwali! Light up someone's world with sweets and thoughtful gifts.",
+    icon: "🪔",
+    daysBefore: 7,
+    tags: ["religious", "hindu", "family"],
+    group: "religious",
+  },
+
+  // ─── LIFE MOMENTS ───────────────────────────────────────────
   {
     id: "school-opening",
     name: "School Opening",
     nameSw: "Fungua Shule",
-    date: "01-06", // Approximate
+    date: "01-06",
     month: 1,
     day: 6,
     categories: ["kids-baby-gifts", "early-education-toys", "books-magazines-gifts"],
-    message: "School is opening! Gift useful stationery and learning toys.",
+    message: "New term, new energy. Gift the kids something that makes them excited to learn.",
     icon: "📚",
     daysBefore: 10,
     tags: ["kids", "education"],
+    group: "life",
   },
   {
-    id: "ruracio",
+    id: "ruracio-season",
     name: "Ruracio Season",
     nameSw: "Msimu wa Ruracio",
-    date: "11-15", // Engagement season
+    date: "11-15",
     month: 11,
     day: 15,
     categories: ["hampers-gift-sets", "wine-whiskey-beverage-hampers", "personalized-gifts"],
-    message: "Ruracio season! Bring the perfect gift for the families.",
+    message: "Engagement season is here! The families are meeting — bring the right gifts.",
     icon: "💍",
     daysBefore: 21,
     tags: ["cultural", "wedding", "kenyan"],
+    group: "life",
   },
   {
     id: "festive-season",
     name: "Festive Season",
     nameSw: "Msimu wa Sherehe",
-    date: "12-15", // December festive
+    date: "12-15",
     month: 12,
     day: 15,
     categories: ["hampers-gift-sets", "wine-whiskey-beverage-hampers", "chocolates-sweets-gifts"],
-    message: "Festive season is here! Corporate hampers and family gifts.",
+    message: "December in Nairobi hits different. Corporate hampers, family gifts, end-of-year vibes.",
     icon: "🥂",
     daysBefore: 21,
     tags: ["corporate", "family", "holiday"],
+    group: "life",
   },
 ];
 
@@ -179,7 +283,6 @@ export function getUpcomingEvents(withinDays: number = 30): SeasonalEvent[] {
     const thisYear = now.getFullYear();
     const eventDate = new Date(thisYear, event.month - 1, event.day);
 
-    // If event already passed this year, check next year
     if (eventDate < now) {
       eventDate.setFullYear(thisYear + 1);
     }
@@ -193,9 +296,12 @@ export function getUpcomingEvents(withinDays: number = 30): SeasonalEvent[] {
     }
   }
 
-  // Sort by date (nearest first)
   upcoming.sort((a, b) => a.daysBefore - b.daysBefore);
   return upcoming;
+}
+
+export function getEventsByGroup(group: SeasonalEvent["group"]): SeasonalEvent[] {
+  return SEASONAL_EVENTS.filter((e) => e.group === group);
 }
 
 export function getEventById(id: string): SeasonalEvent | undefined {
@@ -212,9 +318,6 @@ export function formatCountdown(days: number): string {
 export function shouldShowPrompt(event: SeasonalEvent): boolean {
   const now = new Date();
   const hour = now.getHours();
-
-  // Don't show during sleeping hours
   if (hour < 8 || hour > 21) return false;
-
   return true;
 }

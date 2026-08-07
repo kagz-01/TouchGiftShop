@@ -167,6 +167,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
           { href: "/?category=anniversaries", label: "Anniversary", emoji: "💕" },
           { href: "/?category=graduation", label: "Graduation", emoji: "🎓" },
           { href: "/?category=baby", label: "New Baby", emoji: "👶" },
+          { href: "/?category=housewarming", label: "Housewarming", emoji: "🏠" },
         ],
       },
       {
@@ -180,12 +181,48 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         ],
       },
       {
-        title: "Kenyan Occasions",
+        title: "Kenyan Holidays",
         links: [
-          { href: "/?cultural=ruracio", label: "Ruracio", emoji: "💍" },
+          { href: "/?holiday=madaraka", label: "Madaraka Day", emoji: "🇰🇪" },
+          { href: "/?holiday=mashujaa", label: "Mashujaa Day", emoji: "🛡️" },
+          { href: "/?holiday=jamhuri", label: "Jamhuri Day", emoji: "🇰🇪" },
+          { href: "/?holiday=utamaduni", label: "Utamaduni Day", emoji: "🎭" },
+          { href: "/?holiday=labour-day", label: "Labour Day", emoji: "⚒️" },
+          { href: "/?holiday=womens-day", label: "Women's Day", emoji: "💪" },
+        ],
+      },
+      {
+        title: "International",
+        links: [
+          { href: "/?holiday=valentines", label: "Valentine's Day", emoji: "❤️" },
+          { href: "/?holiday=mothers-day", label: "Mother's Day", emoji: "👩" },
+          { href: "/?holiday=fathers-day", label: "Father's Day", emoji: "👨" },
+          { href: "/?holiday=easter", label: "Easter", emoji: "🐣" },
+          { href: "/?holiday=christmas", label: "Christmas", emoji: "🎄" },
+          { href: "/?holiday=eid", label: "Eid al-Fitr / al-Adha", emoji: "🌙" },
+        ],
+      },
+      {
+        title: "By Community",
+        links: [
+          { href: "/?community=kikuyu", label: "Kikuyu", emoji: "🏔️" },
+          { href: "/?community=luo", label: "Luo", emoji: "🐟" },
+          { href: "/?community=kalenjin", label: "Kalenjin", emoji: "🏃" },
+          { href: "/?community=maasai", label: "Maasai", emoji: "🦁" },
+          { href: "/?community=coastal", label: "Coastal / Swahili", emoji: "🌊" },
+          { href: "/?community=luhya", label: "Luhya", emoji: "🌽" },
+          { href: "/?community=meru", label: "Meru", emoji: "⛰️" },
+        ],
+      },
+      {
+        title: "Life Moments",
+        links: [
+          { href: "/?cultural=ruracio", label: "Ruracio (Engagement)", emoji: "💍" },
           { href: "/?cultural=dowry", label: "Dowry (Mahari)", emoji: "🐄" },
           { href: "/?cultural=circumcision", label: "Circumcision", emoji: "🗡️" },
           { href: "/?cultural=christening", label: "Christening", emoji: "⛪" },
+          { href: "/?cultural=funeral", label: "Funeral / Condolence", emoji: "🕊️" },
+          { href: "/?cultural=graduation", label: "Graduation", emoji: "🎓" },
         ],
       },
     ],
