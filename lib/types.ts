@@ -86,6 +86,7 @@ export interface Review {
   title: string | null;
   body: string | null;
   reviewerName: string;
+  reviewer_name?: string;
   isAnonymous: boolean;
   isVerifiedPurchase: boolean;
   status: ReviewStatus;

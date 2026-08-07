@@ -27,10 +27,11 @@ const AVATAR_COLORS = [
   "bg-brand-coral", "bg-gold-dark",
 ];
 
-function getAvatarColor(name: string) {
+function getAvatarColor(name: string | undefined) {
+  const safe = name || "Anonymous";
   let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < safe.length; i++) {
+    hash = safe.charCodeAt(i) + ((hash << 5) - hash);
   }
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
@@ -204,14 +205,16 @@ export default function Testimonials() {
                         </svg>
                       </div>
                     ) : (
-                      <div className={`w-10 h-10 rounded-full ${getAvatarColor(review.reviewerName)} flex items-center justify-center text-white text-sm font-bold`}>
-                        {review.reviewerName.charAt(0).toUpperCase()}
-                      </div>
+                      <>
+                        <div className={`w-10 h-10 rounded-full ${getAvatarColor(review.reviewer_name)} flex items-center justify-center text-white text-sm font-bold`}>
+                          {(review.reviewer_name || "A").charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-brand-deep">{review.reviewer_name || "Anonymous"}</p>
+                          <p className="text-[11px] text-brand-muted">{timeAgo(review.createdAt)}</p>
+                        </div>
+                      </>
                     )}
-                    <div>
-                      <p className="text-sm font-semibold text-brand-deep">{review.reviewerName}</p>
-                      <p className="text-[11px] text-brand-muted">{timeAgo(review.createdAt)}</p>
-                    </div>
                   </div>
                   <svg className="w-4 h-4 opacity-40" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />

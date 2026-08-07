@@ -111,7 +111,7 @@ export default function AdminReviewsPage() {
                   <div className="flex items-center gap-3 mb-2">
                     <StarRating rating={review.rating} size="sm" />
                     <span className="text-sm font-semibold text-brand-deep">
-                      {review.reviewerName}
+                      {(review as any).reviewer_name || review.reviewerName || "Anonymous"}
                     </span>
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full ${

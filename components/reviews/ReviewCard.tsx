@@ -79,16 +79,16 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
             ) : (
               <div
                 className={`w-10 h-10 rounded-full ${getAvatarColor(
-                  review.reviewerName
+                   (review as any).reviewer_name || review.reviewerName
                 )} flex items-center justify-center text-white text-sm font-bold`}
               >
-                {review.reviewerName.charAt(0).toUpperCase()}
+                {((review as any).reviewer_name || review.reviewerName || "A").charAt(0).toUpperCase()}
               </div>
             )}
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-sm font-semibold text-brand-deep">
-                  {review.reviewerName}
+                  {(review as any).reviewer_name || review.reviewerName || "Anonymous"}
                 </p>
                 {review.isVerifiedPurchase && (
                   <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">

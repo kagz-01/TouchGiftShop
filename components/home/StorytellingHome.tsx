@@ -461,7 +461,7 @@ function SocialProof() {
   // Fallback data if no reviews yet
   const displayReviews = reviews.length > 0
     ? reviews.map((r) => ({
-        name: r.reviewerName,
+        name: r.reviewer_name || r.reviewerName || "Anonymous",
         text: r.body || r.title || "",
         occasion: "Gift",
         stars: r.rating,
