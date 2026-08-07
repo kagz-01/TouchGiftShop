@@ -27,6 +27,7 @@ export default function ReviewForm({
   const [title, setTitle] = useState(existingReview?.title || "");
   const [body, setBody] = useState(existingReview?.body || "");
   const [reviewerName, setReviewerName] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
@@ -89,8 +90,8 @@ export default function ReviewForm({
       return;
     }
 
-    if (!reviewerName.trim() && !existingReview) {
-      setError("Please enter your name");
+    if (!reviewerName.trim() && !existingReview && !isAnonymous) {
+      setError("Please enter your name or choose anonymous");
       return;
     }
 
@@ -119,7 +120,8 @@ export default function ReviewForm({
             rating,
             title: title || undefined,
             body: body || undefined,
-            reviewerName: reviewerName.trim(),
+            reviewerName: reviewerName.trim() || "Anonymous",
+            isAnonymous,
             media,
           };
 
@@ -170,9 +172,30 @@ export default function ReviewForm({
             value={reviewerName}
             onChange={(e) => setReviewerName(e.target.value)}
             placeholder="e.g. Grace M."
-            className="w-full px-4 py-3 rounded-xl border border-surface-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors"
+            disabled={isAnonymous}
+            className="w-full px-4 py-3 rounded-xl border border-surface-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             maxLength={100}
           />
+
+          {/* Anonymous toggle */}
+          <label className="flex items-center gap-3 mt-3 cursor-pointer group">
+            <div className="relative">
+              <input
+                type="checkbox"
+                checked={isAnonymous}
+                onChange={(e) => {
+                  setIsAnonymous(e.target.checked);
+                  if (e.target.checked) setReviewerName("");
+                }}
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:bg-brand transition-colors" />
+              <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm peer-checked:translate-x-5 transition-transform" />
+            </div>
+            <span className="text-sm text-brand-muted group-hover:text-brand-deep transition-colors">
+              Submit anonymously
+            </span>
+          </label>
         </div>
       )}
 

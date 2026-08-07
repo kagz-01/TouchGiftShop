@@ -70,13 +70,21 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div
-              className={`w-10 h-10 rounded-full ${getAvatarColor(
-                review.reviewerName
-              )} flex items-center justify-center text-white text-sm font-bold`}
-            >
-              {review.reviewerName.charAt(0).toUpperCase()}
-            </div>
+            {review.isAnonymous ? (
+              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white text-sm font-bold">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+            ) : (
+              <div
+                className={`w-10 h-10 rounded-full ${getAvatarColor(
+                  review.reviewerName
+                )} flex items-center justify-center text-white text-sm font-bold`}
+              >
+                {review.reviewerName.charAt(0).toUpperCase()}
+              </div>
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <p className="text-sm font-semibold text-brand-deep">

@@ -9,6 +9,7 @@ const createReviewSchema = z.object({
   title: z.string().max(200).optional(),
   body: z.string().max(2000).optional(),
   reviewerName: z.string().min(1).max(100),
+  isAnonymous: z.boolean().optional(),
   media: z
     .array(
       z.object({
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { productId, orderId, rating, title, body, reviewerName, media } =
+  const { productId, orderId, rating, title, body, reviewerName, isAnonymous, media } =
     parsed.data;
 
   let isVerified = false;
@@ -56,7 +57,8 @@ export async function POST(req: Request) {
       rating,
       title: title || null,
       body: body || null,
-      reviewer_name: reviewerName,
+      reviewer_name: isAnonymous ? "Anonymous" : reviewerName,
+      is_anonymous: isAnonymous || false,
       is_verified_purchase: isVerified,
     })
     .select()
