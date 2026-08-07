@@ -18,6 +18,7 @@ export async function GET(req: Request) {
 
   if (category) {
     const dbSlugs = getDbSlugs(category);
+    // Validate that the category has a mapping (or falls back to direct lookup)
     query = query.in("product_categories.categories.slug", dbSlugs);
   }
 
@@ -46,5 +47,22 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ products: data, count: data?.length ?? 0 });
+  const products = data ?? [];
+  const response: {
+    products: typeof products;
+    count: number;
+    category?: string;
+    emptyReason?: string;
+  } = {
+    products,
+    count: products.length,
+  };
+
+  // Add helpful context for empty results
+  if (category && products.length === 0) {
+    response.category = category;
+    response.emptyReason = `No in-stock products found for "${category}". The category may not have products assigned yet, or the WooCommerce slugs may need updating.`;
+  }
+
+  return NextResponse.json(response);
 }
