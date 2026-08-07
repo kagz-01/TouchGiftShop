@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import StarRating from "./StarRating";
 import RatingDistribution from "./RatingDistribution";
 import ReviewForm from "./ReviewForm";
 import ReviewList from "./ReviewList";
+import { useRealtimeReviewStats } from "./useRealtimeReviews";
 import type { ReviewStats } from "@/lib/types";
 
 interface ProductReviewsProps {
@@ -16,16 +17,25 @@ export default function ProductReviews({
   productId,
   orderId,
 }: ProductReviewsProps) {
-  const [stats, setStats] = useState<ReviewStats | null>(null);
+  const stats = useRealtimeReviewStats(productId);
+  const [fullStats, setFullStats] = useState<ReviewStats | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
+  const fetchFullStats = useCallback(async () => {
+    const res = await fetch(`/api/reviews/stats?productId=${productId}`);
+    const data = await res.json();
+    setFullStats(data);
+  }, [productId]);
+
   useEffect(() => {
-    fetch(`/api/reviews/stats?productId=${productId}`)
-      .then((r) => r.json())
-      .then(setStats)
-      .catch(() => {});
-  }, [productId, refreshKey]);
+    fetchFullStats();
+  }, [fetchFullStats, refreshKey]);
+
+  // Refetch stats when real-time count changes
+  useEffect(() => {
+    if (stats.totalReviews > 0) fetchFullStats();
+  }, [stats.totalReviews, fetchFullStats]);
 
   const handleSuccess = () => {
     setShowForm(false);
@@ -40,14 +50,15 @@ export default function ProductReviews({
           <h2 className="font-display text-2xl font-bold text-brand-deep">
             Customer Reviews
           </h2>
-          {stats && stats.totalReviews > 0 && (
+          {stats.totalReviews > 0 && (
             <div className="flex items-center gap-3 mt-2">
               <span className="text-3xl font-bold text-brand-deep">
                 {stats.averageRating}
               </span>
               <StarRating rating={Math.round(stats.averageRating)} size="md" />
               <span className="text-sm text-brand-muted">
-                ({stats.totalReviews} {stats.totalReviews === 1 ? "review" : "reviews"})
+                ({stats.totalReviews}{" "}
+                {stats.totalReviews === 1 ? "review" : "reviews"})
               </span>
             </div>
           )}
@@ -74,12 +85,12 @@ export default function ProductReviews({
         </button>
       </div>
 
-      {/* Rating summary */}
-      {stats && stats.totalReviews > 0 && (
+      {/* Rating summary — live updating */}
+      {fullStats && fullStats.totalReviews > 0 && (
         <div className="bg-surface-secondary rounded-2xl p-6 mb-8">
           <RatingDistribution
-            distribution={stats.distribution}
-            total={stats.totalReviews}
+            distribution={fullStats.distribution}
+            total={fullStats.totalReviews}
           />
         </div>
       )}
@@ -96,7 +107,7 @@ export default function ProductReviews({
         </div>
       )}
 
-      {/* Review list */}
+      {/* Review list — real-time */}
       <ReviewList key={refreshKey} productId={productId} />
     </section>
   );
