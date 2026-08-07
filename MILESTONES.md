@@ -125,47 +125,63 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ## What's Built vs. What's Planned
 
-| Feature | Stage 1 | Stage 2 | Stage 3 | Stage 5 |
-|---------|---------|---------|---------|---------|
-| Product catalog (WooCommerce sync) | Done | | | |
-| Product detail page | Done | | | |
-| Checkout + M-Pesa | Done | | | |
-| M-Pesa callback | Done | | | |
-| Pool a Gift | Done | | | |
-| Surprise Safeguard | Done | | | |
-| Auth (phone OTP) | Done | | | |
-| Orders tracking | Done | | | |
-| Delivery fee calculator | Done | | | |
-| Same-day countdown | Done | | | |
-| Occasion filtering | Done | | | |
-| Guarantees + footer | Done | | | |
-| WooCommerce integration | Done | | | |
-| PWA | Done | | | |
-| Build a Hamper | | Done | | |
-| Reminders | | Done | | |
-| Wishlists | | Done | | |
-| Gift cards | | Done | | |
-| Referral program | | Done | | |
-| Corporate ordering | | | Done | |
-| Loyalty tier | | | Done | |
-| Design pass (brand, icons, polish) | | | Done | |
-| Error handling + 404 | | | Done | |
-| SEO + social metadata | | | Done | |
-| PWA icons + favicon | | | Done | |
-| Customer reviews & ratings | | | Done | |
-| Category mapping system (3-tier) | | | | Done |
-| Budget filtering | | | | Done |
-| Smart sorting by category | | | | Done |
-| Cross-category suggestions | | | | Done |
-| Composite categories | | | | Done |
-| Missing categories (9 added) | | | | Done |
-| Category validation script | | | | Done |
-| Categories API endpoint | | | | Done |
-| API error handling | | | | Done |
-| Recipient pin drop (Google Maps) | | | Planned | |
-| Real-time courier tracking | | | Planned | |
-| Play Store packaging | | | Planned | |
-| WhatsApp order confirmations | | | Planned | |
+| Feature | S1 | S2 | S3 | S5 | S6 | S7 | S8 | S9 | S10 | S11 |
+|---------|----|----|----|----|----|----|----|----|----|-----|
+| Product catalog (WooCommerce sync) | Done | | | | | | | | | |
+| Product detail page | Done | | | | | | | | | |
+| Checkout + M-Pesa | Done | | | | | | | | | |
+| M-Pesa callback | Done | | | | | | | | | |
+| Pool a Gift | Done | | | | | | | | | |
+| Surprise Safeguard | Done | | | | | | | | | |
+| Auth (phone OTP) | Done | | | | | | | | | |
+| Orders tracking | Done | | | | | | | | | |
+| Delivery fee calculator | Done | | | | | | | | | |
+| Same-day countdown | Done | | | | | | | | | |
+| Occasion filtering | Done | | | | | | | | | |
+| Guarantees + footer | Done | | | | | | | | | |
+| WooCommerce integration | Done | | | | | | | | | |
+| PWA | Done | | | | | | | | | |
+| Build a Hamper | | Done | | | | | | | | |
+| Reminders | | Done | | | | | | | | |
+| Wishlists | | Done | | | | | | | | |
+| Gift cards | | Done | | | | | | | | |
+| Referral program | | Done | | | | | | | | |
+| Corporate ordering | | | Done | | | | | | | |
+| Loyalty tier | | | Done | | | | | | | |
+| Design pass (brand, icons, polish) | | | Done | | | | | | | |
+| Error handling + 404 | | | Done | | | | | | | |
+| SEO + social metadata | | | Done | | | | | | | |
+| PWA icons + favicon | | | Done | | | | | | | |
+| Customer reviews & ratings | | | Done | | | | | | | |
+| Category mapping system (3-tier) | | | | Done | | | | | | |
+| Budget filtering | | | | Done | | | | | | |
+| Smart sorting by category | | | | Done | | | | | | |
+| Cross-category suggestions | | | | Done | | | | | | |
+| Composite categories | | | | Done | | | | | | |
+| Missing categories (9 added) | | | | Done | | | | | | |
+| Category validation script | | | | Done | | | | | | |
+| Categories API endpoint | | | | Done | | | | | | |
+| API error handling | | | | Done | | | | | | |
+| Baby products (30 items) | | | | | Done | | | | | |
+| New sectors — fitness, gaming, music, outdoor, home, kitchen | | | | | Done | | | | | |
+| New sectors — wedding, professional, seasonal | | | | | Done | | | | | |
+| UI entry points updated (21 tabs, 16 cards) | | | | | Done | | | | | |
+| Catalog scale — 200 products | | | | | Done | | | | | |
+| Product badges (7 types) | | | | | | Done | | | | |
+| Trust signals bar | | | | | | Done | | | | |
+| Gift recommendation quiz | | | | | | | Done | | | |
+| Quiz results page | | | | | | | Done | | | |
+| Delivery options picker | | | | | | | | Done | | |
+| Gift message component | | | | | | | | Done | | |
+| Order summary component | | | | | | | | Done | | |
+| Share button (WhatsApp focus) | | | | | | | | | Done | |
+| Gift reveal experience | | | | | | | | | Done | |
+| Referral program banner | | | | | | | | | Done | |
+| Recently viewed products | | | | | | | | | | Done |
+| Related products (cross-sell) | | | | | | | | | | Done |
+| Wishlist quick-save | | | | | | | | | | Done |
+
+**Total features built: 64**
 
 ---
 
@@ -187,6 +203,14 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `56f59c9` | Update all UI entry points with new categories |
 | `5efec37` | Hybrid intelligence — cross-category suggestions + smart sorting |
 | `34f8815` | Categories API + improved error handling |
+| `b57cff6` | Expand baby products with 30 new items across 10 sub-categories |
+| `297ddba` | Add 8 new sectors with 56 products (fitness, gaming, music, outdoor, home, kitchen, wedding, professional, seasonal) |
+| `ad94296` | Update UI entry points with new sectors |
+| `05f387a` | Product badges + trust signals |
+| `ddc6298` | Gift recommendation quiz (4-step wizard) |
+| `f9d76b4` | Checkout components (delivery picker, gift message, order summary) |
+| `3ceb23e` | Social features (share, gift reveal, referral banner) |
+| `1d471b7` | Personalization (recently viewed, related products, wishlist) |
 
 ---
 
@@ -290,6 +314,160 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
+## Stage 6 — Catalog Expansion & New Sectors
+
+### 39. Baby Products Expansion (30 items)
+- **What:** 30 new baby products across 10 sub-categories: newborn essentials (5), baby toys (5), feeding sets (3), bath time (3), nursery decor (3), keepsakes (4), clothing sets (3), hampers (3), jewellery (2), pram accessories (2).
+- **Advantage:** Baby gifts are a major revenue driver. Before this, we had 3 generic items. Now covers the full baby gifting journey from shower to first birthday.
+- **Tech:** CATEGORY_MAP entries for baby sub-categories, `scripts/seed-catalog.ts` products with realistic pricing (KSh 1,200–6,500)
+
+### 40. New Sectors — Fitness & Gym (6 items)
+- **What:** Yoga mat, water bottle, gym bag, resistance bands, fitness tracker, foam roller.
+- **Advantage:** Fitness gifts are growing fast, especially for birthdays and New Year. Fills a gap no Kenyan gifting platform covers.
+- **Tech:** `fitness-equipment` DB category mapped to `fitness` UI slug
+
+### 41. New Sectors — Gaming (8 items)
+- **What:** Gaming headset, controller, jigsaw puzzle, strategy board game, retro console, LED mouse pad, card game bundle.
+- **Advantage:** Gaming is the largest entertainment category globally. Board games and puzzles also serve family gifting.
+- **Tech:** `gaming-accessories` + `board-games-puzzles` DB categories
+
+### 42. New Sectors — Music (6 items)
+- **What:** Vinyl record, turntable, guitar picks & capo, studio headphones, music gift card, kalimba thumb piano.
+- **Advantage:** Music gifts span budgets (KSh 1,200–8,500). Vinyl is trending. Kalimba is uniquely African.
+- **Tech:** `vinyl-records` + `musical-accessories` DB categories
+
+### 43. New Sectors — Outdoor & Camping (6 items)
+- **What:** Camping hamper, picnic basket, cooler bag, hammock, LED lanterns, portable braai/BBQ set.
+- **Advantage:** Kenya's outdoor culture (safaris, camping, picnics) makes this highly relevant. Braai set is locally resonant.
+- **Tech:** `camping-gear` + `picnic-accessories` DB categories
+
+### 44. New Sectors — Home Decor (8 items)
+- **What:** Ceramic vase, framed art print, macrame wall hanging, sunburst mirror, cushion set, wool throw, scented candles, concrete plant pot.
+- **Advantage:** Home decor gifts are evergreen and high-margin. African-inspired designs differentiate from imports.
+- **Tech:** `wall-art-decor` + `art-prints-canvas` + `wall-hangings-sculptures` DB categories
+
+### 45. New Sectors — Kitchen Tools (5 items)
+- **What:** Chef knife set, end-grain cutting board, spice rack, cast iron dutch oven, silicone baking set.
+- **Advantage:** Kitchen gifts serve weddings, housewarmings, and Mother's Day. Premium pricing (KSh 2,800–7,500).
+- **Tech:** `kitchen-tools` + `luxury-kitchen-accessories` DB categories
+
+### 46. New Sectors — Wedding Registry (6 items)
+- **What:** His & hers robes, kitchen starter set, luxury bedding, personalised photo album, wine decanter set, couples dinner experience.
+- **Advantage:** Wedding registry is a high-AOV category. Experience vouchers (dinner) differentiate from physical gifts.
+- **Tech:** `wedding-registry-items` DB category, `dining-experience-vouchers` cross-reference
+
+### 47. New Sectors — Professional Appreciation (4 items)
+- **What:** Teacher appreciation hamper, nurse gift box, work anniversary set, boss appreciation gift.
+- **Advantage:** Professional appreciation is underserved. Teachers, nurses, and colleagues are common gifting targets.
+- **Tech:** `teacher-appreciation` + `nurse-appreciation` DB categories
+
+### 48. New Sectors — Seasonal (6 items)
+- **What:** Christmas hamper, advent calendar, Valentine's gift box, Valentine's couple experience, Easter family hamper, giant Easter egg.
+- **Advantage:** Seasonal gifts create urgency and repeat purchases. Christmas and Valentine's are peak gifting periods.
+- **Tech:** `christmas-gifts` + `valentines-gifts` + `easter-gifts` DB categories
+
+### 49. UI Entry Points Updated
+- **What:** All 4 UI entry points updated: CategoryTabs (21 tabs), OccasionFilter (16 cards), StorytellingHome (16 occasions, 8-col grid), MegaMenu (new Collections section).
+- **Advantage:** New sectors are immediately discoverable. MegaMenu Collections now has 10 items vs. 7 before.
+- **Tech:** Updated `CategoryTabs.tsx`, `OccasionFilter.tsx`, `StorytellingHome.tsx`, `MegaMenu.tsx`
+
+### 50. Catalog Scale — 200 Products
+- **What:** Total catalog now at 200 products across 46+ DB categories and 30+ UI categories. All seeded via `scripts/seed-catalog.ts` with WebP images from Unsplash.
+- **Advantage:** Sufficient catalog depth for meaningful browsing. Every UI category has products. Zero empty categories.
+- **Tech:** Seed script with smart deduplication (skip existing), image fallbacks, rate limiting
+
+---
+
+## Stage 7 — Product Badges & Trust Signals
+
+### 51. Smart Badge System
+- **What:** Dynamic product badges based on position, price, category, and attributes: Best Seller (top 8), Premium (8K+), Under 2K, Personalizable, Gift Ready, Experience, One of a Kind. Max 2 badges per product, color-coded.
+- **Advantage:** Instant visual differentiation. Budget shoppers see "Under 2K", premium buyers see "Premium". Badges guide decisions without reading descriptions.
+- **Tech:** `lib/product-badges.ts`, integrated into `ProductCard`
+
+### 52. Trust Signals Bar
+- **What:** 4 trust signals below product grid: Same-Day Delivery (Nairobi), Secure M-Pesa, Easy Returns (7-day), Gift-Wrapped Free.
+- **Advantage:** Addresses top 4 purchase anxieties: delivery speed, payment security, return policy, presentation. Reduces cart abandonment.
+- **Tech:** `components/home/TrustSignals.tsx`
+
+---
+
+## Stage 8 — Gift Recommendation Quiz
+
+### 53. 4-Step Gift Quiz
+- **What:** Interactive quiz: Who → Occasion → Budget → Interests. Progress bar, animated transitions, template suggestions. Maps answers to recommended categories.
+- **Advantage:** Solves the "I don't know what to gift" problem. Personalized results increase conversion. 30-second completion time.
+- **Tech:** `lib/gift-quiz.ts`, `components/gift-quiz/GiftQuiz.tsx`, `/gift-quiz` page
+
+### 54. Quiz Results Page
+- **What:** Shows personalized recommendation message, clickable category pills, and filtered product grid. Retake quiz option.
+- **Advantage:** Seamless transition from quiz to shopping. Categories as pills allow further refinement.
+- **Tech:** `/gift-quiz/results/page.tsx`
+
+### 55. Homepage Quiz CTA
+- **What:** Gradient banner between occasions and product grid: "Not sure what to gift?" with quiz link.
+- **Advantage:** Captures uncertain browsers before they bounce. High-visibility placement.
+- **Tech:** Added to `app/page.tsx`
+
+---
+
+## Stage 9 — Delivery & Checkout Improvements
+
+### 56. Delivery Options Picker
+- **What:** 4 delivery tiers: Standard (free, 2-3 days), Express (+KSh 500, next day), Same-Day (+KSh 1,000), Scheduled (+KSh 300, date picker).
+- **Advantage:** Flexible delivery matches different urgency levels. Scheduled delivery solves "gift for a future date" use case.
+- **Tech:** `components/checkout/DeliveryPicker.tsx`
+
+### 57. Gift Message Component
+- **What:** To/From fields, 200-char message with 6 pre-written templates, character counter.
+- **Advantage:** Templates reduce friction for unsure writers. Personal messages make gifts meaningful.
+- **Tech:** `components/checkout/GiftMessage.tsx`
+
+### 58. Order Summary Component
+- **What:** Itemized list with images, subtotal, delivery, gift wrapping, total. M-Pesa payment note.
+- **Advantage:** Clear cost breakdown before payment. Reduces surprise and abandonment at checkout.
+- **Tech:** `components/checkout/OrderSummary.tsx`
+
+---
+
+## Stage 10 — Social & Viral Features
+
+### 59. Share Button
+- **What:** Native Web Share API with WhatsApp/Twitter/Facebook fallback menu + copy link. Product-specific share text.
+- **Advantage:** One-tap sharing to WhatsApp (primary Kenyan messaging app). Viral loop through product shares.
+- **Tech:** `components/social/ShareButton.tsx`
+
+### 60. Gift Reveal Experience
+- **What:** Animated envelope → reveal flow for gift recipients. Shows product, message, sender name. "Thank via WhatsApp" button.
+- **Advantage:** Makes receiving a gift magical. WhatsApp thank-you closes the emotional loop and drives referrals.
+- **Tech:** `components/social/GiftReveal.tsx`
+
+### 61. Referral Program Banner
+- **What:** "Give KSh 500, Get KSh 500" with copy code, WhatsApp/Twitter/Facebook share buttons.
+- **Advantage:** Two-sided incentive drives both acquisition and retention. KSh 500 is meaningful in Kenya.
+- **Tech:** `components/social/ReferralBanner.tsx`
+
+---
+
+## Stage 11 — Personalization & Discovery
+
+### 62. Recently Viewed Products
+- **What:** localStorage-based carousel of recently viewed items. Tracks views automatically.
+- **Advantage:** Recovers abandoned browsing sessions. "Pick up where you left off" reduces search friction.
+- **Tech:** `components/discovery/RecentlyViewed.tsx`
+
+### 63. Related Products
+- **What:** Server-side "You Might Also Like" section on product pages. Fetches products from same categories.
+- **Advantage:** Increases session depth and average order value through intelligent cross-sell.
+- **Tech:** `components/discovery/RelatedProducts.tsx`
+
+### 64. Wishlist Quick-Save
+- **What:** Heart button on product cards with localStorage persistence. Toast notifications. Wishlist count hook.
+- **Advantage:** No-account wishlist for casual browsers. Saves items for later without checkout pressure.
+- **Tech:** `components/discovery/WishlistButton.tsx`
+
+---
+
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -328,4 +506,19 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 5 — Smart Filtering & Category Intelligence complete*
+## What's Next
+
+| Priority | Feature | Impact |
+|----------|---------|--------|
+| High | WhatsApp order confirmations & reminders | Retention + support reduction |
+| High | Real-time courier tracking | Trust + delivery experience |
+| High | Corporate dashboard (bulk orders, CSV upload) | B2B revenue |
+| Medium | Loyalty tier discounts + free delivery | Repeat purchase rate |
+| Medium | Play Store packaging (TWA/Capacitor) | Distribution |
+| Medium | Recipient pin drop (Google Maps) | Delivery accuracy |
+| Low | Admin dashboard (orders, products, reviews) | Operations |
+| Low | Email notifications (order confirmation, dispatch) | Multi-channel comms |
+
+---
+
+*Last updated: Stage 11 — Personalization & Discovery complete (64 features, 22 commits)*
