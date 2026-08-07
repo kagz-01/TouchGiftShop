@@ -14,8 +14,12 @@ const CATEGORIES = [
   { label: "Milestone", icon: "🏆", slug: "milestone", color: "from-emerald-400 to-teal-500" },
   { label: "Apology", icon: "💐", slug: "apology", color: "from-amber-400 to-orange-500" },
   { label: "Just Because", icon: "💝", slug: "just-because", color: "from-rose-400 to-red-500" },
-  { label: "Beverages", icon: "🍷", slug: "beverages", color: "from-amber-500 to-red-500" },
-  { label: "Plants", icon: "🪴", slug: "plants", color: "from-green-400 to-emerald-500" },
+  { label: "Fitness", icon: "💪", slug: "fitness", color: "from-orange-400 to-red-500" },
+  { label: "Gaming", icon: "🎮", slug: "gaming", color: "from-violet-400 to-purple-500" },
+  { label: "Music", icon: "🎵", slug: "music", color: "from-pink-400 to-fuchsia-500" },
+  { label: "Outdoor", icon: "⛺", slug: "outdoor", color: "from-green-400 to-emerald-500" },
+  { label: "Home Decor", icon: "🏠", slug: "home-decor", color: "from-amber-400 to-orange-500" },
+  { label: "Kitchen", icon: "🍳", slug: "kitchen", color: "from-red-400 to-rose-500" },
 ];
 
 export default function OccasionFilter() {
@@ -42,7 +46,7 @@ export default function OccasionFilter() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3">
+      <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.slug}

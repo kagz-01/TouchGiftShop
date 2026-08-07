@@ -539,14 +539,18 @@ function OccasionsGrid() {
     { icon: "💍", label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
     { icon: "💒", label: "Weddings", slug: "weddings", color: "from-purple-400 to-indigo-500" },
     { icon: "🏢", label: "Corporate", slug: "corporate", color: "from-blue-400 to-cyan-500" },
+    { icon: "👶", label: "New Baby", slug: "baby", color: "from-blue-300 to-cyan-400" },
     { icon: "💐", label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
     { icon: "🏆", label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
     { icon: "💝", label: "Just Because", slug: "just-because", color: "from-violet-400 to-purple-500" },
     { icon: "🕊️", label: "Condolences", slug: "condolences", color: "from-slate-400 to-gray-500" },
+    { icon: "💪", label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
+    { icon: "🎮", label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
+    { icon: "🎵", label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
+    { icon: "⛺", label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
+    { icon: "🏠", label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
+    { icon: "🍳", label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
     { icon: "🍷", label: "Beverages", slug: "beverages", color: "from-amber-500 to-red-500" },
-    { icon: "🪴", label: "Plants", slug: "plants", color: "from-green-400 to-emerald-500" },
-    { icon: "🍫", label: "Food & Treats", slug: "food-treats", color: "from-yellow-400 to-amber-500" },
-    { icon: "💕", label: "Date Night", slug: "date-night", color: "from-pink-500 to-rose-600" },
   ];
 
   return (
@@ -569,7 +573,7 @@ function OccasionsGrid() {
           </p>
         </Reveal>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {occasions.map((occ, i) => (
             <Reveal key={occ.slug} delay={300 + i * 80}>
               <Link

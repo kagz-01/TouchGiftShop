@@ -20,6 +20,12 @@ const CATEGORIES = [
   { id: "beverages", label: "Beverages", emoji: "🍷" },
   { id: "flowers", label: "Flowers", emoji: "🌸" },
   { id: "plants", label: "Plants", emoji: "🪴" },
+  { id: "fitness", label: "Fitness", emoji: "💪" },
+  { id: "gaming", label: "Gaming", emoji: "🎮" },
+  { id: "music", label: "Music", emoji: "🎵" },
+  { id: "outdoor", label: "Outdoor", emoji: "⛺" },
+  { id: "home-decor", label: "Home Decor", emoji: "🏠" },
+  { id: "kitchen", label: "Kitchen", emoji: "🍳" },
   { id: "gift-cards", label: "Gift Cards", emoji: "💳" },
 ];
 
