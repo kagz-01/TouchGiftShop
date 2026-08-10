@@ -215,8 +215,10 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Multi-step accordion checkout | | | | | | | | | | | Done |
 | Live Customization Studio | | | | | | | | | | | | Done |
 | Cover-up shape masking | | | | | | | | | | | | Done |
+| Product gallery image fix (object-contain) | | | | | | | | | | | | Done |
+| Wishlist full flow (create, add, share) | | | | | | | | | | | | Done |
 
-**Total features built: 72**
+**Total features built: 74**
 
 ---
 
@@ -253,7 +255,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `86dd1d8` | HamperBuilder redesign — split layout, compact grid, category filters |
 | `83df7ef` | Hamper animations — fly-to-basket, pulse, confetti, price count-up, shake |
 | `c4e2a1b` | UX/UI Overhaul — Product Gallery, Cart Drawer, and Checkout Flow |
-| `pending` | Live Customization Studio (drag-and-drop, text, logo upload, masking) |
+| `a92c966` | Live Customization Studio (drag-and-drop, text, logo upload, masking) |
+| `266ceb6` | Wishlist full flow — create from product page, real DB, shareable domain link |
 
 ---
 
@@ -568,6 +571,20 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
+## Stage 15 — Wishlist Full Flow
+
+### 73. Product Gallery — Full Image Display
+- **What:** Changed the product main image from `object-cover` (which cropped tall or narrow products) to `object-contain`. The image container now has a clean white background so the full product is always visible. Hover-to-zoom was also refactored to use a CSS `transform: scale()` directly on the image (instead of a broken CSS background-image trick), and thumbnails also switched to `object-contain`.
+- **Advantage:** Tall products (like an Easter egg or a wine bottle) no longer get awkwardly cropped. Buyers see the full product at first glance — crucial for purchase confidence.
+- **Tech:** `ProductGallery.tsx` — `object-contain`, `React.CSSProperties` typed zoom state, transform applied inline on `<Image>` element.
+
+### 74. Wishlist — Complete End-to-End Flow
+- **What:** Completely rebuilt the wishlist experience from scratch. Previously, users were asked to manually paste a URL slug to connect their wishlist — now the flow is seamless: clicking "Add to My Wishlist" on any product opens a polished modal. First-time users type their name and pick an occasion; a real Supabase wishlist is created and the product is added in one step. Returning users add items instantly with no prompts. A shareable link using the real production domain (`touch-gift-shop.vercel.app`) is shown immediately with one-tap WhatsApp sharing. The `/wishlist` page was also rewritten to fetch from the real database (not localStorage) and supports removing items via the DELETE API.
+- **Advantage:** The old flow was broken and unusable. The new flow requires zero technical knowledge from the user. The shareable link now uses the real domain, so friends and family get a professional-looking link. WhatsApp sharing is one tap with a pre-written message.
+- **Tech:** Rewrote `WishlistButton.tsx` (create + add + share modal), rewrote `app/wishlist/page.tsx` (real DB fetch, remove items, WhatsApp share), uses `NEXT_PUBLIC_SITE_URL` env var for the domain.
+
+---
+
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -620,4 +637,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 14 — Live Customization Studio (72 features)*
+*Last updated: Stage 15 — Wishlist Full Flow & Gallery Fix (74 features, 30 commits)*
