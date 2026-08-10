@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
+import NotificationBell from "@/components/layout/NotificationBell";
 import { createClient } from "@/lib/supabase-browser";
 import { ShoppingBag, Bell, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -148,18 +149,24 @@ export default function Header() {
               </span>
             </div>
 
-            {/* Reminders */}
-            <div className="group relative hidden lg:flex flex-col items-center justify-center">
-              <Link
-                href={user ? "/reminders" : "/login?next=/reminders"}
-                aria-label="Gift reminders"
-                className="w-9 h-9 flex items-center justify-center rounded-full text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
-              >
-                <Bell className="w-4 h-4" />
-              </Link>
-              <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
-                {user ? "Reminders" : "Sign in to see Reminders"}
-              </span>
+            {/* Notifications / Reminders */}
+            <div className="hidden lg:block">
+              {user ? (
+                <NotificationBell user={user} />
+              ) : (
+                <div className="group relative flex flex-col items-center justify-center">
+                  <Link
+                    href="/login?next=/reminders"
+                    aria-label="Gift reminders"
+                    className="w-9 h-9 flex items-center justify-center rounded-full text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                  >
+                    <Bell className="w-4 h-4" />
+                  </Link>
+                  <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
+                    Sign in to see Reminders
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Divider */}
