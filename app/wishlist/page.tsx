@@ -107,7 +107,9 @@ export default function WishlistPage() {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
         <div className="text-center px-4 max-w-sm">
-          <span className="text-6xl block mb-4">💝</span>
+          <div className="flex justify-center mb-4">
+            <svg className="w-16 h-16 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+          </div>
           <h1 className="font-display text-2xl font-bold mb-2">No wishlist yet</h1>
           <p className="text-brand-muted text-sm mb-6">
             Browse our gifts and tap the heart icon on any product to create your wishlist and add items!
@@ -142,10 +144,15 @@ export default function WishlistPage() {
 
         {/* Wishlist Header Card */}
         <div className="bg-white rounded-3xl shadow-card p-6 mb-6 text-center border border-surface-border">
-          <span className="text-4xl block mb-2">💝</span>
+          <div className="flex justify-center mb-2">
+            <svg className="w-10 h-10 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+          </div>
           <h1 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s Wishlist</h1>
           {wishlist?.occasion && (
-            <p className="text-brand-muted text-sm mt-1 capitalize">🎉 {wishlist.occasion}</p>
+            <p className="text-brand-muted text-sm mt-1 capitalize flex items-center justify-center gap-1">
+              <svg className="w-4 h-4 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+              {wishlist.occasion}
+            </p>
           )}
           <p className="text-sm text-brand-muted mt-2">
             {items.length} item{items.length !== 1 ? "s" : ""} saved
@@ -175,7 +182,9 @@ export default function WishlistPage() {
         {/* Items */}
         {items.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-3xl border border-surface-border">
-            <span className="text-5xl block mb-3">🛍️</span>
+            <div className="flex justify-center mb-3">
+              <svg className="w-12 h-12 text-brand/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+            </div>
             <p className="font-display font-semibold mb-2">Your wishlist is empty</p>
             <p className="text-sm text-brand-muted mb-6">
               Tap the heart icon on any gift to add it here!
@@ -202,7 +211,9 @@ export default function WishlistPage() {
                       className="object-contain p-1"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">🎁</div>
+                    <div className="w-full h-full flex items-center justify-center">
+                      <svg className="w-8 h-8 text-brand/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                    </div>
                   )}
                 </div>
 

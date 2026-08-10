@@ -10,11 +10,11 @@ import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/Pay
 type CheckoutStep = "sender" | "recipient" | "delivery" | "payment";
 type FormStatus = "idle" | "redirecting" | "error";
 
-const STEPS: { key: CheckoutStep; label: string; icon: string }[] = [
-  { key: "sender", label: "Your Details", icon: "👤" },
-  { key: "recipient", label: "Recipient", icon: "🎁" },
-  { key: "delivery", label: "Delivery", icon: "🚚" },
-  { key: "payment", label: "Payment", icon: "💳" },
+const STEPS: { key: CheckoutStep; label: string; icon: React.ReactNode }[] = [
+  { key: "sender", label: "Your Details", icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> },
+  { key: "recipient", label: "Recipient", icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg> },
+  { key: "delivery", label: "Delivery", icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg> },
+  { key: "payment", label: "Payment", icon: <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg> },
 ];
 
 interface DeliveryZone {
@@ -279,13 +279,13 @@ export default function CheckoutForm({
           <p className="text-xs font-bold text-white uppercase tracking-wider">Safeguards Active</p>
           {safeguards.anonymous && (
             <div className="flex items-center gap-2 text-sm text-white/80">
-              <span>🎭</span>
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
               <span>Anonymous Mode — your name is hidden from the recipient</span>
             </div>
           )}
           {safeguards.dontCall && (
             <div className="flex items-center gap-2 text-sm text-white/80">
-              <span>🤫</span>
+              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
               <span>No-contact delivery — rider won't call the recipient</span>
             </div>
           )}
@@ -463,7 +463,9 @@ export default function CheckoutForm({
                   />
                   {deliveryZone && (
                     <div className="mt-3 p-4 bg-blush rounded-xl border border-gold/20 flex items-center gap-3">
-                      <span className="text-2xl">🚚</span>
+                      <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                        <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                      </div>
                       <div>
                         <p className="text-sm font-bold text-brand-deep">{deliveryZone.name} — {formatKsh(deliveryZone.fee)}</p>
                         <p className="text-xs text-brand-muted">{deliveryZone.timeframe}</p>
@@ -539,7 +541,9 @@ export default function CheckoutForm({
               {/* Active mode callouts */}
               {safeguards.anonymous && (
                 <div className="flex items-center gap-3 bg-brand-deep/5 border border-brand-deep/10 rounded-xl px-4 py-3">
-                  <span className="text-xl">🎭</span>
+                  <div className="w-8 h-8 rounded-full bg-brand-deep/10 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-brand-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                  </div>
                   <p className="text-sm font-semibold text-brand-deep">
                     Anonymous Mode: your name will NOT appear to the recipient
                   </p>
@@ -547,7 +551,9 @@ export default function CheckoutForm({
               )}
               {safeguards.dontCall && (
                 <div className="flex items-center gap-3 bg-brand/5 border border-brand/10 rounded-xl px-4 py-3">
-                  <span className="text-xl">🤫</span>
+                  <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center shrink-0">
+                    <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
+                  </div>
                   <p className="text-sm font-semibold text-brand-deep">
                     No-Contact: rider will not call the recipient before arriving
                   </p>

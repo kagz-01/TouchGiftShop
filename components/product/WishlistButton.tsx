@@ -68,7 +68,7 @@ export default function WishlistButton({
         setWishlisted(true);
         const url = `${SITE_URL}/wishlist/${slug}`;
         setShareUrl(url);
-        setFeedback("Added to your wishlist! 💝");
+        setFeedback("Added to your wishlist!");
         setShowModal(true);
         setStep("adding");
       } else {
@@ -192,7 +192,9 @@ export default function WishlistButton({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <span className="text-4xl mb-2 block">💝</span>
+              <div className="flex justify-center mb-2">
+                <svg className="w-10 h-10 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+              </div>
               {step === "create" && <h3 className="font-display font-bold text-lg">Create Your Wishlist</h3>}
               {step === "adding" && <h3 className="font-display font-bold text-lg">Added! Share your wishlist</h3>}
               {step === "create" && (
@@ -234,7 +236,7 @@ export default function WishlistButton({
                       <option value="baby">👶 Baby Shower</option>
                       <option value="graduation">🎓 Graduation</option>
                       <option value="christmas">🎄 Christmas</option>
-                      <option value="just because">💝 Just Because</option>
+                      <option value="just because">Just Because</option>
                     </select>
                   </div>
                   {feedback && (
@@ -253,7 +255,7 @@ export default function WishlistButton({
               {step === "adding" && (
                 <>
                   <div className="bg-green-50 border border-green-100 rounded-xl p-4 flex items-center gap-3">
-                    <span className="text-2xl">✅</span>
+                    <svg className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                     <div>
                       <p className="text-sm font-semibold text-green-800">Item added to your wishlist!</p>
                       {productName && <p className="text-xs text-green-600 mt-0.5 line-clamp-1">{productName}</p>}
