@@ -168,7 +168,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
                   e.preventDefault();
                   e.stopPropagation();
                   if (isSelectedForSubscription) removeSubscriptionItem(product.id);
-                  else addSubscriptionItem(product);
+                  else addSubscriptionItem(product as any);
                 }}
                 className={cn("w-full bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold shadow-soft transition-colors", 
                   isSelectedForSubscription ? "bg-brand text-white" : "text-brand hover:bg-white"
