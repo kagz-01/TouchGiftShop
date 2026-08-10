@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
+import Link from "next/link";
 import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 
 interface SubscriptionFormProps {
@@ -75,8 +76,31 @@ export default function SubscriptionForm({ onSuccess, onCancel }: SubscriptionFo
       <div className="space-y-4">
         {/* Selected Products */}
         <div>
-          <label className="block text-xs font-semibold text-brand-deep mb-2">Subscription Box ({subscriptionItems.length} items)</label>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-semibold text-brand-deep">Subscription Box ({subscriptionItems.length} items)</label>
+            {subscriptionItems.length > 0 && (
+              <Link
+                href="/"
+                onClick={() => startBuildingSubscription()}
+                className="text-xs font-bold text-brand hover:text-brand-dark"
+              >
+                + Add more gifts
+              </Link>
+            )}
+          </div>
           <div className="space-y-2">
+            {subscriptionItems.length === 0 && (
+              <div className="text-center py-6 bg-blush/30 border border-brand/20 rounded-xl border-dashed">
+                <p className="text-sm font-semibold text-brand-deep mb-2">Your box is empty</p>
+                <Link
+                  href="/"
+                  onClick={() => startBuildingSubscription()}
+                  className="bg-brand text-white text-xs font-bold px-4 py-2 rounded-xl shadow-button hover:bg-brand-dark transition-colors inline-block"
+                >
+                  Browse & Add Gifts
+                </Link>
+              </div>
+            )}
             {subscriptionItems.map(product => (
               <div key={product.id} className="bg-white border border-surface-border rounded-xl p-3 flex items-center gap-4">
                 {product.image_url && (
@@ -91,10 +115,12 @@ export default function SubscriptionForm({ onSuccess, onCancel }: SubscriptionFo
               </div>
             ))}
           </div>
-          <div className="flex justify-between items-center mt-3 pt-3 border-t border-surface-border">
-            <span className="text-sm font-semibold text-brand-deep">Total per delivery</span>
-            <span className="text-base font-bold text-brand">{formatKsh(total)}</span>
-          </div>
+          {subscriptionItems.length > 0 && (
+            <div className="flex justify-between items-center mt-3 pt-3 border-t border-surface-border">
+              <span className="text-sm font-semibold text-brand-deep">Total per delivery</span>
+              <span className="text-base font-bold text-brand">{formatKsh(total)}</span>
+            </div>
+          )}
         </div>
 
         {/* Recipient */}
