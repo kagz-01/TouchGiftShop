@@ -184,22 +184,46 @@ export default async function OrderDetailPage({
           )}
 
           {/* Order details */}
-          <div className="bg-white rounded-2xl p-5 border border-surface-border space-y-3">
-            <h3 className="text-sm font-semibold mb-3">Order details</h3>
+          <div className="bg-white rounded-2xl p-5 border border-surface-border space-y-4">
+            <h3 className="text-sm font-semibold">Order details</h3>
 
-            <div className="flex justify-between text-sm">
-              <span className="text-brand-muted">Amount</span>
-              <span className="font-bold text-brand">{formatKsh(order.total_amount)}</span>
-            </div>
-
-            {order.quantity > 1 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Quantity</span>
-                <span>{order.quantity}x</span>
+            {order.products && (
+              <div className="flex items-center gap-4 pb-4 border-b border-surface-border">
+                <div className="w-16 h-16 bg-blush rounded-xl relative overflow-hidden flex-shrink-0">
+                  {order.products.image_url ? (
+                    <Image src={order.products.image_url} alt={order.products.name} fill className="object-contain p-2" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-brand/30">
+                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <h4 className="font-bold text-brand-deep">{order.products.name}</h4>
+                  <p className="text-sm text-brand font-semibold">
+                    {order.quantity > 1 ? `${order.quantity}x • ` : ""}{formatKsh(order.total_amount)}
+                  </p>
+                </div>
               </div>
             )}
 
-            <div className="border-t border-surface-border pt-3">
+            {!order.products && (
+              <>
+                <div className="flex justify-between text-sm">
+                  <span className="text-brand-muted">Amount</span>
+                  <span className="font-bold text-brand">{formatKsh(order.total_amount)}</span>
+                </div>
+
+                {order.quantity > 1 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-brand-muted">Quantity</span>
+                    <span>{order.quantity}x</span>
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className={order.products ? "" : "border-t border-surface-border pt-3"}>
               <div className="flex justify-between text-sm">
                 <span className="text-brand-muted">Recipient</span>
                 <span className="font-medium">{order.recipient_name}</span>

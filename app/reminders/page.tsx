@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import SubscriptionForm from "@/components/reminders/SubscriptionForm";
+import BackToHome from "@/components/ui/BackToHome";
 import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 import { formatKsh, cn } from "@/lib/utils";
 
@@ -109,11 +110,12 @@ export default function RemindersDashboard() {
       {/* Header */}
       <div className="bg-white border-b border-surface-border sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 md:px-8 py-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="font-display text-2xl font-bold text-brand-deep">Reminders & Subscriptions</h1>
               <p className="text-sm text-brand-muted mt-1">Never miss an important date again.</p>
             </div>
+            <BackToHome />
           </div>
           
           {/* Tabs */}
