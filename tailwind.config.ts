@@ -41,9 +41,15 @@ const config: Config = {
         sans: ['"DM Sans"', "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
-        "xl": "0.875rem",
-        "2xl": "1rem",
-        "3xl": "1.5rem",
+        "none": "0",
+        "sm": "0.5rem",
+        DEFAULT: "0.75rem",
+        "md": "1rem",
+        "lg": "1.25rem",
+        "xl": "1.5rem",
+        "2xl": "2rem",
+        "3xl": "2.5rem",
+        "full": "9999px",
       },
       boxShadow: {
         "soft": "0 2px 12px rgba(155, 27, 90, 0.08)",
@@ -139,7 +145,7 @@ const config: Config = {
         },
         marquee: {
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(-100%)" },
         },
       },
       backgroundImage: {

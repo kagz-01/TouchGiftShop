@@ -96,7 +96,7 @@ async function downloadAndStore(
 // ─── Product Data ─────────────────────────────────────────────────
 // Realistic Kenyan market products with KSh pricing
 
-const PRODUCTS: ProductSeed[] = [
+export const PRODUCTS: ProductSeed[] = [
   // ═══════════════════════════════════════════════════════════════
   // BEVERAGES — ALCOHOLIC (wine-whiskey-beverage-hampers)
   // ═══════════════════════════════════════════════════════════════
@@ -2660,8 +2660,8 @@ const PRODUCTS: ProductSeed[] = [
     categorySlugs: ["easter-gifts", "hampers-gift-sets", "chocolates-sweets-gifts"],
     imageQuery: "easter hamper family gift",
     imageUrls: [
-      "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=600&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606837218913-58f9c57f5d1c?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606916204173-6e762e8b4d1a?w=600&h=800&fit=crop",
     ],
   },
   {
@@ -2672,8 +2672,8 @@ const PRODUCTS: ProductSeed[] = [
     categorySlugs: ["easter-gifts", "chocolates-sweets-gifts"],
     imageQuery: "easter chocolate egg giant gift",
     imageUrls: [
-      "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=600&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1549160582-2d0b2f7b5d8c?w=600&h=800&fit=crop",
+      "https://images.unsplash.com/photo-1606837218913-58f9c57f5d1c?w=600&h=800&fit=crop",
     ],
   },
 ];

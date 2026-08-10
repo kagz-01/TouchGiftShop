@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
+import BackToHome from "@/components/ui/BackToHome";
 
 type WishlistItem = {
   id: string;
@@ -82,14 +83,17 @@ export default function WishlistPage() {
               {items.length} item{items.length !== 1 ? "s" : ""} saved
             </p>
           </div>
-          {items.length > 0 && (
-            <button
-              onClick={clearAll}
-              className="text-xs text-gray-400 hover:text-red-500 transition-colors"
-            >
-              Clear all
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            {items.length > 0 && (
+              <button
+                onClick={clearAll}
+                className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+              >
+                Clear all
+              </button>
+            )}
+            <BackToHome />
+          </div>
         </div>
 
         {/* Items grid */}

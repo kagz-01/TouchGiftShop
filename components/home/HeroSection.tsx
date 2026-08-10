@@ -38,7 +38,7 @@ export default function HeroSection() {
       <div className="absolute bottom-10 right-10 w-32 h-32 bg-brand/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
       <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-coral/10 rounded-full blur-xl animate-float" style={{ animationDelay: "4s" }} />
 
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20">
+      <div className="w-full mx-auto px-4 md:px-8 py-12 md:py-20">
         <div className="max-w-2xl">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6 border border-surface-border animate-fade-in">

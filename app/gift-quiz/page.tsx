@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import BackToHome from "@/components/ui/BackToHome";
 import GiftQuiz from "@/components/gift-quiz/GiftQuiz";
 import type { Metadata } from "next";
 
@@ -23,6 +24,11 @@ export default function GiftQuizPage() {
         <Suspense fallback={<div className="text-center py-20">Loading...</div>}>
           <GiftQuiz />
         </Suspense>
+
+        {/* Back to Home */}
+        <div className="mt-6 text-center">
+          <BackToHome label="Back to Home" />
+        </div>
       </div>
     </div>
   );

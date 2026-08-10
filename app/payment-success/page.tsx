@@ -1,5 +1,12 @@
 import Link from "next/link";
 import PaymentSuccessPinDrop from "@/components/pin-drop/PaymentSuccessPinDrop";
+import BackToHome from "@/components/ui/BackToHome";
+import dynamic from "next/dynamic";
+
+const PaymentStatusPoller = dynamic(
+  () => import("@/components/payment/PaymentStatusPoller"),
+  { ssr: false }
+);
 
 async function getOrder(id: string) {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -41,32 +48,33 @@ export default async function PaymentSuccessPage({
           Reference: {ref}
         </p>
       )}
-      <div className="flex gap-3">
-        {isPool ? (
-          <Link
-            href="/gift-lab"
-            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-          >
-            View Gift Lab
-          </Link>
-        ) : (
-          <Link
-            href={ref ? `/orders/${ref}` : "/orders"}
-            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-          >
-            View Order
-          </Link>
-        )}
-        <Link
-          href="/"
-          className="px-6 py-3 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-        >
-          Back to Home
-        </Link>
-      </div>
+      
+        <div className="flex gap-3">
+          {isPool ? (
+            <Link
+              href="/gift-lab"
+              className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+            >
+              View Gift Lab
+            </Link>
+          ) : (
+            <Link
+              href={ref ? `/orders/${ref}` : "/orders"}
+              className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+            >
+              View Order
+            </Link>
+          )}
+          <BackToHome label="Back to Home" />
+        </div>
 
       {isPinDrop && ref && (
         <PaymentSuccessPinDrop orderId={ref} />
+      )}
+      {ref && (
+        <div className="w-full max-w-md mt-6">
+          <PaymentStatusPoller trackingId={ref} />
+        </div>
       )}
     </div>
   );

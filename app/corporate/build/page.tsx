@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import HandwrittenNote from "@/components/ai/HandwrittenNote";
 import type { NoteStyle } from "@/lib/handwritten-note";
+import { Gift, Users, Palette, CreditCard, PenLine, ClipboardList, Package, Ribbon, Building2 } from "lucide-react";
 
 type Product = {
   id: string;
@@ -27,10 +28,10 @@ type HamperItem = {
 };
 
 const STEPS = [
-  { id: 1, label: "Choose Gift", icon: "🎁" },
-  { id: 2, label: "Add Recipients", icon: "👥" },
-  { id: 3, label: "Customize", icon: "🎨" },
-  { id: 4, label: "Review & Pay", icon: "💳" },
+  { id: 1, label: "Choose Gift", icon: <Gift className="w-5 h-5" /> },
+  { id: 2, label: "Add Recipients", icon: <Users className="w-5 h-5" /> },
+  { id: 3, label: "Customize", icon: <Palette className="w-5 h-5" /> },
+  { id: 4, label: "Review & Pay", icon: <CreditCard className="w-5 h-5" /> },
 ];
 
 export default function HamperBuilder() {
@@ -324,7 +325,7 @@ export default function HamperBuilder() {
                   !csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
                 }`}
               >
-                ✏️ Add Manually
+                <PenLine className="w-4 h-4 inline-block mr-1" /> Add Manually
               </button>
               <button
                 onClick={() => setCsvMode(true)}
@@ -332,7 +333,7 @@ export default function HamperBuilder() {
                   csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
                 }`}
               >
-                📋 Upload CSV
+                <ClipboardList className="w-4 h-4 inline-block mr-1" /> Upload CSV
               </button>
             </div>
 
@@ -480,9 +481,9 @@ Peter Odhiambo, 0755555555`}
                 <label className="block text-sm font-semibold mb-3">Gift Wrapping</label>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: "standard", label: "Standard", icon: "🎁", desc: "Classic gift wrap" },
-                    { id: "premium", label: "Premium", icon: "🎀", desc: "Box + ribbon" },
-                    { id: "branded", label: "Branded", icon: "🏢", desc: "Custom logo box (+KSh 200)", extra: 200 },
+                    { id: "standard", label: "Standard", icon: <Package className="w-5 h-5 mx-auto mb-1" />, desc: "Classic gift wrap" },
+                    { id: "premium", label: "Premium", icon: <Ribbon className="w-5 h-5 mx-auto mb-1" />, desc: "Box + ribbon" },
+                    { id: "branded", label: "Branded", icon: <Building2 className="w-5 h-5 mx-auto mb-1" />, desc: "Custom logo box (+KSh 200)", extra: 200 },
                   ].map((wrap) => (
                     <button
                       key={wrap.id}

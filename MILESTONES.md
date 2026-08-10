@@ -9,7 +9,7 @@
 
 TouchGift is a Kenya-first online gifting platform — flowers, hampers, personalized gifts, and experiences — with M-Pesa payment, same-day Nairobi delivery, and features no competitor offers.
 
-**Tech Stack:** Next.js 14, Supabase (Postgres + Auth), WooCommerce (private data entry), M-Pesa Daraja, Tailwind CSS, PWA
+**Tech Stack:** Next.js 14, Supabase (Postgres + Auth), WooCommerce (private data entry), PesaPal (M-Pesa / Card / Bank), Tailwind CSS, PWA
 
 **Live locally:** `http://localhost:3000`
 
@@ -91,6 +91,33 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 - **What:** Logo converted to WebP (11KB), integrated into header and login page.
 - **Advantage:** Fast loading, small file size. Professional appearance.
 - **Tech:** `public/logo.webp`, `Header`, login page
+
+---
+
+## Recent Progress (2026-08-08)
+
+- **Global layout & container standardization:** Added a production-grade global container in `app/layout.tsx` and a reusable `components/ui/Container.tsx` set to `max-w-screen-2xl` so pages use more horizontal space and consistent gutters.
+- **Wider page containers:** Widely used containers on key pages (`app/page.tsx`, `app/product/[id]/page.tsx`, `app/shop/page.tsx`, `app/gift-quiz/results/page.tsx`) updated to use the wider layout to reduce excessive central compression.
+- **BackToHome component rollout:** Added a reusable `BackToHome` link (`components/ui/BackToHome.tsx`) across multiple pages (gift-lab, build-hamper, pool, orders, wishlist, gift-quiz, gift-cards, login, corporate, pin-drop, checkout, payment-success) for consistent navigation and rescue paths.
+- **Build fixes & CI hygiene:** Fixed TypeScript issues discovered during `npm run build` (typed an array in `test-download.ts`, corrected error typing). Cleared `.next` and re-ran production build to validate prerender output; build now completes locally.
+- **Polish & QA:** Ensured all edited files pass TypeScript checks. Addressed a missing import in `app/wishlist/page.tsx` and minor layout spacing improvements in `components/layout/Header.tsx` and `components/home/StorytellingHome.tsx`.
+
+### Why these matter
+
+- Improves perceived site width and product discoverability on large screens.
+- Adds consistent micro-navigation to reduce bounce when users land on deep pages.
+- Removes build-time blockers and ensures a reproducible production build.
+
+---
+
+## Next immediate actions
+
+- Replace remaining per-page container wrappers with the `Container` component for uniformity (automated across `app/` pages).
+- Add a `FullBleed` helper for intentional edge-to-edge sections (hero, CTA) while keeping content constrained.
+- Standardize `BackToHome` visual variants (default/white/subtle) and update usages.
+- Run a full visual QA pass in dev (`npm run dev`) and capture screenshots for stakeholder review.
+
+---
 
 ---
 
@@ -183,8 +210,11 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Pin Drop — recipient delivery location | | | | | | | | | | Done |
 | Homepage restructure — discovery flow | | | | | | | | | | Done |
 | Hamper builder redesign + animations | | | | | | | | | | Done |
+| Product page redesign (gallery, description) | | | | | | | | | | | Done |
+| Cart drawer + upsell | | | | | | | | | | | Done |
+| Multi-step accordion checkout | | | | | | | | | | | Done |
 
-**Total features built: 67**
+**Total features built: 70**
 
 ---
 
@@ -220,6 +250,7 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `ba07f06` | Homepage restructure — discovery flow with curated rows |
 | `86dd1d8` | HamperBuilder redesign — split layout, compact grid, category filters |
 | `83df7ef` | Hamper animations — fly-to-basket, pulse, confetti, price count-up, shake |
+| `pending` | UX/UI Overhaul — Product Gallery, Cart Drawer, Multi-Step Checkout |
 
 ---
 

@@ -3,16 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Mountain, Waves, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2 } from "lucide-react";
+
 
 type MegaMenuSection = {
   title: string;
-  links: Array<{ href: string; label: string; emoji?: string }>;
+  links: Array<{ href: string; label: string; icon?: React.ReactNode }>;
 };
 
 type MegaMenuCategory = {
   id: string;
   label: string;
-  icon?: string;
+  icon?: React.ReactNode;
   highlight?: boolean;
   sections: MegaMenuSection[];
   featured?: {
@@ -27,51 +29,51 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
   {
     id: "find",
     label: "Find a Gift",
-    icon: "🤖",
+    icon: <Bot className="w-5 h-5 text-brand" />,
     highlight: true,
     sections: [
       {
         title: "Smart Gifting",
         links: [
-          { href: "/gift-finder", label: "T-Gifter AI", emoji: "💬" },
-          { href: "/gift-quiz", label: "Gift Quiz (30 sec)", emoji: "🎯" },
-          { href: "/?delivery=same-day", label: "Same-Day Delivery", emoji: "⚡" },
-          { href: "/gift-cards", label: "Gift Cards", emoji: "💳" },
+          { href: "/gift-finder", label: "T-Gifter AI", icon: <MessageCircle className="w-4 h-4" /> },
+          { href: "/gift-quiz", label: "Gift Quiz (30 sec)", icon: <Target className="w-4 h-4" /> },
+          { href: "/shop?delivery=same-day", label: "Same-Day Delivery", icon: <Zap className="w-4 h-4" /> },
+          { href: "/gift-cards", label: "Gift Cards", icon: <CreditCard className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Occasion",
         links: [
-          { href: "/?category=birthdays", label: "Birthday", emoji: "🎂" },
-          { href: "/?category=weddings", label: "Wedding", emoji: "💒" },
-          { href: "/?category=anniversaries", label: "Anniversary", emoji: "💕" },
-          { href: "/?category=baby", label: "New Baby", emoji: "👶" },
-          { href: "/?category=graduation", label: "Graduation", emoji: "🎓" },
-          { href: "/?category=condolences", label: "Condolences", emoji: "🕊️" },
-          { href: "/?category=just-because", label: "Just Because", emoji: "💝" },
+          { href: "/shop?category=birthdays", label: "Birthday", icon: <Cake className="w-4 h-4" /> },
+          { href: "/shop?category=weddings", label: "Wedding", icon: <Heart className="w-4 h-4" /> },
+          { href: "/shop?category=anniversaries", label: "Anniversary", icon: <HeartHandshake className="w-4 h-4" /> },
+          { href: "/shop?category=baby", label: "New Baby", icon: <Baby className="w-4 h-4" /> },
+          { href: "/shop?category=graduation", label: "Graduation", icon: <GraduationCap className="w-4 h-4" /> },
+          { href: "/shop?category=condolences", label: "Condolences", icon: <Feather className="w-4 h-4" /> },
+          { href: "/shop?category=just-because", label: "Just Because", icon: <HeartPulse className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Recipient",
         links: [
-          { href: "/?audience=her", label: "For Her", emoji: "👩" },
-          { href: "/?audience=him", label: "For Him", emoji: "👨" },
-          { href: "/?audience=baby", label: "For Baby", emoji: "👶" },
-          { href: "/?audience=parents", label: "For Parents", emoji: "👨‍👩‍👧" },
-          { href: "/?audience=friend", label: "For Friends", emoji: "🤝" },
-          { href: "/?audience=colleague", label: "For Colleagues", emoji: "💼" },
+          { href: "/shop?audience=her", label: "For Her", icon: <User className="w-4 h-4" /> },
+          { href: "/shop?audience=him", label: "For Him", icon: <User className="w-4 h-4" /> },
+          { href: "/shop?audience=baby", label: "For Baby", icon: <Baby className="w-4 h-4" /> },
+          { href: "/shop?audience=parents", label: "For Parents", icon: <Users className="w-4 h-4" /> },
+          { href: "/shop?audience=friend", label: "For Friends", icon: <Users className="w-4 h-4" /> },
+          { href: "/shop?audience=colleague", label: "For Colleagues", icon: <Briefcase className="w-4 h-4" /> },
         ],
       },
       {
         title: "Collections",
         links: [
-          { href: "/?category=hampers", label: "Hampers", emoji: "🧺" },
-          { href: "/?category=flowers", label: "Flowers", emoji: "🌸" },
-          { href: "/?category=personalised", label: "Personalised", emoji: "✨" },
-          { href: "/?category=wellness", label: "Wellness & Self Care", emoji: "🧘" },
-          { href: "/?category=home-decor", label: "Home & Living", emoji: "🏠" },
-          { href: "/?category=tech", label: "Tech & Gadgets", emoji: "📱" },
-          { href: "/?category=experiences", label: "Experiences", emoji: "🧖" },
+          { href: "/shop?category=hampers", label: "Hampers", icon: <ShoppingBasket className="w-4 h-4" /> },
+          { href: "/shop?category=flowers", label: "Flowers", icon: <Flower2 className="w-4 h-4" /> },
+          { href: "/shop?category=personalised", label: "Personalised", icon: <Sparkles className="w-4 h-4" /> },
+          { href: "/shop?category=wellness", label: "Wellness & Self Care", icon: <Activity className="w-4 h-4" /> },
+          { href: "/shop?category=home-decor", label: "Home & Living", icon: <Home className="w-4 h-4" /> },
+          { href: "/shop?category=tech", label: "Tech & Gadgets", icon: <Smartphone className="w-4 h-4" /> },
+          { href: "/shop?category=experiences", label: "Experiences", icon: <Map className="w-4 h-4" /> },
         ],
       },
     ],
@@ -87,31 +89,31 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
   {
     id: "lab",
     label: "Gift Lab",
-    icon: "🧪",
+    icon: <FlaskConical className="w-5 h-5 text-brand" />,
     sections: [
       {
         title: "Build & Create",
         links: [
-          { href: "/gift-lab", label: "Build a Hamper", emoji: "🧪" },
-          { href: "/gift-lab/pool", label: "Group Gift (Pool)", emoji: "👥" },
+          { href: "/gift-lab", label: "Build a Hamper", icon: <FlaskConical className="w-4 h-4" /> },
+          { href: "/gift-lab/pool", label: "Group Gift (Pool)", icon: <Users className="w-4 h-4" /> },
         ],
       },
       {
         title: "Kenyan Traditions",
         links: [
-          { href: "/?cultural=ruracio", label: "Ruracio Guide", emoji: "💍" },
-          { href: "/?cultural=dowry", label: "Dowry (Mahari)", emoji: "🐄" },
-          { href: "/?cultural=circumcision", label: "Circumcision", emoji: "🗡️" },
-          { href: "/?cultural=christening", label: "Christening", emoji: "⛪" },
+          { href: "/shop?cultural=ruracio", label: "Ruracio Guide", icon: <Gem className="w-4 h-4" /> },
+          { href: "/shop?cultural=dowry", label: "Dowry (Mahari)", icon: <Gift className="w-4 h-4" /> },
+          { href: "/shop?cultural=circumcision", label: "Circumcision", icon: <Sword className="w-4 h-4" /> },
+          { href: "/shop?cultural=christening", label: "Christening", icon: <Church className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Budget",
         links: [
-          { href: "/?budget=under-5k", label: "Under KSh 5,000", emoji: "💰" },
-          { href: "/?budget=under-10k", label: "Under KSh 10,000", emoji: "💰💰" },
-          { href: "/?budget=under-20k", label: "Under KSh 20,000", emoji: "💰💰💰" },
-          { href: "/?budget=premium", label: "Big Gestures (20k+)", emoji: "💎" },
+          { href: "/shop?budget=under-5k", label: "Under KSh 5,000", icon: <Banknote className="w-4 h-4" /> },
+          { href: "/shop?budget=under-10k", label: "Under KSh 10,000", icon: <Banknote className="w-4 h-4" /> },
+          { href: "/shop?budget=under-20k", label: "Under KSh 20,000", icon: <Banknote className="w-4 h-4" /> },
+          { href: "/shop?budget=premium", label: "Big Gestures (20k+)", icon: <Diamond className="w-4 h-4" /> },
         ],
       },
     ],
@@ -127,30 +129,30 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
   {
     id: "my-stuff",
     label: "My Stuff",
-    icon: "📋",
+    icon: <ClipboardList className="w-5 h-5 text-brand" />,
     sections: [
       {
         title: "My Lists",
         links: [
-          { href: "/wishlist", label: "Wishlist", emoji: "💝" },
-          { href: "/reminders", label: "Gift Reminders", emoji: "⏰" },
-          { href: "/gift-cards", label: "My Gift Cards", emoji: "💳" },
+          { href: "/wishlist", label: "Wishlist", icon: <HeartPulse className="w-4 h-4" /> },
+          { href: "/reminders", label: "Gift Reminders", icon: <Clock className="w-4 h-4" /> },
+          { href: "/gift-cards", label: "My Gift Cards", icon: <CreditCard className="w-4 h-4" /> },
         ],
       },
       {
         title: "Smart Features",
         links: [
-          { href: "/?feature=taste-profile", label: "Taste Profiles", emoji: "🎯" },
-          { href: "/?feature=smart-reorder", label: "Smart Reorder", emoji: "🔄" },
-          { href: "/?feature=gift-history", label: "Gift History", emoji: "📜" },
+          { href: "/shop?feature=taste-profile", label: "Taste Profiles", icon: <Target className="w-4 h-4" /> },
+          { href: "/shop?feature=smart-reorder", label: "Smart Reorder", icon: <RefreshCw className="w-4 h-4" /> },
+          { href: "/shop?feature=gift-history", label: "Gift History", icon: <ScrollText className="w-4 h-4" /> },
         ],
       },
       {
         title: "My Orders",
         links: [
-          { href: "/orders", label: "All Orders", emoji: "📦" },
-          { href: "/track", label: "Track Delivery", emoji: "🚚" },
-          { href: "/returns", label: "Returns & Refunds", emoji: "↩️" },
+          { href: "/orders", label: "All Orders", icon: <Package className="w-4 h-4" /> },
+          { href: "/track", label: "Track Delivery", icon: <Truck className="w-4 h-4" /> },
+          { href: "/returns", label: "Returns & Refunds", icon: <Undo className="w-4 h-4" /> },
         ],
       },
     ],
@@ -162,67 +164,67 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Celebrations",
         links: [
-          { href: "/?category=birthdays", label: "Birthday", emoji: "🎂" },
-          { href: "/?category=weddings", label: "Wedding", emoji: "💒" },
-          { href: "/?category=anniversaries", label: "Anniversary", emoji: "💕" },
-          { href: "/?category=graduation", label: "Graduation", emoji: "🎓" },
-          { href: "/?category=baby", label: "New Baby", emoji: "👶" },
-          { href: "/?category=housewarming", label: "Housewarming", emoji: "🏠" },
+          { href: "/shop?category=birthdays", label: "Birthday", icon: <Cake className="w-4 h-4" /> },
+          { href: "/shop?category=weddings", label: "Wedding", icon: <Heart className="w-4 h-4" /> },
+          { href: "/shop?category=anniversaries", label: "Anniversary", icon: <HeartHandshake className="w-4 h-4" /> },
+          { href: "/shop?category=graduation", label: "Graduation", icon: <GraduationCap className="w-4 h-4" /> },
+          { href: "/shop?category=baby", label: "New Baby", icon: <Baby className="w-4 h-4" /> },
+          { href: "/shop?category=housewarming", label: "Housewarming", icon: <Home className="w-4 h-4" /> },
         ],
       },
       {
         title: "Sentiments",
         links: [
-          { href: "/?category=thank-you", label: "Thank You", emoji: "🙏" },
-          { href: "/?category=condolences", label: "Condolences", emoji: "🕊️" },
-          { href: "/?category=get-well", label: "Get Well Soon", emoji: "🌸" },
-          { href: "/?category=just-because", label: "Just Because", emoji: "💝" },
-          { href: "/?category=apology", label: "Sorry / Apology", emoji: "💐" },
+          { href: "/shop?category=thank-you", label: "Thank You", icon: <HeartHandshake className="w-4 h-4" /> },
+          { href: "/shop?category=condolences", label: "Condolences", icon: <Feather className="w-4 h-4" /> },
+          { href: "/shop?category=get-well", label: "Get Well Soon", icon: <Flower2 className="w-4 h-4" /> },
+          { href: "/shop?category=just-because", label: "Just Because", icon: <HeartPulse className="w-4 h-4" /> },
+          { href: "/shop?category=apology", label: "Sorry / Apology", icon: <Flower2 className="w-4 h-4" /> },
         ],
       },
       {
         title: "Kenyan Holidays",
         links: [
-          { href: "/?holiday=madaraka", label: "Madaraka Day", emoji: "🇰🇪" },
-          { href: "/?holiday=mashujaa", label: "Mashujaa Day", emoji: "🛡️" },
-          { href: "/?holiday=jamhuri", label: "Jamhuri Day", emoji: "🇰🇪" },
-          { href: "/?holiday=utamaduni", label: "Utamaduni Day", emoji: "🎭" },
-          { href: "/?holiday=labour-day", label: "Labour Day", emoji: "⚒️" },
-          { href: "/?holiday=womens-day", label: "Women's Day", emoji: "💪" },
+          { href: "/shop?holiday=madaraka", label: "Madaraka Day", icon: <Flag className="w-4 h-4" /> },
+          { href: "/shop?holiday=mashujaa", label: "Mashujaa Day", icon: <Shield className="w-4 h-4" /> },
+          { href: "/shop?holiday=jamhuri", label: "Jamhuri Day", icon: <Flag className="w-4 h-4" /> },
+          { href: "/shop?holiday=utamaduni", label: "Utamaduni Day", icon: <Drama className="w-4 h-4" /> },
+          { href: "/shop?holiday=labour-day", label: "Labour Day", icon: <Hammer className="w-4 h-4" /> },
+          { href: "/shop?holiday=womens-day", label: "Women's Day", icon: <Dumbbell className="w-4 h-4" /> },
         ],
       },
       {
         title: "International",
         links: [
-          { href: "/?holiday=valentines", label: "Valentine's Day", emoji: "❤️" },
-          { href: "/?holiday=mothers-day", label: "Mother's Day", emoji: "👩" },
-          { href: "/?holiday=fathers-day", label: "Father's Day", emoji: "👨" },
-          { href: "/?holiday=easter", label: "Easter", emoji: "🐣" },
-          { href: "/?holiday=christmas", label: "Christmas", emoji: "🎄" },
-          { href: "/?holiday=eid", label: "Eid al-Fitr / al-Adha", emoji: "🌙" },
+          { href: "/shop?holiday=valentines", label: "Valentine's Day", icon: <Heart className="w-4 h-4" /> },
+          { href: "/shop?holiday=mothers-day", label: "Mother's Day", icon: <User className="w-4 h-4" /> },
+          { href: "/shop?holiday=fathers-day", label: "Father's Day", icon: <User className="w-4 h-4" /> },
+          { href: "/shop?holiday=easter", label: "Easter", icon: <Egg className="w-4 h-4" /> },
+          { href: "/shop?holiday=christmas", label: "Christmas", icon: <Sparkles className="w-4 h-4" /> },
+          { href: "/shop?holiday=eid", label: "Eid al-Fitr / al-Adha", icon: <Star className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Community",
         links: [
-          { href: "/?community=kikuyu", label: "Kikuyu", emoji: "🏔️" },
-          { href: "/?community=luo", label: "Luo", emoji: "🐟" },
-          { href: "/?community=kalenjin", label: "Kalenjin", emoji: "🏃" },
-          { href: "/?community=maasai", label: "Maasai", emoji: "🦁" },
-          { href: "/?community=coastal", label: "Coastal / Swahili", emoji: "🌊" },
-          { href: "/?community=luhya", label: "Luhya", emoji: "🌽" },
-          { href: "/?community=meru", label: "Meru", emoji: "⛰️" },
+          { href: "/shop?community=kikuyu", label: "Kikuyu", icon: <Mountain className="w-4 h-4" /> },
+          { href: "/shop?community=luo", label: "Luo", icon: <Waves className="w-4 h-4" /> },
+          { href: "/shop?community=kalenjin", label: "Kalenjin", icon: <Zap className="w-4 h-4" /> },
+          { href: "/shop?community=maasai", label: "Maasai", icon: <Shield className="w-4 h-4" /> },
+          { href: "/shop?community=coastal", label: "Coastal / Swahili", icon: <Waves className="w-4 h-4" /> },
+          { href: "/shop?community=luhya", label: "Luhya", icon: <Leaf className="w-4 h-4" /> },
+          { href: "/shop?community=meru", label: "Meru", icon: <Mountain className="w-4 h-4" /> },
         ],
       },
       {
         title: "Life Moments",
         links: [
-          { href: "/?cultural=ruracio", label: "Ruracio (Engagement)", emoji: "💍" },
-          { href: "/?cultural=dowry", label: "Dowry (Mahari)", emoji: "🐄" },
-          { href: "/?cultural=circumcision", label: "Circumcision", emoji: "🗡️" },
-          { href: "/?cultural=christening", label: "Christening", emoji: "⛪" },
-          { href: "/?cultural=funeral", label: "Funeral / Condolence", emoji: "🕊️" },
-          { href: "/?cultural=graduation", label: "Graduation", emoji: "🎓" },
+          { href: "/shop?cultural=ruracio", label: "Ruracio (Engagement)", icon: <Gem className="w-4 h-4" /> },
+          { href: "/shop?cultural=dowry", label: "Dowry (Mahari)", icon: <Gift className="w-4 h-4" /> },
+          { href: "/shop?cultural=circumcision", label: "Circumcision", icon: <Sword className="w-4 h-4" /> },
+          { href: "/shop?cultural=christening", label: "Christening", icon: <Church className="w-4 h-4" /> },
+          { href: "/shop?cultural=funeral", label: "Funeral / Condolence", icon: <Feather className="w-4 h-4" /> },
+          { href: "/shop?cultural=graduation", label: "Graduation", icon: <GraduationCap className="w-4 h-4" /> },
         ],
       },
     ],
@@ -234,31 +236,31 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Popular",
         links: [
-          { href: "/?category=hampers", label: "Hampers & Gift Sets", emoji: "🧺" },
-          { href: "/?category=flowers", label: "Flowers & Bouquets", emoji: "🌸" },
-          { href: "/?category=personalised", label: "Personalised", emoji: "✨" },
-          { href: "/?category=chocolates", label: "Chocolates & Sweets", emoji: "🍫" },
+          { href: "/shop?category=hampers", label: "Hampers & Gift Sets", icon: <ShoppingBasket className="w-4 h-4" /> },
+          { href: "/shop?category=flowers", label: "Flowers & Bouquets", icon: <Flower2 className="w-4 h-4" /> },
+          { href: "/shop?category=personalised", label: "Personalised", icon: <Sparkles className="w-4 h-4" /> },
+          { href: "/shop?category=chocolates", label: "Chocolates & Sweets", icon: <Candy className="w-4 h-4" /> },
         ],
       },
       {
         title: "Lifestyle",
         links: [
-          { href: "/?category=wellness", label: "Wellness & Self Care", emoji: "🧘" },
-          { href: "/?category=home-decor", label: "Home & Living", emoji: "🏠" },
-          { href: "/?category=kitchen", label: "Kitchen & Dining", emoji: "🍳" },
-          { href: "/?category=plants", label: "Plants & Planters", emoji: "🪴" },
-          { href: "/?category=candles", label: "Candles & Diffusers", emoji: "🕯️" },
+          { href: "/shop?category=wellness", label: "Wellness & Self Care", icon: <Activity className="w-4 h-4" /> },
+          { href: "/shop?category=home-decor", label: "Home & Living", icon: <Home className="w-4 h-4" /> },
+          { href: "/shop?category=kitchen", label: "Kitchen & Dining", icon: <ChefHat className="w-4 h-4" /> },
+          { href: "/shop?category=plants", label: "Plants & Planters", icon: <Leaf className="w-4 h-4" /> },
+          { href: "/shop?category=candles", label: "Candles & Diffusers", icon: <Flame className="w-4 h-4" /> },
         ],
       },
       {
         title: "Interests",
         links: [
-          { href: "/?category=fitness", label: "Fitness & Sports", emoji: "💪" },
-          { href: "/?category=gaming", label: "Gaming", emoji: "🎮" },
-          { href: "/?category=music", label: "Music", emoji: "🎵" },
-          { href: "/?category=outdoor", label: "Outdoor & Adventure", emoji: "⛺" },
-          { href: "/?category=tech", label: "Tech & Gadgets", emoji: "📱" },
-          { href: "/?category=experiences", label: "Experiences", emoji: "🧖" },
+          { href: "/shop?category=fitness", label: "Fitness & Sports", icon: <Dumbbell className="w-4 h-4" /> },
+          { href: "/shop?category=gaming", label: "Gaming", icon: <Gamepad2 className="w-4 h-4" /> },
+          { href: "/shop?category=music", label: "Music", icon: <Music className="w-4 h-4" /> },
+          { href: "/shop?category=outdoor", label: "Outdoor & Adventure", icon: <Tent className="w-4 h-4" /> },
+          { href: "/shop?category=tech", label: "Tech & Gadgets", icon: <Smartphone className="w-4 h-4" /> },
+          { href: "/shop?category=experiences", label: "Experiences", icon: <Map className="w-4 h-4" /> },
         ],
       },
     ],
@@ -270,20 +272,20 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Corporate Gifting",
         links: [
-          { href: "/corporate", label: "Overview", emoji: "🏢" },
-          { href: "/corporate?tab=bulk", label: "Bulk Orders", emoji: "📦" },
-          { href: "/corporate?tab=branded", label: "Branded Gifts", emoji: "🏷️" },
-          { href: "/corporate?tab=clients", label: "Client Gifts", emoji: "🤝" },
-          { href: "/corporate?tab=employees", label: "Employee Rewards", emoji: "🎉" },
+          { href: "/corporate", label: "Overview", icon: <Building2 className="w-4 h-4" /> },
+          { href: "/corporate?tab=bulk", label: "Bulk Orders", icon: <Package className="w-4 h-4" /> },
+          { href: "/corporate?tab=branded", label: "Branded Gifts", icon: <Tag className="w-4 h-4" /> },
+          { href: "/corporate?tab=clients", label: "Client Gifts", icon: <Users className="w-4 h-4" /> },
+          { href: "/corporate?tab=employees", label: "Employee Rewards", icon: <Trophy className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Occasion",
         links: [
-          { href: "/corporate?occasion=end-year", label: "End of Year", emoji: "🎄" },
-          { href: "/corporate?occasion=team-building", label: "Team Building", emoji: "🏋️" },
-          { href: "/corporate?occasion=milestones", label: "Work Anniversaries", emoji: "🏆" },
-          { href: "/corporate?occasion=onboarding", label: "New Hire Welcome", emoji: "👋" },
+          { href: "/corporate?occasion=end-year", label: "End of Year", icon: <Sparkles className="w-4 h-4" /> },
+          { href: "/corporate?occasion=team-building", label: "Team Building", icon: <Users className="w-4 h-4" /> },
+          { href: "/corporate?occasion=milestones", label: "Work Anniversaries", icon: <Trophy className="w-4 h-4" /> },
+          { href: "/corporate?occasion=onboarding", label: "New Hire Welcome", icon: <Heart className="w-4 h-4" /> },
         ],
       },
     ],
@@ -338,7 +340,7 @@ export default function MegaMenu() {
             key={item.id}
             onMouseEnter={() => handleMouseEnter(item.id)}
             onClick={() => setActiveMenu(activeMenu === item.id ? null : item.id)}
-            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 relative ${
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 relative ${
               activeMenu === item.id
                 ? "bg-brand/10 text-brand"
                 : item.highlight
@@ -346,7 +348,7 @@ export default function MegaMenu() {
                 : "text-brand-deep hover:bg-brand/5 hover:text-brand"
             }`}
           >
-            {item.icon && <span className="text-base">{item.icon}</span>}
+            {item.icon && <span className="flex items-center">{item.icon}</span>}
             {item.label}
             {item.highlight && (
               <span className="absolute -top-1 -right-1 w-2 h-2 bg-coral rounded-full animate-pulse-soft" />
@@ -359,9 +361,9 @@ export default function MegaMenu() {
         <div
           onMouseEnter={() => handleMouseEnter(activeData.id)}
           onMouseLeave={handleMouseLeave}
-          className="absolute top-full left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl mt-2 z-50"
+          className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl z-50 animate-slide-down origin-top"
         >
-          <div className="bg-white rounded-2xl shadow-card-hover border border-surface-border overflow-hidden animate-pop">
+          <div className="bg-white rounded-3xl shadow-2xl border border-surface-border overflow-hidden">
             <div className="grid grid-cols-12 gap-0">
               <div
                 className={`${
@@ -390,13 +392,9 @@ export default function MegaMenu() {
                           <Link
                             href={link.href}
                             onClick={() => setActiveMenu(null)}
-                            className="flex items-center gap-2 text-sm text-brand-deep/80 hover:text-brand transition-colors group"
+                            className="flex items-center gap-2 text-sm text-brand-deep/80 hover:text-brand transition-all duration-300 hover:translate-x-1 group"
                           >
-                            {link.emoji && (
-                              <span className="text-sm group-hover:scale-110 transition-transform">
-                                {link.emoji}
-                              </span>
-                            )}
+                            {link.icon && (<span className="opacity-70 group-hover:opacity-100 transition-opacity">{link.icon}</span>)}
                             <span>{link.label}</span>
                           </Link>
                         </li>

@@ -95,6 +95,32 @@ export default function ProductReviews({
         </div>
       )}
 
+      {/* Empty State */}
+      {stats.totalReviews === 0 && !showForm && (
+        <div className="bg-surface-secondary/50 rounded-2xl p-8 text-center animate-fade-in mb-8">
+          <span className="text-4xl mb-3 block">✨</span>
+          <h3 className="font-display font-semibold text-lg text-brand-deep mb-2">
+            No reviews yet
+          </h3>
+          <p className="text-sm text-brand-muted max-w-sm mx-auto mb-6">
+            Be the first to experience this! Gift a loved one and leave the very first review.
+          </p>
+          <div className="flex justify-center">
+            <button
+              onClick={() => {
+                document.querySelector('button[aria-label="Add to cart"]')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-brand hover:text-brand-dark transition-colors inline-flex flex-col items-center gap-2"
+            >
+              <span className="text-xs font-semibold uppercase tracking-wider">Gift this now</span>
+              <svg className="w-5 h-5 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Review form */}
       {showForm && (
         <div className="bg-white border border-surface-border rounded-2xl p-6 mb-8">

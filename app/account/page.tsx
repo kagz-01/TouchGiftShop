@@ -4,6 +4,7 @@ import LogoutButton from "@/components/account/LogoutButton";
 import AccountPrefs from "@/components/account/AccountPrefs";
 import ReferralSection from "@/components/account/ReferralSection";
 import LoyaltyBadge from "@/components/account/LoyaltyBadge";
+import BackToHome from "@/components/ui/BackToHome";
 
 export default async function AccountPage() {
   const supabase = createServerSupabase();
@@ -67,10 +68,12 @@ export default async function AccountPage() {
         </div>
       </section>
 
+      <div className="mt-4 text-center">
+        <BackToHome label="Back to Home" />
+      </div>
+
       <AccountPrefs />
-
       <LoyaltyBadge />
-
       <ReferralSection />
 
       <a

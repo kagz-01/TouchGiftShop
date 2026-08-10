@@ -3,24 +3,29 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useCallback, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { 
+  Sparkles, Cake, Gem, Heart, Baby, Building2, Feather, 
+  GraduationCap, Flower2, HeartPulse, Gift, Dumbbell, 
+  Gamepad2, Home, ChefHat 
+} from "lucide-react";
 
 const CATEGORIES = [
-  { label: "All", icon: "✨", slug: "" },
-  { label: "Birthdays", icon: "🎂", slug: "birthdays" },
-  { label: "Anniversaries", icon: "💍", slug: "anniversaries" },
-  { label: "Weddings", icon: "💒", slug: "weddings" },
-  { label: "Baby", icon: "👶", slug: "baby" },
-  { label: "Corporate", icon: "🏢", slug: "corporate" },
-  { label: "Condolences", icon: "🕊️", slug: "condolences" },
-  { label: "Graduation", icon: "🎓", slug: "graduation" },
-  { label: "Apology", icon: "💐", slug: "apology" },
-  { label: "Just Because", icon: "💝", slug: "just-because" },
-  { label: "For Her", icon: "💝", slug: "for-her" },
-  { label: "For Him", icon: "🎁", slug: "for-him" },
-  { label: "Fitness", icon: "💪", slug: "fitness" },
-  { label: "Gaming", icon: "🎮", slug: "gaming" },
-  { label: "Home", icon: "🏠", slug: "home-decor" },
-  { label: "Kitchen", icon: "🍳", slug: "kitchen" },
+  { label: "All", icon: <Sparkles className="w-4 h-4" />, slug: "" },
+  { label: "Birthdays", icon: <Cake className="w-4 h-4" />, slug: "birthdays" },
+  { label: "Anniversaries", icon: <Gem className="w-4 h-4" />, slug: "anniversaries" },
+  { label: "Weddings", icon: <Heart className="w-4 h-4" />, slug: "weddings" },
+  { label: "Baby", icon: <Baby className="w-4 h-4" />, slug: "baby" },
+  { label: "Corporate", icon: <Building2 className="w-4 h-4" />, slug: "corporate" },
+  { label: "Condolences", icon: <Feather className="w-4 h-4" />, slug: "condolences" },
+  { label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, slug: "graduation" },
+  { label: "Apology", icon: <Flower2 className="w-4 h-4" />, slug: "apology" },
+  { label: "Just Because", icon: <HeartPulse className="w-4 h-4" />, slug: "just-because" },
+  { label: "For Her", icon: <HeartPulse className="w-4 h-4" />, slug: "for-her" },
+  { label: "For Him", icon: <Gift className="w-4 h-4" />, slug: "for-him" },
+  { label: "Fitness", icon: <Dumbbell className="w-4 h-4" />, slug: "fitness" },
+  { label: "Gaming", icon: <Gamepad2 className="w-4 h-4" />, slug: "gaming" },
+  { label: "Home", icon: <Home className="w-4 h-4" />, slug: "home-decor" },
+  { label: "Kitchen", icon: <ChefHat className="w-4 h-4" />, slug: "kitchen" },
 ];
 
 export default function OccasionPills() {
@@ -82,7 +87,7 @@ export default function OccasionPills() {
                 : "bg-white text-brand-muted border border-surface-border hover:border-brand/30 hover:text-brand hover:bg-brand/5"
             )}
           >
-            <span className="text-base">{cat.icon}</span>
+            <div className="flex items-center justify-center shrink-0">{cat.icon}</div>
             {cat.label}
           </button>
         ))}

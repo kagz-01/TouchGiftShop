@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import BackToHome from "@/components/ui/BackToHome";
 import { formatKsh } from "@/lib/utils";
 import OrderStatusTimeline from "@/components/orders/OrderStatusTimeline";
 import SendTrackLinkButton from "@/components/orders/SendTrackLinkButton";
@@ -62,12 +63,15 @@ export default async function OrderDetailPage({
       {/* Header */}
       <div className="bg-gradient-to-br from-brand-dark to-brand px-4 py-8 md:py-10">
         <div className="max-w-lg mx-auto">
-          <Link href="/orders" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
+          <div className="flex items-center justify-between">
+            <Link href="/orders" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
             All orders
-          </Link>
+            </Link>
+            <BackToHome className="text-white/80" />
+          </div>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-white">
             {isFailed ? "Payment failed" : `Gift for ${order.recipient_name}`}
           </h1>

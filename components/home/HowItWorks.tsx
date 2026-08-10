@@ -1,20 +1,21 @@
 import Link from "next/link";
+import { Gift, MapPin, Sparkles } from "lucide-react";
 
 const STEPS = [
   {
-    icon: "🎁",
+    icon: <Gift className="w-9 h-9 text-brand" />,
     title: "Pick a Gift",
     description: "Browse our curated collection or let AI find the perfect one for you.",
     cta: { label: "Browse Gifts", href: "/" },
   },
   {
-    icon: "📍",
+    icon: <MapPin className="w-9 h-9 text-brand" />,
     title: "We Deliver",
     description: "Same-day in Nairobi, next-day nationwide. Recipient drops their own pin.",
     cta: { label: "How Delivery Works", href: "/delivery" },
   },
   {
-    icon: "✨",
+    icon: <Sparkles className="w-9 h-9 text-brand" />,
     title: "They Smile",
     description: "Photo proof before dispatch. Your identity stays private if you want.",
     cta: { label: "Surprise Safeguard", href: "/returns" },
@@ -24,7 +25,7 @@ const STEPS = [
 export default function HowItWorks() {
   return (
     <section className="py-12 md:py-16 bg-surface-secondary">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full mx-auto px-4 md:px-8">
         <div className="text-center mb-10">
           <span className="text-xs text-brand font-semibold uppercase tracking-wider">Simple as 1-2-3</span>
           <h2 className="font-display text-2xl md:text-3xl font-bold mt-2">How TouchGift Works</h2>
@@ -44,7 +45,7 @@ export default function HowItWorks() {
                   {i + 1}
                 </div>
 
-                <div className="text-4xl mt-2 group-hover:scale-110 transition-transform duration-300">
+                <div className="flex justify-center mt-2 group-hover:scale-110 transition-transform duration-300">
                   {step.icon}
                 </div>
 

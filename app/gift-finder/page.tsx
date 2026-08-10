@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
+import BackToHome from "@/components/ui/BackToHome";
 
 type Message = {
   id: string;
@@ -309,6 +310,11 @@ export default function GiftChatPage() {
             T-Gifter uses AI to help you find gifts. Responses may vary.
           </p>
         </form>
+      </div>
+
+      {/* Back to Home */}
+      <div className="text-center pb-8">
+        <BackToHome label="Back to Home" />
       </div>
     </div>
   );

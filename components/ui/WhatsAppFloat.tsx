@@ -17,7 +17,7 @@ export default function WhatsAppFloat() {
       href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27d%20like%20help%20with%20a%20gift"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-24 right-4 md:bottom-8 md:right-8 z-50 group"
+      className="fixed bottom-24 left-4 md:bottom-8 md:left-8 z-50 group"
       aria-label="Chat on WhatsApp"
     >
       {/* Ping ring */}

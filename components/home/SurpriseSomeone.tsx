@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { EyeOff, MapPin, Camera, Zap } from "lucide-react";
 
 export default function SurpriseSomeone() {
   return (
     <section className="py-12 md:py-16">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light rounded-3xl p-8 md:p-12">
           {/* Decorative */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -12,7 +13,9 @@ export default function SurpriseSomeone() {
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="space-y-4">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 rounded-full text-white/80 text-xs font-semibold">
-                <span className="animate-wiggle inline-block">🤫</span>
+                <span className="animate-wiggle inline-flex">
+                  <EyeOff className="w-3.5 h-3.5 text-white/80" />
+                </span>
                 Keep it secret
               </span>
 
@@ -46,16 +49,16 @@ export default function SurpriseSomeone() {
             {/* Feature cards */}
             <div className="grid grid-cols-2 gap-3">
               {[
-                { icon: "📍", title: "Pin Drop", desc: "They choose the spot" },
-                { icon: "🤫", title: "Anonymous", desc: "Your identity hidden" },
-                { icon: "📸", title: "Photo Proof", desc: "See before it ships" },
-                { icon: "⚡", title: "Same-Day", desc: "Nairobi delivery" },
+                { icon: <MapPin className="w-6 h-6 text-white" />, title: "Pin Drop", desc: "They choose the spot" },
+                { icon: <EyeOff className="w-6 h-6 text-white" />, title: "Anonymous", desc: "Your identity hidden" },
+                { icon: <Camera className="w-6 h-6 text-white" />, title: "Photo Proof", desc: "See before it ships" },
+                { icon: <Zap className="w-6 h-6 text-white" />, title: "Same-Day", desc: "Nairobi delivery" },
               ].map((feature, i) => (
                 <div
                   key={i}
                   className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 hover:bg-white/15 transition-all"
                 >
-                  <span className="text-2xl block mb-2">{feature.icon}</span>
+                  <div className="flex mb-2">{feature.icon}</div>
                   <p className="text-sm font-bold text-white">{feature.title}</p>
                   <p className="text-xs text-white/60">{feature.desc}</p>
                 </div>

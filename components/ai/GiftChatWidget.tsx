@@ -141,7 +141,7 @@ export default function GiftChatWidget() {
         aria-label="Gift Assistant"
       >
         {isOpen ? (
-          <div className="w-14 h-14 bg-brand rounded-full flex items-center justify-center shadow-glow hover:bg-brand-dark transition-colors">
+          <div className="w-12 h-12 bg-brand rounded-full flex items-center justify-center shadow-glow hover:bg-brand-dark transition-colors">
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -149,8 +149,9 @@ export default function GiftChatWidget() {
         ) : (
           <div className="relative">
             <span className="absolute inset-0 rounded-full bg-brand animate-ping opacity-20" />
-            <div className="relative w-14 h-14 bg-gradient-to-br from-brand to-brand-light rounded-full flex items-center justify-center shadow-glow hover:shadow-glow/50 hover:scale-105 transition-all duration-300">
-              <span className="text-2xl">🎁</span>
+            <div className="relative flex items-center gap-2 bg-brand hover:bg-brand-dark text-white rounded-full px-4 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+              <span className="text-xl">✨</span>
+              <span className="text-sm font-semibold hidden sm:inline">AI Gift Finder</span>
             </div>
             {/* Notification badge */}
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-gold rounded-full flex items-center justify-center">

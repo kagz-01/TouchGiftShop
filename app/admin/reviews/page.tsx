@@ -64,7 +64,7 @@ export default function AdminReviewsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
+    <div className="w-full mx-auto px-4 md:px-8 py-8">
       <h1 className="font-display text-2xl font-bold text-brand-deep mb-6">
         Review Moderation
       </h1>

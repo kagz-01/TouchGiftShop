@@ -94,16 +94,29 @@ async function handlePoolPayment(
     .single();
 
   if (contribution) {
+    // Re-compute the pool balance from ALL verified contributions rather than
+    // incrementing by contribution.amount. This makes IPN handling idempotent:
+    // if PesaPal fires the same event twice, the balance is the same both times.
+    const { data: verifiedContribs } = await supabaseAdmin
+      .from("pool_contributions")
+      .select("amount")
+      .eq("pool_id", contribution.pool_id)
+      .eq("is_verified", true);
+
+    const recomputedBalance = (verifiedContribs ?? []).reduce(
+      (sum, c) => sum + Number(c.amount),
+      0
+    );
+
     const { data: pool } = await supabaseAdmin
       .from("group_gifting_pools")
-      .select("current_balance, target_amount")
+      .select("target_amount")
       .eq("id", contribution.pool_id)
       .single();
 
-    if (pool) {
-      const newBalance = pool.current_balance + contribution.amount;
-      const updates: Record<string, unknown> = { current_balance: newBalance };
-      if (newBalance >= pool.target_amount) {
+    if (pool !== null) {
+      const updates: Record<string, unknown> = { current_balance: recomputedBalance };
+      if (recomputedBalance >= Number(pool.target_amount)) {
         updates.status = "completed";
       }
       await supabaseAdmin

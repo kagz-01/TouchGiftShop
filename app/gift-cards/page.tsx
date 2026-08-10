@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BackToHome from "@/components/ui/BackToHome";
 import { formatKsh } from "@/lib/utils";
 
 const PRESET_AMOUNTS = [1000, 2000, 3000, 5000];
@@ -78,6 +79,9 @@ export default function GiftCardsPage() {
 
   return (
     <div className="px-4 md:px-8 py-6 max-w-md mx-auto space-y-6">
+      <div className="mb-4">
+        <BackToHome />
+      </div>
       <div className="space-y-1">
         <h1 className="text-xl font-semibold">Digital Gift Card</h1>
         <p className="text-sm text-brand-muted">

@@ -12,14 +12,17 @@ export default function LoyaltyBadge() {
   useEffect(() => {
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data }) => {
-      if (!data.user?.phone) {
+      if (!data.user) {
         setLoading(false);
         return;
       }
 
-      const res = await fetch(
-        `/api/orders?phone=${encodeURIComponent(data.user.phone)}`
-      );
+      // Session cookie is sent automatically — no phone param needed.
+      const res = await fetch("/api/orders");
+      if (!res.ok) {
+        setLoading(false);
+        return;
+      }
       const { orders } = await res.json();
 
       if (orders) {

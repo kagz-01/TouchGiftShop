@@ -7,6 +7,55 @@ import ProductAIHelper from "@/components/product/ProductAIHelper";
 import WishlistButton from "@/components/product/WishlistButton";
 import ProductReviews from "@/components/reviews/ProductReviews";
 
+import ProductGallery from "@/components/product/ProductGallery";
+
+// Helper to structure the description text
+function StructuredDescription({ text }: { text: string }) {
+  // If no text, return null
+  if (!text) return null;
+
+  // Extremely basic heuristic: if it contains "Features:", split it there.
+  // Otherwise, if it's very long, split by periods.
+  let mainText = text;
+  let features: string[] = [];
+
+  if (text.includes("Features:")) {
+    const parts = text.split("Features:");
+    mainText = parts[0].trim();
+    // Split the features by periods, clean them up, filter empty ones
+    features = parts[1]
+      .split(/(?:\. | - )/)
+      .map(f => f.replace(/&amp;/g, '&').trim())
+      .filter(f => f.length > 3);
+  } else if (text.length > 200) {
+    const sentences = text.split(". ");
+    mainText = sentences.slice(0, 2).join(". ") + ".";
+    features = sentences.slice(2).map(s => s.trim()).filter(s => s.length > 3);
+  }
+
+  return (
+    <div className="bg-surface-secondary rounded-2xl p-5">
+      <h3 className="font-display font-semibold text-sm mb-3 text-brand-muted uppercase tracking-wider">
+        About this gift
+      </h3>
+      <p className="text-sm text-brand-muted leading-relaxed mb-4">
+        {mainText}
+      </p>
+      
+      {features.length > 0 && (
+        <ul className="space-y-2">
+          {features.map((feature, idx) => (
+            <li key={idx} className="flex items-start gap-2 text-sm text-brand-muted">
+              <span className="text-brand mt-0.5">•</span>
+              <span className="leading-relaxed">{feature.endsWith('.') ? feature : feature + '.'}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 async function getProduct(id: string): Promise<Product | null> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   const res = await fetch(`${base}/api/products/${id}`, { cache: "no-store" });
@@ -24,7 +73,7 @@ export default async function ProductPage({
 
   if (!product) {
     return (
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-16 text-center animate-fade-in">
+      <div className="w-full mx-auto px-4 md:px-8 py-16 text-center animate-fade-in">
         <span className="text-6xl mb-4 block">🔍</span>
         <p className="font-display text-xl font-semibold mb-2">Product not found</p>
         <p className="text-brand-muted mb-6">This gift doesn&apos;t exist or has been removed.</p>
@@ -39,7 +88,7 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-8 py-6 animate-fade-in">
+    <div className="w-full mx-auto px-4 md:px-8 py-6 animate-fade-in">
       {/* Breadcrumb */}
       <Link
         href="/"
@@ -52,40 +101,14 @@ export default async function ProductPage({
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-        {/* Image */}
-        <div className="relative aspect-square bg-blush rounded-3xl overflow-hidden shadow-card animate-fade-in-up">
-          {product.image_url ? (
-            <Image
-              src={product.image_url}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-8xl">
-              🎁
-            </div>
-          )}
-
-          {/* Stock badge */}
-          {!product.in_stock && (
-            <div className="absolute top-4 left-4 bg-brand-deep/80 backdrop-blur-sm text-white text-sm px-4 py-2 rounded-xl font-medium">
-              Out of stock
-            </div>
-          )}
-
-          {/* Personalizable badge */}
-          {product.is_personalizable && (
-            <div className="absolute top-4 left-4 bg-gold/90 backdrop-blur-sm text-brand-deep text-sm px-4 py-2 rounded-xl font-medium flex items-center gap-2">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Customizable
-            </div>
-          )}
-        </div>
+        {/* Gallery */}
+        <ProductGallery 
+          productName={product.name}
+          image_url={product.image_url}
+          images={product.images}
+          in_stock={product.in_stock}
+          is_personalizable={product.is_personalizable}
+        />
 
         {/* Details */}
         <div className="space-y-6 animate-fade-in-up animate-delay-200">
@@ -98,16 +121,7 @@ export default async function ProductPage({
           </div>
 
           {/* Description */}
-          {product.description && (
-            <div className="bg-surface-secondary rounded-2xl p-5">
-              <h3 className="font-display font-semibold text-sm mb-2 text-brand-muted uppercase tracking-wider">
-                About this gift
-              </h3>
-              <p className="text-sm text-brand-muted leading-relaxed">
-                {product.description}
-              </p>
-            </div>
-          )}
+          {product.description && <StructuredDescription text={product.description} />}
 
           {/* Trust badges */}
           <div className="grid grid-cols-3 gap-3">

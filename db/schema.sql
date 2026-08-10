@@ -13,6 +13,7 @@ CREATE TYPE pool_status_enum AS ENUM ('active', 'completed', 'expired');
 CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    product_id UUID REFERENCES products(id) ON DELETE SET NULL,
     total_amount DECIMAL(12,2) NOT NULL,
     shipping_fee DECIMAL(10,2) DEFAULT 0.00,
     status order_status_enum DEFAULT 'pending_payment',
@@ -98,6 +99,7 @@ CREATE TABLE products (
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
     image_url TEXT,
+    images JSONB DEFAULT '[]'::jsonb,
     is_personalizable BOOLEAN DEFAULT FALSE,
     in_stock BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

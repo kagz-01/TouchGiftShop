@@ -2,6 +2,13 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import { 
+  Gift, Sparkles, Heart, Mail, 
+  Clock, PackageX, MapPin, Banknote,
+  Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
+  Cake, Gem, Building2, Baby, Flower2, Trophy,
+  Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine
+} from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -149,7 +156,7 @@ function highlightDeliveryCopy(text: string) {
 /* ══════════════════════════════════════════════════════════
    SECTION 1: THE HOOK — 3/4 cinematic hero with logo reveal
    ══════════════════════════════════════════════════════════ */
-function HeroCinematic() {
+export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   const deliveryMessage = useTypewriter([
     "TouchGift makes gifting feel thoughtful.",
@@ -161,20 +168,20 @@ function HeroCinematic() {
   useEffect(() => { setLoaded(true); }, []);
 
   return (
-    <section className="relative h-[75vh] min-h-[560px] flex items-center justify-center overflow-hidden bg-brand-deep">
-      {/* Animated gradient orbs */}
+    <section className="relative h-[75vh] min-h-[560px] flex items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
+      {/* Animated gradient orbs for smoother background */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand/30 rounded-full blur-[120px] animate-pulse-soft" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/20 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-coral/15 rounded-full blur-[80px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[120px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
       {/* Floating gift elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-[10%] text-6xl opacity-20 animate-float" style={{ animationDelay: "0s" }}>🎁</div>
-        <div className="absolute top-40 right-[15%] text-4xl opacity-15 animate-float" style={{ animationDelay: "1s" }}>🎀</div>
-        <div className="absolute bottom-32 left-[20%] text-5xl opacity-15 animate-float" style={{ animationDelay: "2s" }}>✨</div>
-        <div className="absolute bottom-20 right-[10%] text-4xl opacity-20 animate-float" style={{ animationDelay: "3s" }}>💌</div>
+        <div className="absolute top-20 left-[10%] opacity-20 animate-float" style={{ animationDelay: "0s" }}><Gift className="w-16 h-16 text-brand" /></div>
+        <div className="absolute top-40 right-[15%] opacity-15 animate-float" style={{ animationDelay: "1s" }}><Heart className="w-12 h-12 text-brand-muted" /></div>
+        <div className="absolute bottom-32 left-[20%] opacity-15 animate-float" style={{ animationDelay: "2s" }}><Sparkles className="w-14 h-14 text-gold" /></div>
+        <div className="absolute bottom-20 right-[10%] opacity-20 animate-float" style={{ animationDelay: "3s" }}><Mail className="w-12 h-12 text-brand" /></div>
       </div>
 
       {/* Content */}
@@ -222,7 +229,7 @@ function HeroCinematic() {
         {/* CTA */}
         <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <Link
-            href="/?category=birthdays"
+            href="/shop?category=birthdays"
             className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1"
           >
             <span className="relative z-10 flex items-center gap-2">
@@ -235,11 +242,11 @@ function HeroCinematic() {
           </Link>
           <Link
             href="/gift-lab"
-            className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1"
+            className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1"
           >
             <span className="flex items-center gap-2">
               Build a Hamper
-              <span className="text-xl">✨</span>
+              <Sparkles className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
             </span>
           </Link>
         </div>
@@ -261,17 +268,17 @@ function HeroCinematic() {
 /* ══════════════════════════════════════════════════════════
    SECTION 2: THE PROBLEM — Relatable pain point
    ══════════════════════════════════════════════════════════ */
-function ProblemSection() {
+export function ProblemSection() {
   const problems = [
-    { emoji: "😰", text: "Last-minute panic — what do I even get them?" },
-    { emoji: "🤷", text: "Generic gifts that miss the mark completely" },
-    { emoji: "📍", text: "Don't know their exact address" },
-    { emoji: "💸", text: "Hidden delivery fees at checkout" },
+    { emoji: <Clock className="w-8 h-8 text-coral" />, text: "Last-minute panic — what do I even get them?" },
+    { emoji: <PackageX className="w-8 h-8 text-coral" />, text: "Generic gifts that miss the mark completely" },
+    { emoji: <MapPin className="w-8 h-8 text-coral" />, text: "Don't know their exact address" },
+    { emoji: <Banknote className="w-8 h-8 text-coral" />, text: "Hidden delivery fees at checkout" },
   ];
 
   return (
     <section className="py-24 md:py-32 bg-white relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             We get it
@@ -295,9 +302,9 @@ function ProblemSection() {
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="left">
               <div className="flex items-start gap-4 p-6 bg-blush/50 rounded-2xl border border-surface-border hover:border-brand/20 transition-all duration-300 hover:shadow-soft group">
-                <span className="text-4xl group-hover:scale-110 transition-transform duration-300">
+                <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
                   {p.emoji}
-                </span>
+                </div>
                 <p className="text-lg font-medium pt-1">{p.text}</p>
               </div>
             </Reveal>
@@ -311,17 +318,17 @@ function ProblemSection() {
 /* ══════════════════════════════════════════════════════════
    SECTION 3: THE SOLUTION — Brand reveal
    ══════════════════════════════════════════════════════════ */
-function SolutionSection() {
+export function SolutionSection() {
   return (
     <section className="py-24 md:py-32 bg-gradient-dark relative overflow-hidden">
       {/* Decorative */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="max-w-6xl mx-auto px-4 md:px-8 text-center">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 text-center">
         <Reveal direction="scale">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-brand rounded-3xl mb-8 shadow-glow animate-float">
-            <span className="text-4xl">🎁</span>
+            <Gift className="w-10 h-10 text-white" />
           </div>
         </Reveal>
 
@@ -342,26 +349,26 @@ function SolutionSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             {
-              icon: "🎯",
+              icon: <Target className="w-10 h-10 text-white" />,
               title: "Curated, not generic",
               desc: "Every gift is handpicked for the occasion — no filler, no misses.",
             },
             {
-              icon: "⚡",
+              icon: <Zap className="w-10 h-10 text-white" />,
               title: "Same-day delivery",
               desc: "Order before 2pm, delivered by evening. Nairobi-wide.",
             },
             {
-              icon: "🤫",
+              icon: <EyeOff className="w-10 h-10 text-white" />,
               title: "Surprise-safe",
               desc: "Anonymous mode + no-contact delivery. The surprise stays intact.",
             },
           ].map((f, i) => (
             <Reveal key={i} delay={400 + i * 150}>
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-left hover:bg-white/10 hover:border-gold/30 transition-all duration-300 group">
-                <span className="text-4xl mb-4 block group-hover:scale-110 transition-transform duration-300">
+                <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
                   {f.icon}
-                </span>
+                </div>
                 <h3 className="font-display text-xl font-semibold text-white mb-2">
                   {f.title}
                 </h3>
@@ -378,25 +385,25 @@ function SolutionSection() {
 /* ══════════════════════════════════════════════════════════
    SECTION 4: HOW IT WORKS — 3-step process
    ══════════════════════════════════════════════════════════ */
-function HowItWorks() {
+export function StoryHowItWorks() {
   const steps = [
     {
       num: "01",
-      icon: "🛍️",
+      icon: <ShoppingBag className="w-10 h-10 text-brand" />,
       title: "Pick a gift",
       desc: "Browse by occasion or let our Gift Finder suggest the perfect match.",
       color: "from-brand to-brand-light",
     },
     {
       num: "02",
-      icon: "💳",
+      icon: <CreditCard className="w-10 h-10 text-gold" />,
       title: "Pay with M-Pesa",
       desc: "Quick checkout with M-Pesa, card, or Airtel Money. No account needed.",
       color: "from-gold to-gold-light",
     },
     {
       num: "03",
-      icon: "🚀",
+      icon: <Rocket className="w-10 h-10 text-success" />,
       title: "We deliver it",
       desc: "Same-day in Nairobi, next-day nationwide. Photo proof before dispatch.",
       color: "from-success to-emerald-400",
@@ -405,7 +412,7 @@ function HowItWorks() {
 
   return (
     <section className="py-24 md:py-32 bg-blush/30 relative">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Simple as 1-2-3
@@ -431,7 +438,7 @@ function HowItWorks() {
                   </div>
 
                   <div className="pt-6">
-                    <span className="text-5xl mb-4 block group-hover:animate-wiggle">{step.icon}</span>
+                    <div className="mb-4 group-hover:animate-wiggle">{step.icon}</div>
                     <h3 className="font-display text-xl font-bold mb-2">{step.title}</h3>
                     <p className="text-brand-muted text-sm leading-relaxed">{step.desc}</p>
                   </div>
@@ -448,11 +455,11 @@ function HowItWorks() {
 /* ══════════════════════════════════════════════════════════
    SECTION 5: SOCIAL PROOF — Numbers + testimonials
    ══════════════════════════════════════════════════════════ */
-function SocialProof() {
+export function SocialProof() {
   const [reviews, setReviews] = useState<ReviewWithMedia[]>([]);
 
   useEffect(() => {
-    fetch("/api/reviews?limit=3&sort=helpful")
+    fetch("/api/reviews?limit=10&sort=helpful")
       .then((r) => r.json())
       .then((data) => setReviews(data.reviews || []))
       .catch(() => {});
@@ -470,10 +477,14 @@ function SocialProof() {
         { name: "Wanjiku M.", text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!", occasion: "Birthday", stars: 5 },
         { name: "Brian K.", text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.", occasion: "Corporate", stars: 5 },
         { name: "Amina H.", text: "Anonymous mode is everything. Sent my ex a 'just because' gift without them knowing it was me. No drama, just vibes.", occasion: "Just Because", stars: 5 },
+        { name: "Kevin O.", text: "The presentation is what did it for me. The box, the ribbon, the handwritten note — it felt so premium. Will definitely use TouchGift again.", occasion: "Anniversary", stars: 5 },
+        { name: "Stella N.", text: "My mom actually cried when she got the wellness hamper. They didn't just deliver a box, they delivered a moment. Thank you!", occasion: "Mother's Day", stars: 5 },
       ];
+
+  const marqueeReviews = [...displayReviews, ...displayReviews];
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {[
@@ -505,25 +516,58 @@ function SocialProof() {
           </h2>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {displayReviews.map((t, i) => (
-            <Reveal key={i} delay={200 + i * 150}>
-              <div className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300">
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: t.stars }).map((_, j) => (
-                    <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  ))}
+        {/* Scrolling Marquee Container */}
+        <div className="relative flex overflow-x-hidden group w-full py-4 -mx-4 px-4 md:mx-0 md:px-0">
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10" />
+          
+          <div className="animate-marquee whitespace-nowrap flex gap-6 group-hover:[animation-play-state:paused] min-w-full shrink-0 items-center justify-around">
+            {displayReviews.map((t, i) => (
+              <div 
+                key={i} 
+                className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300 w-[300px] md:w-[380px] flex-shrink-0 flex flex-col justify-between whitespace-normal h-full"
+              >
+                <div>
+                  <div className="flex gap-1 mb-3">
+                    {Array.from({ length: t.stars }).map((_, j) => (
+                      <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-sm leading-relaxed mb-6 whitespace-normal">&ldquo;{t.text}&rdquo;</p>
                 </div>
-                <p className="text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mt-auto">
                   <span className="font-semibold text-sm">{t.name}</span>
-                  <span className="text-xs bg-brand/10 text-brand px-2 py-1 rounded-full">{t.occasion}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/10 text-brand px-3 py-1.5 rounded-full">{t.occasion}</span>
                 </div>
               </div>
-            </Reveal>
-          ))}
+            ))}
+          </div>
+
+          <div className="animate-marquee whitespace-nowrap flex gap-6 group-hover:[animation-play-state:paused] min-w-full shrink-0 items-center justify-around" aria-hidden="true">
+            {displayReviews.map((t, i) => (
+              <div 
+                key={i} 
+                className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300 w-[300px] md:w-[380px] flex-shrink-0 flex flex-col justify-between whitespace-normal h-full ml-6"
+              >
+                <div>
+                  <div className="flex gap-1 mb-3">
+                    {Array.from({ length: t.stars }).map((_, j) => (
+                      <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="text-sm leading-relaxed mb-6 whitespace-normal">&ldquo;{t.text}&rdquo;</p>
+                </div>
+                <div className="flex items-center justify-between mt-auto">
+                  <span className="font-semibold text-sm">{t.name}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/10 text-brand px-3 py-1.5 rounded-full">{t.occasion}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -533,29 +577,29 @@ function SocialProof() {
 /* ══════════════════════════════════════════════════════════
    SECTION 6: OCCASIONS — Browse by who you're gifting
    ══════════════════════════════════════════════════════════ */
-function OccasionsGrid() {
+export function OccasionsGrid() {
   const occasions = [
-    { icon: "🎂", label: "Birthdays", slug: "birthdays", color: "from-pink-400 to-rose-500" },
-    { icon: "💍", label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
-    { icon: "💒", label: "Weddings", slug: "weddings", color: "from-purple-400 to-indigo-500" },
-    { icon: "🏢", label: "Corporate", slug: "corporate", color: "from-blue-400 to-cyan-500" },
-    { icon: "👶", label: "New Baby", slug: "baby", color: "from-blue-300 to-cyan-400" },
-    { icon: "💐", label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
-    { icon: "🏆", label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
-    { icon: "💝", label: "Just Because", slug: "just-because", color: "from-violet-400 to-purple-500" },
-    { icon: "🕊️", label: "Condolences", slug: "condolences", color: "from-slate-400 to-gray-500" },
-    { icon: "💪", label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
-    { icon: "🎮", label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
-    { icon: "🎵", label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
-    { icon: "⛺", label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
-    { icon: "🏠", label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
-    { icon: "🍳", label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
-    { icon: "🍷", label: "Beverages", slug: "beverages", color: "from-amber-500 to-red-500" },
+    { icon: <Cake className="w-8 h-8 group-hover:text-white text-pink-500 transition-colors" />, label: "Birthdays", slug: "birthdays", color: "from-pink-400 to-rose-500" },
+    { icon: <Gem className="w-8 h-8 group-hover:text-white text-pink-500 transition-colors" />, label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
+    { icon: <Heart className="w-8 h-8 group-hover:text-white text-indigo-500 transition-colors" />, label: "Weddings", slug: "weddings", color: "from-purple-400 to-indigo-500" },
+    { icon: <Building2 className="w-8 h-8 group-hover:text-white text-cyan-500 transition-colors" />, label: "Corporate", slug: "corporate", color: "from-blue-400 to-cyan-500" },
+    { icon: <Baby className="w-8 h-8 group-hover:text-white text-cyan-400 transition-colors" />, label: "New Baby", slug: "baby", color: "from-blue-300 to-cyan-400" },
+    { icon: <Flower2 className="w-8 h-8 group-hover:text-white text-orange-500 transition-colors" />, label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
+    { icon: <Trophy className="w-8 h-8 group-hover:text-white text-teal-500 transition-colors" />, label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
+    { icon: <Heart className="w-8 h-8 group-hover:text-white text-purple-500 transition-colors" />, label: "Just Because", slug: "just-because", color: "from-violet-400 to-purple-500" },
+    { icon: <Feather className="w-8 h-8 group-hover:text-white text-gray-500 transition-colors" />, label: "Condolences", slug: "condolences", color: "from-slate-400 to-gray-500" },
+    { icon: <Dumbbell className="w-8 h-8 group-hover:text-white text-red-500 transition-colors" />, label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
+    { icon: <Gamepad2 className="w-8 h-8 group-hover:text-white text-purple-500 transition-colors" />, label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
+    { icon: <Music className="w-8 h-8 group-hover:text-white text-fuchsia-500 transition-colors" />, label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
+    { icon: <Tent className="w-8 h-8 group-hover:text-white text-emerald-500 transition-colors" />, label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
+    { icon: <Home className="w-8 h-8 group-hover:text-white text-orange-500 transition-colors" />, label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
+    { icon: <ChefHat className="w-8 h-8 group-hover:text-white text-rose-500 transition-colors" />, label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
+    { icon: <Wine className="w-8 h-8 group-hover:text-white text-red-500 transition-colors" />, label: "Beverages", slug: "beverages", color: "from-amber-500 to-red-500" },
   ];
 
   return (
     <section className="py-24 md:py-32 bg-gradient-warm">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Find by occasion
@@ -583,9 +627,9 @@ function OccasionsGrid() {
                 {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
                 <div className="relative z-10">
-                  <span className="text-4xl mb-3 block group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-500">
+                  <div className="mb-3 flex justify-center group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-500">
                     {occ.icon}
-                  </span>
+                  </div>
                   <p className="font-semibold text-sm group-hover:text-white transition-colors duration-300">
                     {occ.label}
                   </p>
@@ -602,7 +646,7 @@ function OccasionsGrid() {
 /* ══════════════════════════════════════════════════════════
    SECTION 7: FINAL CTA — Convert
    ══════════════════════════════════════════════════════════ */
-function FinalCTA() {
+export function FinalCTA() {
   return (
     <section className="py-24 md:py-32 bg-brand-deep relative overflow-hidden">
       {/* Animated orbs */}
@@ -613,7 +657,7 @@ function FinalCTA() {
 
       <div className="max-w-4xl mx-auto px-4 md:px-8 text-center relative z-10">
         <Reveal direction="scale">
-          <span className="text-6xl mb-6 block animate-float">🎁</span>
+          <div className="mb-6 flex justify-center animate-float"><Gift className="w-16 h-16 text-brand-light" /></div>
         </Reveal>
 
         <Reveal delay={200}>
@@ -713,7 +757,7 @@ export default function StorytellingHome() {
       <HeroCinematic />
       <ProblemSection />
       <SolutionSection />
-      <HowItWorks />
+      <StoryHowItWorks />
       <SocialProof />
       <OccasionsGrid />
       <FinalCTA />

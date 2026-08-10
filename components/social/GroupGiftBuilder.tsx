@@ -10,6 +10,7 @@ import {
   generateShareMessage,
   type GroupGift,
 } from "@/lib/group-gift";
+import BackToHome from "@/components/ui/BackToHome";
 
 type GroupGiftBuilderProps = {
   product: {
@@ -158,6 +159,9 @@ export default function GroupGiftBuilder({ product, onClose }: GroupGiftBuilderP
           >
             Create Group Gift
           </button>
+        </div>
+        <div className="mt-6 flex items-center justify-between">
+          <BackToHome />
         </div>
 
         {/* Join existing */}

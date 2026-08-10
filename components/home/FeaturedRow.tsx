@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Gift } from "lucide-react";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
@@ -12,6 +13,8 @@ interface FeaturedRowProps {
   products: Product[];
   viewAllHref?: string;
   viewAllLabel?: string;
+  /** tint the section background for chapter alternation */
+  tint?: "warm" | "cool" | "none";
 }
 
 export default function FeaturedRow({
@@ -20,11 +23,15 @@ export default function FeaturedRow({
   products,
   viewAllHref,
   viewAllLabel = "View all",
+  tint = "none",
 }: FeaturedRowProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [visible, setVisible] = useState(false);
 
+  // Scroll shadow state
   const checkScroll = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -40,6 +47,23 @@ export default function FeaturedRow({
     return () => el.removeEventListener("scroll", checkScroll);
   }, [checkScroll, products]);
 
+  // IntersectionObserver for reveal
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.08 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
   const scroll = (dir: "left" | "right") => {
     scrollRef.current?.scrollBy({
       left: dir === "left" ? -300 : 300,
@@ -49,13 +73,35 @@ export default function FeaturedRow({
 
   if (products.length === 0) return null;
 
+  const tintClass =
+    tint === "warm"
+      ? "bg-blush/30"
+      : tint === "cool"
+      ? "bg-surface-secondary"
+      : "";
+
   return (
-    <section className="py-6 md:py-8">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <section
+      ref={sectionRef}
+      className={cn("py-8 md:py-10 rounded-3xl transition-colors", tintClass)}
+    >
+      {/* Header — slides in from left */}
+      <div
+        className="flex items-center justify-between mb-5"
+        style={{
+          transitionDelay: "0ms",
+          transitionProperty: "opacity, transform",
+          transitionDuration: "500ms",
+          transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateX(0)" : "translateX(-18px)",
+        }}
+      >
         <div>
           <h2 className="font-display text-xl md:text-2xl font-bold">{title}</h2>
-          {subtitle && <p className="text-xs text-brand-muted mt-0.5">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-xs text-brand-muted mt-0.5">{subtitle}</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {viewAllHref && (
@@ -97,7 +143,7 @@ export default function FeaturedRow({
         </div>
       </div>
 
-      {/* Products */}
+      {/* Product strip — cards stagger in */}
       <div
         ref={scrollRef}
         className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2"
@@ -108,8 +154,16 @@ export default function FeaturedRow({
             key={product.id}
             href={`/product/${product.id}`}
             className="flex-shrink-0 w-[160px] md:w-[200px] group"
+            style={{
+              transitionDelay: `${80 + i * 60}ms`,
+              transitionProperty: "opacity, transform",
+              transitionDuration: "500ms",
+              transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(22px)",
+            }}
           >
-            <div className="relative aspect-[4/5] bg-blush rounded-2xl overflow-hidden mb-2">
+            <div className="relative aspect-[4/5] bg-blush rounded-2xl overflow-hidden mb-2 shadow-sm group-hover:shadow-card transition-shadow duration-300">
               {product.image_url ? (
                 <Image
                   src={product.image_url}
@@ -119,8 +173,8 @@ export default function FeaturedRow({
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-3xl bg-gradient-warm">
-                  🎁
+                <div className="w-full h-full flex items-center justify-center bg-gradient-warm">
+                  <Gift className="w-10 h-10 text-brand/40" />
                 </div>
               )}
 

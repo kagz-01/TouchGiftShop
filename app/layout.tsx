@@ -59,7 +59,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-white text-brand-deep font-sans">
         <Header />
-        <main className="flex-1 pb-20 md:pb-0">{children}</main>
+        <main className="flex-1 pb-20 md:pb-0">
+          {children}
+        </main>
         <Footer />
         <BottomNav />
         <WhatsAppFloat />

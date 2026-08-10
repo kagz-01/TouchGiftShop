@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import BackToHome from "@/components/ui/BackToHome";
 
 export default function PinDropLandingPage() {
   const [phone, setPhone] = useState("");
@@ -117,6 +118,11 @@ export default function PinDropLandingPage() {
             <p className="text-xs text-brand-muted">
               Got a link from WhatsApp? Open it directly — it has everything you need.
             </p>
+          </div>
+
+          {/* Back to Home */}
+          <div className="text-center pb-8">
+            <BackToHome label="Back to Home" />
           </div>
         </div>
       </div>

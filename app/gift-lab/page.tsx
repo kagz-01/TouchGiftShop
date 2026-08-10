@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BackToHome from "@/components/ui/BackToHome";
 
 export default function GiftLabPage() {
   return (
@@ -16,6 +17,9 @@ export default function GiftLabPage() {
 
       {/* Cards */}
       <div className="max-w-lg mx-auto px-4 -mt-6 relative z-10 pb-12">
+        <div className="mb-4">
+          <BackToHome />
+        </div>
         <div className="space-y-4">
           {/* Build a Hamper */}
           <Link

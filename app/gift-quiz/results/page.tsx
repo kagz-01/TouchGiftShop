@@ -25,7 +25,7 @@ export default async function QuizResults({
 
   return (
     <div className="min-h-screen bg-gradient-warm">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+      <div className="w-full mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8">
           <span className="text-5xl mb-4 block animate-float">🎁</span>

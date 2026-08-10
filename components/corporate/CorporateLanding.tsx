@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Candy, Coffee, Flame, Cake as CakeIcon, Package, Gift, Zap, Banknote, Palette, FileSpreadsheet, Trophy, HeartHandshake, Tent, TreePine, Hand, Heart, ClipboardList, CreditCard, Building2 } from "lucide-react";
+import BackToHome from "@/components/ui/BackToHome";
 
 /* ─── Scroll reveal hook ─── */
 function useInView(threshold = 0.2) {
@@ -70,12 +72,15 @@ function CorporateHero() {
         backgroundSize: "60px 60px",
       }} />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 py-20">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-20">
+        <div className="mb-4">
+          <BackToHome className="text-white/80" />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left: Content */}
           <div>
             <div className={`inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-2 mb-6 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="text-gold text-sm font-semibold">🏢 Corporate Gifting</span>
+              <span className="text-gold text-sm font-semibold"><Building2 className="w-4 h-4"/> Corporate Gifting</span>
             </div>
 
             <h1 className={`font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] mb-6 transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
@@ -121,11 +126,11 @@ function CorporateHero() {
               <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-8 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
                 <div className="relative z-10">
-                  <div className="text-6xl mb-4">🎁</div>
+                  <div className="text-6xl mb-4 text-brand"><Gift className="w-12 h-12" /></div>
                   <h3 className="font-display text-2xl font-bold text-white mb-2">Custom Hamper</h3>
                   <p className="text-white/50 text-sm mb-6">Pick items, add your branding, send to any number of recipients</p>
                   <div className="grid grid-cols-3 gap-3">
-                    {["🍫", "☕", "🕯️", "🧁", "📦", "🎀"].map((e, i) => (
+                    {[<Candy key="1"/>, <Coffee key="2"/>, <Flame key="3"/>, <CakeIcon key="4"/>, <Package key="5"/>, <Gift key="6"/>].map((e, i) => (
                       <div key={i} className="bg-white/5 rounded-xl p-3 text-center text-2xl hover:bg-white/10 transition-colors cursor-pointer">
                         {e}
                       </div>
@@ -156,15 +161,15 @@ function CorporateHero() {
    ══════════════════════════════════════════════════════════ */
 function TrustBar() {
   const benefits = [
-    { icon: "⚡", title: "Same-day delivery", desc: "Order before 2pm, delivered by evening in Nairobi" },
-    { icon: "💰", title: "Bulk discounts", desc: "10+ gifts = 10% off. 50+ = 15% off. Custom quotes for 100+" },
-    { icon: "🎨", title: "Custom branding", desc: "Add your company logo, branded cards, and custom packaging" },
-    { icon: "📊", title: "CSV upload", desc: "Upload a spreadsheet of recipients — names, phones, notes" },
+    { icon: <Zap className="w-8 h-8 mx-auto text-brand" />, title: "Same-day delivery", desc: "Order before 2pm, delivered by evening in Nairobi" },
+    { icon: <Banknote className="w-8 h-8 mx-auto text-gold" />, title: "Bulk discounts", desc: "10+ gifts = 10% off. 50+ = 15% off. Custom quotes for 100+" },
+    { icon: <Palette className="w-8 h-8 mx-auto text-coral" />, title: "Custom branding", desc: "Add your company logo, branded cards, and custom packaging" },
+    { icon: <FileSpreadsheet className="w-8 h-8 mx-auto text-success" />, title: "CSV upload", desc: "Upload a spreadsheet of recipients — names, phones, notes" },
   ];
 
   return (
     <section className="py-12 bg-white border-b border-surface-border">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {benefits.map((b, i) => (
             <Reveal key={i} delay={i * 100}>
@@ -187,37 +192,37 @@ function TrustBar() {
 function UseCases() {
   const cases = [
     {
-      icon: "🏆",
+      icon: <Trophy className="w-6 h-6 text-white" />,
       title: "Employee Appreciation",
       desc: "Reward hard work with a curated gift that shows genuine appreciation. Milestones, work anniversaries, top performers.",
       color: "from-brand to-brand-light",
     },
     {
-      icon: "🤝",
+      icon: <HeartHandshake className="w-6 h-6 text-white" />,
       title: "Client Thank-Yous",
       desc: "Strengthen relationships with a thoughtful gift after closing a deal, onboarding a new client, or during holidays.",
       color: "from-gold to-gold-light",
     },
     {
-      icon: "🎪",
+      icon: <Tent className="w-6 h-6 text-white" />,
       title: "Event Giveaways",
       desc: "Branded gift bags for conferences, launches, and corporate events. Leave a lasting impression.",
       color: "from-coral to-coral-light",
     },
     {
-      icon: "🎄",
+      icon: <TreePine className="w-6 h-6 text-white" />,
       title: "Holiday & Seasonal",
       desc: "Christmas, New Year, Ramadan, Easter — send seasonal gifts to your entire team or client list.",
       color: "from-emerald-500 to-teal-500",
     },
     {
-      icon: "👋",
+      icon: <Hand className="w-6 h-6 text-white" />,
       title: "Welcome & Onboarding Kits",
       desc: "Make new hires feel valued from day one with a branded welcome hamper.",
       color: "from-violet-500 to-purple-500",
     },
     {
-      icon: "🙏",
+      icon: <Heart className="w-6 h-6 text-white" />,
       title: "Thank You & Apology",
       desc: "A meaningful gesture after a project wrap, partnership milestone, or to make things right.",
       color: "from-blue-500 to-cyan-500",
@@ -226,7 +231,7 @@ function UseCases() {
 
   return (
     <section className="py-24 md:py-32 bg-blush/30">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Use Cases
@@ -269,28 +274,28 @@ function CorporateHowItWorks() {
   const steps = [
     {
       num: "01",
-      icon: "🎁",
+      icon: <Gift className="w-8 h-8" />,
       title: "Pick your gift",
       desc: "Choose from curated hampers or build a custom one. Browse our catalog or let us suggest based on your budget.",
       color: "from-brand to-brand-light",
     },
     {
       num: "02",
-      icon: "📋",
+      icon: <ClipboardList className="w-8 h-8" />,
       title: "Add recipients",
       desc: "Upload a CSV spreadsheet or add recipients manually. Include names, phone numbers, and personal notes.",
       color: "from-gold to-gold-light",
     },
     {
       num: "03",
-      icon: "🎨",
+      icon: <Palette className="w-8 h-8" />,
       title: "Customize (optional)",
       desc: "Add your company logo to cards, choose branded packaging, or include a custom message for all recipients.",
       color: "from-coral to-coral-light",
     },
     {
       num: "04",
-      icon: "💳",
+      icon: <CreditCard className="w-8 h-8" />,
       title: "Pay & deliver",
       desc: "One M-Pesa payment for all gifts. We handle individual delivery with photo proof for each recipient.",
       color: "from-success to-emerald-400",
@@ -299,7 +304,7 @@ function CorporateHowItWorks() {
 
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Simple as 1-2-3-4
@@ -367,7 +372,7 @@ function PricingTiers() {
 
   return (
     <section className="py-24 md:py-32 bg-gradient-warm">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Volume Pricing
@@ -435,7 +440,7 @@ function PricingTiers() {
 function CorporateTestimonials() {
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="max-w-6xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Trusted by Companies

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import BackToHome from "@/components/ui/BackToHome";
 
 const OCCASIONS = [
   { id: "wedding", label: "Wedding", emoji: "💒", defaultTarget: 15000 },
@@ -65,12 +66,15 @@ export default function CreatePoolPage() {
   return (
     <div className="min-h-screen bg-gradient-warm">
       <div className="max-w-lg mx-auto px-4 md:px-8 py-12">
-        <Link href="/gift-lab" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-8">
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <Link href="/gift-lab" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back to Gift Lab
-        </Link>
+          </Link>
+          <BackToHome />
+        </div>
 
         <div className="text-center mb-10">
           <span className="text-5xl block mb-4">Pool</span>

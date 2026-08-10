@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
+import { createServerSupabase } from "@/lib/supabase-server";
 
 const OrderInput = z.object({
   productId: z.string().uuid(),
@@ -21,22 +22,23 @@ const OrderInput = z.object({
   shippingFee: z.number().default(0),
 });
 
-// GET /api/orders?phone=0712345678 — fetch orders by sender phone
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const phone = searchParams.get("phone");
+// GET /api/orders — fetch orders for the currently authenticated user only.
+// The phone param is retained for display purposes but the query is scoped
+// to auth.uid() so users cannot enumerate another person's orders.
+export async function GET() {
+  const supabase = createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!phone) {
-    return NextResponse.json(
-      { error: "phone query param required" },
-      { status: 400 }
-    );
+  if (!user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   const { data: orders, error } = await supabaseAdmin
     .from("orders")
-    .select("id, total_amount, status, recipient_name, created_at, pre_dispatch_photo_url, quantity")
-    .eq("sender_phone", phone)
+    .select("id, total_amount, status, recipient_name, created_at, pre_dispatch_photo_url, quantity, product_id")
+    .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(50);
 
@@ -59,9 +61,15 @@ export async function POST(req: Request) {
   }
   const input = parsed.data;
 
+  // Link the order to the authenticated user if they are logged in.
+  const supabase = createServerSupabase();
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { data: order, error: insertError } = await supabaseAdmin
     .from("orders")
     .insert({
+      user_id: user?.id ?? null,
+      product_id: input.productId,
       total_amount: input.totalAmount,
       status: "pending_payment",
       sender_name: input.senderName,

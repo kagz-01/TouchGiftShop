@@ -81,7 +81,7 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-12 md:py-20 relative z-10">
+      <div className="w-full mx-auto px-4 md:px-8 py-12 md:py-20 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Content */}
           <div className="space-y-6">
