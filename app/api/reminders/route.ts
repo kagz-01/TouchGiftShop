@@ -9,9 +9,10 @@ const ReminderInput = z.object({
   occasionType: z.string().optional(),
   isSubscription: z.boolean().default(false),
   frequency: z.string().optional(),
-  productId: z.string().uuid().optional(),
+  productIds: z.array(z.string().uuid()).optional(),
   deliveryDay: z.string().optional(),
   deliveryAddress: z.string().optional(),
+  googleMapsLink: z.string().optional(),
 });
 
 // GET /api/reminders — fetch reminders for logged-in user
@@ -27,14 +28,7 @@ export async function GET() {
 
   const { data: reminders, error } = await supabase
     .from("reminders")
-    .select(`
-      *,
-      products (
-        name,
-        price,
-        image_url
-      )
-    `)
+    .select("*")
     .eq("user_id", user.id)
     .order("occasion_date", { ascending: true, nullsFirst: true });
 
@@ -42,7 +36,37 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ reminders: reminders ?? [] });
+  // Manually fetch products for JSONB product_ids
+  const productIds = reminders
+    .flatMap((r) => r.product_ids || [])
+    .filter(Boolean);
+
+  let productsMap: Record<string, any> = {};
+  if (productIds.length > 0) {
+    const { data: productsData } = await supabase
+      .from("products")
+      .select("id, name, price, image_url")
+      .in("id", productIds);
+      
+    if (productsData) {
+      productsMap = productsData.reduce((acc, p) => {
+        acc[p.id] = p;
+        return acc;
+      }, {} as Record<string, any>);
+    }
+  }
+
+  const enrichedReminders = reminders.map(r => {
+    if (r.is_subscription && r.product_ids?.length > 0) {
+      return {
+        ...r,
+        products: r.product_ids.map((id: string) => productsMap[id]).filter(Boolean)
+      };
+    }
+    return r;
+  });
+
+  return NextResponse.json({ reminders: enrichedReminders });
 }
 
 // POST /api/reminders — create a reminder
@@ -76,25 +100,28 @@ export async function POST(req: Request) {
       occasion_type: input.occasionType ?? null,
       is_subscription: input.isSubscription,
       frequency: input.frequency ?? null,
-      product_id: input.productId ?? null,
+      product_ids: input.productIds ?? [],
       delivery_day: input.deliveryDay ?? null,
       delivery_address: input.deliveryAddress ?? null,
+      google_maps_link: input.googleMapsLink ?? null,
     })
-    .select(`
-      *,
-      products (
-        name,
-        price,
-        image_url
-      )
-    `)
+    .select()
     .single();
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ reminder });
+  let enrichedReminder = { ...reminder };
+  if (reminder.product_ids?.length > 0) {
+    const { data: productsData } = await supabase
+      .from("products")
+      .select("id, name, price, image_url")
+      .in("id", reminder.product_ids);
+    enrichedReminder.products = productsData ?? [];
+  }
+
+  return NextResponse.json({ reminder: enrichedReminder });
 }
 
 // DELETE /api/reminders?id=xxx — delete a reminder

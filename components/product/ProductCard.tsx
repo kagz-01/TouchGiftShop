@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { useState } from "react";
+import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 
 interface ProductCardProps {
   product: Product;
@@ -18,7 +19,10 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
   const [showWishlistInput, setShowWishlistInput] = useState(false);
   const [wishlistSlug, setWishlistSlug] = useState("");
   const [addingToWishlist, setAddingToWishlist] = useState(false);
+  const { isBuildingSubscription, subscriptionItems, addSubscriptionItem, removeSubscriptionItem } = useSubscription();
   const isPopular = index < 4;
+
+  const isSelectedForSubscription = subscriptionItems.some(p => p.id === product.id);
 
   const handleAddToWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,14 +57,26 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
     }
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isBuildingSubscription) {
+      e.preventDefault(); // stop navigation
+      if (isSelectedForSubscription) {
+        removeSubscriptionItem(product.id);
+      } else {
+        addSubscriptionItem(product);
+      }
+    }
+  };
+
   return (
     <Link
       href={`/product/${product.id}`}
+      onClick={handleCardClick}
       className={cn("group block", className)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="gift-card">
+      <div className={cn("gift-card transition-all duration-300", isSelectedForSubscription && "ring-2 ring-brand ring-offset-2")}>
         {/* Image */}
         <div className="relative aspect-[4/5] bg-blush overflow-hidden">
           {product.image_url ? (
@@ -139,22 +155,38 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
             </div>
           )}
 
-          {/* Quick view button */}
+          {/* Quick view / Subscription button */}
           <div
             className={cn(
               "absolute bottom-3 left-3 right-3 transition-all duration-300",
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+              (isHovered || isSelectedForSubscription) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
             )}
           >
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold text-brand shadow-soft">
-              <span className="flex items-center justify-center gap-2">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                Quick View
-              </span>
-            </div>
+            {isBuildingSubscription ? (
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (isSelectedForSubscription) removeSubscriptionItem(product.id);
+                  else addSubscriptionItem(product);
+                }}
+                className={cn("w-full bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold shadow-soft transition-colors", 
+                  isSelectedForSubscription ? "bg-brand text-white" : "text-brand hover:bg-white"
+                )}
+              >
+                {isSelectedForSubscription ? "Added to Subscription" : "Add to Subscription"}
+              </button>
+            ) : (
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold text-brand shadow-soft">
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Quick View
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Gift tag for popular items */}

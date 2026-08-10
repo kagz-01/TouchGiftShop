@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 import SubscriptionForm from "@/components/reminders/SubscriptionForm";
+import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 import { formatKsh, cn } from "@/lib/utils";
 
 interface Product {
@@ -22,7 +24,8 @@ interface Reminder {
   frequency: string | null;
   delivery_day: string | null;
   delivery_address: string | null;
-  products?: Product | null;
+  google_maps_link: string | null;
+  products?: Product[] | null;
 }
 
 const OCCASIONS = ["Birthday", "Anniversary", "Wedding", "Graduation", "Retirement", "Other"];
@@ -40,9 +43,15 @@ export default function RemindersDashboard() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">("occasions");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isCompletingSetup = searchParams.get("building") === "true";
+
+  const { startBuildingSubscription, isBuildingSubscription, subscriptionItems } = useSubscription();
+
+  const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">(isCompletingSetup ? "subscriptions" : "occasions");
   const [showOccasionForm, setShowOccasionForm] = useState(false);
-  const [showSubscriptionForm, setShowSubscriptionForm] = useState(false);
+
   
   // Occasion form state
   const [occForm, setOccForm] = useState({
@@ -257,26 +266,31 @@ export default function RemindersDashboard() {
             {/* ─── SUBSCRIPTIONS TAB ─── */}
             {activeTab === "subscriptions" && (
               <div className="space-y-6 animate-fade-in">
-                {!showSubscriptionForm && (
+                {(!isCompletingSetup || subscriptionItems.length === 0) && (
                   <button
-                    onClick={() => setShowSubscriptionForm(true)}
+                    onClick={() => {
+                      startBuildingSubscription();
+                      router.push("/");
+                    }}
                     className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors"
                   >
-                    + Start a Subscription
+                    + Build a New Subscription Box
                   </button>
                 )}
 
-                {showSubscriptionForm && (
+                {isCompletingSetup && subscriptionItems.length > 0 && (
                   <SubscriptionForm 
                     onSuccess={(newSub) => {
                       setReminders(prev => [...prev, newSub]);
-                      setShowSubscriptionForm(false);
+                      router.replace("/reminders");
                     }}
-                    onCancel={() => setShowSubscriptionForm(false)}
+                    onCancel={() => {
+                      router.replace("/reminders");
+                    }}
                   />
                 )}
 
-                {subscriptions.length === 0 && !showSubscriptionForm && (
+                {subscriptions.length === 0 && !isCompletingSetup && (
                   <div className="text-center py-12 bg-white rounded-3xl border border-surface-border">
                     <svg className="w-12 h-12 mx-auto text-brand/30 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     <p className="font-display font-semibold mb-2">No active subscriptions</p>
@@ -291,10 +305,10 @@ export default function RemindersDashboard() {
                     {subscriptions.map((sub) => (
                       <div key={sub.id} className="bg-white rounded-3xl border border-surface-border overflow-hidden hover:shadow-card transition-shadow">
                         <div className="p-5 flex gap-5">
-                          {/* Image */}
+                          {/* Image (show first product) */}
                           <div className="w-20 h-20 bg-blush rounded-2xl flex-shrink-0 relative overflow-hidden">
-                            {sub.products?.image_url ? (
-                              <Image src={sub.products.image_url} alt={sub.products.name} fill className="object-contain p-2" sizes="80px" />
+                            {sub.products && sub.products.length > 0 && sub.products[0].image_url ? (
+                              <Image src={sub.products[0].image_url} alt={sub.products[0].name} fill className="object-contain p-2" sizes="80px" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
                                 <svg className="w-8 h-8 text-brand/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
@@ -310,10 +324,12 @@ export default function RemindersDashboard() {
                                   {sub.frequency} • {sub.delivery_day}s
                                 </span>
                                 <h3 className="font-display font-bold text-lg text-brand-deep leading-tight">
-                                  {sub.products?.name ?? "Custom Gift"}
+                                  {sub.products && sub.products.length > 0 
+                                    ? sub.products.length === 1 ? sub.products[0].name : `${sub.products[0].name} & ${sub.products.length - 1} more` 
+                                    : "Custom Gift"}
                                 </h3>
                                 <p className="text-sm font-medium text-brand mt-1">
-                                  {formatKsh(sub.products?.price ?? 0)} <span className="text-xs text-brand-muted font-normal">/ delivery</span>
+                                  {formatKsh(sub.products?.reduce((acc, p) => acc + p.price, 0) ?? 0)} <span className="text-xs text-brand-muted font-normal">/ delivery</span>
                                 </p>
                               </div>
                               <button onClick={() => handleDelete(sub.id)} className="text-brand-muted hover:text-red-500 transition-colors p-2" title="Cancel Subscription">
@@ -329,7 +345,12 @@ export default function RemindersDashboard() {
                               {sub.delivery_address && (
                                 <div>
                                   <p className="text-brand-muted font-medium mb-0.5">Delivery To</p>
-                                  <p className="font-semibold text-brand-deep line-clamp-1">{sub.delivery_address}</p>
+                                  <div className="font-semibold text-brand-deep line-clamp-1">
+                                    {sub.delivery_address}
+                                    {sub.google_maps_link && (
+                                      <a href={sub.google_maps_link} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline ml-1 block mt-1">(View Pin)</a>
+                                    )}
+                                  </div>
                                 </div>
                               )}
                             </div>

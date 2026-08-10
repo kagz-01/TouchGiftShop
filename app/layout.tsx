@@ -5,6 +5,8 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
+import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
+import SubscriptionFloatingBar from "@/components/reminders/SubscriptionFloatingBar";
 
 export const metadata: Metadata = {
   title: {
@@ -58,14 +60,17 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-white text-brand-deep font-sans">
-        <Header />
-        <main className="flex-1 pb-20 md:pb-0">
-          {children}
-        </main>
-        <Footer />
-        <BottomNav />
-        <WhatsAppFloat />
-        <GiftChatWidget />
+        <SubscriptionProvider>
+          <Header />
+          <main className="flex-1 pb-20 md:pb-0">
+            {children}
+          </main>
+          <Footer />
+          <BottomNav />
+          <WhatsAppFloat />
+          <GiftChatWidget />
+          <SubscriptionFloatingBar />
+        </SubscriptionProvider>
       </body>
     </html>
   );
