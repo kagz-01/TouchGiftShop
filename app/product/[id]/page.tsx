@@ -88,7 +88,7 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="w-full mx-auto px-4 md:px-8 py-6 animate-fade-in">
+    <div className="w-full mx-auto px-4 md:px-8 py-6 animate-fade-in overflow-x-hidden">
       {/* Breadcrumb */}
       <Link
         href="/"
@@ -102,13 +102,26 @@ export default async function ProductPage({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {/* Gallery */}
-        <ProductGallery 
-          productName={product.name}
-          image_url={product.image_url}
-          images={product.images}
-          in_stock={product.in_stock}
-          is_personalizable={product.is_personalizable}
-        />
+        {(() => {
+          // Auto-detect personalizable from name/description keywords
+          const PERSONALIZE_KEYWORDS = [
+            "custom", "personali", "engrav", "monogram", "bespoke",
+            "print", "logo", "name on", "your text", "your photo",
+            "your message", "inscri", "embroid",
+          ];
+          const haystack = `${product.name} ${product.description ?? ""}`.toLowerCase();
+          const autoPersonalizable = product.is_personalizable ||
+            PERSONALIZE_KEYWORDS.some((kw) => haystack.includes(kw));
+          return (
+            <ProductGallery 
+              productName={product.name}
+              image_url={product.image_url}
+              images={product.images}
+              in_stock={product.in_stock}
+              is_personalizable={autoPersonalizable}
+            />
+          );
+        })()}
 
         {/* Details */}
         <div className="space-y-6 animate-fade-in-up animate-delay-200">
