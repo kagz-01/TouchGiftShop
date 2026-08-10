@@ -53,18 +53,18 @@ export default function AddToCartButton({ product }: { product: Product }) {
         Same-day delivery in Nairobi • Next-day nationwide
       </p>
 
-      {/* Slide-out Drawer Overlay */}
+      {/* Backdrop overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Slide-out Drawer */}
       <div 
-        className={`fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
-          isOpen ? 'translate-x-0 visible' : 'translate-x-full invisible'
+        className={`fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-hidden={!isOpen}
       >

@@ -100,7 +100,7 @@ export default async function ProductPage({
         Back to Shop
       </Link>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
         {/* Gallery */}
         {(() => {
           // Auto-detect personalizable from name/description keywords
@@ -124,7 +124,7 @@ export default async function ProductPage({
         })()}
 
         {/* Details */}
-        <div className="space-y-6 animate-fade-in-up animate-delay-200">
+        <div className="space-y-6 animate-fade-in-up animate-delay-200 min-w-0">
           {/* Title & Price */}
           <div>
             <h1 className="font-display text-2xl md:text-3xl font-bold mb-3">
