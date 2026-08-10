@@ -6,7 +6,6 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
-import SubscriptionFloatingBar from "@/components/reminders/SubscriptionFloatingBar";
 
 export const metadata: Metadata = {
   title: {
@@ -69,7 +68,6 @@ export default function RootLayout({
           <BottomNav />
           <WhatsAppFloat />
           <GiftChatWidget />
-          <SubscriptionFloatingBar />
         </SubscriptionProvider>
       </body>
     </html>
