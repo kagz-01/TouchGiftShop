@@ -58,7 +58,8 @@ export default function OccasionPills() {
     } else {
       params.delete("category");
     }
-    router.push(`/?${params.toString()}`);
+    const qs = params.toString();
+    router.push(qs ? `/shop?${qs}` : "/shop");
   }
 
   return (

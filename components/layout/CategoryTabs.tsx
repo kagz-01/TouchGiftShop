@@ -46,8 +46,8 @@ export default function CategoryTabs() {
   }, []);
 
   const getCategoryHref = (id: string) => {
-    if (id === "all") return "/";
-    return `/?category=${id}`;
+    if (id === "all") return "/shop";
+    return `/shop?category=${id}`;
   };
 
   return (
