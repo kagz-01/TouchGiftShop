@@ -247,7 +247,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
                   ...position,
                 });
               }}
-              onClick={(e) => { e.stopPropagation(); setSelectedId(layer.id); }}
+              onClick={(e: any) => { e.stopPropagation(); setSelectedId(layer.id); }}
               className={cn(
                 "group cursor-move flex items-center justify-center",
                 selectedId === layer.id ? "ring-2 ring-brand ring-offset-2 border border-brand/20 bg-brand/5" : "hover:ring-2 hover:ring-brand/50 hover:ring-offset-2"
