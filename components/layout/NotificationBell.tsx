@@ -81,7 +81,7 @@ export default function NotificationBell({ user }: { user: any }) {
   if (!user) return null;
 
   return (
-    <div className="relative flex flex-col items-center justify-center" ref={dropdownRef}>
+    <div className="group relative flex flex-col items-center justify-center" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Notifications"
@@ -95,6 +95,12 @@ export default function NotificationBell({ user }: { user: any }) {
           <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
         )}
       </button>
+
+      {!isOpen && (
+        <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
+          Notifications & Reminders
+        </span>
+      )}
 
       {isOpen && (
         <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-surface-border overflow-hidden z-50 animate-pop">
