@@ -5,7 +5,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 
 const QUICK_LINKS = [
-  { href: "/gift-finder", label: "AI Gift Finder", icon: "🤖" },
+  { href: "/gift-finder", label: "AI Gift Finder" },
   { href: "/gift-lab", label: "Gift Lab" },
   { href: "/gift-lab/pool", label: "Pool a Gift" },
   { href: "/corporate", label: "Corporate Gifts" },
@@ -172,12 +172,11 @@ export default function Footer() {
               </h4>
               <ul className="space-y-2">
                 {QUICK_LINKS.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-gold transition-colors flex items-center gap-1.5"
+                      className="text-sm text-white/60 hover:text-gold transition-colors"
                     >
-                      {link.icon && <span>{link.icon}</span>}
                       {link.label}
                     </Link>
                   </li>

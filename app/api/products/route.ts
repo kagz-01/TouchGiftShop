@@ -4,11 +4,13 @@ import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
 import { getDefaultSort } from "@/lib/smart-sort";
 
-// GET /api/products?category=birthdays&budget=under-5k — reads the real products table.
+// GET /api/products?category=birthdays&budget=under-5k&page=1&limit=24
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
   const budget = searchParams.get("budget");
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const limit = parseInt(searchParams.get("limit") || "24", 10);
 
   let query = supabaseAdmin.from("products").select(
     category
@@ -41,20 +43,33 @@ export async function GET(req: Request) {
     query = query.order("created_at", { ascending: false });
   }
 
-  const { data, error } = await query.eq("in_stock", true);
+  // Apply in_stock filter
+  query = query.eq("in_stock", true);
+
+  // Apply pagination: fetch `limit + 1` to determine if there's a next page
+  const from = (page - 1) * limit;
+  const fetchLimit = limit + 1;
+  const fetchTo = from + fetchLimit - 1;
+  
+  const { data, error } = await query.range(from, fetchTo);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const products = data ?? [];
+  const allProducts = data ?? [];
+  const hasMore = allProducts.length > limit;
+  const products = hasMore ? allProducts.slice(0, limit) : allProducts;
+
   const response: {
     products: typeof products;
+    hasMore: boolean;
     count: number;
     category?: string;
     emptyReason?: string;
   } = {
     products,
+    hasMore,
     count: products.length,
   };
 

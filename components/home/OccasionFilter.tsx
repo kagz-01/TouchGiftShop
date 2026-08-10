@@ -4,22 +4,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
-  { label: "Birthdays", icon: "🎂", slug: "birthdays", color: "from-pink-400 to-rose-500" },
-  { label: "Anniversaries", icon: "💍", slug: "anniversaries", color: "from-red-400 to-pink-500" },
-  { label: "Weddings", icon: "💒", slug: "weddings", color: "from-purple-400 to-violet-500" },
-  { label: "Baby Shower", icon: "👶", slug: "baby", color: "from-blue-400 to-cyan-500" },
-  { label: "Corporate", icon: "🏢", slug: "corporate", color: "from-slate-500 to-gray-700" },
-  { label: "Condolences", icon: "🕊️", slug: "condolences", color: "from-gray-400 to-gray-600" },
-  { label: "Graduation", icon: "🎓", slug: "graduation", color: "from-amber-400 to-orange-500" },
-  { label: "Milestone", icon: "🏆", slug: "milestone", color: "from-emerald-400 to-teal-500" },
-  { label: "Apology", icon: "💐", slug: "apology", color: "from-amber-400 to-orange-500" },
-  { label: "Just Because", icon: "💝", slug: "just-because", color: "from-rose-400 to-red-500" },
-  { label: "Fitness", icon: "💪", slug: "fitness", color: "from-orange-400 to-red-500" },
-  { label: "Gaming", icon: "🎮", slug: "gaming", color: "from-violet-400 to-purple-500" },
-  { label: "Music", icon: "🎵", slug: "music", color: "from-pink-400 to-fuchsia-500" },
-  { label: "Outdoor", icon: "⛺", slug: "outdoor", color: "from-green-400 to-emerald-500" },
-  { label: "Home Decor", icon: "🏠", slug: "home-decor", color: "from-amber-400 to-orange-500" },
-  { label: "Kitchen", icon: "🍳", slug: "kitchen", color: "from-red-400 to-rose-500" },
+  { label: "Birthdays", slug: "birthdays", color: "from-pink-400 to-rose-500" },
+  { label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
+  { label: "Weddings", slug: "weddings", color: "from-purple-400 to-violet-500" },
+  { label: "Baby Shower", slug: "baby", color: "from-blue-400 to-cyan-500" },
+  { label: "Corporate", slug: "corporate", color: "from-slate-500 to-gray-700" },
+  { label: "Condolences", slug: "condolences", color: "from-gray-400 to-gray-600" },
+  { label: "Graduation", slug: "graduation", color: "from-amber-400 to-orange-500" },
+  { label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
+  { label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
+  { label: "Just Because", slug: "just-because", color: "from-rose-400 to-red-500" },
+  { label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
+  { label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
+  { label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
+  { label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
+  { label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
+  { label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
 ];
 
 export default function OccasionFilter() {
@@ -58,16 +58,6 @@ export default function OccasionFilter() {
                 : "border-transparent bg-white hover:border-brand/20 hover:shadow-card hover:-translate-y-1"
             )}
           >
-            <div
-              className={cn(
-                "w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-2xl md:text-3xl transition-transform duration-300",
-                active === cat.slug
-                  ? "scale-110"
-                  : "group-hover:scale-110"
-              )}
-            >
-              {cat.icon}
-            </div>
             <span
               className={cn(
                 "text-[10px] md:text-xs font-semibold transition-colors",

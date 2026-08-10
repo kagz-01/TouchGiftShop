@@ -101,11 +101,11 @@ export default function HandwrittenNote({
             <label className="text-xs font-semibold text-brand-muted mb-2 block">Tone</label>
             <div className="flex flex-wrap gap-2">
               {[
-                { id: "heartfelt" as const, label: "Heartfelt", icon: "💕" },
-                { id: "funny" as const, label: "Funny", icon: "😂" },
-                { id: "romantic" as const, label: "Romantic", icon: "🥰" },
-                { id: "formal" as const, label: "Formal", icon: "🎩" },
-                { id: "professional" as const, label: "Professional", icon: "💼" },
+                { id: "heartfelt" as const, label: "Heartfelt" },
+                { id: "funny" as const, label: "Funny" },
+                { id: "romantic" as const, label: "Romantic" },
+                { id: "formal" as const, label: "Formal" },
+                { id: "professional" as const, label: "Professional" },
               ].map((t) => (
                 <button
                   key={t.id}
@@ -116,7 +116,7 @@ export default function HandwrittenNote({
                       : "bg-gray-100 text-brand-muted hover:bg-brand/10"
                   }`}
                 >
-                  {t.icon} {t.label}
+                  {t.label}
                 </button>
               ))}
             </div>
