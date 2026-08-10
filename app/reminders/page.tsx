@@ -46,13 +46,13 @@ export default function RemindersDashboard() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isCompletingSetup = searchParams.get("building") === "true";
+  const isCompletingSetup = searchParams.get("setup") === "true";
 
-  const { startBuildingSubscription, isBuildingSubscription, subscriptionItems } = useSubscription();
+  const { subscriptionItems } = useSubscription();
 
   const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">(isCompletingSetup ? "subscriptions" : "occasions");
   const [showOccasionForm, setShowOccasionForm] = useState(false);
-  const [showSubForm, setShowSubForm] = useState(isCompletingSetup);
+  const [showSubForm, setShowSubForm] = useState(isCompletingSetup && subscriptionItems.length > 0);
 
   
   // Occasion form state
@@ -277,12 +277,12 @@ export default function RemindersDashboard() {
             {activeTab === "subscriptions" && (
               <div className="space-y-6 animate-fade-in">
                 {!showSubForm && (
-                  <button
-                    onClick={() => setShowSubForm(true)}
+                  <Link
+                    href="/reminders/build-subscription"
                     className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors block text-center"
                   >
                     + Build a New Subscription Box
-                  </button>
+                  </Link>
                 )}
 
                 {showSubForm && (
