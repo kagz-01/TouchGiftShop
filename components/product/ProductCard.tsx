@@ -63,7 +63,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
       if (isSelectedForSubscription) {
         removeSubscriptionItem(product.id);
       } else {
-        addSubscriptionItem(product);
+        addSubscriptionItem(product as any);
       }
     }
   };
