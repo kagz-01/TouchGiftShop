@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const QUICK_LINKS = [
   { href: "/gift-finder", label: "AI Gift Finder", icon: "🤖" },
@@ -69,6 +70,15 @@ const SOCIALS = [
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const pathname = usePathname();
+
+  // Define which paths should show the footer. 
+  // We keep it off app-like pages (dashboard, shop, product, checkout, etc) for a cleaner UX.
+  const SHOW_FOOTER_PATHS = ["/", "/corporate", "/terms", "/privacy", "/returns", "/delivery"];
+  
+  if (!SHOW_FOOTER_PATHS.includes(pathname)) {
+    return null;
+  }
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
