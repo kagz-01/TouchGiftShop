@@ -4,9 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import SubscriptionForm from "@/components/reminders/SubscriptionForm";
 import BackToHome from "@/components/ui/BackToHome";
-import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 import { formatKsh, cn } from "@/lib/utils";
 
 interface Product {
@@ -46,13 +44,9 @@ export default function RemindersDashboard() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isCompletingSetup = searchParams.get("setup") === "true";
 
-  const { subscriptionItems } = useSubscription();
-
-  const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">(isCompletingSetup ? "subscriptions" : "occasions");
+  const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">("occasions");
   const [showOccasionForm, setShowOccasionForm] = useState(false);
-  const [showSubForm, setShowSubForm] = useState(isCompletingSetup && subscriptionItems.length > 0);
 
   
   // Occasion form state
@@ -276,30 +270,14 @@ export default function RemindersDashboard() {
             {/* ─── SUBSCRIPTIONS TAB ─── */}
             {activeTab === "subscriptions" && (
               <div className="space-y-6 animate-fade-in">
-                {!showSubForm && (
-                  <Link
-                    href="/reminders/build-subscription"
-                    className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors block text-center"
-                  >
-                    + Build a New Subscription Box
-                  </Link>
-                )}
+                <Link
+                  href="/reminders/build-subscription"
+                  className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors block text-center"
+                >
+                  + Build a New Subscription Box
+                </Link>
 
-                {showSubForm && (
-                  <SubscriptionForm 
-                    onSuccess={(newSub) => {
-                      setReminders(prev => [...prev, newSub]);
-                      setShowSubForm(false);
-                      router.replace("/reminders");
-                    }}
-                    onCancel={() => {
-                      setShowSubForm(false);
-                      router.replace("/reminders");
-                    }}
-                  />
-                )}
-
-                {subscriptions.length === 0 && !showSubForm && (
+                {subscriptions.length === 0 && (
                   <div className="text-center py-12 bg-white rounded-3xl border border-surface-border">
                     <svg className="w-12 h-12 mx-auto text-brand/30 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                     <p className="font-display font-semibold mb-2">No active subscriptions</p>
