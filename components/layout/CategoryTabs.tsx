@@ -6,15 +6,26 @@ import { useSearchParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const QUICK_LINKS = [
-  { id: "all", label: "All Gifts", emoji: "🎁" },
-  { id: "birthdays", label: "Birthday", emoji: "🎂" },
-  { id: "weddings", label: "Wedding", emoji: "💒" },
-  { id: "baby", label: "New Baby", emoji: "👶" },
-  { id: "hampers", label: "Hampers", emoji: "🧺" },
-  { id: "flowers", label: "Flowers", emoji: "🌸" },
-  { id: "personalised", label: "Personalised", emoji: "✨" },
-  { id: "condolences", label: "Condolences", emoji: "🕊️" },
-  { id: "just-because", label: "Just Because", emoji: "💝" },
+  { id: "all", label: "All Gifts" },
+  // Occasions
+  { id: "birthdays", label: "Birthdays" },
+  { id: "anniversaries", label: "Anniversaries" },
+  { id: "weddings", label: "Weddings" },
+  { id: "baby", label: "Baby Shower" },
+  { id: "graduation", label: "Graduation" },
+  { id: "condolences", label: "Condolences" },
+  { id: "just-because", label: "Just Because" },
+  { id: "apology", label: "Apology" },
+  { id: "milestone", label: "Milestone" },
+  // Lifestyle & Interests
+  { id: "for-her", label: "For Her" },
+  { id: "for-him", label: "For Him" },
+  { id: "fitness", label: "Fitness" },
+  { id: "gaming", label: "Gaming" },
+  { id: "home-decor", label: "Home Decor" },
+  { id: "kitchen", label: "Kitchen" },
+  // Business
+  { id: "corporate", label: "Corporate" },
 ];
 
 export default function CategoryTabs() {
@@ -79,7 +90,6 @@ export default function CategoryTabs() {
                   : "bg-gray-50 text-brand-muted hover:bg-brand/5 hover:text-brand border border-transparent hover:border-brand/10"
               )}
             >
-              <span className="text-sm">{cat.emoji}</span>
               {cat.label}
             </Link>
           );
