@@ -30,6 +30,15 @@ export default function WishlistButton({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [showModal]);
+
+  useEffect(() => {
     const slug = localStorage.getItem(WISHLIST_SLUG_KEY);
     if (slug) setShareUrl(`${SITE_URL}/wishlist/${slug}`);
   }, []);

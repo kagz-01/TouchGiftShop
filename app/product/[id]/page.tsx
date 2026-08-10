@@ -88,7 +88,7 @@ export default async function ProductPage({
   }
 
   return (
-    <div className="w-full mx-auto px-4 md:px-8 py-6 animate-fade-in overflow-x-hidden">
+    <div className="w-full mx-auto px-4 md:px-8 py-6 animate-fade-in">
       {/* Breadcrumb */}
       <Link
         href="/"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { formatKsh } from "@/lib/utils";
 import type { Product } from "@/lib/types";
@@ -13,6 +13,16 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [giftNote, setGiftNote] = useState("");
 
   const total = product.price * quantity;
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   function handleCheckout() {
     const params = new URLSearchParams({
@@ -53,7 +63,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
       {/* Slide-out Drawer */}
       <div 
-        className={`fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
+          isOpen ? 'translate-x-0 visible' : 'translate-x-full invisible'
+        }`}
+        aria-hidden={!isOpen}
       >
         <div className="flex items-center justify-between p-6 border-b border-surface-border">
           <h2 className="font-display font-bold text-xl text-brand-deep">Gift Details</h2>
