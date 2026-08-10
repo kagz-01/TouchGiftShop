@@ -4,7 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import OrdersClient from "./OrdersClient";
 
 async function getOrders() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
   const cookieStore = cookies();
   const cookieHeader = cookieStore
     .getAll()

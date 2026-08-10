@@ -9,7 +9,7 @@ import PinDropStatus from "@/components/pin-drop/PinDropStatus";
 import PinDropNotification from "@/components/pin-drop/PinDropNotification";
 
 async function getOrder(id: string) {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
   const res = await fetch(`${base}/api/orders/${id}`, { cache: "no-store" });
   if (!res.ok) return null;
   const { order } = await res.json();

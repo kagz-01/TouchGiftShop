@@ -3,7 +3,7 @@ import type { Product } from "@/lib/types";
 import ProductGridClient from "./ProductGridClient";
 
 async function getProducts(category?: string, budget?: string): Promise<{ products: Product[], hasMore: boolean, count: number }> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
   const params = new URLSearchParams();
   if (category) params.set("category", category);
   if (budget) params.set("budget", budget);

@@ -42,7 +42,7 @@ export async function POST(req: Request) {
     }
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
   const pinDropUrl = `${baseUrl}/pin-drop/${orderId}?token=${token}`;
 
   // Send via WhatsApp (using the existing WhatsApp number)
