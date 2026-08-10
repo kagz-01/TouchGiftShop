@@ -5,8 +5,13 @@ import { createServerSupabase } from "@/lib/supabase-server";
 const ReminderInput = z.object({
   recipientName: z.string().min(1).max(100),
   relationship: z.string().optional(),
-  occasionDate: z.string(),
+  occasionDate: z.string().optional(),
   occasionType: z.string().optional(),
+  isSubscription: z.boolean().default(false),
+  frequency: z.string().optional(),
+  productId: z.string().uuid().optional(),
+  deliveryDay: z.string().optional(),
+  deliveryAddress: z.string().optional(),
 });
 
 // GET /api/reminders — fetch reminders for logged-in user
@@ -22,9 +27,16 @@ export async function GET() {
 
   const { data: reminders, error } = await supabase
     .from("reminders")
-    .select("*")
+    .select(`
+      *,
+      products (
+        name,
+        price,
+        image_url
+      )
+    `)
     .eq("user_id", user.id)
-    .order("occasion_date", { ascending: true });
+    .order("occasion_date", { ascending: true, nullsFirst: true });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -52,19 +64,30 @@ export async function POST(req: Request) {
     );
   }
 
-  const { recipientName, relationship, occasionDate, occasionType } =
-    parsed.data;
+  const input = parsed.data;
 
   const { data: reminder, error } = await supabase
     .from("reminders")
     .insert({
       user_id: user.id,
-      recipient_name: recipientName,
-      relationship: relationship ?? null,
-      occasion_date: occasionDate,
-      occasion_type: occasionType ?? null,
+      recipient_name: input.recipientName,
+      relationship: input.relationship ?? null,
+      occasion_date: input.occasionDate ?? null,
+      occasion_type: input.occasionType ?? null,
+      is_subscription: input.isSubscription,
+      frequency: input.frequency ?? null,
+      product_id: input.productId ?? null,
+      delivery_day: input.deliveryDay ?? null,
+      delivery_address: input.deliveryAddress ?? null,
     })
-    .select()
+    .select(`
+      *,
+      products (
+        name,
+        price,
+        image_url
+      )
+    `)
     .single();
 
   if (error) {

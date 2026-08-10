@@ -134,8 +134,13 @@ CREATE TABLE reminders (
     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     recipient_name VARCHAR(100) NOT NULL,
     relationship VARCHAR(50),
-    occasion_date DATE NOT NULL,
+    occasion_date DATE,
     occasion_type VARCHAR(50),
+    is_subscription BOOLEAN DEFAULT FALSE,
+    frequency VARCHAR(50),
+    product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+    delivery_day VARCHAR(20),
+    delivery_address TEXT,
     reminder_sent BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
