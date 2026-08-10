@@ -59,6 +59,7 @@ export default function RemindersDashboard() {
     relationship: "",
     occasionDate: "",
     occasionType: "",
+    customOccasion: "",
   });
 
   useEffect(() => {
@@ -80,14 +81,14 @@ export default function RemindersDashboard() {
         recipientName: occForm.recipientName,
         relationship: occForm.relationship || undefined,
         occasionDate: occForm.occasionDate,
-        occasionType: occForm.occasionType || undefined,
+        occasionType: occForm.occasionType === "Other" ? occForm.customOccasion : (occForm.occasionType || undefined),
         isSubscription: false
       }),
     });
     const data = await res.json();
     if (data.reminder) {
       setReminders((prev) => [...prev, data.reminder]);
-      setOccForm({ recipientName: "", relationship: "", occasionDate: "", occasionType: "" });
+      setOccForm({ recipientName: "", relationship: "", occasionDate: "", occasionType: "", customOccasion: "" });
       setShowOccasionForm(false);
     }
   }
@@ -192,6 +193,12 @@ export default function RemindersDashboard() {
                           <option value="">Select...</option>
                           {OCCASIONS.map((o) => <option key={o} value={o}>{o}</option>)}
                         </select>
+                        {occForm.occasionType === "Other" && (
+                          <div className="mt-3">
+                            <label className="block text-xs font-semibold text-brand-deep mb-1">Custom Occasion</label>
+                            <input required value={occForm.customOccasion} onChange={(e) => setOccForm({ ...occForm, customOccasion: e.target.value })} placeholder="e.g. Pet's Birthday" className="w-full border border-surface-border rounded-xl px-3 py-2 text-sm focus:border-brand outline-none" />
+                          </div>
+                        )}
                       </div>
                     </div>
                     <button type="submit" className="w-full rounded-xl bg-brand text-white py-3 font-bold text-sm shadow-button hover:bg-brand-dark transition-colors">
