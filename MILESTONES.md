@@ -217,8 +217,9 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Cover-up shape masking | | | | | | | | | | | | Done |
 | Product gallery image fix (object-contain) | | | | | | | | | | | | Done |
 | Wishlist full flow (create, add, share) | | | | | | | | | | | | Done |
+| Checkout UX Overhaul (2-col layout, step progress, anonymous feedback) | | | | | | | | | | | | Done |
 
-**Total features built: 74**
+**Total features built: 75**
 
 ---
 
@@ -257,6 +258,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `c4e2a1b` | UX/UI Overhaul — Product Gallery, Cart Drawer, and Checkout Flow |
 | `a92c966` | Live Customization Studio (drag-and-drop, text, logo upload, masking) |
 | `266ceb6` | Wishlist full flow — create from product page, real DB, shareable domain link |
+| `1a9f692` | fix: drawer viewport bleed — invisible+body-lock when closed, no overflow-x-hidden hack |
+| `7dc8b19` | feat: complete checkout page UX overhaul — two column layout, step progress, anonymous badges |
 
 ---
 
@@ -583,6 +586,11 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 - **Advantage:** The old flow was broken and unusable. The new flow requires zero technical knowledge from the user. The shareable link now uses the real domain, so friends and family get a professional-looking link. WhatsApp sharing is one tap with a pre-written message.
 - **Tech:** Rewrote `WishlistButton.tsx` (create + add + share modal), rewrote `app/wishlist/page.tsx` (real DB fetch, remove items, WhatsApp share), uses `NEXT_PUBLIC_SITE_URL` env var for the domain.
 
+### 75. Checkout UX Overhaul
+- **What:** Rebuilt the checkout page into a professional desktop two-column layout (`max-w-6xl`) with a sticky order summary on the right. Added a clear 4-step progress bar at the top with completed/active states. Integrated the product image fetch into the summary panel. Added prominent visual feedback (colored banners) in the sticky summary and payment step when "Anonymous Mode" or "No-contact delivery" are active. Improved CTA buttons per step.
+- **Advantage:** Transforms the checkout from a basic mobile-first form into a high-trust, premium e-commerce experience. Users no longer wonder if Anonymous mode is on because it's clearly confirmed in their summary before they pay.
+- **Tech:** Rebuilt `app/checkout/page.tsx` and `components/checkout/CheckoutForm.tsx`. Fetch product details via API in `useEffect`.
+
 ---
 
 ## Database Schema (Running)
@@ -637,4 +645,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 15 — Wishlist Full Flow & Gallery Fix (74 features, 30 commits)*
+*Last updated: Stage 15 — Wishlist Full Flow, Gallery Fix & Checkout Overhaul (75 features, 32 commits)*
