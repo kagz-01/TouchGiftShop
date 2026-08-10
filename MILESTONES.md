@@ -213,8 +213,10 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Product page redesign (gallery, description) | | | | | | | | | | | Done |
 | Cart drawer + upsell | | | | | | | | | | | Done |
 | Multi-step accordion checkout | | | | | | | | | | | Done |
+| Live Customization Studio | | | | | | | | | | | | Done |
+| Cover-up shape masking | | | | | | | | | | | | Done |
 
-**Total features built: 70**
+**Total features built: 72**
 
 ---
 
@@ -250,7 +252,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `ba07f06` | Homepage restructure — discovery flow with curated rows |
 | `86dd1d8` | HamperBuilder redesign — split layout, compact grid, category filters |
 | `83df7ef` | Hamper animations — fly-to-basket, pulse, confetti, price count-up, shake |
-| `pending` | UX/UI Overhaul — Product Gallery, Cart Drawer, Multi-Step Checkout |
+| `c4e2a1b` | UX/UI Overhaul — Product Gallery, Cart Drawer, and Checkout Flow |
+| `pending` | Live Customization Studio (drag-and-drop, text, logo upload, masking) |
 
 ---
 
@@ -532,6 +535,39 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
+## Stage 13 — UX/UI Overhaul
+
+### 68. Product Gallery Redesign
+- **What:** Replaced the large square product image with a tighter 4:3 aspect ratio gallery. Added hover-to-zoom (magnifier effect), full-screen Lightbox modal, and vertical thumbnails for desktop.
+- **Advantage:** Prevents images from dominating the screen. Hover zoom lets buyers inspect detail (e.g. engraving quality). Vertical thumbnails match high-end e-commerce standards.
+- **Tech:** `ProductGallery.tsx`, hover state scale transforms, z-index Lightbox overlay.
+
+### 69. Slide-out Cart Drawer
+- **What:** Clicking "Add to Cart" now opens a sleek right-side cart drawer instead of navigating to a cart page. Shows items, subtotal, and cross-sell suggestions inside the drawer.
+- **Advantage:** Keeps the buyer on the product page. Cross-sells in the cart drawer directly increase AOV before they even hit checkout.
+- **Tech:** `CartDrawer.tsx`, global state/context for drawer visibility, transition animations.
+
+### 70. Multi-step Accordion Checkout
+- **What:** Converted the long checkout form into a distraction-free, 4-step accordion (Sender Details → Recipient Details → Delivery → Payment). Only one step is active at a time.
+- **Advantage:** Reduces cognitive overload. Long forms cause abandonment; breaking it into bite-sized steps increases checkout completion rates.
+- **Tech:** `CheckoutForm.tsx` rewritten with step state management, smooth height transitions for accordion panels.
+
+---
+
+## Stage 14 — Live Customization Studio
+
+### 71. Canva-style Live Customizer
+- **What:** For `is_personalizable` products, clicking "Customize this Gift Live" opens a full-screen studio. Users can upload logos/photos, type custom text, change fonts (Sans, Serif, Cursive, Mono), and pick colors. They can drag, drop, and resize these layers directly over the product photo.
+- **Advantage:** Top-tier feature that drastically reduces buyer anxiety. Customers don't have to imagine what their customization will look like; they see it instantly. Sets the platform miles apart from competitors.
+- **Tech:** `LiveCustomizer.tsx`, `react-rnd` library for draggable/resizable layers, `ProductGallery` integration.
+
+### 72. Cover-up Shape Tool (Clean Slate)
+- **What:** A tool within the Customization Studio that allows users to drop solid shapes (squares/circles), color-match them to the product background (e.g., solid white), and place them over existing baked-in text/logos on the product photo.
+- **Advantage:** Allows customers to manually "erase" existing designs and create a clean slate without costing the platform API fees for AI background removal.
+- **Tech:** Added `shape` layer type to `CustomLayer` interface, `borderRadius` toggles.
+
+---
+
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -584,4 +620,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 13 — Hamper builder redesign + animations (67 features, 27 commits)*
+*Last updated: Stage 14 — Live Customization Studio (72 features)*
