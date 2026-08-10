@@ -276,15 +276,15 @@ export default function RemindersDashboard() {
             {activeTab === "subscriptions" && (
               <div className="space-y-6 animate-fade-in">
                 {(!isCompletingSetup || subscriptionItems.length === 0) && (
-                  <button
+                  <Link
+                    href="/"
                     onClick={() => {
                       startBuildingSubscription();
-                      router.push("/");
                     }}
-                    className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors"
+                    className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors block text-center"
                   >
                     + Build a New Subscription Box
-                  </button>
+                  </Link>
                 )}
 
                 {isCompletingSetup && subscriptionItems.length > 0 && (
