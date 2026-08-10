@@ -92,6 +92,20 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
     if (selectedId === id) setSelectedId(null);
   };
 
+  const handleSave = () => {
+    const texts = layers.filter(l => l.type === "text").map(l => l.content).filter(Boolean);
+    const hasLogo = layers.some(l => l.type === "image");
+    const summaryParts = [];
+    if (texts.length > 0) summaryParts.push(texts.join(" | "));
+    if (hasLogo) summaryParts.push("(Includes Custom Logo)");
+    
+    const summary = summaryParts.join(" ");
+    if (summary) {
+      window.dispatchEvent(new CustomEvent("customizationSaved", { detail: summary }));
+    }
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-[200] bg-surface flex flex-col md:flex-row animate-fade-in">
       {/* Sidebar Toolbar */}
@@ -217,7 +231,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
         </div>
 
         <div className="p-6 border-t border-surface-border bg-white mt-auto">
-          <button onClick={onClose} className="w-full btn-brand py-3 rounded-xl shadow-button">
+          <button onClick={handleSave} className="w-full btn-brand py-3 rounded-xl shadow-button">
             Looks Good
           </button>
           <p className="text-xs text-brand-muted mt-3 text-center">

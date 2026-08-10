@@ -20,6 +20,19 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
   const total = product.price * quantity;
 
+  // Listen for Live Customizer saves
+  useEffect(() => {
+    const handleCustomization = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail) {
+        setPersonalization(customEvent.detail);
+        setIsOpen(true);
+      }
+    };
+    window.addEventListener("customizationSaved", handleCustomization);
+    return () => window.removeEventListener("customizationSaved", handleCustomization);
+  }, []);
+
   // Lock body scroll when drawer is open
   useEffect(() => {
     if (isOpen) {
