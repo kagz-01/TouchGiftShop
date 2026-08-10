@@ -10,22 +10,26 @@ import {
 } from "lucide-react";
 
 const CATEGORIES = [
+  // Occasions
   { label: "All", icon: <Sparkles className="w-4 h-4" />, slug: "" },
   { label: "Birthdays", icon: <Cake className="w-4 h-4" />, slug: "birthdays" },
   { label: "Anniversaries", icon: <Gem className="w-4 h-4" />, slug: "anniversaries" },
   { label: "Weddings", icon: <Heart className="w-4 h-4" />, slug: "weddings" },
   { label: "Baby", icon: <Baby className="w-4 h-4" />, slug: "baby" },
-  { label: "Corporate", icon: <Building2 className="w-4 h-4" />, slug: "corporate" },
-  { label: "Condolences", icon: <Feather className="w-4 h-4" />, slug: "condolences" },
   { label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, slug: "graduation" },
-  { label: "Apology", icon: <Flower2 className="w-4 h-4" />, slug: "apology" },
+  { label: "Condolences", icon: <Feather className="w-4 h-4" />, slug: "condolences" },
   { label: "Just Because", icon: <HeartPulse className="w-4 h-4" />, slug: "just-because" },
+  { label: "Apology", icon: <Flower2 className="w-4 h-4" />, slug: "apology" },
+  { label: "Milestone", icon: <GraduationCap className="w-4 h-4" />, slug: "milestone" },
+  // Lifestyle & Interests
   { label: "For Her", icon: <HeartPulse className="w-4 h-4" />, slug: "for-her" },
   { label: "For Him", icon: <Gift className="w-4 h-4" />, slug: "for-him" },
   { label: "Fitness", icon: <Dumbbell className="w-4 h-4" />, slug: "fitness" },
   { label: "Gaming", icon: <Gamepad2 className="w-4 h-4" />, slug: "gaming" },
   { label: "Home", icon: <Home className="w-4 h-4" />, slug: "home-decor" },
   { label: "Kitchen", icon: <ChefHat className="w-4 h-4" />, slug: "kitchen" },
+  // Business
+  { label: "Corporate", icon: <Building2 className="w-4 h-4" />, slug: "corporate" },
 ];
 
 export default function OccasionPills() {

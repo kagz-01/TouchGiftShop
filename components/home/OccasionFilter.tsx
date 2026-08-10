@@ -4,22 +4,27 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
+  // Occasions
   { label: "Birthdays", slug: "birthdays", color: "from-pink-400 to-rose-500" },
   { label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
   { label: "Weddings", slug: "weddings", color: "from-purple-400 to-violet-500" },
   { label: "Baby Shower", slug: "baby", color: "from-blue-400 to-cyan-500" },
-  { label: "Corporate", slug: "corporate", color: "from-slate-500 to-gray-700" },
-  { label: "Condolences", slug: "condolences", color: "from-gray-400 to-gray-600" },
   { label: "Graduation", slug: "graduation", color: "from-amber-400 to-orange-500" },
-  { label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
-  { label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
+  { label: "Condolences", slug: "condolences", color: "from-gray-400 to-gray-600" },
   { label: "Just Because", slug: "just-because", color: "from-rose-400 to-red-500" },
+  { label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
+  { label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
+  // Lifestyle & Interests
+  { label: "For Her", slug: "for-her", color: "from-pink-400 to-fuchsia-500" },
+  { label: "For Him", slug: "for-him", color: "from-blue-400 to-indigo-500" },
   { label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
   { label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
   { label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
   { label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
   { label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
   { label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
+  // Business
+  { label: "Corporate", slug: "corporate", color: "from-slate-500 to-gray-700" },
 ];
 
 export default function OccasionFilter() {
@@ -34,7 +39,8 @@ export default function OccasionFilter() {
     } else {
       params.set("category", slug);
     }
-    router.push(`/?${params.toString()}`);
+    const qs = params.toString();
+    router.push(qs ? `/shop?${qs}` : "/shop");
   }
 
   return (
