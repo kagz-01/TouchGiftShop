@@ -2,7 +2,7 @@
 
 import { useSubscription } from "@/components/reminders/SubscriptionProvider";
 import { useRouter } from "next/navigation";
-import { formatKsh } from "@/lib/utils";
+import { formatKsh, cn } from "@/lib/utils";
 
 export default function SubscriptionFloatingBar() {
   const { isBuildingSubscription, subscriptionItems, cancelBuildingSubscription } = useSubscription();
@@ -17,7 +17,9 @@ export default function SubscriptionFloatingBar() {
       <div className="max-w-2xl mx-auto bg-surface border-2 border-brand rounded-2xl shadow-xl p-4 flex items-center justify-between pointer-events-auto animate-fade-in-up">
         <div>
           <p className="font-bold text-brand-deep text-sm">
-            {subscriptionItems.length} item{subscriptionItems.length === 1 ? "" : "s"} added to Subscription
+            {subscriptionItems.length === 0
+              ? "Select items to add to your subscription"
+              : `${subscriptionItems.length} item${subscriptionItems.length === 1 ? "" : "s"} added to Subscription`}
           </p>
           <p className="text-xs text-brand-muted mt-0.5">
             Total: <span className="font-semibold text-brand">{formatKsh(total)}</span> / delivery
@@ -33,7 +35,13 @@ export default function SubscriptionFloatingBar() {
           </button>
           <button
             onClick={() => router.push("/reminders?building=true")}
-            className="bg-brand text-white text-xs font-bold px-4 py-2 rounded-xl shadow-button hover:bg-brand-dark transition-colors"
+            disabled={subscriptionItems.length === 0}
+            className={cn(
+              "text-xs font-bold px-4 py-2 rounded-xl transition-colors shadow-button",
+              subscriptionItems.length === 0
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
+                : "bg-brand text-white hover:bg-brand-dark"
+            )}
           >
             Complete Setup
           </button>
