@@ -15,7 +15,7 @@ interface Product {
   description?: string;
 }
 
-const WHATSAPP_NUMBER = "254700000000"; // TODO: replace with real number
+const WHATSAPP_NUMBER = "254700000000"; // TODO: replace with real WhatsApp number
 
 export default function BuildSubscriptionPage() {
   const router = useRouter();
@@ -238,7 +238,7 @@ export default function BuildSubscriptionPage() {
 
               {/* Email */}
               <a
-                href={`mailto:hello@touchgift.co.ke?subject=${emailSubject}&body=${emailBody}`}
+                href={`mailto:info@touchgiftshop.co.ke?subject=${emailSubject}&body=${emailBody}`}
                 className="flex items-center gap-4 bg-white border border-surface-border rounded-2xl p-4 hover:shadow-card hover:border-blue-300 transition-all group"
               >
                 <div className="w-11 h-11 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -248,7 +248,7 @@ export default function BuildSubscriptionPage() {
                 </div>
                 <div className="flex-1">
                   <p className="font-bold text-sm text-brand-deep group-hover:text-blue-600 transition-colors">Send us an email</p>
-                  <p className="text-xs text-brand-muted">hello@touchgift.co.ke</p>
+                  <p className="text-xs text-brand-muted">info@touchgiftshop.co.ke</p>
                 </div>
                 <svg className="w-4 h-4 text-brand-muted group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
