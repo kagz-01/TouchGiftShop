@@ -116,7 +116,7 @@ export default function BuildSubscriptionPage() {
             </svg>
           </Link>
           <div>
-            <h1 className="font-display text-xl font-bold text-brand-deep">New Subscription Box</h1>
+            <h1 className="font-display text-xl font-bold text-brand-deep">Subscription Box Builder</h1>
             <p className="text-xs text-brand-muted">Schedule recurring gift deliveries</p>
           </div>
         </div>

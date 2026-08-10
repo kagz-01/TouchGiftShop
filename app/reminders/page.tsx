@@ -274,7 +274,7 @@ export default function RemindersDashboard() {
                   href="/reminders/build-subscription"
                   className="w-full border-2 border-dashed border-brand/20 rounded-2xl py-4 text-sm font-bold text-brand hover:bg-brand/5 transition-colors block text-center"
                 >
-                  + Build a New Subscription Box
+                  + Build a Subscription Box
                 </Link>
 
                 {subscriptions.length === 0 && (
