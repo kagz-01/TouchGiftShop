@@ -72,7 +72,7 @@ function CorporateHero() {
         backgroundSize: "60px 60px",
       }} />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8 py-20">
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 md:px-8 py-20">
         <div className="mb-4">
           <BackToHome className="text-white/80" />
         </div>
@@ -169,7 +169,7 @@ function TrustBar() {
 
   return (
     <section className="py-12 bg-white border-b border-surface-border">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {benefits.map((b, i) => (
             <Reveal key={i} delay={i * 100}>
@@ -231,7 +231,7 @@ function UseCases() {
 
   return (
     <section className="py-24 md:py-32 bg-blush/30">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Use Cases
@@ -304,7 +304,7 @@ function CorporateHowItWorks() {
 
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Simple as 1-2-3-4
@@ -372,7 +372,7 @@ function PricingTiers() {
 
   return (
     <section className="py-24 md:py-32 bg-gradient-warm">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Volume Pricing
@@ -440,7 +440,7 @@ function PricingTiers() {
 function CorporateTestimonials() {
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Trusted by Companies

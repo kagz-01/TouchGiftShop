@@ -62,7 +62,7 @@ export default function Header() {
             : "bg-white/80 backdrop-blur-sm"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-2 flex items-center gap-6">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-2 flex items-center gap-6">
 
           {/* ── Logo ── */}
           <button

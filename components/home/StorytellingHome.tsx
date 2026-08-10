@@ -278,7 +278,7 @@ export function ProblemSection() {
 
   return (
     <section className="py-24 md:py-32 bg-white relative overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             We get it
@@ -325,7 +325,7 @@ export function SolutionSection() {
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 text-center">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 text-center">
         <Reveal direction="scale">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-brand rounded-3xl mb-8 shadow-glow animate-float">
             <Gift className="w-10 h-10 text-white" />
@@ -412,7 +412,7 @@ export function StoryHowItWorks() {
 
   return (
     <section className="py-24 md:py-32 bg-blush/30 relative">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Simple as 1-2-3
@@ -484,7 +484,7 @@ export function SocialProof() {
   const marqueeReviews = [...displayReviews, ...displayReviews];
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
           {[
@@ -599,7 +599,7 @@ export function OccasionsGrid() {
 
   return (
     <section className="py-24 md:py-32 bg-gradient-warm">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Find by occasion

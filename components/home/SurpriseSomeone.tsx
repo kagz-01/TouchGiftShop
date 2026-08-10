@@ -4,7 +4,7 @@ import { EyeOff, MapPin, Camera, Zap } from "lucide-react";
 export default function SurpriseSomeone() {
   return (
     <section className="py-12 md:py-16">
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light rounded-3xl p-8 md:p-12">
           {/* Decorative */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />

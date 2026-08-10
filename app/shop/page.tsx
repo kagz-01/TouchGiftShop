@@ -16,7 +16,7 @@ export default async function ShopPage({
     <div className="min-h-screen bg-gradient-warm">
       {/* Header */}
       <div className="bg-white border-b border-surface-border px-4 py-4">
-        <div className="w-full max-w-7xl mx-auto">
+        <div className="w-full max-w-[1600px] mx-auto">
           <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-3">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -29,14 +29,14 @@ export default async function ShopPage({
       </div>
 
       {/* Occasion pills */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pt-6">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-6">
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
       </div>
 
       {/* Full product grid */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-8 space-y-8">
         <Suspense fallback={<ProductGridSkeleton />}>
           <ProductGrid searchParams={Promise.resolve(params)} />
         </Suspense>

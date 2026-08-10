@@ -95,7 +95,7 @@ export default async function HomePage() {
       <SocialProof />
 
       {/* Seasonal & Smart Reorder — in one row */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 flex flex-col sm:flex-row gap-3">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-6 flex flex-col sm:flex-row gap-3">
         <div className="flex-1">
           <SeasonalPromptBar />
         </div>
@@ -109,14 +109,14 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
 
       {/* Occasion pills — primary discovery */}
-      <ScrollReveal className="w-full max-w-7xl mx-auto px-4 md:px-8 pt-8 md:pt-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-8 md:pt-10" delay={0}>
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
       </ScrollReveal>
 
       {/* Row group 1 — Trending, Last Minute, Edible (plain bg) */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mt-6 space-y-0">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 mt-6 space-y-0">
         <FeaturedRow
           title="Trending This Week"
           subtitle="Most-loved gifts right now"
@@ -144,7 +144,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           INTERSTITIAL A — Gift Quiz mid-page break
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full max-w-7xl mx-auto px-4 md:px-8 py-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-10" delay={0}>
         <a
           href="/gift-quiz"
           className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep rounded-3xl p-8 md:p-10 text-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
@@ -178,7 +178,7 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
 
       {/* Row group 2 — Self Care, Hampers, Personalised (tinted bg for chapter feel) */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 pb-4 space-y-0">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pb-4 space-y-0">
         <FeaturedRow
           title="The Self-Care Collection"
           subtitle="Wellness hampers & spa sets"
@@ -212,7 +212,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           CHAPTER 5: The Budget Closer
           ═══════════════════════════════════════════ */}
-      <div className="w-full max-w-7xl mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <FeaturedRow
           title="Under KSh 2,000"
           subtitle="Thoughtful gifts, friendly prices"
@@ -223,7 +223,7 @@ export default async function HomePage() {
       </div>
 
       {/* Browse All CTA */}
-      <ScrollReveal className="w-full max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-8 md:py-10" delay={0}>
         <Link
           href="/shop"
           className="group block bg-white border-2 border-surface-border hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"

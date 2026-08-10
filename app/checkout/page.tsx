@@ -36,7 +36,7 @@ export default async function CheckoutPage({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8 md:py-12">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 md:py-12">
         <CheckoutForm
           productId={params.productId ?? ""}
           amount={Number(params.amount ?? 0)}
