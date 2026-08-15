@@ -94,10 +94,47 @@ export async function POST(req: Request) {
     .single();
 
   if (insertError || !order) {
-    return NextResponse.json(
-      { error: insertError?.message ?? "Failed to create order" },
-      { status: 500 }
-    );
+    // If the database schema is missing the `product_id` column (common when
+    // migrations haven't been applied), attempt a fallback insert without it
+    // so the API remains usable until the DB is migrated.
+    const msg = insertError?.message ?? "Failed to create order";
+    if (msg.includes("product_id") || msg.includes("Could not find the 'product_id'" ) || msg.includes("column \"product_id\"")) {
+      try {
+        const { data: fallbackOrder, error: fallbackError } = await supabaseAdmin
+          .from("orders")
+          .insert({
+            user_id: user?.id ?? null,
+            total_amount: input.totalAmount,
+            status: "pending_payment",
+            sender_name: input.senderName,
+            sender_phone: input.senderPhone,
+            recipient_name: input.recipientName,
+            recipient_phone: input.recipientPhone,
+            is_anonymous: input.isAnonymous,
+            dont_call_recipient: input.dontCallRecipient,
+            delivery_lat: input.deliveryLat ?? null,
+            delivery_lng: input.deliveryLng ?? null,
+            delivery_landmark: input.deliveryLandmark ?? null,
+            recipient_pin_requested: input.recipientPinRequested,
+            gift_note: input.giftNote ?? null,
+            engraving: input.engraving ?? null,
+            quantity: input.quantity,
+            shipping_fee: input.shippingFee,
+          })
+          .select()
+          .single();
+
+        if (fallbackError || !fallbackOrder) {
+          return NextResponse.json({ error: fallbackError?.message ?? msg }, { status: 500 });
+        }
+
+        return NextResponse.json({ order: fallbackOrder });
+      } catch (e: any) {
+        return NextResponse.json({ error: e?.message ?? msg }, { status: 500 });
+      }
+    }
+
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 
   return NextResponse.json({ order });

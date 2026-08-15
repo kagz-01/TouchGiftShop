@@ -9,6 +9,8 @@ import {
   Cake, Gem, Building2, Baby, Flower2, Trophy,
   Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine
 } from "lucide-react";
+import dynamic from 'next/dynamic';
+const HeroWrappers = dynamic(() => import('@/components/home/HeroWrappers'), { ssr: false });
 import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -176,13 +178,8 @@ export function HeroCinematic() {
         <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Floating gift elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-[10%] opacity-20 animate-float" style={{ animationDelay: "0s" }}><Gift className="w-16 h-16 text-brand" /></div>
-        <div className="absolute top-40 right-[15%] opacity-15 animate-float" style={{ animationDelay: "1s" }}><Heart className="w-12 h-12 text-brand-muted" /></div>
-        <div className="absolute bottom-32 left-[20%] opacity-15 animate-float" style={{ animationDelay: "2s" }}><Sparkles className="w-14 h-14 text-gold" /></div>
-        <div className="absolute bottom-20 right-[10%] opacity-20 animate-float" style={{ animationDelay: "3s" }}><Mail className="w-12 h-12 text-brand" /></div>
-      </div>
+      {/* Background wrappers sit behind the copy as translucent glass cards */}
+      <HeroWrappers />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
@@ -251,15 +248,7 @@ export function HeroCinematic() {
           </Link>
         </div>
 
-        {/* Scroll indicator */}
-        <div className={`mt-12 transition-all duration-1000 delay-700 ${loaded ? "opacity-100" : "opacity-0"}`}>
-          <div className="flex flex-col items-center gap-2 text-white/40">
-            <span className="text-xs tracking-widest uppercase">Scroll to explore</span>
-            <div className="w-6 h-10 border-2 border-white/20 rounded-full flex justify-center pt-2">
-              <div className="w-1.5 h-1.5 bg-gold rounded-full animate-bounce" />
-            </div>
-          </div>
-        </div>
+        {/* Scroll indicator removed - using live wrappers for pointer interaction instead */}
       </div>
     </section>
   );

@@ -210,16 +210,8 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | Pin Drop — recipient delivery location | | | | | | | | | | Done |
 | Homepage restructure — discovery flow | | | | | | | | | | Done |
 | Hamper builder redesign + animations | | | | | | | | | | Done |
-| Product page redesign (gallery, description) | | | | | | | | | | | Done |
-| Cart drawer + upsell | | | | | | | | | | | Done |
-| Multi-step accordion checkout | | | | | | | | | | | Done |
-| Live Customization Studio | | | | | | | | | | | | Done |
-| Cover-up shape masking | | | | | | | | | | | | Done |
-| Product gallery image fix (object-contain) | | | | | | | | | | | | Done |
-| Wishlist full flow (create, add, share) | | | | | | | | | | | | Done |
-| Checkout UX Overhaul (2-col layout, step progress, anonymous feedback) | | | | | | | | | | | | Done |
 
-**Total features built: 75**
+**Total features built: 67**
 
 ---
 
@@ -255,11 +247,6 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 | `ba07f06` | Homepage restructure — discovery flow with curated rows |
 | `86dd1d8` | HamperBuilder redesign — split layout, compact grid, category filters |
 | `83df7ef` | Hamper animations — fly-to-basket, pulse, confetti, price count-up, shake |
-| `c4e2a1b` | UX/UI Overhaul — Product Gallery, Cart Drawer, and Checkout Flow |
-| `a92c966` | Live Customization Studio (drag-and-drop, text, logo upload, masking) |
-| `266ceb6` | Wishlist full flow — create from product page, real DB, shareable domain link |
-| `1a9f692` | fix: drawer viewport bleed — invisible+body-lock when closed, no overflow-x-hidden hack |
-| `7dc8b19` | feat: complete checkout page UX overhaul — two column layout, step progress, anonymous badges |
 
 ---
 
@@ -541,58 +528,6 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-## Stage 13 — UX/UI Overhaul
-
-### 68. Product Gallery Redesign
-- **What:** Replaced the large square product image with a tighter 4:3 aspect ratio gallery. Added hover-to-zoom (magnifier effect), full-screen Lightbox modal, and vertical thumbnails for desktop.
-- **Advantage:** Prevents images from dominating the screen. Hover zoom lets buyers inspect detail (e.g. engraving quality). Vertical thumbnails match high-end e-commerce standards.
-- **Tech:** `ProductGallery.tsx`, hover state scale transforms, z-index Lightbox overlay.
-
-### 69. Slide-out Cart Drawer
-- **What:** Clicking "Add to Cart" now opens a sleek right-side cart drawer instead of navigating to a cart page. Shows items, subtotal, and cross-sell suggestions inside the drawer.
-- **Advantage:** Keeps the buyer on the product page. Cross-sells in the cart drawer directly increase AOV before they even hit checkout.
-- **Tech:** `CartDrawer.tsx`, global state/context for drawer visibility, transition animations.
-
-### 70. Multi-step Accordion Checkout
-- **What:** Converted the long checkout form into a distraction-free, 4-step accordion (Sender Details → Recipient Details → Delivery → Payment). Only one step is active at a time.
-- **Advantage:** Reduces cognitive overload. Long forms cause abandonment; breaking it into bite-sized steps increases checkout completion rates.
-- **Tech:** `CheckoutForm.tsx` rewritten with step state management, smooth height transitions for accordion panels.
-
----
-
-## Stage 14 — Live Customization Studio
-
-### 71. Canva-style Live Customizer
-- **What:** For `is_personalizable` products, clicking "Customize this Gift Live" opens a full-screen studio. Users can upload logos/photos, type custom text, change fonts (Sans, Serif, Cursive, Mono), and pick colors. They can drag, drop, and resize these layers directly over the product photo.
-- **Advantage:** Top-tier feature that drastically reduces buyer anxiety. Customers don't have to imagine what their customization will look like; they see it instantly. Sets the platform miles apart from competitors.
-- **Tech:** `LiveCustomizer.tsx`, `react-rnd` library for draggable/resizable layers, `ProductGallery` integration.
-
-### 72. Cover-up Shape Tool (Clean Slate)
-- **What:** A tool within the Customization Studio that allows users to drop solid shapes (squares/circles), color-match them to the product background (e.g., solid white), and place them over existing baked-in text/logos on the product photo.
-- **Advantage:** Allows customers to manually "erase" existing designs and create a clean slate without costing the platform API fees for AI background removal.
-- **Tech:** Added `shape` layer type to `CustomLayer` interface, `borderRadius` toggles.
-
----
-
-## Stage 15 — Wishlist Full Flow
-
-### 73. Product Gallery — Full Image Display
-- **What:** Changed the product main image from `object-cover` (which cropped tall or narrow products) to `object-contain`. The image container now has a clean white background so the full product is always visible. Hover-to-zoom was also refactored to use a CSS `transform: scale()` directly on the image (instead of a broken CSS background-image trick), and thumbnails also switched to `object-contain`.
-- **Advantage:** Tall products (like an Easter egg or a wine bottle) no longer get awkwardly cropped. Buyers see the full product at first glance — crucial for purchase confidence.
-- **Tech:** `ProductGallery.tsx` — `object-contain`, `React.CSSProperties` typed zoom state, transform applied inline on `<Image>` element.
-
-### 74. Wishlist — Complete End-to-End Flow
-- **What:** Completely rebuilt the wishlist experience from scratch. Previously, users were asked to manually paste a URL slug to connect their wishlist — now the flow is seamless: clicking "Add to My Wishlist" on any product opens a polished modal. First-time users type their name and pick an occasion; a real Supabase wishlist is created and the product is added in one step. Returning users add items instantly with no prompts. A shareable link using the real production domain (`touch-gift-shop.vercel.app`) is shown immediately with one-tap WhatsApp sharing. The `/wishlist` page was also rewritten to fetch from the real database (not localStorage) and supports removing items via the DELETE API.
-- **Advantage:** The old flow was broken and unusable. The new flow requires zero technical knowledge from the user. The shareable link now uses the real domain, so friends and family get a professional-looking link. WhatsApp sharing is one tap with a pre-written message.
-- **Tech:** Rewrote `WishlistButton.tsx` (create + add + share modal), rewrote `app/wishlist/page.tsx` (real DB fetch, remove items, WhatsApp share), uses `NEXT_PUBLIC_SITE_URL` env var for the domain.
-
-### 75. Checkout UX Overhaul
-- **What:** Rebuilt the checkout page into a professional desktop two-column layout (`max-w-6xl`) with a sticky order summary on the right. Added a clear 4-step progress bar at the top with completed/active states. Integrated the product image fetch into the summary panel. Added prominent visual feedback (colored banners) in the sticky summary and payment step when "Anonymous Mode" or "No-contact delivery" are active. Improved CTA buttons per step.
-- **Advantage:** Transforms the checkout from a basic mobile-first form into a high-trust, premium e-commerce experience. Users no longer wonder if Anonymous mode is on because it's clearly confirmed in their summary before they pay.
-- **Tech:** Rebuilt `app/checkout/page.tsx` and `components/checkout/CheckoutForm.tsx`. Fetch product details via API in `useEffect`.
-
----
-
 ## Database Schema (Running)
 
 | Table | Purpose |
@@ -645,4 +580,4 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 
 ---
 
-*Last updated: Stage 15 — Wishlist Full Flow, Gallery Fix & Checkout Overhaul (75 features, 32 commits)*
+*Last updated: Stage 13 — Hamper builder redesign + animations (67 features, 27 commits)*
