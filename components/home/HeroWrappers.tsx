@@ -18,6 +18,7 @@ type Item = {
 
 export default function HeroWrappers() {
   const ref = useRef<HTMLDivElement | null>(null);
+  const prefersReducedMotion = useReducedMotion();
   const [items, setItems] = useState<Item[]>([]);
   const [repelOffsets, setRepelOffsets] = useState<Record<number, { x: number; y: number }>>({});
   const rafRef = useRef<number | null>(null);
@@ -144,7 +145,7 @@ export default function HeroWrappers() {
             }}
             initial={{ opacity: 0, scale: 0.94 }}
             animate={
-              useReducedMotion()
+              prefersReducedMotion
                 ? { opacity: 1, x: 0, y: 0, rotate: it.rot, scale: 1 }
                 : {
                     opacity: 1,
@@ -155,7 +156,7 @@ export default function HeroWrappers() {
                   }
             }
             transition={
-              useReducedMotion()
+              prefersReducedMotion
                 ? { duration: 0 }
                 : {
                     duration: 12 + index * 0.45,
