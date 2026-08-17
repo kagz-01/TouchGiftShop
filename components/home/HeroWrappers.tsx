@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 
 type Item = {
   src: string;
@@ -29,7 +29,7 @@ export default function HeroWrappers() {
       .then((list: any[]) => {
         if (!mounted) return;
         const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
-        const maxItems = vw < 640 ? 8 : vw < 1024 ? 12 : 17;
+        const maxItems = vw < 640 ? 8 : vw < 1024 ? 10 : 12; // reduce count to avoid clutter
         const uniqueSources = Array.from(new Map((list || []).map((entry: any) => {
           const src = typeof entry === 'string' ? entry : entry.src;
           return [src, src];
@@ -37,8 +37,8 @@ export default function HeroWrappers() {
 
         const created: Item[] = uniqueSources.slice(0, maxItems).map((src, index) => {
           // slightly smaller base sizes so wrappers don't crowd the text
-          const baseSize = vw < 640 ? 36 : vw < 1024 ? 52 : 68;
-          const size = Math.min(110, baseSize + (index % 3) * 6);
+          const baseSize = vw < 640 ? 32 : vw < 1024 ? 48 : 64;
+          const size = Math.min(100, baseSize + (index % 3) * 6);
           const xPositions = [12, 26, 64, 78, 52, 18, 70, 88, 10, 33, 58, 82, 22, 48, 74, 14, 90];
           const yPositions = [18, 28, 18, 32, 56, 72, 72, 58, 44, 12, 62, 18, 84, 80, 42, 66, 70];
 
@@ -49,7 +49,7 @@ export default function HeroWrappers() {
             size,
             rot: (index % 7) * 7 - 18,
             // further reduce drift amplitude to avoid sweeping over copy
-            driftAmp: 6 + (index % 4) * 4,
+            driftAmp: 4 + (index % 3) * 3,
             driftPhase: (index % 9) * 0.8,
             parallaxDepth: 0.08 + (index % 5) * 0.07,
             zIndex: 1 + (index % 10),
@@ -61,6 +61,7 @@ export default function HeroWrappers() {
           const img = new Image();
           img.src = item.src;
           img.decoding = 'sync';
+          // @ts-ignore - fetchPriority is supported by modern browsers
           img.fetchPriority = 'high';
         });
 
@@ -135,27 +136,35 @@ export default function HeroWrappers() {
             loading="eager"
             decoding="sync"
             fetchPriority="high"
-            className="absolute inset-0 w-full h-full rounded-[26px] border border-white/20 shadow-[0_18px_36px_rgba(14,9,20,0.25)] object-cover"
+            className="absolute inset-0 w-full h-full rounded-[26px] border border-white/14 shadow-[0_8px_18px_rgba(14,9,20,0.12)] object-cover"
             style={{
               objectPosition: it.objectPosition,
-              opacity: typeof window !== 'undefined' && window.innerWidth < 640 ? 0.46 : 0.6,
-              filter: 'saturate(0.92) brightness(1.05) contrast(0.98)',
+              opacity: typeof window !== 'undefined' && window.innerWidth < 640 ? 0.42 : 0.56,
+              filter: 'saturate(0.95) brightness(1.03) contrast(0.99)',
             }}
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{
-              opacity: 1,
-              x: motionX(index, 0, it.driftAmp),
-              y: motionY(index, 0, it.driftAmp * 0.6),
-              rotate: [it.rot - 8, it.rot + 8, it.rot - 10, it.rot + 6, it.rot],
-              scale: [0.95, 1.04, 0.98, 1.06, 1],
-            }}
-            transition={{
-              duration: 14 + index * 0.6,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: index * 0.12,
-              opacity: { duration: 0.32, ease: 'easeOut' },
-            }}
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={
+              useReducedMotion()
+                ? { opacity: 1, x: 0, y: 0, rotate: it.rot, scale: 1 }
+                : {
+                    opacity: 1,
+                    x: motionX(index, 0, it.driftAmp),
+                    y: motionY(index, 0, it.driftAmp * 0.6),
+                    rotate: [it.rot - 6, it.rot + 6, it.rot - 8, it.rot + 4, it.rot],
+                    scale: [0.97, 1.03, 0.99, 1.02, 1],
+                  }
+            }
+            transition={
+              useReducedMotion()
+                ? { duration: 0 }
+                : {
+                    duration: 12 + index * 0.45,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: index * 0.08,
+                    opacity: { duration: 0.28, ease: 'easeOut' },
+                  }
+            }
           />
         </div>
       ))}
