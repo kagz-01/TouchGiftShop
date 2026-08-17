@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import BackToHome from "@/components/ui/BackToHome";
 import { formatKsh, cn } from "@/lib/utils";
+import { ArrowLeft, Package } from "lucide-react";
 
 const STATUS_LABELS: Record<string, string> = {
   pending_payment: "Awaiting payment",
@@ -40,20 +40,25 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
   const displayOrders = activeTab === "active" ? activeOrders : pastOrders;
 
   return (
-    <div className="min-h-screen bg-gradient-warm pb-20">
-      {/* Header */}
-      <div className="bg-white border-b border-surface-border sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-6">
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h1 className="font-display text-2xl font-bold text-brand-deep">Your Orders</h1>
-              <p className="text-sm text-brand-muted mt-1">Track and manage your gift deliveries.</p>
-            </div>
-            <BackToHome />
+    <div className="min-h-screen bg-[#FAF8F5] pb-20">
+      {/* ── Sticky header ── */}
+      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-3xl mx-auto px-4 md:px-8 py-3 flex items-center gap-3">
+          <Link
+            href="/"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-brand-muted hover:bg-brand/5 hover:text-brand transition-all"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Link>
+          <div>
+            <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Your Orders</h1>
+            <p className="text-[11px] text-brand-muted mt-0.5">Track and manage your gift deliveries</p>
           </div>
-          
-          {/* Tabs */}
-          <div className="flex gap-6 border-b border-surface-border">
+        </div>
+
+        {/* Tabs */}
+        <div className="max-w-3xl mx-auto px-4 md:px-8">
+          <div className="flex gap-6 border-b border-black/5">
             <button
               onClick={() => setActiveTab("active")}
               className={cn(
@@ -73,7 +78,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                 activeTab === "past" ? "text-brand" : "text-brand-muted hover:text-brand-deep"
               )}
             >
-              Past Orders ({pastOrders.length})
+              Past ({pastOrders.length})
               {activeTab === "past" && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand rounded-t-full" />
               )}

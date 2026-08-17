@@ -2,6 +2,12 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import OrdersClient from "./OrdersClient";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Your Orders | TouchGift",
+  description: "Track your gift deliveries and view your order history.",
+};
 
 async function getOrders() {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
@@ -36,14 +42,14 @@ export default async function OrdersPage() {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     redirect("/login?next=/orders");
   }
 
   const orders = await getOrders();
-
   return <OrdersClient initialOrders={orders} />;
 }
-
