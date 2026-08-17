@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import BackToHome from "@/components/ui/BackToHome";
 import { formatKsh } from "@/lib/utils";
 import OrderStatusTimeline from "@/components/orders/OrderStatusTimeline";
 import SendTrackLinkButton from "@/components/orders/SendTrackLinkButton";
 import ResendPinDropButton from "@/components/pin-drop/ResendPinDropButton";
 import PinDropStatus from "@/components/pin-drop/PinDropStatus";
 import PinDropNotification from "@/components/pin-drop/PinDropNotification";
+import { ArrowLeft, CheckCircle, EyeOff, Camera, PhoneOff, Gift, SearchX, CreditCard } from "lucide-react";
 
 async function getOrder(id: string) {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
@@ -34,12 +34,17 @@ export default async function OrderDetailPage({
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-4">
         <div className="text-center">
-          <span className="text-5xl block mb-4">🔍</span>
-          <p className="font-display text-xl font-semibold mb-2">Order not found</p>
-          <Link href="/orders" className="text-sm text-brand hover:underline mt-4 inline-block">
-            Back to orders
+          <SearchX className="w-16 h-16 text-brand-muted/30 mx-auto mb-4" />
+          <p className="font-display text-xl font-bold text-brand-deep mb-2">Order not found</p>
+          <p className="text-sm text-brand-muted mb-6">This order ID doesn't exist or you don't have access.</p>
+          <Link
+            href="/orders"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-semibold rounded-2xl hover:bg-brand-dark transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Orders
           </Link>
         </div>
       </div>
@@ -54,31 +59,40 @@ export default async function OrderDetailPage({
   const hasPinData = order.delivery_lat !== null;
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-[#FAF8F5] pb-20">
       {/* Real-time pin-drop notification */}
       <PinDropNotification
         orderId={order.id}
         enabled={hasPinDrop && !hasPinData}
       />
-      {/* Header */}
-      <div className="bg-gradient-to-br from-brand-dark to-brand px-4 py-8 md:py-10">
-        <div className="max-w-lg mx-auto">
-          <div className="flex items-center justify-between">
-            <Link href="/orders" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors mb-4">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            All orders
-            </Link>
-            <BackToHome className="text-white/80" />
-          </div>
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-white">
+
+      {/* ── Sticky Header ── */}
+      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link
+            href="/orders"
+            className="flex items-center gap-2 text-sm font-semibold text-brand-muted hover:text-brand transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Orders
+          </Link>
+          {order.status === "delivered" && (
+            <span className="bg-green-50 text-green-700 border border-green-200 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+              Delivered
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* ── Hero / Status ── */}
+      <div className="bg-gradient-to-br from-brand-dark to-brand">
+        <div className="max-w-xl mx-auto px-5 py-8 md:py-12">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-white mb-1.5">
             {isFailed ? "Payment failed" : `Gift for ${order.recipient_name}`}
           </h1>
-          <p className="text-white/70 text-sm mt-1">
-            {new Date(order.created_at).toLocaleDateString("en-KE", {
-              weekday: "long",
-              month: "long",
+          <p className="text-white/75 text-sm font-medium">
+            Ordered {new Date(order.created_at).toLocaleDateString("en-KE", {
+              month: "short",
               day: "numeric",
               year: "numeric",
             })}
@@ -86,195 +100,210 @@ export default async function OrderDetailPage({
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-lg mx-auto px-4 -mt-4 relative z-10 pb-12">
-        <div className="space-y-5">
-          {/* Status */}
-          {!isFailed && (
-            <div className="bg-white rounded-2xl p-6 border border-surface-border shadow-card">
-              <OrderStatusTimeline currentStep={stepIndex} />
-            </div>
-          )}
+      <div className="max-w-xl mx-auto px-4 -mt-6 relative z-10 space-y-4">
+        {/* Timeline */}
+        {!isFailed && (
+          <div className="bg-white rounded-3xl p-6 border border-black/6 shadow-sm">
+            <OrderStatusTimeline currentStep={stepIndex} />
+          </div>
+        )}
 
-          {/* Failed */}
-          {isFailed && (
-            <div className="bg-brand-coral/10 border border-brand-coral/30 rounded-2xl p-5">
-              <p className="font-semibold text-brand-coral mb-1">Payment not completed</p>
-              <p className="text-sm text-brand-muted mb-3">
-                The M-Pesa payment was not confirmed. You can try ordering again.
-              </p>
-              <Link href="/shop" className="btn-brand inline-flex items-center gap-2 text-sm">
-                Browse gifts
-              </Link>
-            </div>
-          )}
-
-          {/* Surprise status badges */}
-          {(isAnonymous || dontCall) && (
-            <div className="bg-white rounded-2xl p-5 border border-surface-border space-y-2">
-              <p className="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Surprise Safeguard</p>
-              <div className="flex flex-wrap gap-2">
-                {dontCall && (
-                  <span className="inline-flex items-center gap-1.5 bg-brand/10 text-brand text-xs font-semibold px-3 py-1.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    No-contact delivery
-                  </span>
-                )}
-                {isAnonymous && (
-                  <span className="inline-flex items-center gap-1.5 bg-brand/10 text-brand text-xs font-semibold px-3 py-1.5 rounded-full">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-                    Anonymous sender
-                  </span>
-                )}
+        {/* Failed */}
+        {isFailed && (
+          <div className="bg-red-50 border border-red-100 rounded-3xl p-6">
+            <div className="flex gap-4">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                <CreditCard className="w-5 h-5 text-red-500" />
               </div>
-              <p className="text-xs text-brand-muted">
-                {isAnonymous
-                  ? "The recipient won't see your name or the gift price."
-                  : "Rider will use landmarks instead of calling the recipient."}
-              </p>
-            </div>
-          )}
-
-          {/* Send tracking link to recipient */}
-          {!isFailed && !hasPinDrop && (
-            <SendTrackLinkButton orderId={order.id} recipientPhone={order.recipient_phone} recipientName={order.recipient_name} />
-          )}
-
-          {hasPinDrop && (
-            <ResendPinDropButton
-              orderId={order.id}
-              recipientName={order.recipient_name}
-            />
-          )}
-
-          {/* Pin-drop status (shows location, time, map when pin is dropped) */}
-          {hasPinDrop && (
-            <PinDropStatus
-              orderId={order.id}
-              recipientName={order.recipient_name}
-              deliveryLat={order.delivery_lat}
-              deliveryLng={order.delivery_lng}
-              deliveryLandmark={order.delivery_landmark}
-              deliveryTimeWindow={order.delivery_time_window}
-              pinDropToken={order.pin_drop_token}
-              pinRequested={order.recipient_pin_requested}
-            />
-          )}
-
-          {/* Pre-dispatch photo */}
-          {order.pre_dispatch_photo_url && (
-            <div className="bg-white rounded-2xl p-5 border border-surface-border">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">📸</span>
-                <p className="text-sm font-semibold">Package photo</p>
+              <div>
+                <p className="font-bold text-red-700 mb-1">Payment not completed</p>
+                <p className="text-sm text-red-600/80 mb-4">
+                  The M-Pesa payment was not confirmed. Your order was not placed.
+                </p>
+                <Link
+                  href="/shop"
+                  className="inline-block px-5 py-2.5 bg-red-600 text-white font-semibold rounded-xl text-sm shadow-sm"
+                >
+                  Browse gifts to try again
+                </Link>
               </div>
-              <div className="aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden relative">
-                <Image
-                  src={order.pre_dispatch_photo_url}
-                  alt="Package before dispatch"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
-              </div>
-              <p className="text-xs text-brand-muted mt-2">
-                Your sealed package before it left for delivery.
-              </p>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Order details */}
-          <div className="bg-white rounded-2xl p-5 border border-surface-border space-y-4">
-            <h3 className="text-sm font-semibold">Order details</h3>
-
-            {order.products && (
-              <div className="flex items-center gap-4 pb-4 border-b border-surface-border">
-                <div className="w-16 h-16 bg-blush rounded-xl relative overflow-hidden flex-shrink-0">
-                  {order.products.image_url ? (
-                    <Image src={order.products.image_url} alt={order.products.name} fill className="object-contain p-2" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-brand/30">
-                      <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                    </div>
-                  )}
+        {/* Surprise Safeguard Badges */}
+        {(isAnonymous || dontCall) && (
+          <div className="bg-white rounded-3xl p-5 border border-black/6 shadow-sm">
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-3">Surprise Safeguard Active</p>
+            <div className="flex flex-col gap-3">
+              {dontCall && (
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-brand/8 flex items-center justify-center flex-shrink-0">
+                    <PhoneOff className="w-4 h-4 text-brand" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-brand-deep">No-contact delivery</p>
+                    <p className="text-xs text-brand-muted">Rider will use landmarks instead of calling.</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-brand-deep">{order.products.name}</h4>
-                  <p className="text-sm text-brand font-semibold">
-                    {order.quantity > 1 ? `${order.quantity}x • ` : ""}{formatKsh(order.total_amount)}
-                  </p>
+              )}
+              {isAnonymous && (
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-brand/8 flex items-center justify-center flex-shrink-0">
+                    <EyeOff className="w-4 h-4 text-brand" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-brand-deep">Anonymous Sender</p>
+                    <p className="text-xs text-brand-muted">The recipient won't see your name or price.</p>
+                  </div>
                 </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Tracking Actions */}
+        {!isFailed && !hasPinDrop && (
+          <SendTrackLinkButton orderId={order.id} recipientPhone={order.recipient_phone} recipientName={order.recipient_name} />
+        )}
+
+        {hasPinDrop && (
+          <ResendPinDropButton
+            orderId={order.id}
+            recipientName={order.recipient_name}
+          />
+        )}
+
+        {/* Pin Drop Status */}
+        {hasPinDrop && (
+          <PinDropStatus
+            orderId={order.id}
+            recipientName={order.recipient_name}
+            deliveryLat={order.delivery_lat}
+            deliveryLng={order.delivery_lng}
+            deliveryLandmark={order.delivery_landmark}
+            deliveryTimeWindow={order.delivery_time_window}
+            pinDropToken={order.pin_drop_token}
+            pinRequested={order.recipient_pin_requested}
+          />
+        )}
+
+        {/* Pre-dispatch photo */}
+        {order.pre_dispatch_photo_url && (
+          <div className="bg-white rounded-3xl p-5 border border-black/6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-sm font-bold text-brand-deep">Package Photo</p>
+                <p className="text-xs text-brand-muted mt-0.5">Your sealed package before dispatch</p>
               </div>
-            )}
+              <Camera className="w-5 h-5 text-brand" />
+            </div>
+            <div className="aspect-[4/3] bg-gray-50 rounded-2xl overflow-hidden relative border border-black/5">
+              <Image
+                src={order.pre_dispatch_photo_url}
+                alt="Package before dispatch"
+                fill
+                sizes="(max-width: 600px) 100vw, 600px"
+                className="object-cover"
+              />
+            </div>
+          </div>
+        )}
 
-            {!order.products && (
-              <>
-                <div className="flex justify-between text-sm">
-                  <span className="text-brand-muted">Amount</span>
-                  <span className="font-bold text-brand">{formatKsh(order.total_amount)}</span>
-                </div>
+        {/* Order details */}
+        <div className="bg-white rounded-3xl p-5 border border-black/6 shadow-sm">
+          <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-4">Order Details</p>
 
-                {order.quantity > 1 && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-brand-muted">Quantity</span>
-                    <span>{order.quantity}x</span>
+          {/* Product Row */}
+          {order.products && (
+            <div className="flex gap-4 pb-5 border-b border-black/5 mb-5">
+              <div className="w-16 h-16 bg-blush rounded-2xl relative overflow-hidden flex-shrink-0 border border-black/5">
+                {order.products.image_url ? (
+                  <Image src={order.products.image_url} alt={order.products.name} fill className="object-contain p-2" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-brand/20">
+                    <Gift className="w-6 h-6" />
                   </div>
                 )}
-              </>
-            )}
-
-            <div className={order.products ? "" : "border-t border-surface-border pt-3"}>
-              <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Recipient</span>
-                <span className="font-medium">{order.recipient_name}</span>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-brand-deep text-sm mb-1 line-clamp-2">{order.products.name}</h4>
+                <p className="text-brand font-bold">
+                  {order.quantity > 1 ? `${order.quantity} × ` : ""}{formatKsh(order.total_amount)}
+                </p>
               </div>
             </div>
+          )}
 
+          {/* Custom amount */}
+          {!order.products && (
+            <div className="space-y-3 pb-5 border-b border-black/5 mb-5">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-brand-muted font-medium">Total Amount</span>
+                <span className="font-bold text-brand-deep">{formatKsh(order.total_amount)}</span>
+              </div>
+              {order.quantity > 1 && (
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-brand-muted font-medium">Quantity</span>
+                  <span className="font-semibold text-brand-deep">{order.quantity}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Logistics */}
+          <div className="space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-brand-muted">Recipient</span>
+              <span className="font-semibold text-brand-deep">{order.recipient_name}</span>
+            </div>
             {order.delivery_landmark && (
               <div className="flex justify-between text-sm">
                 <span className="text-brand-muted">Landmark</span>
-                <span>{order.delivery_landmark}</span>
+                <span className="font-medium text-brand-deep text-right max-w-[60%]">{order.delivery_landmark}</span>
               </div>
             )}
-
             {order.delivery_time_window && (
               <div className="flex justify-between text-sm">
-                <span className="text-brand-muted">Delivery window</span>
-                <span className="capitalize">{order.delivery_time_window}</span>
-              </div>
-            )}
-
-            {order.gift_note && (
-              <div className="border-t border-surface-border pt-3">
-                <p className="text-xs text-brand-muted mb-1">Gift note</p>
-                <p className="text-sm italic">&ldquo;{order.gift_note}&rdquo;</p>
-              </div>
-            )}
-
-            {order.engraving && (
-              <div className="border-t border-surface-border pt-3">
-                <p className="text-xs text-brand-muted mb-1">Engraving</p>
-                <p className="text-sm italic">&ldquo;{order.engraving}&rdquo;</p>
+                <span className="text-brand-muted">Delivery Window</span>
+                <span className="font-medium capitalize text-brand-deep">{order.delivery_time_window}</span>
               </div>
             )}
           </div>
 
-          {/* Guarantees */}
-          <div className="bg-gradient-dark text-white rounded-2xl p-5 space-y-3">
-            <div className="flex items-center gap-3">
-              <span className="text-gold">✓</span>
-              <p className="text-sm">On-time delivery or it&apos;s free</p>
+          {/* Notes */}
+          {(order.gift_note || order.engraving) && (
+            <div className="mt-5 pt-5 border-t border-black/5 space-y-4">
+              {order.gift_note && (
+                <div className="bg-brand/5 p-4 rounded-2xl">
+                  <p className="text-[10px] font-bold text-brand uppercase tracking-wider mb-1">Gift Note</p>
+                  <p className="text-sm font-medium text-brand-deep italic">"{order.gift_note}"</p>
+                </div>
+              )}
+              {order.engraving && (
+                <div className="bg-gray-50 p-4 rounded-2xl border border-black/5">
+                  <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Custom Engraving</p>
+                  <p className="text-sm font-medium text-brand-deep">"{order.engraving}"</p>
+                </div>
+              )}
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-gold">✓</span>
-              <p className="text-sm">Photo proof before dispatch</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-gold">✓</span>
-              <p className="text-sm">Your identity stays private unless you choose to reveal it</p>
-            </div>
-          </div>
+          )}
         </div>
+
+        {/* Guarantees */}
+        <div className="bg-gradient-to-br from-brand-dark to-brand rounded-3xl p-6 space-y-3 shadow-sm">
+          {[
+            "On-time delivery or it's free",
+            "Photo proof before dispatch",
+            "Identity stays private unless revealed",
+          ].map((text, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <CheckCircle className="w-4 h-4 text-gold flex-shrink-0" />
+              <p className="text-sm text-white/90 font-medium">{text}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </div>
   );

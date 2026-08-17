@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { MessageCircle, CheckCircle, Share2, Loader2 } from "lucide-react";
+
 
 interface SendTrackLinkButtonProps {
   orderId: string;
@@ -56,12 +58,12 @@ export default function SendTrackLinkButton({
 
   if (sent) {
     return (
-      <div className="bg-brand-forest/5 border border-brand-forest/20 rounded-2xl p-4 flex items-center gap-3">
-        <span className="text-xl">✅</span>
+      <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-3xl p-5 flex items-start gap-4">
+        <CheckCircle className="w-5 h-5 text-[#25D366] flex-shrink-0 mt-0.5" />
         <div>
-          <p className="text-xs font-semibold text-brand-forest">Tracking link sent!</p>
-          <p className="text-xs text-brand-muted">
-            {recipientName} can now track their gift via WhatsApp.
+          <p className="text-sm font-bold text-brand-deep">Tracking link sent!</p>
+          <p className="text-xs text-brand-muted mt-1">
+            {recipientName} can now track their gift status via WhatsApp.
           </p>
         </div>
       </div>
@@ -69,29 +71,39 @@ export default function SendTrackLinkButton({
   }
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-surface-border">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-lg">📱</span>
-        <p className="text-sm font-semibold">Send tracking link to {recipientName}</p>
+    <div className="bg-white rounded-3xl p-5 border border-black/6 shadow-sm">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 bg-brand/5 rounded-full flex items-center justify-center flex-shrink-0">
+          <Share2 className="w-5 h-5 text-brand" />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-brand-deep">Send Tracking Link</p>
+          <p className="text-xs text-brand-muted mt-0.5">Let {recipientName} track their gift</p>
+        </div>
       </div>
-      <p className="text-xs text-brand-muted mb-4">
-        Let them track their gift status — without seeing the price or your identity (if anonymous mode is on).
+      <p className="text-xs text-brand-muted mb-5 leading-relaxed">
+        They will see the gift status and package photo, but the price and your identity (if anonymous) remain hidden.
       </p>
+      
       {error && (
-        <p className="text-xs text-brand-coral mb-3">{error}</p>
+        <p className="text-xs text-red-600 mb-3 bg-red-50 p-2 rounded-lg font-medium">{error}</p>
       )}
+      
       <button
         onClick={handleSend}
         disabled={sending}
-        className="w-full py-2.5 bg-[#25D366] text-white rounded-xl text-xs font-semibold hover:bg-[#1fb855] transition-colors disabled:opacity-50"
+        className="w-full py-3 bg-[#25D366] text-white rounded-xl text-sm font-bold shadow-sm hover:bg-[#1fb855] hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
       >
         {sending ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
             Sending...
-          </span>
+          </>
         ) : (
-          "Send via WhatsApp"
+          <>
+            <MessageCircle className="w-4 h-4" />
+            Send via WhatsApp
+          </>
         )}
       </button>
     </div>

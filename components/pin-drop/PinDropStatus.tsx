@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { MapPin, Navigation, Clock, CheckCircle, Map } from "lucide-react";
 
 const PinPreviewMap = dynamic(() => import("./PinPreviewMap"), { ssr: false });
+
 
 interface PinDropStatusProps {
   orderId: string;
@@ -37,16 +39,18 @@ export default function PinDropStatus({
   if (!pinRequested) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-surface-border overflow-hidden">
+    <div className="bg-white rounded-3xl border border-black/6 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className={`px-5 py-4 ${hasPin ? "bg-brand-forest/5 border-b border-brand-forest/10" : "bg-brand/5 border-b border-brand/10"}`}>
+      <div className={`px-5 py-4 ${hasPin ? "bg-green-50 border-b border-green-100" : "bg-brand/5 border-b border-brand/10"}`}>
         <div className="flex items-center gap-3">
-          <span className="text-2xl">{hasPin ? "✅" : "📍"}</span>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${hasPin ? "bg-green-100" : "bg-brand/10"}`}>
+            {hasPin ? <CheckCircle className="w-5 h-5 text-green-600" /> : <MapPin className="w-5 h-5 text-brand" />}
+          </div>
           <div>
-            <p className="text-sm font-semibold">
+            <p className="text-sm font-bold text-brand-deep">
               {hasPin ? "Pin dropped" : "Waiting for pin"}
             </p>
-            <p className="text-xs text-brand-muted">
+            <p className="text-xs text-brand-muted mt-0.5">
               {hasPin
                 ? `${recipientName} has shared their delivery location.`
                 : `${recipientName} hasn't dropped their pin yet.`}
@@ -57,17 +61,14 @@ export default function PinDropStatus({
 
       {/* Pin details */}
       {hasPin && (
-        <div className="px-5 py-4 space-y-3">
+        <div className="px-5 py-5 space-y-4">
           {/* Landmark */}
           {deliveryLandmark && (
             <div className="flex items-start gap-3">
-              <svg className="w-4 h-4 text-brand mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>
+              <Navigation className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-brand-muted">Landmark</p>
-                <p className="text-sm font-medium">{deliveryLandmark}</p>
+                <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Landmark</p>
+                <p className="text-sm font-medium text-brand-deep mt-0.5">{deliveryLandmark}</p>
               </div>
             </div>
           )}
@@ -75,12 +76,10 @@ export default function PinDropStatus({
           {/* Time window */}
           {deliveryTimeWindow && (
             <div className="flex items-start gap-3">
-              <svg className="w-4 h-4 text-brand mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+              <Clock className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-xs text-brand-muted">Preferred time</p>
-                <p className="text-sm font-medium">
+                <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Preferred time</p>
+                <p className="text-sm font-medium text-brand-deep mt-0.5">
                   {deliveryTimeWindow.charAt(0).toUpperCase() + deliveryTimeWindow.slice(1)}
                   {TIME_LABELS[deliveryTimeWindow] && ` (${TIME_LABELS[deliveryTimeWindow]})`}
                 </p>
@@ -90,12 +89,10 @@ export default function PinDropStatus({
 
           {/* Coordinates */}
           <div className="flex items-start gap-3">
-            <svg className="w-4 h-4 text-brand mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
+            <MapPin className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-xs text-brand-muted">Coordinates</p>
-              <p className="text-sm font-medium">
+              <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Coordinates</p>
+              <p className="text-sm font-medium text-brand-deep mt-0.5">
                 {deliveryLat.toFixed(6)}, {deliveryLng.toFixed(6)}
               </p>
             </div>
@@ -104,17 +101,15 @@ export default function PinDropStatus({
           {/* Map toggle */}
           <button
             onClick={() => setShowMap(!showMap)}
-            className="w-full mt-2 py-2.5 bg-gray-50 hover:bg-gray-100 border border-surface-border rounded-xl text-xs font-semibold text-brand transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-2 py-3 bg-gray-50 hover:bg-gray-100 border border-black/5 rounded-xl text-xs font-bold text-brand-deep transition-all flex items-center justify-center gap-2"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-            </svg>
+            <Map className="w-4 h-4" />
             {showMap ? "Hide map" : "View on map"}
           </button>
 
           {/* Map preview */}
           {showMap && (
-            <div className="rounded-xl overflow-hidden border border-surface-border h-48">
+            <div className="rounded-xl overflow-hidden border border-black/5 h-48 shadow-sm">
               <PinPreviewMap lat={deliveryLat} lng={deliveryLng} />
             </div>
           )}
