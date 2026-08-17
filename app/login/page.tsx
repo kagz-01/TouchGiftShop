@@ -17,7 +17,7 @@ export default function LoginPage() {
   const [activeChannel, setActiveChannel] = useState<"sms" | "whatsapp">("sms");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const router = useRouter();
   const supabase = createClient();
 

@@ -117,7 +117,7 @@ export default function SurpriseFeaturePage() {
       </div>
 
       {/* ── Feature pills ── */}
-      <div className="max-w-3xl mx-auto px-4 -mt-6 mb-12">
+      <div className="relative z-20 max-w-3xl mx-auto px-4 -mt-6 mb-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { icon: <EyeOff className="w-4 h-4 text-brand" />, label: "Stay anonymous" },

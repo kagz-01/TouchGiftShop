@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import MapPinPicker from "./MapPinPicker";
 import SurpriseToggle from "./SurpriseToggle";
+import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
 import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2 } from "lucide-react";
@@ -42,6 +43,8 @@ export default function CheckoutForm({
   const [usePinDrop, setUsePinDrop] = useState(false);
   const [senderPhone, setSenderPhone] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
+  const [senderCountry, setSenderCountry] = useState<string>("+254");
+  const [recipientCountry, setRecipientCountry] = useState<string>("+254");
   const [recipientName, setRecipientName] = useState("");
   const [senderPhoneError, setSenderPhoneError] = useState<string | null>(null);
   const [recipientPhoneError, setRecipientPhoneError] = useState<string | null>(null);
@@ -56,13 +59,21 @@ export default function CheckoutForm({
     } catch { setDeliveryZone(null); }
   }, []);
 
-  function normalizePhone(v: string) {
+  function normalizePhone(v: string, countryCode?: string) {
     const clean = v.replace(/[^0-9+]/g, "");
     if (!clean) return v;
     if (clean.startsWith("+")) return clean;
-    if (clean.startsWith("07")) return "+254" + clean.slice(1);
-    if (clean.startsWith("7") && clean.length === 9) return "+254" + clean;
-    if (clean.startsWith("254")) return "+" + clean;
+    // Local Kenyan mobile numbers (07xx or 7xxx)
+    if (countryCode === "+254") {
+      if (clean.startsWith("07")) return "+254" + clean.slice(1);
+      if (clean.startsWith("7") && clean.length === 9) return "+254" + clean;
+      if (clean.startsWith("254")) return "+" + clean;
+    }
+    // Fallback: prefix selected country code if provided
+    if (countryCode) {
+      const noLead = clean.replace(/^0+/, "");
+      return countryCode + noLead;
+    }
     return clean;
   }
 
@@ -193,6 +204,12 @@ export default function CheckoutForm({
   /* ── Main Form ── */
   return (
     <form onSubmit={handleSubmit}>
+      {/* Screen-reader live region for form status and phone validation errors */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {step === "error" && errorMessage ? `Error: ${errorMessage}` : ""}
+        {senderPhoneError ? ` ${senderPhoneError}` : ""}
+        {recipientPhoneError ? ` ${recipientPhoneError}` : ""}
+      </div>
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
 
         {/* ── LEFT: Form ── */}
@@ -213,18 +230,23 @@ export default function CheckoutForm({
             </div>
             <div>
               <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Your phone number</label>
-              <input
-                name="senderPhone" required type="tel"
-                value={senderPhone}
-                onChange={(e) => setSenderPhone(e.target.value)}
-                onBlur={(e) => setSenderPhone(normalizePhone(e.target.value.trim()))}
-                placeholder="07XX XXX XXX"
-                maxLength={15}
-                className={`${INPUT} ${senderPhoneError ? "!border-red-400 !bg-red-50" : ""}`}
-              />
+              <div className="flex items-center gap-3">
+                <div className="shrink-0">
+                  <CountrySelect value={senderCountry} onChange={setSenderCountry} className="!w-28" ariaLabel="sender country code" />
+                </div>
+                <input
+                  name="senderPhone" required type="tel"
+                  value={senderPhone}
+                  onChange={(e) => setSenderPhone(e.target.value)}
+                  onBlur={(e) => setSenderPhone(normalizePhone(e.target.value.trim(), senderCountry))}
+                  placeholder="07XX XXX XXX"
+                  maxLength={15}
+                  className={`${INPUT} flex-1 ${senderPhoneError ? "!border-red-400 !bg-red-50" : ""}`}
+                />
+              </div>
               {senderPhoneError
                 ? <p className="text-xs text-red-500 mt-1.5">{senderPhoneError}</p>
-                : <p className="text-[11px] text-brand-muted mt-1.5">We auto-format Kenyan numbers to +254</p>
+                : <p className="text-[11px] text-brand-muted mt-1.5">We auto-format common local numbers to the selected country code</p>
               }
             </div>
           </div>
@@ -244,15 +266,20 @@ export default function CheckoutForm({
             </div>
             <div>
               <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Their phone number</label>
-              <input
-                name="recipientPhone" required type="tel"
-                value={recipientPhone}
-                onChange={(e) => setRecipientPhone(e.target.value)}
-                onBlur={(e) => setRecipientPhone(normalizePhone(e.target.value.trim()))}
-                placeholder="07XX XXX XXX"
-                maxLength={15}
-                className={`${INPUT} ${recipientPhoneError ? "!border-red-400 !bg-red-50" : ""}`}
-              />
+              <div className="flex items-center gap-3">
+                <div className="shrink-0">
+                  <CountrySelect value={recipientCountry} onChange={setRecipientCountry} className="!w-28" ariaLabel="recipient country code" />
+                </div>
+                <input
+                  name="recipientPhone" required type="tel"
+                  value={recipientPhone}
+                  onChange={(e) => setRecipientPhone(e.target.value)}
+                  onBlur={(e) => setRecipientPhone(normalizePhone(e.target.value.trim(), recipientCountry))}
+                  placeholder="07XX XXX XXX"
+                  maxLength={15}
+                  className={`${INPUT} flex-1 ${recipientPhoneError ? "!border-red-400 !bg-red-50" : ""}`}
+                />
+              </div>
               {recipientPhoneError && <p className="text-xs text-red-500 mt-1.5">{recipientPhoneError}</p>}
             </div>
           </div>

@@ -3,30 +3,33 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
 
-function normalizePhoneServer(phone: unknown): string | null {
+function normalizePhoneServer(phone: unknown, countryCode?: string): string | null {
   if (!phone || typeof phone !== "string") return null;
   const raw = phone.trim();
   if (!raw) return null;
 
-  // If already E.164 with +, validate digit count
+  // If already E.164 with +, validate digit count and return
   if (raw.startsWith("+")) {
     const digits = raw.replace(/\D/g, "");
     if (digits.length >= 8 && digits.length <= 15) return raw;
     return null;
   }
 
-  // Strip non-digits
   const digits = raw.replace(/\D/g, "");
-  // Kenyan local formats
-  if (digits.startsWith("0") && digits.length === 10) {
-    // 07XXXXXXXX -> +2547XXXXXXXX
-    return "+254" + digits.slice(1);
+  // If a countryCode is supplied (e.g. +254), try to apply local rules for common prefixes
+  if (countryCode === "+254") {
+    if (digits.startsWith("0") && digits.length === 10) return "+254" + digits.slice(1);
+    if ((digits.startsWith("7") || digits.startsWith("1")) && digits.length === 9) return "+254" + digits;
+    if (digits.startsWith("254") && digits.length === 12) return "+" + digits;
   }
-  if ((digits.startsWith("7") || digits.startsWith("1")) && digits.length === 9) {
-    return "+254" + digits;
-  }
-  if (digits.startsWith("254") && digits.length === 12) {
-    return "+" + digits;
+
+  // Generic heuristics: strip leading zeros then prefix country code if present
+  const noLeading = digits.replace(/^0+/, "");
+  if (countryCode && noLeading.length >= 6 && noLeading.length <= 15) {
+    // Ensure we don't double-prefix if user included country code digits
+    const ccDigits = countryCode.replace(/\D/g, "");
+    if (noLeading.startsWith(ccDigits)) return "+" + noLeading;
+    return countryCode + noLeading;
   }
 
   // Fallback: if looks like an international number (8-15 digits) return with +
@@ -52,6 +55,8 @@ const OrderInput = z.object({
   engraving: z.string().optional(),
   quantity: z.number().int().positive().default(1),
   shippingFee: z.number().default(0),
+  senderCountry: z.string().optional(),
+  recipientCountry: z.string().optional(),
 });
 
 // GET /api/orders — fetch orders for the currently authenticated user only.
@@ -97,8 +102,8 @@ export async function POST(req: Request) {
   const input = parsed.data;
 
   // Normalize and validate phone numbers on the server-side as a safety net.
-  const normalizedSender = normalizePhoneServer(input.senderPhone);
-  const normalizedRecipient = normalizePhoneServer(input.recipientPhone);
+  const normalizedSender = normalizePhoneServer(input.senderPhone, input.senderCountry ?? "+254");
+  const normalizedRecipient = normalizePhoneServer(input.recipientPhone, input.recipientCountry ?? "+254");
   if (!normalizedSender || !normalizedRecipient) {
     return NextResponse.json({ error: "Invalid phone number format." }, { status: 400 });
   }

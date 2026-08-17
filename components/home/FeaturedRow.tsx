@@ -107,7 +107,7 @@ export default function FeaturedRow({
             <Link
               key={`${product.id}-1`}
               href={`/product/${product.id}`}
-              className="flex-shrink-0 w-[160px] md:w-[200px] group/card whitespace-normal"
+              className="flex items-center gap-3 p-2 pr-5 bg-white border border-black/5 rounded-full hover:shadow-card transition-all duration-300 hover:-translate-y-0.5 shrink-0 w-[240px] md:w-[280px]"
               style={marqueeDirection ? {} : {
                 transitionDelay: `${80 + i * 60}ms`,
                 transitionProperty: "opacity, transform",
@@ -117,30 +117,27 @@ export default function FeaturedRow({
                 transform: visible ? "translateY(0)" : "translateY(22px)",
               }}
             >
-              <div className="relative aspect-[4/5] bg-blush rounded-2xl overflow-hidden mb-2 shadow-sm group-hover/card:shadow-card transition-shadow duration-300">
+              <div className="relative w-12 h-12 md:w-14 md:h-14 bg-blush rounded-full overflow-hidden shrink-0 shadow-inner">
                 {product.image_url ? (
                   <Image
                     src={product.image_url}
                     alt={product.name}
                     fill
-                    sizes="200px"
-                    className="object-cover transition-transform duration-500 group-hover/card:scale-105"
+                    sizes="60px"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-warm">
-                    <Gift className="w-10 h-10 text-brand/40" />
+                    <Gift className="w-5 h-5 text-brand/40" />
                   </div>
                 )}
-                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover/card:opacity-100 transition-all duration-300 translate-y-2 group-hover/card:translate-y-0">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-xl px-3 py-1.5 text-center text-xs font-semibold text-brand shadow-soft">
-                    Quick View
-                  </div>
-                </div>
               </div>
-              <h3 className="font-display font-semibold text-xs md:text-sm line-clamp-2 group-hover/card:text-brand transition-colors mb-0.5">
-                {product.name}
-              </h3>
-              <p className="text-gold font-bold text-xs md:text-sm">{formatKsh(product.price)}</p>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-display font-bold text-[13px] md:text-sm text-brand-deep truncate transition-colors">
+                  {product.name}
+                </h3>
+                <p className="text-gold font-bold text-xs md:text-sm mt-0.5">{formatKsh(product.price)}</p>
+              </div>
             </Link>
           ))}
         </div>
@@ -155,32 +152,29 @@ export default function FeaturedRow({
               <Link
                 key={`${product.id}-2`}
                 href={`/product/${product.id}`}
-                className="flex-shrink-0 w-[160px] md:w-[200px] group/card whitespace-normal"
+                className="flex items-center gap-3 p-2 pr-5 bg-white border border-black/5 rounded-full hover:shadow-card transition-all duration-300 hover:-translate-y-0.5 shrink-0 w-[240px] md:w-[280px]"
               >
-                <div className="relative aspect-[4/5] bg-blush rounded-2xl overflow-hidden mb-2 shadow-sm group-hover/card:shadow-card transition-shadow duration-300">
+                <div className="relative w-12 h-12 md:w-14 md:h-14 bg-blush rounded-full overflow-hidden shrink-0 shadow-inner">
                   {product.image_url ? (
                     <Image
                       src={product.image_url}
                       alt={product.name}
                       fill
-                      sizes="200px"
-                      className="object-cover transition-transform duration-500 group-hover/card:scale-105"
+                      sizes="60px"
+                      className="object-cover"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-warm">
-                      <Gift className="w-10 h-10 text-brand/40" />
+                      <Gift className="w-5 h-5 text-brand/40" />
                     </div>
                   )}
-                  <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover/card:opacity-100 transition-all duration-300 translate-y-2 group-hover/card:translate-y-0">
-                    <div className="bg-white/95 backdrop-blur-sm rounded-xl px-3 py-1.5 text-center text-xs font-semibold text-brand shadow-soft">
-                      Quick View
-                    </div>
-                  </div>
                 </div>
-                <h3 className="font-display font-semibold text-xs md:text-sm line-clamp-2 group-hover/card:text-brand transition-colors mb-0.5">
-                  {product.name}
-                </h3>
-                <p className="text-gold font-bold text-xs md:text-sm">{formatKsh(product.price)}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display font-bold text-[13px] md:text-sm text-brand-deep truncate transition-colors">
+                    {product.name}
+                  </h3>
+                  <p className="text-gold font-bold text-xs md:text-sm mt-0.5">{formatKsh(product.price)}</p>
+                </div>
               </Link>
             ))}
           </div>

@@ -59,6 +59,7 @@ export interface Product {
   description: string | null;
   price: number;
   image_url: string | null;
+  category?: string;
   images?: string[];
   is_personalizable: boolean;
   in_stock: boolean;
