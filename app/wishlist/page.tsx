@@ -115,7 +115,7 @@ export default function WishlistPage() {
             Browse our gifts and tap the heart icon on any product to create your wishlist and add items!
           </p>
           <Link
-            href="/"
+            href="/shop"
             className="inline-flex items-center gap-2 rounded-2xl bg-brand px-6 py-3 text-sm font-bold text-white hover:bg-brand-dark transition-colors shadow-button"
           >
             Browse Gifts →
@@ -189,7 +189,7 @@ export default function WishlistPage() {
             <p className="text-sm text-brand-muted mb-6">
               Tap the heart icon on any gift to add it here!
             </p>
-            <Link href="/" className="btn-brand px-6 py-3 rounded-xl font-bold text-sm shadow-button">
+            <Link href="/shop" className="btn-brand px-6 py-3 rounded-xl font-bold text-sm shadow-button">
               Browse Gifts
             </Link>
           </div>

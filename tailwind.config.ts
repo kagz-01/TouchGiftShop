@@ -76,7 +76,8 @@ const config: Config = {
         "typewriter": "typewriter 3s steps(40) forwards",
         "blink": "blink 0.7s step-end infinite",
         "spin-slow": "spin 3s linear infinite",
-        "marquee": "marquee 25s linear infinite",
+        "marquee": "marquee 40s linear infinite",
+        "marquee-reverse": "marqueeReverse 40s linear infinite",
       },
       keyframes: {
         fadeIn: {
@@ -146,6 +147,10 @@ const config: Config = {
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-100%)" },
+        },
+        marqueeReverse: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
         },
       },
       backgroundImage: {

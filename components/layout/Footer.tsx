@@ -112,7 +112,7 @@ export default function Footer() {
 
       {/* Main Footer */}
       <div className="bg-gradient-dark text-white">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-10">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Brand + Newsletter */}
             <div className="md:col-span-4 space-y-5">

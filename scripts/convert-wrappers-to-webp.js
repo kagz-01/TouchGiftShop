@@ -74,11 +74,14 @@ async function convertFile(filePath, opts) {
     }
 
     await sharp(filePath)
-      .resize({ width: 900, height: 900, fit: 'inside', withoutEnlargement: true })
+      .rotate()
+      .resize({ width: 1400, height: 1400, fit: 'inside', withoutEnlargement: true })
+      .modulate({ brightness: 1.06, saturation: 1.08, contrast: 1.08 })
+      .sharpen({ sigma: 1.0, m1: 1.2, m2: 18, x1: 1.5, y2: 2.2 })
       .withMetadata()
       .webp({
-        quality: 82,
-        alphaQuality: 90,
+        quality: 88,
+        alphaQuality: 100,
         effort: 6,
         smartSubsample: true,
         ...webpOptions,

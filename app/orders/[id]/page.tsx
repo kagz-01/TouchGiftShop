@@ -103,7 +103,7 @@ export default async function OrderDetailPage({
               <p className="text-sm text-brand-muted mb-3">
                 The M-Pesa payment was not confirmed. You can try ordering again.
               </p>
-              <Link href="/" className="btn-brand inline-flex items-center gap-2 text-sm">
+              <Link href="/shop" className="btn-brand inline-flex items-center gap-2 text-sm">
                 Browse gifts
               </Link>
             </div>

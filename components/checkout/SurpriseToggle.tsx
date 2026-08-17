@@ -1,11 +1,47 @@
 "use client";
 
 import { useState } from "react";
+import { EyeOff, PhoneOff, Info } from "lucide-react";
 
 interface SurpriseToggleProps {
   onChange?: (value: { anonymous: boolean; dontCall: boolean }) => void;
   defaultAnonymous?: boolean;
   defaultDontCall?: boolean;
+}
+
+function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-pressed={on}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ${on ? "bg-brand" : "bg-gray-200"}`}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${on ? "translate-x-6" : "translate-x-1"}`}
+      />
+    </button>
+  );
+}
+
+function InfoPopover({ text, open, onToggle }: { text: string; open: boolean; onToggle: () => void }) {
+  return (
+    <div className="relative inline-block">
+      <button
+        type="button"
+        onClick={(e) => { e.preventDefault(); onToggle(); }}
+        className="w-4 h-4 text-brand-muted hover:text-brand transition-colors"
+      >
+        <Info className="w-4 h-4" />
+      </button>
+      {open && (
+        <div className="absolute left-full top-0 ml-2 z-20 w-52 bg-brand-deep text-white text-[11px] leading-relaxed rounded-xl px-3 py-2.5 shadow-lg">
+          {text}
+          <div className="absolute right-full top-3 w-0 h-0 border-t-4 border-b-4 border-r-4 border-t-transparent border-b-transparent border-r-brand-deep" />
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function SurpriseToggle({
@@ -29,123 +65,70 @@ export default function SurpriseToggle({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-surface-border overflow-hidden">
+    <div className="bg-white rounded-3xl border border-black/6 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-brand-dark to-brand px-5 py-4">
-        <div className="flex items-center gap-2">
-          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
-          <div>
-            <h3 className="text-sm font-bold text-white">Surprise Safeguard</h3>
-            <p className="text-[11px] text-white/70">Keep the surprise intact</p>
-          </div>
+      <div className="bg-gradient-to-r from-brand-dark to-brand px-6 py-4 flex items-center gap-3">
+        <div className="w-9 h-9 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+          <EyeOff className="w-4.5 h-4.5 text-white" />
+        </div>
+        <div>
+          <h3 className="text-sm font-bold text-white">Surprise Safeguard</h3>
+          <p className="text-[11px] text-white/65">Keep the surprise completely intact</p>
         </div>
       </div>
 
-      <div className="p-5 space-y-4">
+      <div className="p-5 space-y-5">
         {/* Don't call toggle */}
-        <div className="space-y-2">
-          <label className="flex items-start justify-between gap-3 cursor-pointer">
-            <div className="flex-1">
-              <p className="text-sm font-semibold flex items-center gap-2">
-                Don&apos;t call or message the recipient
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); setShowDontCallInfo(!showDontCallInfo); }}
-                  className="w-4 h-4 rounded-full bg-brand/10 text-brand text-[10px] font-bold flex items-center justify-center hover:bg-brand/20 transition-colors"
-                >
-                  ?
-                </button>
-              </p>
-              <p className="text-xs text-brand-muted mt-0.5">
-                Riders will use gate guards, reception, or landmarks instead of calling.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => updateDontCall(!dontCall)}
-              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                dontCall ? "bg-brand" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
-                  dontCall ? "translate-x-6" : "translate-x-1"
-                }`}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <PhoneOff className="w-3.5 h-3.5 text-brand-muted flex-shrink-0" />
+              <p className="text-sm font-semibold text-brand-deep">Don&apos;t call the recipient</p>
+              <InfoPopover
+                text="Rider uses gate guards, reception, or the delivery landmark instead of calling. Perfect for birthday surprises."
+                open={showDontCallInfo}
+                onToggle={() => { setShowDontCallInfo(!showDontCallInfo); setShowAnonymousInfo(false); }}
               />
-            </button>
-          </label>
-
-          {showDontCallInfo && (
-            <div className="bg-brand/5 border border-brand/10 rounded-xl p-3 text-xs text-brand-muted space-y-1 animate-fade-in">
-              <p>When enabled:</p>
-              <ul className="list-disc list-inside space-y-0.5 ml-1">
-                <li>Rider won&apos;t call the recipient before arrival</li>
-                <li>Rider will use the delivery landmark or pin location</li>
-                <li>Perfect for birthday surprises and secret gifts</li>
-              </ul>
             </div>
-          )}
+            <p className="text-xs text-brand-muted ml-5 leading-relaxed">
+              Rider uses landmarks or guards — no calls to the recipient.
+            </p>
+          </div>
+          <Toggle on={dontCall} onToggle={() => updateDontCall(!dontCall)} />
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-surface-border" />
+        <div className="border-t border-black/5" />
 
         {/* Anonymous toggle */}
-        <div className="space-y-2">
-          <label className="flex items-start justify-between gap-3 cursor-pointer">
-            <div className="flex-1">
-              <p className="text-sm font-semibold flex items-center gap-2">
-                Anonymous Mode
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); setShowAnonymousInfo(!showAnonymousInfo); }}
-                  className="w-4 h-4 rounded-full bg-brand/10 text-brand text-[10px] font-bold flex items-center justify-center hover:bg-brand/20 transition-colors"
-                >
-                  ?
-                </button>
-              </p>
-              <p className="text-xs text-brand-muted mt-0.5">
-                Hide your name and the gift price from the recipient.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => updateAnonymous(!anonymous)}
-              className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
-                anonymous ? "bg-brand" : "bg-gray-300"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${
-                  anonymous ? "translate-x-6" : "translate-x-1"
-                }`}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-0.5">
+              <EyeOff className="w-3.5 h-3.5 text-brand-muted flex-shrink-0" />
+              <p className="text-sm font-semibold text-brand-deep">Anonymous Mode</p>
+              <InfoPopover
+                text="The recipient sees 'Someone sent you a gift!' — no name, no price. Your gift note still shows."
+                open={showAnonymousInfo}
+                onToggle={() => { setShowAnonymousInfo(!showAnonymousInfo); setShowDontCallInfo(false); }}
               />
-            </button>
-          </label>
-
-          {showAnonymousInfo && (
-            <div className="bg-brand/5 border border-brand/10 rounded-xl p-3 text-xs text-brand-muted space-y-1 animate-fade-in">
-              <p>When enabled, the recipient will see:</p>
-              <ul className="list-disc list-inside space-y-0.5 ml-1">
-                <li>&ldquo;Someone sent you a gift!&rdquo; instead of your name</li>
-                <li>No price shown anywhere</li>
-                <li>The gift note still appears with your message</li>
-              </ul>
             </div>
-          )}
+            <p className="text-xs text-brand-muted ml-5 leading-relaxed">
+              Your name and the price are completely hidden.
+            </p>
+          </div>
+          <Toggle on={anonymous} onToggle={() => updateAnonymous(!anonymous)} />
         </div>
 
-        {/* Active state badges */}
+        {/* Active badges */}
         {(dontCall || anonymous) && (
           <div className="flex flex-wrap gap-2 pt-1">
             {dontCall && (
-              <span className="inline-flex items-center gap-1 bg-brand/10 text-brand text-[11px] font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[11px] font-semibold px-3 py-1.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
                 No-contact delivery
               </span>
             )}
             {anonymous && (
-              <span className="inline-flex items-center gap-1 bg-brand/10 text-brand text-[11px] font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[11px] font-semibold px-3 py-1.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
                 Anonymous sender
               </span>

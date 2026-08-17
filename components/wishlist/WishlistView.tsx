@@ -92,7 +92,7 @@ export default function WishlistView({ slug }: { slug: string }) {
           <span className="text-6xl block mb-4">🔍</span>
           <p className="font-display text-xl font-semibold mb-2">Wishlist not found</p>
           <p className="text-brand-muted mb-6">This wishlist doesn&apos;t exist or has been removed.</p>
-          <Link href="/" className="inline-flex px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors">
+          <Link href="/shop" className="inline-flex px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors">
             Back to Shop
           </Link>
         </div>

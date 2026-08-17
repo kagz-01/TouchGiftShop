@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { formatKsh } from "@/lib/utils";
 import type { Product } from "@/lib/types";
+import { X, Minus, Plus, Sparkles, Zap } from "lucide-react";
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const router = useRouter();
@@ -14,11 +15,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [personalization, setPersonalization] = useState("");
   const [giftNote, setGiftNote] = useState("");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const total = product.price * quantity;
+  useEffect(() => { setMounted(true); }, []);
 
   // Listen for Live Customizer saves
   useEffect(() => {
@@ -35,13 +32,11 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
   // Lock body scroll when drawer is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
+
+  const total = product.price * quantity;
 
   function handleCheckout() {
     const params = new URLSearchParams({
@@ -49,145 +44,154 @@ export default function AddToCartButton({ product }: { product: Product }) {
       amount: total.toString(),
       qty: quantity.toString(),
     });
-    if (product.is_personalizable && personalization) {
-      params.set("engraving", personalization);
-    }
-    if (giftNote) {
-      params.set("note", giftNote);
-    }
+    if (product.is_personalizable && personalization) params.set("engraving", personalization);
+    if (giftNote) params.set("note", giftNote);
     router.push(`/checkout?${params.toString()}`);
   }
 
+  const INPUT =
+    "w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm text-brand-deep placeholder:text-brand-muted/50 focus:outline-none focus:border-brand focus:bg-white transition-all";
+
   return (
     <>
+      {/* Primary CTA */}
       <button
+        id="add-to-cart-btn"
         onClick={() => setIsOpen(true)}
         disabled={!product.in_stock}
-        className="w-full rounded-2xl bg-brand hover:bg-brand-dark text-white py-4 font-semibold text-lg transition-colors disabled:opacity-50"
+        className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
-        Send this gift &mdash; {formatKsh(product.price)}
+        Send this Gift &mdash; {formatKsh(product.price)}
       </button>
-
-      <p className="text-sm text-center text-brand-muted mt-3">
-        Same-day delivery in Nairobi • Next-day nationwide
+      <p className="text-xs text-center text-brand-muted">
+        Same-day Nairobi · Next-day nationwide
       </p>
 
       {mounted && createPortal(
         <>
-          {/* Backdrop overlay */}
+          {/* Backdrop */}
           {isOpen && (
-            <div 
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
+            <div
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] transition-opacity"
               onClick={() => setIsOpen(false)}
             />
           )}
 
           {/* Slide-out Drawer */}
-          <div 
-            className={`fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-white shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
-              isOpen ? 'translate-x-0' : 'translate-x-full'
-            }`}
+          <div
+            className={`fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-[#FAF8F5] shadow-2xl flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
             aria-hidden={!isOpen}
           >
-            <div className="flex items-center justify-between p-6 border-b border-surface-border">
-              <h2 className="font-display font-bold text-xl text-brand-deep">Gift Details</h2>
-              <button 
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-black/6">
+              <div>
+                <h2 className="font-display font-bold text-brand-deep">Gift Details</h2>
+                <p className="text-[11px] text-brand-muted">Personalise before sending</p>
+              </div>
+              <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-brand-muted hover:text-brand-deep transition-colors"
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-brand-muted hover:bg-brand/5 hover:text-brand transition-all"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Selected Product Summary */}
-              <div className="flex items-center gap-4 p-4 bg-blush rounded-2xl">
-                <div className="w-16 h-16 bg-surface-secondary rounded-xl flex items-center justify-center text-2xl">
+            {/* Drawer Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-4">
+              {/* Product summary */}
+              <div className="bg-white rounded-2xl border border-black/6 p-4 flex items-center gap-4 shadow-sm">
+                <div className="w-14 h-14 bg-brand/8 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
                   🎁
                 </div>
-                <div>
-                  <p className="font-semibold text-brand-deep">{product.name}</p>
-                  <p className="text-gold font-bold">{formatKsh(product.price)}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-brand-deep text-sm truncate">{product.name}</p>
+                  <p className="text-gold font-bold text-base mt-0.5">{formatKsh(product.price)}</p>
                 </div>
               </div>
 
-              <div className="space-y-4 border-t border-surface-border pt-6">
-                {/* Quantity */}
+              {/* Quantity */}
+              <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-semibold text-brand-deep">Quantity</label>
-                  <div className="flex items-center bg-surface-secondary rounded-xl">
+                  <div>
+                    <p className="text-sm font-semibold text-brand-deep">Quantity</p>
+                    <p className="text-[11px] text-brand-muted mt-0.5">For multiple recipients</p>
+                  </div>
+                  <div className="flex items-center bg-gray-50 border border-black/8 rounded-xl overflow-hidden">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-4 py-2 text-brand-deep font-medium hover:text-brand transition-colors"
+                      className="px-3 py-2 text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors"
                     >
-                      -
+                      <Minus className="w-4 h-4" />
                     </button>
-                    <span className="px-2 py-2 text-sm font-semibold min-w-[2.5rem] text-center text-brand-deep">
+                    <span className="px-4 py-2 text-sm font-bold text-brand-deep min-w-[3rem] text-center">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="px-4 py-2 text-brand-deep font-medium hover:text-brand transition-colors"
+                      className="px-3 py-2 text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors"
                     >
-                      +
+                      <Plus className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
+              </div>
 
-                {/* Personalization */}
-                {product.is_personalizable && (
-                  <div className="pt-2">
-                    <label className="block text-sm font-semibold text-brand-deep mb-2">
-                      Personalization <span className="text-brand-muted font-normal">(Optional)</span>
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Name, date, or short message..."
-                      value={personalization}
-                      onChange={(e) => setPersonalization(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border border-surface-border focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all"
-                    />
+              {/* Personalisation */}
+              {product.is_personalizable && (
+                <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-gold" />
+                    <p className="text-sm font-semibold text-brand-deep">Personalisation <span className="text-brand-muted font-normal">(optional)</span></p>
                   </div>
-                )}
-
-                {/* Gift Note */}
-                <div className="pt-2">
-                  <label className="block text-sm font-semibold text-brand-deep mb-2">
-                    Complimentary Gift Note
-                  </label>
-                  <textarea
-                    placeholder="Write a sweet message..."
-                    value={giftNote}
-                    onChange={(e) => setGiftNote(e.target.value)}
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-surface-border focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition-all resize-none"
+                  <input
+                    type="text"
+                    placeholder="Name, date, or short message…"
+                    value={personalization}
+                    onChange={(e) => setPersonalization(e.target.value)}
+                    className={INPUT}
                   />
                 </div>
+              )}
 
-                {/* Upsell Mock */}
-                <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-4 mt-6">
-                  <p className="text-sm font-semibold text-brand-deep mb-1">Make it extra special ✨</p>
-                  <p className="text-xs text-brand-muted mb-3">Add some premium chocolates for KSh 950?</p>
-                  <button className="text-xs font-semibold text-brand bg-white px-4 py-2 rounded-full border border-orange-100 hover:border-brand transition-colors">
-                    + Add Chocolates
-                  </button>
+              {/* Gift note */}
+              <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm space-y-3">
+                <div>
+                  <p className="text-sm font-semibold text-brand-deep">Gift Note</p>
+                  <p className="text-[11px] text-brand-muted mt-0.5">Printed and attached to the gift</p>
                 </div>
+                <textarea
+                  placeholder="Write a heartfelt message…"
+                  value={giftNote}
+                  onChange={(e) => setGiftNote(e.target.value)}
+                  rows={3}
+                  className={`${INPUT} resize-none`}
+                />
+              </div>
+
+              {/* Delivery note */}
+              <div className="flex items-center gap-3 bg-white border border-black/6 rounded-2xl p-3.5 shadow-sm">
+                <Zap className="w-4 h-4 text-gold-dark flex-shrink-0" />
+                <p className="text-xs text-brand-muted">
+                  Order before <span className="font-semibold text-brand-deep">2 PM</span> for same-day Nairobi delivery.
+                  Next-day available nationwide.
+                </p>
               </div>
             </div>
 
-            {/* Sticky Footer */}
-            <div className="p-6 border-t border-surface-border bg-surface-secondary/50">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-brand-muted font-medium">Subtotal</span>
+            {/* Drawer Footer */}
+            <div className="p-5 border-t border-black/5 bg-white space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-brand-muted">
+                  {quantity} × {formatKsh(product.price)}
+                </span>
                 <span className="font-bold text-xl text-brand-deep">{formatKsh(total)}</span>
               </div>
               <button
+                id="proceed-checkout-btn"
                 onClick={handleCheckout}
-                className="w-full rounded-2xl bg-brand hover:bg-brand-dark text-white py-4 font-semibold text-lg transition-colors shadow-button"
+                className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all"
               >
-                Proceed to Checkout
+                Proceed to Checkout →
               </button>
             </div>
           </div>

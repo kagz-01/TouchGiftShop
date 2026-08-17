@@ -6,7 +6,7 @@ const STEPS = [
     icon: <Gift className="w-9 h-9 text-brand" />,
     title: "Pick a Gift",
     description: "Browse our curated collection or let AI find the perfect one for you.",
-    cta: { label: "Browse Gifts", href: "/" },
+    cta: { label: "Browse Gifts", href: "/shop" },
   },
   {
     icon: <MapPin className="w-9 h-9 text-brand" />,

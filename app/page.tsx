@@ -12,6 +12,7 @@ import {
 import OccasionPills from "@/components/home/OccasionPills";
 import FeaturedRow from "@/components/home/FeaturedRow";
 import SurpriseSomeone from "@/components/home/SurpriseSomeone";
+import SuperpowersStrip from "@/components/home/SuperpowersStrip";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -90,6 +91,12 @@ export default async function HomePage() {
       <SolutionSection />
 
       {/* ═══════════════════════════════════════════
+          CHAPTER 1.5: TouchGift Superpowers (USPs)
+          ═══════════════════════════════════════════ */}
+      <SurpriseSomeone />
+      <SuperpowersStrip />
+
+      {/* ═══════════════════════════════════════════
           CHAPTER 2: Trust — Social Proof
           ═══════════════════════════════════════════ */}
       <SocialProof />
@@ -123,6 +130,7 @@ export default async function HomePage() {
           products={trending}
           viewAllHref="/shop"
           viewAllLabel="See all"
+          marqueeDirection="left"
         />
         <FeaturedRow
           title="Last Minute? We Got You"
@@ -131,6 +139,7 @@ export default async function HomePage() {
           viewAllHref="/shop?budget=under-5k"
           viewAllLabel="See all"
           tint="warm"
+          marqueeDirection="right"
         />
         <FeaturedRow
           title="Edible Gifts They'll Love"
@@ -138,15 +147,16 @@ export default async function HomePage() {
           products={edible}
           viewAllHref="/shop?category=chocolates-sweets-gifts"
           viewAllLabel="See all"
+          marqueeDirection="left"
         />
       </div>
 
       {/* ═══════════════════════════════════════════
-          INTERSTITIAL A — Gift Quiz mid-page break
+          INTERSTITIAL A — AI Gift Finder mid-page break
           ═══════════════════════════════════════════ */}
       <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-10" delay={0}>
         <a
-          href="/gift-quiz"
+          href="/gift-finder"
           className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep rounded-3xl p-8 md:p-10 text-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
         >
           {/* Animated orb */}
@@ -186,6 +196,7 @@ export default async function HomePage() {
           viewAllHref="/shop?category=wellness-self-care-hampers"
           viewAllLabel="See all"
           tint="cool"
+          marqueeDirection="right"
         />
         <FeaturedRow
           title="Hampers & Gift Sets"
@@ -193,6 +204,7 @@ export default async function HomePage() {
           products={hampers}
           viewAllHref="/shop?category=hampers-gift-sets"
           viewAllLabel="See all"
+          marqueeDirection="left"
         />
         <FeaturedRow
           title="Make it Personal"
@@ -201,13 +213,11 @@ export default async function HomePage() {
           viewAllHref="/shop?category=personalized-gifts"
           viewAllLabel="See all"
           tint="warm"
+          marqueeDirection="right"
         />
       </div>
 
-      {/* ═══════════════════════════════════════════
-          INTERSTITIAL B — Surprise Someone feature
-          ═══════════════════════════════════════════ */}
-      <SurpriseSomeone />
+      {/* (SurpriseSomeone moved to Chapter 1) */}
 
       {/* ═══════════════════════════════════════════
           CHAPTER 5: The Budget Closer
@@ -219,6 +229,7 @@ export default async function HomePage() {
           products={under2k}
           viewAllHref="/shop?budget=under-5k"
           viewAllLabel="See all"
+          marqueeDirection="left"
         />
       </div>
 

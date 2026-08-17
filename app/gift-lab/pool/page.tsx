@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import BackToHome from "@/components/ui/BackToHome";
+import { ArrowLeft, Users, Zap, Share2, CheckCircle } from "lucide-react";
 
 const OCCASIONS = [
   { id: "wedding", label: "Wedding", emoji: "💒", defaultTarget: 15000 },
@@ -29,7 +29,7 @@ export default function CreatePoolPage() {
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   );
 
-  const handleOccasionSelect = (occ: typeof OCCASIONS[0]) => {
+  const handleOccasionSelect = (occ: (typeof OCCASIONS)[0]) => {
     setSelectedOccasion(occ.id);
     if (!title) setTitle(`${occ.label} Gift Pool`);
     setTargetAmount(occ.defaultTarget);
@@ -64,83 +64,110 @@ export default function CreatePoolPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="max-w-lg mx-auto px-4 md:px-8 py-12">
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <Link href="/gift-lab" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Gift Lab
+    <div className="min-h-screen bg-[#FAF8F5]">
+      {/* ── Header ── */}
+      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
+          <Link
+            href="/gift-lab"
+            className="w-9 h-9 rounded-xl flex items-center justify-center text-brand-muted hover:bg-brand/5 hover:text-brand transition-all"
+          >
+            <ArrowLeft className="w-5 h-5" />
           </Link>
-          <BackToHome />
+          <div className="flex items-center gap-2.5 flex-1">
+            <div className="w-9 h-9 bg-gradient-to-br from-gold/30 to-amber-100 rounded-xl flex items-center justify-center">
+              <Users className="w-4.5 h-4.5 text-gold-dark" />
+            </div>
+            <div>
+              <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Pool a Gift</h1>
+              <p className="text-[11px] text-brand-muted mt-0.5">Chip in together · M-Pesa friendly</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        {/* How it works — quick banner */}
+        <div className="flex items-start gap-3 mb-8 bg-white rounded-2xl p-4 border border-black/6 shadow-sm">
+          <div className="w-10 h-10 bg-brand/8 rounded-xl flex items-center justify-center flex-shrink-0">
+            <Zap className="w-5 h-5 text-brand" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-brand-deep mb-2">Here's how it works</p>
+            <div className="space-y-1.5">
+              {[
+                { icon: <Share2 className="w-3.5 h-3.5" />, text: "Create a pool and get a shareable link" },
+                { icon: <Users className="w-3.5 h-3.5" />, text: "Friends open the link and contribute via M-Pesa" },
+                { icon: <CheckCircle className="w-3.5 h-3.5" />, text: "Once the target is hit, the gift is ordered automatically" },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-2 text-[11px] text-brand-muted">
+                  <span className="text-brand/60">{item.icon}</span>
+                  {item.text}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="text-center mb-10">
-          <span className="text-5xl block mb-4">Pool</span>
-          <h1 className="font-display text-3xl font-bold mb-3">Pool a Gift</h1>
-          <p className="text-brand-muted max-w-md mx-auto">
-            Start a group fund. Share the link — everyone contributes via M-Pesa.
-            Once the target is hit, the gift is ordered automatically.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {step === "error" && (
-            <div className="bg-brand-coral/10 border border-brand-coral/30 rounded-2xl p-4 text-sm text-brand-coral">
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-600">
               {errorMessage}
             </div>
           )}
 
-          {/* Occasion */}
-          <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-4">
-            <label className="text-sm font-semibold">What&apos;s the occasion?</label>
+          {/* Occasion selector */}
+          <div className="bg-white rounded-2xl p-6 border border-black/6 shadow-sm">
+            <label className="text-sm font-semibold text-brand-deep block mb-1">What&apos;s the occasion?</label>
+            <p className="text-xs text-brand-muted mb-4">We&apos;ll suggest a gift target amount for you</p>
             <div className="grid grid-cols-3 gap-2">
               {OCCASIONS.map((occ) => (
                 <button
                   key={occ.id}
                   type="button"
                   onClick={() => handleOccasionSelect(occ)}
-                  className={`p-3 rounded-xl border-2 text-center transition-all ${
+                  className={`p-3.5 rounded-xl border-2 text-center transition-all duration-200 ${
                     selectedOccasion === occ.id
-                      ? "border-brand bg-brand/5 shadow-ribbon"
-                      : "border-surface-border hover:border-brand/30"
+                      ? "border-brand bg-brand/5 shadow-sm"
+                      : "border-black/8 hover:border-brand/30 hover:bg-brand/3"
                   }`}
                 >
-                  <span className="text-2xl block mb-1">{occ.emoji}</span>
-                  <span className="text-[11px] font-medium text-brand-muted">{occ.label}</span>
+                  <span className="text-2xl block mb-1.5">{occ.emoji}</span>
+                  <span className={`text-[11px] font-medium ${selectedOccasion === occ.id ? "text-brand" : "text-brand-muted"}`}>
+                    {occ.label}
+                  </span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Details */}
-          <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-4">
+          <div className="bg-white rounded-2xl p-6 border border-black/6 shadow-sm space-y-5">
             <div>
-              <label className="text-sm font-semibold mb-1 block">Pool title</label>
+              <label className="text-sm font-semibold text-brand-deep block mb-1">Pool title</label>
               <p className="text-xs text-brand-muted mb-2">Give it a name your friends will recognize</p>
               <input
                 required
                 minLength={3}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Amina's Wedding Gift"
-                className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
+                placeholder="e.g. Amina's Wedding Gift 💍"
+                className="w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:bg-white transition-all"
               />
             </div>
 
             <div>
-              <label className="text-sm font-semibold mb-2 block">Target amount (KSh)</label>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <label className="text-sm font-semibold text-brand-deep block mb-2">Target amount (KSh)</label>
+              <div className="flex flex-wrap gap-2 mb-3">
                 {PRESET_AMOUNTS.map((amt) => (
                   <button
                     key={amt}
                     type="button"
                     onClick={() => setTargetAmount(amt)}
-                    className={`px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                    className={`px-3.5 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
                       targetAmount === amt
-                        ? "border-brand bg-brand/5 text-brand"
-                        : "border-surface-border text-brand-muted hover:border-brand/30"
+                        ? "border-brand bg-brand/8 text-brand"
+                        : "border-black/8 text-brand-muted hover:border-brand/30"
                     }`}
                   >
                     {amt.toLocaleString()}
@@ -154,12 +181,12 @@ export default function CreatePoolPage() {
                 value={targetAmount || ""}
                 onChange={(e) => setTargetAmount(Number(e.target.value))}
                 placeholder="Or enter a custom amount"
-                className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
+                className="w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:bg-white transition-all"
               />
             </div>
 
             <div>
-              <label className="text-sm font-semibold mb-1 block">Closes on</label>
+              <label className="text-sm font-semibold text-brand-deep block mb-1">Pool closes on</label>
               <p className="text-xs text-brand-muted mb-2">Contributions stop after this date</p>
               <input
                 type="date"
@@ -167,43 +194,30 @@ export default function CreatePoolPage() {
                 value={expiresAt}
                 min={new Date().toISOString().split("T")[0]}
                 onChange={(e) => setExpiresAt(e.target.value)}
-                className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
+                className="w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:bg-white transition-all"
               />
             </div>
           </div>
 
-          {/* How it works */}
-          <div className="bg-white rounded-2xl p-6 border border-surface-border">
-            <h3 className="text-sm font-semibold mb-4">How it works</h3>
-            <div className="space-y-3">
-              {[
-                { icon: "1️⃣", text: "Create a pool and get a shareable link" },
-                { icon: "2️⃣", text: "Friends open the link and contribute via M-Pesa" },
-                { icon: "3️⃣", text: "Track progress on the live progress bar" },
-                { icon: "4️⃣", text: "Once target is hit, the gift is ordered automatically" },
-              ].map((step, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <span className="text-lg">{step.icon}</span>
-                  <p className="text-xs text-brand-muted pt-0.5">{step.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
           <button
+            id="create-pool-btn"
             type="submit"
             disabled={step === "submitting" || !title || !targetAmount}
-            className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-2xl font-bold text-sm shadow-gold hover:shadow-gold-lg transition-all disabled:opacity-50"
+            className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-2xl font-bold text-sm shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
           >
             {step === "submitting" ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-brand-deep/30 border-t-brand-deep rounded-full animate-spin" />
-                Creating pool...
+                Creating your pool…
               </span>
             ) : (
               "Create Pool & Get Shareable Link ✨"
             )}
           </button>
+
+          <p className="text-center text-[11px] text-brand-muted/60">
+            No sign-up required · Contributors pay via M-Pesa · Funds held securely by TouchGift
+          </p>
         </form>
       </div>
     </div>

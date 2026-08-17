@@ -3,6 +3,38 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
 
+function normalizePhoneServer(phone: unknown): string | null {
+  if (!phone || typeof phone !== "string") return null;
+  const raw = phone.trim();
+  if (!raw) return null;
+
+  // If already E.164 with +, validate digit count
+  if (raw.startsWith("+")) {
+    const digits = raw.replace(/\D/g, "");
+    if (digits.length >= 8 && digits.length <= 15) return raw;
+    return null;
+  }
+
+  // Strip non-digits
+  const digits = raw.replace(/\D/g, "");
+  // Kenyan local formats
+  if (digits.startsWith("0") && digits.length === 10) {
+    // 07XXXXXXXX -> +2547XXXXXXXX
+    return "+254" + digits.slice(1);
+  }
+  if ((digits.startsWith("7") || digits.startsWith("1")) && digits.length === 9) {
+    return "+254" + digits;
+  }
+  if (digits.startsWith("254") && digits.length === 12) {
+    return "+" + digits;
+  }
+
+  // Fallback: if looks like an international number (8-15 digits) return with +
+  if (digits.length >= 8 && digits.length <= 15) return "+" + digits;
+
+  return null;
+}
+
 const OrderInput = z.object({
   productId: z.string().uuid(),
   totalAmount: z.number().positive(),
@@ -64,6 +96,13 @@ export async function POST(req: Request) {
   }
   const input = parsed.data;
 
+  // Normalize and validate phone numbers on the server-side as a safety net.
+  const normalizedSender = normalizePhoneServer(input.senderPhone);
+  const normalizedRecipient = normalizePhoneServer(input.recipientPhone);
+  if (!normalizedSender || !normalizedRecipient) {
+    return NextResponse.json({ error: "Invalid phone number format." }, { status: 400 });
+  }
+
   // Link the order to the authenticated user if they are logged in.
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
@@ -76,9 +115,9 @@ export async function POST(req: Request) {
       total_amount: input.totalAmount,
       status: "pending_payment",
       sender_name: input.senderName,
-      sender_phone: input.senderPhone,
+      sender_phone: normalizedSender,
       recipient_name: input.recipientName,
-      recipient_phone: input.recipientPhone,
+      recipient_phone: normalizedRecipient,
       is_anonymous: input.isAnonymous,
       dont_call_recipient: input.dontCallRecipient,
       delivery_lat: input.deliveryLat ?? null,
@@ -107,9 +146,9 @@ export async function POST(req: Request) {
             total_amount: input.totalAmount,
             status: "pending_payment",
             sender_name: input.senderName,
-            sender_phone: input.senderPhone,
+            sender_phone: normalizedSender,
             recipient_name: input.recipientName,
-            recipient_phone: input.recipientPhone,
+            recipient_phone: normalizedRecipient,
             is_anonymous: input.isAnonymous,
             dont_call_recipient: input.dontCallRecipient,
             delivery_lat: input.deliveryLat ?? null,

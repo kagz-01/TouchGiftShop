@@ -156,7 +156,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
       <div className="bg-gradient-to-br from-brand-dark via-brand to-brand/80 px-4 pt-10 pb-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
+            <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
@@ -365,7 +365,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                     <div className="text-center py-12 bg-white rounded-2xl border border-surface-border">
                       <ShoppingBag className="w-12 h-12 mx-auto text-brand/20 mb-3" />
                       <p className="font-semibold text-brand-deep mb-1">No orders yet</p>
-                      <Link href="/" className="text-sm text-brand hover:underline">Browse gifts →</Link>
+                      <Link href="/shop" className="text-sm text-brand hover:underline">Browse gifts →</Link>
                     </div>
                   ) : (
                     <div className="space-y-3">

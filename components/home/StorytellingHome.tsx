@@ -182,7 +182,7 @@ export function HeroCinematic() {
       <HeroWrappers />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <div className="relative z-40 text-center px-4 max-w-4xl mx-auto">
         {/* Typewriter delivery note */}
         <div className={`inline-flex flex-col items-center bg-white/10 backdrop-blur-md rounded-full px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
           <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
@@ -199,21 +199,23 @@ export function HeroCinematic() {
 
         {/* Main headline */}
         <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          Send something
-          <br />
-          <span className="relative inline-block">
-            <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
-              they&apos;ll remember
+          <span className="relative inline-block px-3 py-1 rounded-md bg-black/12 backdrop-blur-sm" style={{ textShadow: '0 6px 26px rgba(0,0,0,0.55)', WebkitTextStroke: '0.6px rgba(0,0,0,0.35)' }}>
+            Send something
+            <br />
+            <span className="relative inline-block">
+              <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
+                they&apos;ll remember
+              </span>
+              <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
+                <defs>
+                  <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
+                    <stop offset="0%" stopColor="#D4A853" />
+                    <stop offset="100%" stopColor="#E8C97A" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </span>
-            <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
-              <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
-              <defs>
-                <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
-                  <stop offset="0%" stopColor="#D4A853" />
-                  <stop offset="100%" stopColor="#E8C97A" />
-                </linearGradient>
-              </defs>
-            </svg>
           </span>
         </h1>
 
@@ -248,6 +250,26 @@ export function HeroCinematic() {
           </Link>
         </div>
 
+        {/* Quick Action Pills */}
+        <div className={`mt-8 flex flex-wrap items-center justify-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+            <Target className="w-3.5 h-3.5 text-coral" />
+            AI Gift Match
+          </Link>
+          <Link href="/gift-lab" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+            <ShoppingBag className="w-3.5 h-3.5 text-gold" />
+            Custom Hampers
+          </Link>
+          <Link href="/gift-lab/pool" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+            <span className="text-[14px]">👥</span>
+            Pool a Gift
+          </Link>
+          <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+            <EyeOff className="w-3.5 h-3.5 text-brand-light" />
+            Send Anonymously
+          </Link>
+        </div>
+
         {/* Scroll indicator removed - using live wrappers for pointer interaction instead */}
       </div>
     </section>
@@ -259,38 +281,37 @@ export function HeroCinematic() {
    ══════════════════════════════════════════════════════════ */
 export function ProblemSection() {
   const problems = [
-    { emoji: <Clock className="w-8 h-8 text-coral" />, text: "Last-minute panic — what do I even get them?" },
-    { emoji: <PackageX className="w-8 h-8 text-coral" />, text: "Generic gifts that miss the mark completely" },
-    { emoji: <MapPin className="w-8 h-8 text-coral" />, text: "Don't know their exact address" },
-    { emoji: <Banknote className="w-8 h-8 text-coral" />, text: "Hidden delivery fees at checkout" },
+    { emoji: <Clock className="w-8 h-8 text-coral" />, text: "Last-minute rush? We handle same-day deliveries seamlessly." },
+    { emoji: <PackageX className="w-8 h-8 text-coral" />, text: "Avoid generic items with our curated, premium selections." },
+    { emoji: <MapPin className="w-8 h-8 text-coral" />, text: "No exact address? We'll coordinate directly with the recipient." },
+    { emoji: <Banknote className="w-8 h-8 text-coral" />, text: "Transparent pricing. Never any hidden fees at checkout." },
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-white relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-white relative overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
-            We get it
+            The Gifting Dilemma
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-6 leading-tight">
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6 leading-tight">
             Finding the perfect gift
             <br />
-            <span className="text-brand-muted">shouldn&apos;t feel like this</span>
+            <span className="text-brand-muted">is often harder than it should be</span>
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-16">
-            We&apos;ve all been there — scrolling through generic catalogs, settling for
-            something &ldquo;good enough,&rdquo; hoping they like it.
+          <p className="text-brand-muted text-center max-w-xl mx-auto mb-12">
+            Endless scrolling, generic options, and delivery anxiety. You want to make them feel special, but the process gets in the way.
           </p>
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="left">
-              <div className="flex items-start gap-4 p-6 bg-blush/50 rounded-2xl border border-surface-border hover:border-brand/20 transition-all duration-300 hover:shadow-soft group">
+              <div className="flex items-start gap-4 p-5 bg-blush/30 rounded-2xl border border-surface-border hover:border-brand/20 transition-all duration-300 hover:shadow-soft group">
                 <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
                   {p.emoji}
                 </div>
@@ -309,7 +330,7 @@ export function ProblemSection() {
    ══════════════════════════════════════════════════════════ */
 export function SolutionSection() {
   return (
-    <section className="py-24 md:py-32 bg-gradient-dark relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-gradient-dark relative overflow-hidden">
       {/* Decorative */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
@@ -322,15 +343,14 @@ export function SolutionSection() {
         </Reveal>
 
         <Reveal delay={200}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-            Meet <span className="text-gradient">TouchGift</span>
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
+            Experience <span className="text-gradient">TouchGift</span>
           </h2>
         </Reveal>
 
         <Reveal delay={300}>
-          <p className="text-xl text-white/60 max-w-2xl mx-auto mb-16 leading-relaxed">
-            We curate the perfect gift, wrap it beautifully, and deliver it
-            same-day — so you can focus on the moment, not the logistics.
+          <p className="text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
+            We meticulously curate the finest gifts, wrap them elegantly, and ensure a pristine same-day delivery — transforming a chore into a memorable experience.
           </p>
         </Reveal>
 
@@ -400,7 +420,7 @@ export function StoryHowItWorks() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-blush/30 relative">
+    <section className="py-16 md:py-20 bg-blush/30 relative">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -408,8 +428,8 @@ export function StoryHowItWorks() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-16">
-            How it works
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-12">
+            The Experience
           </h2>
         </Reveal>
 
@@ -472,10 +492,10 @@ export function SocialProof() {
 
   const marqueeReviews = [...displayReviews, ...displayReviews];
   return (
-    <section className="py-24 md:py-32 bg-white">
+    <section className="py-16 md:py-20 bg-white">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
           {[
             { target: 2400, suffix: "+", label: "Gifts sent" },
             { target: 98, suffix: "%", label: "On-time delivery" },
@@ -587,7 +607,7 @@ export function OccasionsGrid() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-gradient-warm">
+    <section className="py-16 md:py-20 bg-gradient-warm">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -595,12 +615,12 @@ export function OccasionsGrid() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-4">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-4">
             Who are you gifting?
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-12">
+          <p className="text-brand-muted text-center max-w-xl mx-auto mb-10">
             Every occasion deserves something special. Pick a category and
             we&apos;ll show you curated gifts that fit.
           </p>
@@ -637,7 +657,7 @@ export function OccasionsGrid() {
    ══════════════════════════════════════════════════════════ */
 export function FinalCTA() {
   return (
-    <section className="py-24 md:py-32 bg-brand-deep relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-brand-deep relative overflow-hidden">
       {/* Animated orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-10 left-[20%] w-72 h-72 bg-brand/30 rounded-full blur-[100px] animate-pulse-soft" />
@@ -650,17 +670,16 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <h2 className="font-display text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
-            Ready to send
+          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            Ready to craft
             <br />
-            <span className="text-gradient">some joy?</span>
+            <span className="text-gradient">an unforgettable moment?</span>
           </h2>
         </Reveal>
 
         <Reveal delay={300}>
-          <p className="text-xl text-white/50 max-w-lg mx-auto mb-10">
-            No accounts needed. No stress. Just pick, pay, and
-            we&apos;ll handle the rest.
+          <p className="text-xl text-white/70 max-w-lg mx-auto mb-8">
+            Skip the stress. Choose a luxury curated gift, and we will handle the delivery with utmost care.
           </p>
         </Reveal>
 
@@ -687,7 +706,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={500}>
-          <div className="mt-12 flex items-center justify-center gap-8 text-white/30 text-sm">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-white/30 text-sm">
             <span className="flex items-center gap-2">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -710,7 +729,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={600}>
-          <div className="mt-10 flex items-center justify-center gap-5">
+          <div className="mt-8 flex items-center justify-center gap-5">
             {[
               { href: "https://www.facebook.com/share/185SzXR7nv/", label: "Facebook", path: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" },
               { href: "https://www.instagram.com/touchgiftshop?igsh=MXR2MWV5NGp3dnoxcg==", label: "Instagram", path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" },

@@ -1,5 +1,12 @@
 import CheckoutForm from "@/components/checkout/CheckoutForm";
 import Link from "next/link";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Checkout | TouchGift",
+  description: "Complete your gift order securely with M-Pesa or card.",
+};
 
 export default async function CheckoutPage({
   searchParams,
@@ -15,28 +22,40 @@ export default async function CheckoutPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      {/* Top bar */}
-      <div className="bg-white border-b border-surface-border px-4 md:px-8 py-4 flex items-center justify-between">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Back to Shop
-        </Link>
-        <div className="flex items-center gap-2">
-          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-          </svg>
-          <span className="text-xs text-brand-muted font-medium">Secured by PesaPal</span>
+    <div className="min-h-screen bg-[#FAF8F5]">
+      {/* ── Top bar ── */}
+      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+          <Link
+            href="/shop"
+            className="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Shop</span>
+          </Link>
+
+          {/* Breadcrumb */}
+          <div className="hidden md:flex items-center gap-1.5 text-xs text-brand-muted">
+            <span className="text-brand-deep font-semibold">Cart</span>
+            <span>/</span>
+            <span className="text-brand font-semibold">Checkout</span>
+            <span>/</span>
+            <span>Payment</span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <span className="text-xs text-brand-muted font-medium">Secured by PesaPal</span>
+          </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-8 md:py-12">
+      {/* ── Main content ── */}
+      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6 md:py-10">
+        <div className="mb-6">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">Complete your order</h1>
+          <p className="text-sm text-brand-muted mt-1">Fill in the details below to send your gift.</p>
+        </div>
         <CheckoutForm
           productId={params.productId ?? ""}
           amount={Number(params.amount ?? 0)}

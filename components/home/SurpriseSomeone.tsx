@@ -32,13 +32,13 @@ export default function SurpriseSomeone() {
 
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link
-                  href="/"
+                  href="/shop"
                   className="px-5 py-2.5 bg-gold text-brand-deep rounded-xl font-bold text-sm shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 transition-all"
                 >
                   Send a Surprise
                 </Link>
                 <Link
-                  href="/delivery"
+                  href="/surprise"
                   className="px-5 py-2.5 bg-white/10 text-white border border-white/20 rounded-xl font-semibold text-sm hover:bg-white/20 transition-all"
                 >
                   How it Works
