@@ -29,7 +29,7 @@ const CATEGORIES = [
 
 export default function OccasionFilter() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const active = searchParams.get("category") ?? "";
 
   function setCategory(slug: string) {

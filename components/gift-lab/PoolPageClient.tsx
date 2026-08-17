@@ -28,7 +28,7 @@ interface Contribution {
 }
 
 export default function PoolPage({ slug }: { slug: string }) {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const justPaid = searchParams.get("paid") === "true";
 
   const [pool, setPool] = useState<Pool | null>(null);

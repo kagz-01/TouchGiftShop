@@ -30,7 +30,7 @@ const QUICK_LINKS = [
 
 export default function CategoryTabs() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftFade, setShowLeftFade] = useState(false);
   const [showRightFade, setShowRightFade] = useState(false);

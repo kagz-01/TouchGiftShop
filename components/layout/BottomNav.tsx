@@ -53,7 +53,7 @@ const TABS: Array<{ href: string; label: string; Icon: ({ active }: { active: bo
 ];
 
 export default function BottomNav() {
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   return (
     <nav

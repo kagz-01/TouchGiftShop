@@ -70,7 +70,7 @@ const SOCIALS = [
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname()!;
 
   // Define which paths should show the footer. 
   // We keep it off app-like pages (dashboard, shop, product, checkout, etc) for a cleaner UX.

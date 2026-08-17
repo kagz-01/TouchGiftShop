@@ -43,7 +43,7 @@ export default function RemindersDashboard() {
   const [loading, setLoading] = useState(true);
   
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
 
   const [activeTab, setActiveTab] = useState<"occasions" | "subscriptions">("occasions");
   const [showOccasionForm, setShowOccasionForm] = useState(false);

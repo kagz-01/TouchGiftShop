@@ -34,7 +34,7 @@ const CATEGORIES = [
 
 export default function OccasionPills() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const active = searchParams.get("category") ?? "";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
