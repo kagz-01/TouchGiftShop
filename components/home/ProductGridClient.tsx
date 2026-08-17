@@ -18,7 +18,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
-      <div className="gift-card">
+      <div className="bg-white rounded-3xl border border-black/6 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300">
         {/* Image */}
         <div className="relative aspect-[4/5] bg-blush overflow-hidden">
           {product.image_url ? (
@@ -27,7 +27,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
               alt={product.name}
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover transition-transform duration-500 group-hover:scale-108"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-4xl">
@@ -35,13 +35,13 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             </div>
           )}
 
-          {/* Overlay on hover */}
+          {/* Hover overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-          {/* Quick view button */}
+          {/* Quick view */}
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 text-center text-sm font-semibold text-brand shadow-soft">
-              Quick View
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 text-center text-xs font-bold text-brand shadow-sm">
+              View Gift →
             </div>
           </div>
 
@@ -58,29 +58,27 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             ))}
           </div>
 
-          {/* Stock badge */}
+          {/* Out of stock */}
           {!product.in_stock && (
-            <div className="absolute top-3 right-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg">
-              Out of stock
+            <div className="absolute top-3 right-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg font-medium">
+              Sold out
             </div>
           )}
         </div>
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-display font-semibold text-sm mb-1 line-clamp-2 group-hover:text-brand transition-colors">
+          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-brand-deep group-hover:text-brand transition-colors leading-snug">
             {product.name}
           </h3>
-          <p className="text-gold font-bold">{formatKsh(product.price)}</p>
-
-          {product.is_personalizable && (
-            <div className="mt-2 flex items-center gap-1 text-xs text-brand-muted">
-              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              <span>Personalizable</span>
-            </div>
-          )}
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
+            {product.is_personalizable && (
+              <span className="text-[9px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
+                ✏️ Custom
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Link>

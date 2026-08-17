@@ -92,7 +92,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                 ? "You don't have any ongoing deliveries at the moment." 
                 : "You don't have any past orders yet."}
             </p>
-            <Link href="/" className="btn-brand inline-flex items-center gap-2 text-sm">
+            <Link href="/shop" className="btn-brand inline-flex items-center gap-2 text-sm">
               Browse gifts
             </Link>
           </div>

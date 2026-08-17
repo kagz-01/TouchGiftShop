@@ -133,7 +133,7 @@ export default function TrendingNow({ products }: TrendingNowProps) {
         {/* View all */}
         <div className="text-center mt-6">
           <Link
-            href="/"
+            href="/shop"
             className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand hover:text-brand-dark transition-colors"
           >
             View all gifts

@@ -2,8 +2,23 @@ import { Suspense } from "react";
 import Link from "next/link";
 import ProductGrid from "@/components/home/ProductGrid";
 import OccasionPills from "@/components/home/OccasionPills";
-import TrustSignals from "@/components/home/TrustSignals";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
+import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shop Gifts | TouchGift — Same-Day Delivery Kenya",
+  description:
+    "Browse 700+ curated gifts. Filter by occasion, budget, or let our AI find the perfect match. Same-day delivery across Nairobi.",
+};
+
+const BUDGET_FILTERS = [
+  { label: "Under 1k", value: "0-1000" },
+  { label: "1k – 3k", value: "1000-3000" },
+  { label: "3k – 6k", value: "3000-6000" },
+  { label: "6k – 10k", value: "6000-10000" },
+  { label: "10k+", value: "10000-999999" },
+];
 
 export default async function ShopPage({
   searchParams,
@@ -13,35 +28,141 @@ export default async function ShopPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      {/* Header */}
-      <div className="bg-white border-b border-surface-border px-4 py-4">
-        <div className="w-full max-w-[1600px] mx-auto">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-3">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Home
+    <div className="min-h-screen bg-[#FAF8F5]">
+      {/* ── Sticky header ── */}
+      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors flex-shrink-0"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Home</span>
           </Link>
-          <h1 className="font-display text-2xl md:text-3xl font-bold">All Gifts</h1>
-          <p className="text-sm text-brand-muted mt-1">Browse our full collection of 700+ products</p>
+
+          <div className="flex-1 max-w-lg mx-auto hidden md:block">
+            <div className="relative">
+              <Sparkles className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-muted" />
+              <Link
+                href="/gift-finder"
+                className="flex items-center w-full bg-gray-50 border border-black/8 rounded-xl pl-10 pr-4 py-2.5 text-sm text-brand-muted hover:border-brand/30 hover:bg-white transition-all"
+              >
+                Ask AI to find the perfect gift…
+              </Link>
+            </div>
+          </div>
+
+          <Link
+            href="/gift-finder"
+            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-brand/8 text-brand rounded-xl text-xs font-bold hover:bg-brand hover:text-white transition-all"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            AI Match
+          </Link>
         </div>
       </div>
 
-      {/* Occasion pills */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-6">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pt-8 pb-4">
+        {/* Hero heading */}
+        <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
+          <div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">
+              {params.category
+                ? params.category.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+                : "All Gifts"}
+            </h1>
+            <p className="text-sm text-brand-muted mt-1">
+              Browse our curated collection · Same-day Nairobi delivery
+            </p>
+          </div>
+
+          {/* Quick feature links */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link
+              href="/gift-lab/build-hamper"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white border border-black/8 rounded-xl text-xs font-semibold text-brand-muted hover:border-brand/30 hover:text-brand transition-all shadow-sm"
+            >
+              <ShoppingBag className="w-3.5 h-3.5" />
+              Build Hamper
+            </Link>
+            <Link
+              href="/gift-lab/pool"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white border border-black/8 rounded-xl text-xs font-semibold text-brand-muted hover:border-brand/30 hover:text-brand transition-all shadow-sm"
+            >
+              <Users className="w-3.5 h-3.5" />
+              Pool a Gift
+            </Link>
+            <Link
+              href="/surprise"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white border border-black/8 rounded-xl text-xs font-semibold text-brand-muted hover:border-brand/30 hover:text-brand transition-all shadow-sm"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Send Anonymously
+            </Link>
+          </div>
+        </div>
+
+        {/* ── Budget filter pills ── */}
+        <Suspense fallback={null}>
+          <BudgetFilter activeBudget={params.budget} />
+        </Suspense>
+      </div>
+
+      {/* ── Occasion pills ── */}
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-4">
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
       </div>
 
-      {/* Full product grid */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-8 space-y-8">
+      {/* ── Product grid ── */}
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-16">
         <Suspense fallback={<ProductGridSkeleton />}>
           <ProductGrid searchParams={Promise.resolve(params)} />
         </Suspense>
+      </div>
 
-        <TrustSignals />
+      {/* ── Bottom AI nudge ── */}
+      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-16">
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light rounded-3xl p-8 flex items-center justify-between gap-6 flex-wrap">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full translate-x-16 -translate-y-16" />
+          <div className="relative z-10">
+            <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-1">Can't decide?</p>
+            <h3 className="font-display text-xl font-bold text-white mb-1">Let AI find the perfect gift.</h3>
+            <p className="text-white/60 text-sm">Answer 3 quick questions — get a personalised list in seconds.</p>
+          </div>
+          <Link
+            href="/gift-finder"
+            className="relative z-10 flex-shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gold text-brand-deep font-bold rounded-2xl hover:shadow-gold hover:-translate-y-0.5 transition-all"
+          >
+            <Sparkles className="w-4 h-4" />
+            Try AI Gift Match
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Budget filter client component lives here as a simple server component ── */
+function BudgetFilter({ activeBudget }: { activeBudget?: string }) {
+  return (
+    <div className="flex items-center gap-2 flex-wrap mb-2">
+      <span className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider flex-shrink-0">Budget:</span>
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+        {BUDGET_FILTERS.map((f) => (
+          <Link
+            key={f.value}
+            href={activeBudget === f.value ? "/shop" : `/shop?budget=${f.value}`}
+            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+              activeBudget === f.value
+                ? "bg-brand text-white shadow-sm"
+                : "bg-white border border-black/8 text-brand-muted hover:border-brand/30 hover:text-brand"
+            }`}
+          >
+            {f.label}
+          </Link>
+        ))}
       </div>
     </div>
   );
