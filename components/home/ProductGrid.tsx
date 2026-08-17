@@ -26,7 +26,7 @@ async function getProducts(category?: string, budget?: string): Promise<{ produc
     }
   }
 
-  const sort = getDefaultSort(category);
+  const sort = getDefaultSort(category ?? null);
   if (sort) {
     query = query.order(sort.field, { ascending: sort.ascending });
   } else {
@@ -40,7 +40,7 @@ async function getProducts(category?: string, budget?: string): Promise<{ produc
   
   if (error || !data) return { products: [], hasMore: false, count: 0 };
   
-  const allProducts = data;
+  const allProducts = data as unknown as Product[];
   const hasMore = allProducts.length > limit;
   const products = hasMore ? allProducts.slice(0, limit) : allProducts;
 
