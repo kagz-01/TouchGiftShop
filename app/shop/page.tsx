@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import ProductGrid from "@/components/home/ProductGrid";
-import OccasionPills from "@/components/home/OccasionPills";
+import ShopFilterBar from "@/components/home/ShopFilterBar";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag } from "lucide-react";
 import type { Metadata } from "next";
@@ -12,13 +12,7 @@ export const metadata: Metadata = {
     "Browse 700+ curated gifts. Filter by occasion, budget, or let our AI find the perfect match. Same-day delivery across Nairobi.",
 };
 
-const BUDGET_FILTERS = [
-  { label: "Under 1k", value: "0-1000" },
-  { label: "1k – 3k", value: "1000-3000" },
-  { label: "3k – 6k", value: "3000-6000" },
-  { label: "6k – 10k", value: "6000-10000" },
-  { label: "10k+", value: "10000-999999" },
-];
+
 
 export default async function ShopPage({
   searchParams,
@@ -102,17 +96,12 @@ export default async function ShopPage({
           </div>
         </div>
 
-        {/* ── Budget filter pills ── */}
-        <Suspense fallback={null}>
-          <BudgetFilter activeBudget={params.budget} />
-        </Suspense>
-      </div>
-
-      {/* ── Occasion pills ── */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-4">
-        <Suspense fallback={null}>
-          <OccasionPills />
-        </Suspense>
+        {/* ── Filter Bar ── */}
+        <div className="mt-6 sticky top-20 z-20">
+          <Suspense fallback={null}>
+            <ShopFilterBar />
+          </Suspense>
+        </div>
       </div>
 
       {/* ── Product grid ── */}
@@ -139,30 +128,6 @@ export default async function ShopPage({
             Try AI Gift Match
           </Link>
         </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Budget filter client component lives here as a simple server component ── */
-function BudgetFilter({ activeBudget }: { activeBudget?: string }) {
-  return (
-    <div className="flex items-center gap-2 flex-wrap mb-2">
-      <span className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider flex-shrink-0">Budget:</span>
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-        {BUDGET_FILTERS.map((f) => (
-          <Link
-            key={f.value}
-            href={activeBudget === f.value ? "/shop" : `/shop?budget=${f.value}`}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
-              activeBudget === f.value
-                ? "bg-brand text-white shadow-sm"
-                : "bg-white border border-black/8 text-brand-muted hover:border-brand/30 hover:text-brand"
-            }`}
-          >
-            {f.label}
-          </Link>
-        ))}
       </div>
     </div>
   );

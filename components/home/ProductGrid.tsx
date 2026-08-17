@@ -1,28 +1,53 @@
-import { BUDGET_TIERS } from "@/lib/budget-tiers";
+import { supabaseAdmin } from "@/lib/supabase";
+import { getDbSlugs } from "@/lib/category-map";
+import { getBudgetRange, BUDGET_TIERS } from "@/lib/budget-tiers";
+import { getDefaultSort } from "@/lib/smart-sort";
 import type { Product } from "@/lib/types";
 import ProductGridClient from "./ProductGridClient";
 
 async function getProducts(category?: string, budget?: string): Promise<{ products: Product[], hasMore: boolean, count: number }> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
-  const params = new URLSearchParams();
-  if (category) params.set("category", category);
-  if (budget) params.set("budget", budget);
+  let query = supabaseAdmin.from("products").select(
+    category ? "*, product_categories!inner(categories!inner(slug))" : "*",
+    { count: "exact" }
+  );
+
+  if (category) {
+    const dbSlugs = getDbSlugs(category);
+    query = query.in("product_categories.categories.slug", dbSlugs);
+  }
+
+  if (budget) {
+    const tier = getBudgetRange(budget);
+    if (tier) {
+      query = query.gte("price", tier.min);
+      if (tier.max !== null) {
+        query = query.lte("price", tier.max);
+      }
+    }
+  }
+
+  const sort = getDefaultSort(category);
+  if (sort) {
+    query = query.order(sort.field, { ascending: sort.ascending });
+  } else {
+    query = query.order("created_at", { ascending: false });
+  }
+
+  query = query.eq("in_stock", true);
+
+  const limit = 24;
+  const { data, count, error } = await query.range(0, limit);
   
-  // Explicitly request page 1 to use the paginated API
-  params.set("page", "1");
-  params.set("limit", "24");
+  if (error || !data) return { products: [], hasMore: false, count: 0 };
   
-  const qs = params.toString();
-  const url = qs ? `${base}/api/products?${qs}` : `${base}/api/products`;
-  const res = await fetch(url, { cache: "no-store" });
-  
-  if (!res.ok) return { products: [], hasMore: false, count: 0 };
-  
-  const data = await res.json();
+  const allProducts = data;
+  const hasMore = allProducts.length > limit;
+  const products = hasMore ? allProducts.slice(0, limit) : allProducts;
+
   return {
-    products: data.products ?? [],
-    hasMore: data.hasMore ?? false,
-    count: data.count ?? 0,
+    products,
+    hasMore,
+    count: count ?? 0,
   };
 }
 
