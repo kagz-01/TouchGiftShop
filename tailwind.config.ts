@@ -35,6 +35,7 @@ const config: Config = {
           warm: "#FDF8F4",
           border: "#F0E8EC",
         },
+        success: "#22C55E",
       },
       fontFamily: {
         display: ['"Playfair Display"', "Georgia", "serif"],
