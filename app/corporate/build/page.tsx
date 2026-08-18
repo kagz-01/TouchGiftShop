@@ -149,9 +149,9 @@ export default function HamperBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-transparent">
       {/* Header */}
-      <div className="bg-white border-b border-surface-border sticky top-0 z-40">
+      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border sticky top-0 z-40">
         <div className="page-container-capped py-4">
           <div className="flex items-center justify-between mb-4">
             <Link href="/corporate" className="text-brand-muted hover:text-brand text-sm flex items-center gap-1">
@@ -182,7 +182,7 @@ export default function HamperBuilder() {
                       ? "bg-brand text-white shadow-ribbon"
                       : s.id < step
                       ? "bg-success/10 text-success cursor-pointer hover:bg-success/20"
-                      : "bg-gray-100 text-brand-muted cursor-not-allowed"
+                      : "bg-white/60 text-brand-muted cursor-not-allowed shadow-sm border border-surface-border/50"
                   }`}
                 >
                   <span className="text-base">{s.id < step ? "✓" : s.icon}</span>
@@ -215,7 +215,7 @@ export default function HamperBuilder() {
                   className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === cat.slug
                       ? "bg-brand text-white"
-                      : "bg-white border border-surface-border text-brand-muted hover:border-brand/30"
+                      : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
                   }`}
                 >
                   {cat.label}
@@ -225,9 +225,9 @@ export default function HamperBuilder() {
 
             {/* Products grid */}
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl p-4 border border-surface-border animate-pulse">
+                  <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm animate-pulse">
                     <div className="aspect-square bg-gray-100 rounded-xl mb-3" />
                     <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
                     <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -235,7 +235,7 @@ export default function HamperBuilder() {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {filteredProducts.map((product) => {
                   const selected = hamperItems.some((item) => item.product.id === product.id);
                   const item = hamperItems.find((i) => i.product.id === product.id);
@@ -243,7 +243,7 @@ export default function HamperBuilder() {
                     <div
                       key={product.id}
                       onClick={() => toggleProduct(product)}
-                      className={`relative bg-white rounded-2xl p-4 border-2 cursor-pointer transition-all duration-300 hover:shadow-card-hover ${
+                      className={`relative bg-white/80 backdrop-blur-sm rounded-2xl p-4 border-2 cursor-pointer transition-all duration-300 hover:shadow-card-hover shadow-sm ${
                         selected ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"
                       }`}
                     >
@@ -291,7 +291,7 @@ export default function HamperBuilder() {
 
             {/* Hamper summary */}
             {hamperItems.length > 0 && (
-              <div className="bg-white rounded-2xl p-4 border border-surface-border sticky bottom-20 md:bottom-4 z-30">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold">{hamperItems.length} item{hamperItems.length !== 1 ? "s" : ""} in hamper</p>
@@ -354,7 +354,7 @@ Peter Odhiambo, 0755555555`}
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
                   placeholder={`name, phone, note\nJohn Kamau, 0712345678, Happy birthday!\nJane Wanjiku, 0798765432`}
-                  className="w-full h-40 bg-gray-50 border border-surface-border rounded-xl p-3 text-sm font-mono focus:outline-none focus:border-brand resize-none"
+                  className="w-full h-40 bg-white/50 border border-surface-border rounded-xl p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
                 />
                 <button
                   onClick={parseCsv}
@@ -366,7 +366,7 @@ Peter Odhiambo, 0755555555`}
             ) : (
               <div className="space-y-3">
                 {recipients.map((recipient, index) => (
-                  <div key={index} className="bg-white rounded-2xl p-4 border border-surface-border">
+                  <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-semibold">Recipient {index + 1}</span>
                       {recipients.length > 1 && (
@@ -384,14 +384,14 @@ Peter Odhiambo, 0755555555`}
                         placeholder="Full name *"
                         value={recipient.name}
                         onChange={(e) => updateRecipient(index, "name", e.target.value)}
-                        className="bg-gray-50 border border-surface-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+                        className="bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                       <input
                         type="tel"
                         placeholder="Phone number (07XX) *"
                         value={recipient.phone}
                         onChange={(e) => updateRecipient(index, "phone", e.target.value)}
-                        className="bg-gray-50 border border-surface-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+                        className="bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                     </div>
                     <input
@@ -399,7 +399,7 @@ Peter Odhiambo, 0755555555`}
                       placeholder="Personal note (optional)"
                       value={recipient.note}
                       onChange={(e) => updateRecipient(index, "note", e.target.value)}
-                      className="w-full mt-3 bg-gray-50 border border-surface-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand"
+                      className="w-full mt-3 bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                     />
                   </div>
                 ))}
@@ -413,7 +413,7 @@ Peter Odhiambo, 0755555555`}
             )}
 
             {/* Summary + nav */}
-            <div className="bg-white rounded-2xl p-4 border border-surface-border sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{recipients.filter((r) => r.name && r.phone).length} recipient(s)</p>
@@ -450,7 +450,7 @@ Peter Odhiambo, 0755555555`}
               <p className="text-brand-muted text-sm">Add your company branding and personal touches.</p>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-surface-border space-y-6 shadow-sm">
               {/* Company name */}
               <div>
                 <label className="block text-sm font-semibold mb-2">Company Name (for gift card)</label>
@@ -459,7 +459,7 @@ Peter Odhiambo, 0755555555`}
                   placeholder="e.g. Acme Technologies Ltd"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand"
+                  className="w-full bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                 />
               </div>
 
@@ -471,7 +471,7 @@ Peter Odhiambo, 0755555555`}
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand resize-none"
+                  className="w-full bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
                 />
                 <p className="text-xs text-brand-muted mt-1">{customMessage.length}/200 characters</p>
               </div>
@@ -515,7 +515,7 @@ Peter Odhiambo, 0755555555`}
             />
 
             {/* Summary + nav */}
-            <div className="bg-white rounded-2xl p-4 border border-surface-border sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">Order Summary</p>
@@ -554,7 +554,7 @@ Peter Odhiambo, 0755555555`}
             </div>
 
             {/* Order breakdown */}
-            <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-6">
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-surface-border space-y-6 shadow-sm">
               {/* Items */}
               <div>
                 <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
@@ -592,7 +592,7 @@ Peter Odhiambo, 0755555555`}
                   <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                     <span className="text-lg">🎨</span> Customization
                   </h3>
-                  <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
+                  <div className="bg-white/50 border border-surface-border rounded-xl p-4 space-y-2 text-sm">
                     {companyName && <p><span className="text-brand-muted">Company:</span> {companyName}</p>}
                     {customMessage && <p><span className="text-brand-muted">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
                     {giftWrap !== "standard" && (
