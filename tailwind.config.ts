@@ -78,6 +78,8 @@ const config: Config = {
         "spin-slow": "spin 3s linear infinite",
         "marquee": "marquee 40s linear infinite",
         "marquee-reverse": "marqueeReverse 40s linear infinite",
+        "marquee-vertical": "marqueeVertical 30s linear infinite",
+        "marquee-vertical-reverse": "marqueeVerticalReverse 30s linear infinite",
       },
       keyframes: {
         fadeIn: {
@@ -151,6 +153,14 @@ const config: Config = {
         marqueeReverse: {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(0)" },
+        },
+        marqueeVertical: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-50%)" }, // -50% for seamless loop if content is duplicated
+        },
+        marqueeVerticalReverse: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
         },
       },
       backgroundImage: {
