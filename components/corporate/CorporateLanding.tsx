@@ -59,11 +59,11 @@ function CorporateHero() {
   useEffect(() => { setLoaded(true); }, []);
 
   return (
-    <section className="relative min-h-[80vh] flex items-center bg-gradient-dark overflow-hidden">
+    <section className="relative min-h-[80vh] flex items-center bg-transparent overflow-hidden">
       {/* Decorative orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-brand/20 rounded-full blur-[120px] animate-pulse-soft" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/15 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-brand/10 rounded-full blur-[120px] animate-pulse-soft" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
       </div>
 
       {/* Grid pattern overlay */}
@@ -83,7 +83,7 @@ function CorporateHero() {
               <span className="text-gold text-sm font-semibold"><Building2 className="w-4 h-4"/> Corporate Gifting</span>
             </div>
 
-            <h1 className={`font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] mb-6 transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h1 className={`font-display section-heading font-bold text-brand-deep leading-[1.05] mb-6 transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               Impress your team.
               <br />
               <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
@@ -91,7 +91,7 @@ function CorporateHero() {
               </span>
             </h1>
 
-            <p className={`text-lg text-white/60 max-w-lg mb-8 leading-relaxed transition-all duration-700 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <p className={`body-fluid text-brand-muted max-w-lg mb-8 leading-relaxed transition-all duration-700 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               Curated gift hampers for employee appreciation, client thank-yous,
               and event giveaways. Bulk orders with same-day Nairobi delivery.
             </p>
@@ -168,7 +168,7 @@ function TrustBar() {
   ];
 
   return (
-    <section className="py-12 bg-white border-b border-surface-border">
+    <section className="py-12 bg-transparent">
       <div className="w-full page-container-capped">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {benefits.map((b, i) => (
@@ -230,7 +230,7 @@ function UseCases() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-blush/30">
+    <section className="py-24 md:py-32 bg-transparent">
       <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -238,12 +238,12 @@ function UseCases() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-4">
+          <h2 className="font-display section-heading font-bold text-center mb-4">
             Why companies choose TouchGift
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-16">
+          <p className="body-fluid text-brand-muted text-center max-w-xl mx-auto mb-16">
             Whether it&apos;s 5 gifts or 500, we handle curation, packaging,
             and delivery — so you can focus on your business.
           </p>
@@ -252,7 +252,7 @@ function UseCases() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cases.map((c, i) => (
             <Reveal key={i} delay={300 + i * 100}>
-              <div className="bg-white rounded-2xl p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1">
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-white/20 p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1">
                 <div className={`w-14 h-14 bg-gradient-to-br ${c.color} rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
                   {c.icon}
                 </div>
@@ -303,7 +303,7 @@ function CorporateHowItWorks() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-white">
+    <section className="py-24 md:py-32 bg-transparent">
       <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -311,7 +311,7 @@ function CorporateHowItWorks() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="font-display section-heading font-bold text-center mb-16">
             How corporate gifting works
           </h2>
         </Reveal>
@@ -323,7 +323,7 @@ function CorporateHowItWorks() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 150}>
-                <div className="relative bg-white rounded-3xl p-6 border border-surface-border shadow-card hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2">
+                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border-white/20 p-6 border border-surface-border shadow-card hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2">
                   <div className={`absolute -top-4 -left-2 w-12 h-12 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center text-white font-display font-bold text-lg shadow-ribbon group-hover:scale-110 transition-transform`}>
                     {step.num}
                   </div>
@@ -371,7 +371,7 @@ function PricingTiers() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-gradient-warm">
+    <section className="py-24 md:py-32 bg-transparent">
       <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -379,12 +379,12 @@ function PricingTiers() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-5xl font-bold text-center mb-4">
+          <h2 className="font-display section-heading font-bold text-center mb-4">
             The more you send, the more you save
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-16">
+          <p className="body-fluid text-brand-muted text-center max-w-xl mx-auto mb-16">
             Transparent pricing with built-in volume discounts. No hidden fees, no surprises.
           </p>
         </Reveal>
@@ -439,7 +439,7 @@ function PricingTiers() {
    ══════════════════════════════════════════════════════════ */
 function CorporateTestimonials() {
   return (
-    <section className="py-24 md:py-32 bg-white">
+    <section className="py-24 md:py-32 bg-transparent">
       <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -447,7 +447,7 @@ function CorporateTestimonials() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-12">
+          <h2 className="font-display section-heading font-bold text-center mb-12">
             What corporate clients say
           </h2>
         </Reveal>
