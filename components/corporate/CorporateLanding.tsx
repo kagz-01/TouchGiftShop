@@ -74,7 +74,7 @@ function CorporateHero() {
 
       <div className="relative z-10 w-full page-container-capped py-20">
         <div className="mb-4">
-          <BackToHome className="text-white/80" />
+          <BackToHome className="text-brand-muted" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-12 items-center">
           {/* Left: Content */}
@@ -112,7 +112,7 @@ function CorporateHero() {
                 href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27m%20interested%20in%20corporate%20gifting"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 text-center"
+                className="px-8 py-4 bg-white/60 backdrop-blur-md text-brand-deep font-semibold rounded-2xl text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300 text-center"
               >
                 Talk to Us
               </a>
@@ -123,15 +123,15 @@ function CorporateHero() {
           <div className={`hidden lg:block transition-all duration-700 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
             <div className="relative">
               {/* Main card */}
-              <div className="bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-8 relative overflow-hidden">
+              <div className="bg-white/60 backdrop-blur-md border border-surface-border rounded-3xl p-8 relative overflow-hidden shadow-xl">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
                 <div className="relative z-10">
                   <div className="text-6xl mb-4 text-brand"><Gift className="w-12 h-12" /></div>
-                  <h3 className="font-display text-2xl font-bold text-white mb-2">Custom Hamper</h3>
-                  <p className="text-white/50 text-sm mb-6">Pick items, add your branding, send to any number of recipients</p>
+                  <h3 className="font-display text-2xl font-bold text-brand-deep mb-2">Custom Hamper</h3>
+                  <p className="text-brand-muted text-sm mb-6">Pick items, add your branding, send to any number of recipients</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[<Candy key="1"/>, <Coffee key="2"/>, <Flame key="3"/>, <CakeIcon key="4"/>, <Package key="5"/>, <Gift key="6"/>].map((e, i) => (
-                      <div key={i} className="bg-white/5 rounded-xl p-3 text-center text-2xl hover:bg-white/10 transition-colors cursor-pointer">
+                      <div key={i} className="bg-white/50 border border-surface-border rounded-xl p-3 text-center text-2xl text-brand hover:bg-white hover:shadow-sm transition-all cursor-pointer">
                         {e}
                       </div>
                     ))}
@@ -140,11 +140,11 @@ function CorporateHero() {
               </div>
 
               {/* Floating stats cards */}
-              <div className="absolute -top-4 -right-4 bg-brand rounded-2xl px-4 py-3 shadow-glow animate-float">
+              <div className="absolute -top-4 -right-4 bg-brand-deep rounded-2xl px-4 py-3 shadow-xl animate-float border border-white/10">
                 <p className="text-white font-bold text-lg">500+</p>
                 <p className="text-white/70 text-xs">Corporate orders</p>
               </div>
-              <div className="absolute -bottom-3 -left-3 bg-gold rounded-2xl px-4 py-3 shadow-gold animate-float" style={{ animationDelay: "1s" }}>
+              <div className="absolute -bottom-3 -left-3 bg-gold rounded-2xl px-4 py-3 shadow-xl animate-float border border-gold-light" style={{ animationDelay: "1s" }}>
                 <p className="text-brand-deep font-bold text-lg">24hrs</p>
                 <p className="text-brand-deep/70 text-xs">Turnaround</p>
               </div>
@@ -541,7 +541,7 @@ function CorporateCTA() {
               href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27d%20like%20a%20custom%20corporate%20quote"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-10 py-5 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 transition-all duration-300"
+              className="px-10 py-5 bg-white/60 backdrop-blur-md text-brand-deep font-semibold rounded-2xl text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300"
             >
               Get a Custom Quote
             </a>
