@@ -7,7 +7,8 @@ import {
   Clock, PackageX, MapPin, Banknote,
   Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
   Cake, Gem, Building2, Baby, Flower2, Trophy,
-  Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine
+  Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine,
+  Camera
 } from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
 
@@ -396,59 +397,109 @@ export function ProblemSection() {
    SECTION 3: THE SOLUTION — Brand reveal
    ══════════════════════════════════════════════════════════ */
 export function SolutionSection() {
+  const bentoCards = [
+    {
+      icon: <Target className="w-8 h-8 text-gold" />,
+      title: "Curated, Not Generic",
+      desc: "Every gift is meticulously handpicked — premium items, perfect for the occasion. No filler, no misses. Ever.",
+      colSpan: "md:col-span-2",
+      bg: "bg-gradient-to-br from-white/10 to-white/5",
+      accentColor: "group-hover:border-gold/50",
+    },
+    {
+      icon: <Zap className="w-8 h-8 text-white" />,
+      title: "Same-Day",
+      desc: "Fast delivery across Nairobi by evening.",
+      colSpan: "md:col-span-1",
+      bg: "bg-gradient-to-br from-brand to-brand-deep",
+      accentColor: "group-hover:border-brand-light/50",
+    },
+    {
+      icon: <MapPin className="w-8 h-8 text-coral" />,
+      title: "Surprise Pin-Drop",
+      desc: "Don't know their address? Let them securely drop their own delivery pin. Surprise stays intact.",
+      colSpan: "md:col-span-1",
+      bg: "bg-white/5",
+      accentColor: "group-hover:border-coral/40",
+    },
+    {
+      icon: <EyeOff className="w-8 h-8 text-brand-light" />,
+      title: "100% Anonymous",
+      desc: "Your identity and the price are completely hidden from the recipient.",
+      colSpan: "md:col-span-1",
+      bg: "bg-white/5",
+      accentColor: "group-hover:border-brand-light/40",
+    },
+    {
+      icon: <Camera className="w-8 h-8 text-success" />,
+      title: "Photo Proof Before Delivery",
+      desc: "We send you a real photo of the beautifully wrapped gift before it leaves our hub — so you see exactly what they'll receive.",
+      colSpan: "md:col-span-2",
+      bg: "bg-white/5",
+      accentColor: "group-hover:border-success/40",
+    },
+  ];
+
   return (
-    <section className="py-16 md:py-20 bg-gradient-dark relative overflow-hidden">
-      {/* Decorative */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+    <section className="py-24 md:py-32 bg-brand-deep relative overflow-hidden">
+      {/* Ambient glow orbs */}
+      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 text-center">
-        <Reveal direction="scale">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-brand rounded-3xl mb-8 shadow-glow animate-float">
-            <Gift className="w-10 h-10 text-white" />
-          </div>
-        </Reveal>
+      {/* Top/bottom gold rule */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-        <Reveal delay={200}>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Experience <span className="text-gradient">TouchGift</span>
-          </h2>
-        </Reveal>
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+        {/* Heading block */}
+        <div className="text-center mb-16">
+          <Reveal direction="scale">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-8 border border-gold/30 bg-gradient-to-br from-gold/20 to-gold/5 shadow-[0_0_48px_rgba(212,168,83,0.25)] animate-float">
+              <Gift className="w-10 h-10 text-gold" />
+            </div>
+          </Reveal>
 
-        <Reveal delay={300}>
-          <p className="text-xl text-white/70 max-w-2xl mx-auto mb-12 leading-relaxed">
-            We meticulously curate the finest gifts, wrap them elegantly, and ensure a pristine same-day delivery — transforming a chore into a memorable experience.
-          </p>
-        </Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+              Experience{" "}
+              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                TouchGift
+              </span>
+            </h2>
+          </Reveal>
 
-        {/* Feature cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            {
-              icon: <Target className="w-10 h-10 text-white" />,
-              title: "Curated, not generic",
-              desc: "Every gift is handpicked for the occasion — no filler, no misses.",
-            },
-            {
-              icon: <Zap className="w-10 h-10 text-white" />,
-              title: "Same-day delivery",
-              desc: "Fast delivery by evening. Nairobi-wide.",
-            },
-            {
-              icon: <EyeOff className="w-10 h-10 text-white" />,
-              title: "Surprise-safe",
-              desc: "Anonymous mode + no-contact delivery. The surprise stays intact.",
-            },
-          ].map((f, i) => (
-            <Reveal key={i} delay={400 + i * 150}>
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 text-left hover:bg-white/10 hover:border-gold/30 transition-all duration-300 group">
-                <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {f.icon}
+          <Reveal delay={200}>
+            <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed">
+              We transform a chore into a memorable moment — premium curation, flawless delivery, and features that make every surprise truly special.
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {bentoCards.map((card, i) => (
+            <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
+              <div
+                className={`group relative h-full rounded-[2rem] p-8 text-left border border-white/10 ${
+                  card.accentColor
+                } transition-all duration-500 overflow-hidden cursor-default ${
+                  card.bg
+                }`}
+              >
+                {/* Per-card shimmer on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                    {card.icon}
+                  </div>
+                  <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-gold transition-colors duration-300">
+                    {card.title}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                    {card.desc}
+                  </p>
                 </div>
-                <h3 className="font-display text-xl font-semibold text-white mb-2">
-                  {f.title}
-                </h3>
-                <p className="text-white/50 text-sm leading-relaxed">{f.desc}</p>
               </div>
             </Reveal>
           ))}

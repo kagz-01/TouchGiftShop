@@ -11,7 +11,6 @@ import {
 } from "@/components/home/StorytellingHome";
 import OccasionPills from "@/components/home/OccasionPills";
 import FeaturedRow from "@/components/home/FeaturedRow";
-import SurpriseSomeone from "@/components/home/SurpriseSomeone";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
@@ -93,7 +92,6 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           CHAPTER 1.5: TouchGift Superpowers (USPs)
           ═══════════════════════════════════════════ */}
-      <SurpriseSomeone />
       <SuperpowersStrip />
 
       {/* ═══════════════════════════════════════════
