@@ -353,7 +353,7 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-white relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-gradient-to-b from-brand-bg via-[#FFF9FB] to-blush/30 relative overflow-hidden">
       <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Reveal>
@@ -378,7 +378,7 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-8 rounded-[2rem] hover:shadow-card transition-all duration-500 group ${p.bg}`}>
+              <div className={`h-full p-8 rounded-[2rem] hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
                 <div className="mb-6 p-4 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                   {p.icon}
                 </div>
@@ -674,9 +674,9 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-16 md:py-24 bg-[#FDFCFA] relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-gradient-to-b from-blush/30 via-[#FFF9FB] to-[#FFF5F8] relative overflow-hidden">
       {/* Subtle warm gradient top */}
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-blush/30 to-transparent pointer-events-none" />
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
 
       <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         {/* Heading */}
@@ -701,7 +701,7 @@ export function SocialProof() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
           {stats.map((stat, i) => (
             <Reveal key={i} delay={i * 80} direction="up">
-              <div className="group relative rounded-[1.5rem] p-6 bg-white border border-surface-border hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
+              <div className="group relative rounded-[1.5rem] p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                 <div className="relative z-10">
                   <div className="text-3xl mb-2">{stat.icon}</div>
@@ -727,7 +727,7 @@ export function SocialProof() {
                 {displayReviews.map((t, i) => (
                   <div
                     key={i}
-                    className="flex-shrink-0 w-[300px] md:w-[360px] bg-white rounded-[1.5rem] p-6 border border-surface-border hover:border-brand/20 hover:shadow-card transition-all duration-300 flex flex-col gap-4 whitespace-normal"
+                    className="flex-shrink-0 w-[300px] md:w-[360px] bg-white/80 backdrop-blur-sm rounded-[1.5rem] p-6 border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-300 flex flex-col gap-4 whitespace-normal"
                   >
                     {/* Stars */}
                     <StarRow count={t.stars} />
@@ -784,7 +784,7 @@ export function OccasionsGrid() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-warm">
+    <section className="py-16 md:py-20 bg-gradient-to-b from-[#FFF5F8] to-brand-bg relative">
       <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -808,7 +808,7 @@ export function OccasionsGrid() {
             <Reveal key={occ.slug} delay={300 + i * 80}>
               <Link
                 href={`/?category=${occ.slug}`}
-                className="group relative bg-white rounded-2xl p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-surface-border overflow-hidden"
+                className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
               >
                 {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
