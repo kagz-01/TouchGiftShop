@@ -43,7 +43,7 @@ export default function CreateWishlistPage() {
 
   return (
     <div className="min-h-screen bg-gradient-warm">
-      <div className="max-w-lg mx-auto px-4 md:px-8 py-12">
+      <div className="page-container py-12">
         {/* Back link */}
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-8">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -77,7 +77,7 @@ export default async function ProductPage({
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4">
         <div className="text-center">
           <span className="text-6xl block mb-4">🔍</span>
           <p className="font-display text-xl font-semibold mb-2">Product not found</p>
@@ -104,10 +104,10 @@ export default async function ProductPage({
     product.is_personalizable || PERSONALIZE_KEYWORDS.some((kw) => haystack.includes(kw));
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 flex items-center gap-3">
+        <div className="page-container-capped py-3 flex items-center gap-3">
           <Link
             href="/shop"
             className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors"
@@ -123,8 +123,8 @@ export default async function ProductPage({
       </div>
 
       {/* ── Main grid ── */}
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+      <div className="page-container-capped py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-16 items-start">
 
           {/* ── Gallery ── */}
           <ProductGallery

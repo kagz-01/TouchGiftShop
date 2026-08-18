@@ -34,7 +34,7 @@ export default async function OrderDetailPage({
 
   if (!order) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-transparent flex items-center justify-center px-4">
         <div className="text-center">
           <SearchX className="w-16 h-16 text-brand-muted/30 mx-auto mb-4" />
           <p className="font-display text-xl font-bold text-brand-deep mb-2">Order not found</p>
@@ -59,7 +59,7 @@ export default async function OrderDetailPage({
   const hasPinData = order.delivery_lat !== null;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] pb-20">
+    <div className="min-h-screen bg-transparent pb-20">
       {/* Real-time pin-drop notification */}
       <PinDropNotification
         orderId={order.id}

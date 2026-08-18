@@ -79,7 +79,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
           {/* Slide-out Drawer */}
           <div
-            className={`fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-[#FAF8F5] shadow-2xl flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+            className={`fixed inset-y-0 right-0 z-[70] w-full max-w-md bg-transparent shadow-2xl flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? "translate-x-0" : "translate-x-full"}`}
             aria-hidden={!isOpen}
           >
             {/* Drawer Header */}

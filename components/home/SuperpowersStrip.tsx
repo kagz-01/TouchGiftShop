@@ -5,7 +5,7 @@ import { Users, ShoppingBag, Sparkles, ArrowRight } from "lucide-react";
 export default function SuperpowersStrip() {
   return (
     <section className="py-16 md:py-24 bg-white">
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         {/* Section label */}
         <div className="text-center mb-12">
           <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-3">

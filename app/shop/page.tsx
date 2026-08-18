@@ -22,10 +22,10 @@ export default async function ShopPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Sticky header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
-        <div className="max-w-[1600px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between gap-4">
+        <div className="page-container-capped py-3 flex items-center justify-between gap-4">
           <Link
             href="/"
             className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors flex-shrink-0"
@@ -56,7 +56,7 @@ export default async function ShopPage({
         </div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pt-8 pb-4">
+      <div className="page-container-capped pt-8 pb-4">
         {/* Hero heading */}
         <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
           <div>
@@ -105,14 +105,14 @@ export default async function ShopPage({
       </div>
 
       {/* ── Product grid ── */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-16">
+      <div className="page-container-capped pb-16">
         <Suspense fallback={<ProductGridSkeleton />}>
           <ProductGrid searchParams={Promise.resolve(params)} />
         </Suspense>
       </div>
 
       {/* ── Bottom AI nudge ── */}
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 pb-16">
+      <div className="page-container-capped pb-16">
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light rounded-3xl p-8 flex items-center justify-between gap-6 flex-wrap">
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full translate-x-16 -translate-y-16" />
           <div className="relative z-10">

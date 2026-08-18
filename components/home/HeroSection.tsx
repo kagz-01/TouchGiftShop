@@ -24,8 +24,8 @@ export default function HeroSection() {
       <div className="absolute bottom-10 right-10 w-32 h-32 bg-brand/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
       <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-coral/10 rounded-full blur-xl animate-float" style={{ animationDelay: "4s" }} />
 
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-12 md:py-20">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+      <div className="w-full page-container-capped py-12 md:py-20">
+        <div className="grid md:grid-cols-2 gap-8 xl:gap-12 items-center">
           
           {/* ── LEFT COLUMN: COPY & CTA ── */}
           <div className="max-w-2xl z-10">

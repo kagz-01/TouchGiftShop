@@ -210,7 +210,7 @@ export default function CheckoutForm({
         {senderPhoneError ? ` ${senderPhoneError}` : ""}
         {recipientPhoneError ? ` ${recipientPhoneError}` : ""}
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-6 items-start">
 
         {/* ── LEFT: Form ── */}
         <div className="space-y-4">

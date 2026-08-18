@@ -121,7 +121,7 @@ export default function WishlistView({ slug }: { slug: string }) {
     <div className="min-h-screen bg-gradient-warm">
       {/* Header */}
       <div className="bg-white border-b border-surface-border">
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-6">
+        <div className="page-container py-6">
           {/* Owner name + occasion */}
           <div className="text-center mb-4">
             {wishlist.occasion && (
@@ -162,7 +162,7 @@ export default function WishlistView({ slug }: { slug: string }) {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 md:px-8 py-6 space-y-6">
+      <div className="page-container py-6 space-y-6">
         {/* Share section */}
         <div className="bg-white rounded-2xl p-4 border border-surface-border">
           <div className="flex items-center justify-between">

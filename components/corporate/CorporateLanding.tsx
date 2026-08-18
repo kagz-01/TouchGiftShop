@@ -72,11 +72,11 @@ function CorporateHero() {
         backgroundSize: "60px 60px",
       }} />
 
-      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-4 md:px-8 py-20">
+      <div className="relative z-10 w-full page-container-capped py-20">
         <div className="mb-4">
           <BackToHome className="text-white/80" />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-12 items-center">
           {/* Left: Content */}
           <div>
             <div className={`inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-2 mb-6 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
@@ -169,7 +169,7 @@ function TrustBar() {
 
   return (
     <section className="py-12 bg-white border-b border-surface-border">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {benefits.map((b, i) => (
             <Reveal key={i} delay={i * 100}>
@@ -231,7 +231,7 @@ function UseCases() {
 
   return (
     <section className="py-24 md:py-32 bg-blush/30">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Use Cases
@@ -304,7 +304,7 @@ function CorporateHowItWorks() {
 
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Simple as 1-2-3-4
@@ -372,7 +372,7 @@ function PricingTiers() {
 
   return (
     <section className="py-24 md:py-32 bg-gradient-warm">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Volume Pricing
@@ -440,7 +440,7 @@ function PricingTiers() {
 function CorporateTestimonials() {
   return (
     <section className="py-24 md:py-32 bg-white">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full page-container-capped">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Trusted by Companies
@@ -506,7 +506,7 @@ function CorporateCTA() {
         <div className="absolute bottom-10 right-[20%] w-64 h-64 bg-gold/20 rounded-full blur-[80px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 md:px-8 text-center relative z-10">
+      <div className="page-container text-center relative z-10 max-w-4xl mx-auto">
         <Reveal direction="scale">
           <span className="text-6xl mb-6 block animate-float">🏢</span>
         </Reveal>

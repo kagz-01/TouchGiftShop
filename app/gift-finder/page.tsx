@@ -153,7 +153,7 @@ export default function GiftChatPage() {
   const isEmptyConversation = messages.length <= 1;
 
   return (
-    <div className="h-screen flex flex-col bg-[#FAF8F5] overflow-hidden">
+    <div className="h-screen flex flex-col bg-transparent overflow-hidden">
       {/* ── Header ── */}
       <header className="flex-shrink-0 bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-40">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-4">

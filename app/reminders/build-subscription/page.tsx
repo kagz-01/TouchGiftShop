@@ -106,7 +106,7 @@ export default function BuildSubscriptionPage() {
     <div className="min-h-screen bg-gradient-warm pb-12">
       {/* Header */}
       <div className="bg-white border-b border-surface-border sticky top-0 z-10">
-        <div className="max-w-2xl mx-auto px-4 md:px-8 py-5 flex items-center gap-3">
+        <div className="page-container py-5 flex items-center gap-3">
           <Link
             href="/reminders"
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface transition-colors text-brand-muted hover:text-brand flex-shrink-0"
@@ -122,7 +122,7 @@ export default function BuildSubscriptionPage() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="max-w-2xl mx-auto px-4 md:px-8 mt-6 space-y-6">
+      <form onSubmit={handleSubmit} className="page-container mt-6 space-y-6">
 
         {/* ─── RECIPIENT ─── */}
         <div className="bg-white rounded-2xl border border-surface-border p-5 space-y-4">

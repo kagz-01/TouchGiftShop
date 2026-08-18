@@ -54,6 +54,28 @@ html {
   line-height: 1.6;
 }
 
+/* ========================
+   GLOBAL LAYOUT CONTAINER
+   One class to rule all page widths.
+   Fluid padding so content fills the screen naturally
+   at every size: phone → tablet → laptop → wide desktop.
+   ======================== */
+.page-container {
+  width: 100%;
+  padding-left: clamp(1rem, 4vw, 5rem);
+  padding-right: clamp(1rem, 4vw, 5rem);
+}
+
+/* For sections that need a max-width cap on very large monitors */
+.page-container-capped {
+  width: 100%;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(1rem, 4vw, 5rem);
+  padding-right: clamp(1rem, 4vw, 5rem);
+}
+
 :focus-visible {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;

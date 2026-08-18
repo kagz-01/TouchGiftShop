@@ -9,7 +9,7 @@ export default function PoolPage({
   return (
     <Suspense
       fallback={
-        <div className="px-4 md:px-8 py-6 max-w-lg mx-auto">
+        <div className="page-container py-6 max-w-lg mx-auto">
           <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       }

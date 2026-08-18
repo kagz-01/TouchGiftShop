@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function GiftLabPage() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">

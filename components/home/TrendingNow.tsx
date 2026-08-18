@@ -41,7 +41,7 @@ export default function TrendingNow({ products }: TrendingNowProps) {
 
   return (
     <section className="py-10 md:py-14">
-      <div className="w-full mx-auto px-4 md:px-8">
+      <div className="page-container">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

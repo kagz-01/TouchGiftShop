@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ReturnsPage() {
   return (
     <div className="min-h-screen bg-gradient-warm">
-      <div className="max-w-3xl mx-auto px-4 md:px-8 py-12">
+      <div className="page-container py-12">
         <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-8">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

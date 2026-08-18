@@ -47,7 +47,7 @@ export default function GiftCardsPage() {
 
   if (step === "success") {
     return (
-      <div className="px-4 md:px-8 py-6 max-w-md mx-auto space-y-6">
+      <div className="page-container py-6 max-w-md mx-auto space-y-6">
         <div className="rounded-lg bg-green-50 border border-green-200 p-6 text-center space-y-3">
           <p className="font-medium text-green-800">Gift card created!</p>
           <div className="bg-white rounded-lg border border-green-200 p-4">
@@ -78,7 +78,7 @@ export default function GiftCardsPage() {
   }
 
   return (
-    <div className="px-4 md:px-8 py-6 max-w-md mx-auto space-y-6">
+    <div className="page-container py-6 max-w-md mx-auto space-y-6">
       <div className="mb-4">
         <BackToHome />
       </div>

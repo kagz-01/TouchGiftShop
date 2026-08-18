@@ -58,7 +58,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-white text-brand-deep font-sans">
+      <body className="min-h-screen flex flex-col bg-gradient-to-b from-[#FFF5F8] via-[#FDF8F4] to-[#FFF9FB] text-brand-deep font-sans">
         <SubscriptionProvider>
           <Header />
           <main className="flex-1 pb-20 md:pb-0">

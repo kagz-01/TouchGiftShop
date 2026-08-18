@@ -39,7 +39,7 @@ export function OrderCardSkeleton() {
 
 export function PageSkeleton() {
   return (
-    <div className="w-full mx-auto px-4 md:px-8 py-6 space-y-4">
+    <div className="page-container py-6 space-y-4">
       <div className="h-6 bg-blush rounded w-1/3 skeleton" />
       <div className="h-4 bg-blush rounded w-2/3 skeleton" />
       <div className="space-y-3 mt-4">

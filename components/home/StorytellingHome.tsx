@@ -357,7 +357,7 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-brand-bg via-[#FFF9FB] to-blush/30 relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-transparent relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Reveal>
@@ -678,7 +678,7 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-blush/30 via-[#FFF9FB] to-[#FFF5F8] relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-transparent relative overflow-hidden">
       {/* Subtle warm gradient top */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
 
@@ -788,7 +788,7 @@ export function OccasionsGrid() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-[#FFF5F8] to-brand-bg relative">
+    <section className="py-16 md:py-20 bg-transparent relative">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -846,7 +846,7 @@ export function FinalCTA() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-blush/60 rounded-full blur-[80px]" />
       </div>
 
-      <div className="w-full max-w-4xl mx-auto px-4 md:px-8 relative z-10 flex flex-col items-center">
+      <div className="w-full page-container relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         <Reveal>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-10">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse" />

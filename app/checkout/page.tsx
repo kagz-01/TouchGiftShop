@@ -22,10 +22,10 @@ export default async function CheckoutPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+        <div className="page-container-capped py-3 flex items-center justify-between">
           <Link
             href="/shop"
             className="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
@@ -51,7 +51,7 @@ export default async function CheckoutPage({
       </div>
 
       {/* ── Main content ── */}
-      <div className="max-w-[1200px] mx-auto px-4 md:px-8 py-6 md:py-10">
+      <div className="page-container-capped py-6 md:py-10">
         <div className="mb-6">
           <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">Complete your order</h1>
           <p className="text-sm text-brand-muted mt-1">Fill in the details below to send your gift.</p>

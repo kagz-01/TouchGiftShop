@@ -104,7 +104,7 @@ export default function RemindersDashboard() {
     <div className="min-h-screen bg-gradient-warm pb-20">
       {/* Header */}
       <div className="bg-white border-b border-surface-border sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-6">
+        <div className="page-container py-6">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="font-display text-2xl font-bold text-brand-deep">Reminders & Subscriptions</h1>
@@ -143,7 +143,7 @@ export default function RemindersDashboard() {
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 md:px-8 mt-8 space-y-6">
+      <div className="page-container mt-8 space-y-6">
         
         {loading ? (
           <div className="flex justify-center py-12">

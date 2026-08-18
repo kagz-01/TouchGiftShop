@@ -152,7 +152,7 @@ export default function HamperBuilder() {
     <div className="min-h-screen bg-gradient-warm">
       {/* Header */}
       <div className="bg-white border-b border-surface-border sticky top-0 z-40">
-        <div className="max-w-5xl mx-auto px-4 md:px-8 py-4">
+        <div className="page-container-capped py-4">
           <div className="flex items-center justify-between mb-4">
             <Link href="/corporate" className="text-brand-muted hover:text-brand text-sm flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -197,7 +197,7 @@ export default function HamperBuilder() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 md:px-8 py-8">
+      <div className="page-container-capped py-8">
         {/* ═══ STEP 1: Choose Gift ═══ */}
         {step === 1 && (
           <div className="space-y-6">

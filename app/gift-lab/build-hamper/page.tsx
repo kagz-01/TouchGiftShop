@@ -4,10 +4,10 @@ import HamperBuilder from "@/components/gift-lab/HamperBuilder";
 
 export default function BuildHamperPage() {
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-transparent">
       {/* ── Sticky header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
-        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-3 flex items-center gap-3">
+        <div className="page-container-capped py-3 flex items-center gap-3">
           <Link
             href="/gift-lab"
             className="w-9 h-9 rounded-xl flex items-center justify-center text-brand-muted hover:bg-brand/5 hover:text-brand transition-all"
@@ -22,7 +22,7 @@ export default function BuildHamperPage() {
       </div>
 
       {/* ── Builder ── */}
-      <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8 py-6 md:py-8">
+      <div className="w-full page-container-capped py-6 md:py-8">
         <HamperBuilder />
       </div>
     </div>

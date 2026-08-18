@@ -40,10 +40,10 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
   const displayOrders = activeTab === "active" ? activeOrders : pastOrders;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] pb-20">
+    <div className="min-h-screen bg-transparent pb-20">
       {/* ── Sticky header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
-        <div className="max-w-3xl mx-auto px-4 md:px-8 py-3 flex items-center gap-3">
+        <div className="page-container py-3 flex items-center gap-3">
           <Link
             href="/"
             className="w-9 h-9 rounded-xl flex items-center justify-center text-brand-muted hover:bg-brand/5 hover:text-brand transition-all"
@@ -57,7 +57,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
         </div>
 
         {/* Tabs */}
-        <div className="max-w-3xl mx-auto px-4 md:px-8">
+        <div className="page-container">
           <div className="flex gap-6 border-b border-black/5">
             <button
               onClick={() => setActiveTab("active")}
@@ -87,7 +87,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 md:px-8 mt-8 space-y-4">
+      <div className="page-container mt-8 space-y-4">
         {displayOrders.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-3xl border border-surface-border animate-fade-in">
             <svg className="w-12 h-12 mx-auto text-brand/30 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
