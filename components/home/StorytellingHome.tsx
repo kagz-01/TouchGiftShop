@@ -321,41 +321,68 @@ export function HeroCinematic() {
    ══════════════════════════════════════════════════════════ */
 export function ProblemSection() {
   const problems = [
-    { emoji: <Clock className="w-8 h-8 text-coral" />, text: "Last-minute rush? We handle same-day deliveries seamlessly." },
-    { emoji: <PackageX className="w-8 h-8 text-coral" />, text: "Avoid generic items with our curated, premium selections." },
-    { emoji: <MapPin className="w-8 h-8 text-coral" />, text: "No exact address? We'll coordinate directly with the recipient." },
-    { emoji: <Banknote className="w-8 h-8 text-coral" />, text: "Transparent pricing. Never any hidden fees at checkout." },
+    { 
+      title: "The Last-Minute Panic", 
+      desc: "Forgot an important date? We provide lightning-fast same-day delivery across Nairobi so you never miss a moment.",
+      icon: <Clock className="w-8 h-8 text-brand" />,
+      colSpan: "md:col-span-2",
+      bg: "bg-blush/40"
+    },
+    { 
+      title: "Generic Gifts", 
+      desc: "No more boring mugs. We curate only premium, thoughtful items.",
+      icon: <PackageX className="w-8 h-8 text-gold" />,
+      colSpan: "md:col-span-1",
+      bg: "bg-surface-secondary"
+    },
+    { 
+      title: "Delivery Hassles", 
+      desc: "Don't know their exact address? We coordinate directly with the recipient to keep the surprise intact.",
+      icon: <MapPin className="w-8 h-8 text-coral" />,
+      colSpan: "md:col-span-1",
+      bg: "bg-surface-warm"
+    },
+    { 
+      title: "Hidden Fees", 
+      desc: "What you see is what you pay. Complete pricing transparency at checkout with zero surprises.",
+      icon: <Banknote className="w-8 h-8 text-brand-muted" />,
+      colSpan: "md:col-span-2",
+      bg: "bg-white border border-surface-border"
+    },
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-white relative overflow-hidden">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
-        <Reveal>
-          <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
-            The Gifting Dilemma
-          </p>
-        </Reveal>
-        <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-6 leading-tight">
-            Finding the perfect gift
-            <br />
-            <span className="text-brand-muted">is often harder than it should be</span>
-          </h2>
-        </Reveal>
-        <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-12">
-            Endless scrolling, generic options, and delivery anxiety. You want to make them feel special, but the process gets in the way.
-          </p>
-        </Reveal>
+    <section className="py-20 md:py-28 bg-white relative overflow-hidden">
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <Reveal>
+            <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
+              The Gifting Dilemma
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 leading-tight">
+              Finding the perfect gift
+              <br />
+              <span className="text-brand-muted font-normal italic">is often harder than it should be.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={200}>
+            <p className="text-brand-muted text-lg">
+              Endless scrolling, generic options, and delivery anxiety. You want to make them feel special, but the process gets in the way. We fix that.
+            </p>
+          </Reveal>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
-            <Reveal key={i} delay={300 + i * 150} direction="left">
-              <div className="flex items-start gap-4 p-5 bg-blush/30 rounded-2xl border border-surface-border hover:border-brand/20 transition-all duration-300 hover:shadow-soft group">
-                <div className="mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {p.emoji}
+            <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
+              <div className={`h-full p-8 rounded-[2rem] hover:shadow-card transition-all duration-500 group ${p.bg}`}>
+                <div className="mb-6 p-4 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                  {p.icon}
                 </div>
-                <p className="text-lg font-medium pt-1">{p.text}</p>
+                <h3 className="text-2xl font-display font-bold mb-3">{p.title}</h3>
+                <p className="text-brand-muted leading-relaxed">{p.desc}</p>
               </div>
             </Reveal>
           ))}

@@ -25,9 +25,11 @@ export default function HeroWrappers() {
 
   useEffect(() => {
     let mounted = true;
-    fetch('/api/wrappers')
-      .then((r) => r.json())
-      .then((list: any[]) => {
+    (async () => {
+      try {
+        const res = await fetch('/api/wrappers');
+        if (!res.ok) throw new Error(`wrappers API ${res.status}`);
+        const list: any[] = await res.json();
         if (!mounted) return;
         const vw = typeof window !== 'undefined' ? window.innerWidth : 1200;
         const maxItems = vw < 640 ? 8 : vw < 1024 ? 10 : 12; // reduce count to avoid clutter
@@ -67,8 +69,15 @@ export default function HeroWrappers() {
         });
 
         setItems(created);
-      })
-      .catch(() => {});
+      } catch (err) {
+        // log the fetch error for debugging and avoid throwing to the boundary
+        // (the app's error boundary previously surfaced a generic "fetch failed")
+        // keep the hero silent and don't block rendering
+        // eslint-disable-next-line no-console
+        console.error('HeroWrappers: failed to load wrappers', err);
+        if (mounted) setItems([]);
+      }
+    })();
     return () => { mounted = false; };
   }, []);
 
