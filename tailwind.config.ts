@@ -156,7 +156,7 @@ const config: Config = {
         },
         marqueeVertical: {
           "0%": { transform: "translateY(0)" },
-          "100%": { transform: "translateY(-50%)" }, // -50% for seamless loop if content is duplicated
+          "100%": { transform: "translateY(-50%)" },
         },
         marqueeVerticalReverse: {
           "0%": { transform: "translateY(-50%)" },

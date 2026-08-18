@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { ShoppingBag, Target, Sparkles } from "lucide-react";
+import { ShoppingBag, Target } from "lucide-react";
 import {
   HeroCinematic,
   ProblemSection,
@@ -11,6 +11,7 @@ import {
 } from "@/components/home/StorytellingHome";
 import OccasionPills from "@/components/home/OccasionPills";
 import FeaturedRow from "@/components/home/FeaturedRow";
+import VerticalProductColumns from "@/components/home/VerticalProductColumns";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
@@ -99,79 +100,70 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
       <SocialProof />
 
-      {/* Seasonal & Smart Reorder — in one row */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-6 flex flex-col sm:flex-row gap-3">
-        <div className="flex-1">
-          <SeasonalPromptBar />
-        </div>
-        <div className="flex-1">
-          <SmartReorderBanner />
-        </div>
+      {/* Seasonal & Smart Reorder */}
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-6 flex flex-col sm:flex-row gap-3">
+        <div className="flex-1"><SeasonalPromptBar /></div>
+        <div className="flex-1"><SmartReorderBanner /></div>
       </div>
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 3: Discovery — First wave
+          CHAPTER 3A: Discovery — Occasion Pills + Vertical Columns
+          Trending ↓  |  Last Minute ↑  |  Edible ↓
           ═══════════════════════════════════════════ */}
-
-      {/* Occasion pills — primary discovery */}
-      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pt-8 md:pt-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-10" delay={0}>
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
       </ScrollReveal>
 
-      {/* Row group 1 — Trending, Last Minute, Edible (plain bg) */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 mt-6 space-y-0">
-        <FeaturedRow
-          title="Trending This Week"
-          subtitle="Most-loved gifts right now"
-          products={trending}
-          viewAllHref="/shop"
-          viewAllLabel="See all"
-          marqueeDirection="left"
-        />
-        <FeaturedRow
-          title="Last Minute? We Got You"
-          subtitle="In stock, same-day ready · Under KSh 3,000"
-          products={lastMinute}
-          viewAllHref="/shop?budget=under-5k"
-          viewAllLabel="See all"
-          tint="warm"
-          marqueeDirection="right"
-        />
-        <FeaturedRow
-          title="Edible Gifts They'll Love"
-          subtitle="Chocolates, sweets & gourmet treats"
-          products={edible}
-          viewAllHref="/shop?category=chocolates-sweets-gifts"
-          viewAllLabel="See all"
-          marqueeDirection="left"
-        />
-      </div>
+      <VerticalProductColumns
+        sectionTitle="Gifts for every mood"
+        sectionSubtitle="Explore"
+        columns={[
+          {
+            title: "Trending Now",
+            viewAllHref: "/shop",
+            products: trending,
+            direction: "down",
+            speed: 32,
+          },
+          {
+            title: "Last Minute",
+            viewAllHref: "/shop?budget=under-5k",
+            products: lastMinute,
+            direction: "up",
+            speed: 28,
+          },
+          {
+            title: "Edible Gifts",
+            viewAllHref: "/shop?category=chocolates-sweets-gifts",
+            products: edible,
+            direction: "down",
+            speed: 36,
+          },
+        ]}
+        height={520}
+      />
 
       {/* ═══════════════════════════════════════════
-          INTERSTITIAL A — AI Gift Finder mid-page break
+          INTERSTITIAL — AI Gift Finder CTA break
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8" delay={0}>
         <a
           href="/gift-finder"
           className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep rounded-3xl p-8 md:p-10 text-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
         >
-          {/* Animated orb */}
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full animate-pulse-soft" />
           <div className="absolute -right-4 -bottom-8 w-28 h-28 bg-gold/10 rounded-full animate-pulse-soft" style={{ animationDelay: "1s" }} />
-
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
             <div className="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-white/25 transition-colors duration-300">
               <Target className="w-8 h-8 text-white" />
             </div>
             <div className="text-center md:text-left flex-1">
               <p className="text-gold text-xs font-semibold uppercase tracking-widest mb-1">30-Second Quiz</p>
-              <h3 className="font-display text-2xl md:text-3xl font-bold mb-2">
-                Not sure what to gift?
-              </h3>
+              <h3 className="font-display text-2xl md:text-3xl font-bold mb-2">Not sure what to gift?</h3>
               <p className="text-white/70 text-sm max-w-md">
-                Tell us who it's for and your budget. Our AI finds the perfect match in seconds — no browsing required.
+                Tell us who it&apos;s for and your budget. Our AI finds the perfect match in seconds — no browsing required.
               </p>
             </div>
             <div className="bg-white text-brand px-6 py-3 rounded-2xl font-bold text-sm shrink-0 group-hover:bg-gold group-hover:text-white transition-all duration-300 shadow-lg">
@@ -182,11 +174,10 @@ export default async function HomePage() {
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 4: Discovery — Second wave
+          CHAPTER 3B: Discovery — Horizontal Rows
+          Self Care ←  |  Hampers →  |  Personal + Under 2K ←
           ═══════════════════════════════════════════ */}
-
-      {/* Row group 2 — Self Care, Hampers, Personalised (tinted bg for chapter feel) */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 pb-4 space-y-0">
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pb-4 space-y-0">
         <FeaturedRow
           title="The Self-Care Collection"
           subtitle="Wellness hampers & spa sets"
@@ -194,7 +185,7 @@ export default async function HomePage() {
           viewAllHref="/shop?category=wellness-self-care-hampers"
           viewAllLabel="See all"
           tint="cool"
-          marqueeDirection="right"
+          marqueeDirection="left"
         />
         <FeaturedRow
           title="Hampers & Gift Sets"
@@ -202,37 +193,21 @@ export default async function HomePage() {
           products={hampers}
           viewAllHref="/shop?category=hampers-gift-sets"
           viewAllLabel="See all"
-          marqueeDirection="left"
+          marqueeDirection="right"
         />
         <FeaturedRow
-          title="Make it Personal"
-          subtitle="Engraved, printed & one-of-a-kind gifts"
-          products={personalised}
+          title="Make it Personal · Under KSh 2,000"
+          subtitle="Engraved, printed & budget-friendly gifts"
+          products={[...personalised, ...under2k].slice(0, 10)}
           viewAllHref="/shop?category=personalized-gifts"
           viewAllLabel="See all"
           tint="warm"
-          marqueeDirection="right"
-        />
-      </div>
-
-      {/* (SurpriseSomeone moved to Chapter 1) */}
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 5: The Budget Closer
-          ═══════════════════════════════════════════ */}
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
-        <FeaturedRow
-          title="Under KSh 2,000"
-          subtitle="Thoughtful gifts, friendly prices"
-          products={under2k}
-          viewAllHref="/shop?budget=under-5k"
-          viewAllLabel="See all"
           marqueeDirection="left"
         />
       </div>
 
       {/* Browse All CTA */}
-      <ScrollReveal className="w-full max-w-[1600px] mx-auto px-4 md:px-8 py-8 md:py-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 md:py-10" delay={0}>
         <Link
           href="/shop"
           className="group block bg-white border-2 border-surface-border hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"
@@ -240,19 +215,10 @@ export default async function HomePage() {
           <div className="flex items-center justify-center gap-3">
             <ShoppingBag className="w-6 h-6 text-brand group-hover:scale-110 transition-transform duration-300" />
             <div>
-              <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">
-                Browse All 200+ Gifts
-              </p>
-              <p className="text-xs text-brand-muted">
-                Across 30+ curated categories — something for everyone
-              </p>
+              <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">Browse All 200+ Gifts</p>
+              <p className="text-xs text-brand-muted">Across 30+ curated categories — something for everyone</p>
             </div>
-            <svg
-              className="w-5 h-5 text-brand-muted group-hover:text-brand group-hover:translate-x-1 transition-all"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+            <svg className="w-5 h-5 text-brand-muted group-hover:text-brand group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
