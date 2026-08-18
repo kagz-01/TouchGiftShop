@@ -402,7 +402,7 @@ export function SolutionSection() {
       icon: <Target className="w-8 h-8 text-gold" />,
       title: "Curated, Not Generic",
       desc: "Every gift is meticulously handpicked — premium items, perfect for the occasion. No filler, no misses. Ever.",
-      colSpan: "md:col-span-2",
+      colSpan: "md:col-span-2 lg:col-span-2",
       bg: "bg-gradient-to-br from-white/10 to-white/5",
       accentColor: "group-hover:border-gold/50",
     },
@@ -410,7 +410,7 @@ export function SolutionSection() {
       icon: <Zap className="w-8 h-8 text-white" />,
       title: "Same-Day",
       desc: "Fast delivery across Nairobi by evening.",
-      colSpan: "md:col-span-1",
+      colSpan: "md:col-span-1 lg:col-span-1",
       bg: "bg-gradient-to-br from-brand to-brand-deep",
       accentColor: "group-hover:border-brand-light/50",
     },
@@ -418,7 +418,7 @@ export function SolutionSection() {
       icon: <MapPin className="w-8 h-8 text-coral" />,
       title: "Surprise Pin-Drop",
       desc: "Don't know their address? Let them securely drop their own delivery pin. Surprise stays intact.",
-      colSpan: "md:col-span-1",
+      colSpan: "md:col-span-1 lg:col-span-1",
       bg: "bg-white/5",
       accentColor: "group-hover:border-coral/40",
     },
@@ -426,7 +426,7 @@ export function SolutionSection() {
       icon: <EyeOff className="w-8 h-8 text-brand-light" />,
       title: "100% Anonymous",
       desc: "Your identity and the price are completely hidden from the recipient.",
-      colSpan: "md:col-span-1",
+      colSpan: "md:col-span-1 lg:col-span-1",
       bg: "bg-white/5",
       accentColor: "group-hover:border-brand-light/40",
     },
@@ -434,7 +434,7 @@ export function SolutionSection() {
       icon: <Camera className="w-8 h-8 text-success" />,
       title: "Photo Proof Before Delivery",
       desc: "We send you a real photo of the beautifully wrapped gift before it leaves our hub — so you see exactly what they'll receive.",
-      colSpan: "md:col-span-2",
+      colSpan: "md:col-span-1 lg:col-span-1",
       bg: "bg-white/5",
       accentColor: "group-hover:border-success/40",
     },
@@ -480,7 +480,7 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full rounded-[2rem] p-8 text-left border border-white/10 ${
+                className={`group relative h-full rounded-[2rem] p-6 md:p-8 text-left border border-white/10 ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
