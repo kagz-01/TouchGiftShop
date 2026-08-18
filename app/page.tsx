@@ -147,25 +147,27 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           INTERSTITIAL — AI Gift Finder CTA break
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full max-w-[1800px] mx-auto px-4 md:px-8 py-8" delay={0}>
+      <ScrollReveal className="w-full py-8 md:py-12" delay={0}>
         <a
           href="/gift-finder"
-          className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep rounded-3xl p-8 md:p-10 text-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
+          className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep py-12 md:py-16 px-4 md:px-8 text-white shadow-lg hover:shadow-2xl transition-all duration-500"
         >
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full animate-pulse-soft" />
           <div className="absolute -right-4 -bottom-8 w-28 h-28 bg-gold/10 rounded-full animate-pulse-soft" style={{ animationDelay: "1s" }} />
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
-            <div className="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-white/25 transition-colors duration-300">
-              <Target className="w-8 h-8 text-white" />
+          <div className="relative z-10 w-full max-w-[1800px] mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+            <div className="flex items-center gap-6">
+              <div className="w-16 h-16 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-white/25 transition-colors duration-300">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left max-w-md">
+                <p className="text-gold text-xs font-semibold uppercase tracking-widest mb-1">30-Second Quiz</p>
+                <h3 className="font-display text-2xl md:text-3xl font-bold mb-2">Not sure what to gift?</h3>
+                <p className="text-white/70 text-sm">
+                  Tell us who it&apos;s for and your budget. Our AI finds the perfect match in seconds — no browsing required.
+                </p>
+              </div>
             </div>
-            <div className="text-center md:text-left flex-1">
-              <p className="text-gold text-xs font-semibold uppercase tracking-widest mb-1">30-Second Quiz</p>
-              <h3 className="font-display text-2xl md:text-3xl font-bold mb-2">Not sure what to gift?</h3>
-              <p className="text-white/70 text-sm max-w-md">
-                Tell us who it&apos;s for and your budget. Our AI finds the perfect match in seconds — no browsing required.
-              </p>
-            </div>
-            <div className="bg-white text-brand px-6 py-3 rounded-2xl font-bold text-sm shrink-0 group-hover:bg-gold group-hover:text-white transition-all duration-300 shadow-lg">
+            <div className="bg-white text-brand px-8 py-4 rounded-full font-bold text-base shrink-0 group-hover:bg-gold group-hover:text-white transition-all duration-300 shadow-lg group-hover:-translate-y-1">
               Find a Gift →
             </div>
           </div>
