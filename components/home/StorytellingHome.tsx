@@ -354,7 +354,7 @@ export function ProblemSection() {
 
   return (
     <section className="py-20 md:py-28 bg-white relative overflow-hidden">
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Reveal>
             <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
@@ -450,7 +450,7 @@ export function SolutionSection() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
         {/* Heading block */}
         <div className="text-center mb-16">
           <Reveal direction="scale">
@@ -560,7 +560,7 @@ export function StoryHowItWorks() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
         {/* Heading */}
         <div className="text-center mb-20">
           <Reveal>
@@ -678,7 +678,7 @@ export function SocialProof() {
       {/* Subtle warm gradient top */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-blush/30 to-transparent pointer-events-none" />
 
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         {/* Heading */}
         <div className="text-center mb-16">
           <Reveal>
@@ -717,11 +717,7 @@ export function SocialProof() {
 
         {/* Testimonials Marquee */}
         <Reveal>
-          <div className="relative flex overflow-x-hidden group w-full py-4">
-            {/* Fade edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
-
+          <div className="relative flex overflow-x-hidden group w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
             {[0, 1].map((track) => (
               <div
                 key={track}
@@ -789,7 +785,7 @@ export function OccasionsGrid() {
 
   return (
     <section className="py-16 md:py-20 bg-gradient-warm">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Find by occasion
@@ -881,7 +877,7 @@ export function FinalCTA() {
       {/* Top border */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
           {/* LEFT: Headline + CTAs */}

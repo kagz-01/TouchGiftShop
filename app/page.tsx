@@ -99,8 +99,8 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
       <SocialProof />
 
-      {/* Seasonal & Smart Reorder */}
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-6 flex flex-col sm:flex-row gap-3">
+      {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
+      <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
         <div className="flex-1"><SeasonalPromptBar /></div>
         <div className="flex-1"><SmartReorderBanner /></div>
       </div>
@@ -109,7 +109,7 @@ export default async function HomePage() {
           CHAPTER 3A: Discovery — Occasion Pills + Vertical Columns
           Trending ↓  |  Last Minute ↑  |  Edible ↓
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pt-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1800px] mx-auto px-4 md:px-8 pt-10" delay={0}>
         <Suspense fallback={null}>
           <OccasionPills />
         </Suspense>
@@ -147,7 +147,7 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           INTERSTITIAL — AI Gift Finder CTA break
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8" delay={0}>
+      <ScrollReveal className="w-full max-w-[1800px] mx-auto px-4 md:px-8 py-8" delay={0}>
         <a
           href="/gift-finder"
           className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep rounded-3xl p-8 md:p-10 text-white hover:shadow-2xl transition-all duration-500 hover:-translate-y-1"
@@ -176,7 +176,7 @@ export default async function HomePage() {
           CHAPTER 3B: Discovery — Horizontal Rows
           Self Care ←  |  Hampers →  |  Personal + Under 2K ←
           ═══════════════════════════════════════════ */}
-      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 pb-4 space-y-0">
+      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 pb-4 space-y-0">
         <FeaturedRow
           title="The Self-Care Collection"
           subtitle="Wellness hampers & spa sets"
@@ -198,7 +198,7 @@ export default async function HomePage() {
       </div>
 
       {/* Browse All CTA */}
-      <ScrollReveal className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 md:py-10" delay={0}>
+      <ScrollReveal className="w-full max-w-[1800px] mx-auto px-4 md:px-8 pt-10" delay={0}>
         <Link
           href="/shop"
           className="group block bg-white border-2 border-surface-border hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"

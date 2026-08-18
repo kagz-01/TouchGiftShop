@@ -93,10 +93,7 @@ export default function FeaturedRow({
       </div>
 
       {/* Product strip — marquee */}
-      <div className="relative flex overflow-x-hidden group w-full -mx-4 px-4 md:mx-0 md:px-0">
-        <div className="absolute left-0 top-0 bottom-0 w-8 md:w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-8 md:w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-        
+      <div className="relative flex overflow-x-hidden group w-full [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
         {/* Render products multiple times if marquee is active */}
         <div className={cn(
           "flex gap-3 pb-2 w-full",
