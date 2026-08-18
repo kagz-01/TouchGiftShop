@@ -403,12 +403,6 @@ Peter Odhiambo, 0755555555`}
                     />
                   </div>
                 ))}
-                <button
-                  onClick={addRecipient}
-                  className="w-full py-3 border-2 border-dashed border-surface-border rounded-2xl text-sm font-medium text-brand-muted hover:border-brand/30 hover:text-brand transition-all"
-                >
-                  + Add Another Recipient
-                </button>
               </div>
             )}
 
@@ -422,13 +416,30 @@ Peter Odhiambo, 0755555555`}
                     <p className="text-success text-xs font-semibold">{bulkDiscount * 100}% bulk discount applied!</p>
                   )}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
+                  {!csvMode && (
+                    <button
+                      onClick={addRecipient}
+                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand rounded-xl font-semibold text-sm hover:bg-brand/20 transition-colors border border-brand/20"
+                    >
+                      + Add Recipient
+                    </button>
+                  )}
                   <button
                     onClick={() => setStep(1)}
                     className="px-4 py-3 bg-gray-100 text-brand-muted rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
                     ← Back
                   </button>
+                  {!csvMode && (
+                    <button
+                      onClick={addRecipient}
+                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand rounded-xl font-bold text-lg hover:bg-brand/20 transition-colors border border-brand/20"
+                      aria-label="Add Recipient"
+                    >
+                      +
+                    </button>
+                  )}
                   <button
                     onClick={() => setStep(3)}
                     disabled={!canProceed()}
