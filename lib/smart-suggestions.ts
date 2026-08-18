@@ -21,7 +21,7 @@ export function getSmartSuggestions(ctx: GiftingContext): SmartSuggestion {
   // 1. Urgency filtering (B3: Last-minute genius)
   if (ctx.urgency === "now") {
     tags.push("same-day");
-    message = "Gifts available for same-day delivery in Nairobi. Order before 12PM!";
+    message = "Gifts available for same-day delivery in Nairobi. Order now for fast delivery!";
     categories = [...categories, "same-day-delivery"];
   } else if (ctx.urgency === "today") {
     tags.push("express");

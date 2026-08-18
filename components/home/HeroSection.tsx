@@ -1,36 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 
 export default function HeroSection() {
-  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number } | null>(null);
-  const [cutoffPassed, setCutoffPassed] = useState(false);
-
-  useEffect(() => {
-    function update() {
-      const now = new Date();
-      const cutoff = new Date(now);
-      cutoff.setHours(14, 0, 0, 0);
-
-      if (now >= cutoff) {
-        setCutoffPassed(true);
-        setTimeLeft(null);
-        return;
-      }
-
-      const diff = cutoff.getTime() - now.getTime();
-      const h = Math.floor(diff / (1000 * 60 * 60));
-      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      setTimeLeft({ h, m });
-      setCutoffPassed(false);
-    }
-
-    update();
-    const interval = setInterval(update, 60_000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className="relative overflow-hidden bg-gradient-warm">
       {/* Decorative Elements */}
@@ -82,34 +54,7 @@ export default function HeroSection() {
             </Link>
           </div>
 
-          {/* Countdown Banner */}
-          <div className="animate-fade-in-up animate-delay-400">
-            {cutoffPassed ? (
-              <div className="inline-flex items-center gap-3 bg-brand-deep text-white rounded-xl px-5 py-3">
-                <span className="text-xl">🌙</span>
-                <div>
-                  <p className="font-medium text-sm">Same-day delivery resumes tomorrow</p>
-                  <p className="text-white/60 text-xs">Order now for next-day delivery</p>
-                </div>
-              </div>
-            ) : timeLeft ? (
-              <div className="inline-flex items-center gap-3 bg-white rounded-xl px-5 py-3 shadow-soft border border-surface-border">
-                <div className="flex gap-1">
-                  <span className="w-10 h-10 flex items-center justify-center bg-brand text-white rounded-lg font-display font-bold text-lg">
-                    {timeLeft.h}
-                  </span>
-                  <span className="text-brand-muted font-bold">:</span>
-                  <span className="w-10 h-10 flex items-center justify-center bg-brand text-white rounded-lg font-display font-bold text-lg">
-                    {String(timeLeft.m).padStart(2, "0")}
-                  </span>
-                </div>
-                <div>
-                  <p className="text-sm font-medium">Same-day cutoff</p>
-                  <p className="text-xs text-brand-muted">Order before 2pm</p>
-                </div>
-              </div>
-            ) : null}
-          </div>
+
         </div>
 
         {/* Trust Badges */}

@@ -161,7 +161,7 @@ function CorporateHero() {
    ══════════════════════════════════════════════════════════ */
 function TrustBar() {
   const benefits = [
-    { icon: <Zap className="w-8 h-8 mx-auto text-brand" />, title: "Same-day delivery", desc: "Order before 2pm, delivered by evening in Nairobi" },
+    { icon: <Zap className="w-8 h-8 mx-auto text-brand" />, title: "Same-day delivery", desc: "Fast delivery by evening across Nairobi" },
     { icon: <Banknote className="w-8 h-8 mx-auto text-gold" />, title: "Bulk discounts", desc: "10+ gifts = 10% off. 50+ = 15% off. Custom quotes for 100+" },
     { icon: <Palette className="w-8 h-8 mx-auto text-coral" />, title: "Custom branding", desc: "Add your company logo, branded cards, and custom packaging" },
     { icon: <FileSpreadsheet className="w-8 h-8 mx-auto text-success" />, title: "CSV upload", desc: "Upload a spreadsheet of recipients — names, phones, notes" },

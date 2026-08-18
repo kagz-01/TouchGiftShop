@@ -6,7 +6,7 @@ const TRUST_ITEMS = [
       </svg>
     ),
     title: "Same-Day Delivery",
-    description: "Nairobi-wide, order before 2PM",
+    description: "Fast delivery across Nairobi",
   },
   {
     icon: (

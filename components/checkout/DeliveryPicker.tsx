@@ -24,7 +24,7 @@ const DELIVERY_OPTIONS: DeliveryOption[] = [
   {
     id: "express",
     name: "Express Delivery",
-    description: "Next business day delivery (order before 2PM)",
+    description: "Next business day delivery",
     price: 500,
     emoji: "🚀",
     estimatedTime: "Next day",
@@ -32,7 +32,7 @@ const DELIVERY_OPTIONS: DeliveryOption[] = [
   {
     id: "sameday",
     name: "Same-Day Delivery",
-    description: "Nairobi-wide, order before 12PM",
+    description: "Fast delivery across Nairobi",
     price: 1000,
     emoji: "⚡",
     estimatedTime: "Today",

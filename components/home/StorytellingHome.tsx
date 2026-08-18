@@ -365,7 +365,7 @@ export function SolutionSection() {
             {
               icon: <Zap className="w-10 h-10 text-white" />,
               title: "Same-day delivery",
-              desc: "Order before 2pm, delivered by evening. Nairobi-wide.",
+              desc: "Fast delivery by evening. Nairobi-wide.",
             },
             {
               icon: <EyeOff className="w-10 h-10 text-white" />,

@@ -44,7 +44,7 @@ export function getDeliveryZone(
     return {
       name: "Nairobi",
       fee: 350,
-      timeframe: "Same-day (order before 2pm)",
+      timeframe: "Same-day Delivery",
     };
   }
 
