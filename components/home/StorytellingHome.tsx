@@ -544,7 +544,7 @@ export function StoryHowItWorks() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-brand-deep relative overflow-hidden">
+    <section className="py-12 md:py-16 bg-brand-deep relative overflow-hidden">
       {/* Subtle dot grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.04]"
@@ -560,9 +560,9 @@ export function StoryHowItWorks() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full px-4 md:px-12 lg:px-16 relative z-10">
         {/* Heading */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-16">
           <Reveal>
             <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
               Simple as 1-2-3
@@ -581,9 +581,9 @@ export function StoryHowItWorks() {
         {/* Steps */}
         <div className="relative">
           {/* Desktop connector line */}
-          <div className="hidden md:block absolute top-[3.5rem] left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-[1px] bg-gradient-to-r from-gold/30 via-brand-light/30 to-success/30 z-0" />
+          <div className="hidden md:block absolute top-[3.5rem] left-[16.67%] right-[16.67%] h-[1px] bg-gradient-to-r from-gold/30 via-brand-light/30 to-success/30 z-0" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 relative z-10">
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 180} direction="up">
                 <div
@@ -834,27 +834,24 @@ export function OccasionsGrid() {
    ══════════════════════════════════════════════════════════ */
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-brand-deep py-20 md:py-32 flex items-center justify-center text-center">
+    <section className="relative overflow-hidden bg-white py-16 md:py-20 flex items-center justify-center text-center border-t border-surface-border">
       {/* Background orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-brand/25 rounded-full blur-[130px] animate-pulse-soft" />
-        <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-gold/15 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-brand-light/10 rounded-full blur-[80px]" />
+        <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-brand/5 rounded-full blur-[130px] animate-pulse-soft" />
+        <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-gold/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1.5s" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-blush/60 rounded-full blur-[80px]" />
       </div>
-
-      {/* Top border */}
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
       <div className="w-full max-w-4xl mx-auto px-4 md:px-8 relative z-10 flex flex-col items-center">
         <Reveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-10">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-white/80 text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
+            <span className="text-brand-deep text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
           </div>
         </Reveal>
 
         <Reveal delay={100}>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-[5rem] font-bold text-white leading-[0.95] mb-8">
+          <h2 className="font-display text-5xl md:text-7xl lg:text-[5rem] font-bold text-brand-deep leading-[0.95] mb-8">
             Ready to create
             <br />
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
@@ -866,7 +863,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-12 leading-relaxed">
             Skip the stress. We curate, wrap beautifully, and deliver with care — so all you have to do is watch them smile.
           </p>
         </Reveal>
