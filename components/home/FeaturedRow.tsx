@@ -104,7 +104,7 @@ export default function FeaturedRow({
             <Link
               key={`${product.id}-1`}
               href={`/product/${product.id}`}
-              className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 bg-white border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px]"
+              className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 bg-gradient-to-br from-white to-blush/30 border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px]"
               style={marqueeDirection ? {} : {
                 transitionDelay: `${80 + i * 60}ms`,
                 transitionProperty: "opacity, transform",
@@ -149,7 +149,7 @@ export default function FeaturedRow({
               <Link
                 key={`${product.id}-2`}
                 href={`/product/${product.id}`}
-                className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 bg-white border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px]"
+                className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 bg-gradient-to-br from-white to-blush/30 border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:shadow-lg hover:shadow-brand/5 transition-all duration-300 hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px]"
               >
                 <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-[1.2rem] overflow-hidden shrink-0 bg-blush shadow-inner">
                   {product.image_url ? (
