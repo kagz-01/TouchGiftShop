@@ -39,7 +39,7 @@ async function getFeaturedProducts() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const [trending, lastMinute, edible, selfCare, hampers, personalised, under2k] =
+  const [trending, lastMinute, edible, selfCare, personalised, under2k] =
     await Promise.all([
       supabase
         .from("products")
@@ -60,7 +60,6 @@ async function getFeaturedProducts() {
 
       getByCategory("chocolates-sweets-gifts", 10),
       getByCategory("wellness-self-care-hampers", 10),
-      getByCategory("hampers-gift-sets", 10),
       getByCategory("personalized-gifts", 10),
 
       supabase
@@ -73,11 +72,11 @@ async function getFeaturedProducts() {
         .then((r) => (r.data ?? []) as Product[]),
     ]);
 
-  return { trending, lastMinute, edible, selfCare, hampers, personalised, under2k };
+  return { trending, lastMinute, edible, selfCare, personalised, under2k };
 }
 
 export default async function HomePage() {
-  const { trending, lastMinute, edible, selfCare, hampers, personalised, under2k } =
+  const { trending, lastMinute, edible, selfCare, personalised, under2k } =
     await getFeaturedProducts();
 
   return (
@@ -188,21 +187,13 @@ export default async function HomePage() {
           marqueeDirection="left"
         />
         <FeaturedRow
-          title="Hampers & Gift Sets"
-          subtitle="When one gift isn't enough"
-          products={hampers}
-          viewAllHref="/shop?category=hampers-gift-sets"
-          viewAllLabel="See all"
-          marqueeDirection="right"
-        />
-        <FeaturedRow
           title="Make it Personal · Under KSh 2,000"
           subtitle="Engraved, printed & budget-friendly gifts"
           products={[...personalised, ...under2k].slice(0, 10)}
           viewAllHref="/shop?category=personalized-gifts"
           viewAllLabel="See all"
           tint="warm"
-          marqueeDirection="left"
+          marqueeDirection="right"
         />
       </div>
 
