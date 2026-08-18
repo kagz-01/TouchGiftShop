@@ -182,19 +182,19 @@ export function HeroCinematic() {
   ];
 
   return (
-    <section className="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
-      {/* Animated gradient orbs for smoother background */}
+    <section className="relative min-h-[90svh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
+      {/* Animated gradient orbs */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[120px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
         <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative z-40">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 md:py-20 relative z-40">
+        <div className="grid md:grid-cols-2 gap-8 xl:gap-16 items-center max-w-[1800px] mx-auto">
           
           {/* ── LEFT COLUMN: COPY & CTA ── */}
-          <div className="max-w-2xl text-left">
+          <div className="w-full text-left">
             {/* Typewriter delivery note */}
             <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
@@ -210,7 +210,9 @@ export function HeroCinematic() {
             </div>
 
             {/* Main headline */}
-            <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h1 className={`font-display font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
+            >
               <span className="relative inline-block py-1 text-shadow-glow">
                 Elevate the art
                 <br />
@@ -232,7 +234,9 @@ export function HeroCinematic() {
             </h1>
 
             {/* Subheadline */}
-            <p className={`text-lg md:text-xl text-white/70 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <p className={`text-white/70 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
+            >
               Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment.
             </p>
 
@@ -283,7 +287,7 @@ export function HeroCinematic() {
           </div>
 
           {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className={`relative h-[600px] hidden lg:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`relative h-[420px] md:h-[500px] xl:h-[600px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* Soft gradient masks to fade top and bottom edges smoothly */}
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
@@ -354,7 +358,7 @@ export function ProblemSection() {
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-brand-bg via-[#FFF9FB] to-blush/30 relative overflow-hidden">
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <div className="text-center max-w-2xl mx-auto mb-16">
           <Reveal>
             <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
@@ -362,7 +366,7 @@ export function ProblemSection() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display text-4xl md:text-5xl font-bold mb-6 leading-tight">
+            <h2 className="font-display section-heading font-bold mb-6">
               Finding the perfect gift
               <br />
               <span className="text-brand-muted font-normal italic">is often harder than it should be.</span>
@@ -450,7 +454,7 @@ export function SolutionSection() {
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         {/* Heading block */}
         <div className="text-center mb-16">
           <Reveal direction="scale">
@@ -460,7 +464,7 @@ export function SolutionSection() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            <h2 className="font-display section-heading font-bold text-white mb-6">
               Experience{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 TouchGift
@@ -569,7 +573,7 @@ export function StoryHowItWorks() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+            <h2 className="font-display section-heading font-bold text-white">
               How it{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 works
@@ -678,7 +682,7 @@ export function SocialProof() {
       {/* Subtle warm gradient top */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
 
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         {/* Heading */}
         <div className="text-center mb-16">
           <Reveal>
@@ -687,7 +691,7 @@ export function SocialProof() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-4">
+            <h2 className="font-display section-heading font-bold mb-4">
               Loved by{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 gift-givers
@@ -785,14 +789,14 @@ export function OccasionsGrid() {
 
   return (
     <section className="py-16 md:py-20 bg-gradient-to-b from-[#FFF5F8] to-brand-bg relative">
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
             Find by occasion
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-4">
+          <h2 className="font-display section-heading font-bold text-center mb-4">
             Who are you gifting?
           </h2>
         </Reveal>
@@ -851,7 +855,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={100}>
-          <h2 className="font-display text-5xl md:text-7xl lg:text-[5rem] font-bold text-brand-deep leading-[0.95] mb-8">
+          <h2 className="font-display display-heading font-bold text-brand-deep mb-8">
             Ready to create
             <br />
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">

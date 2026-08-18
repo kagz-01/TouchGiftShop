@@ -72,7 +72,7 @@ export default function VerticalProductColumns({
       {/* Subtle warm gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/20 via-transparent to-blush/10 pointer-events-none" />
 
-      <div className="w-full max-w-[1800px] mx-auto px-4 md:px-8 relative z-10">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         {/* Section heading */}
         {sectionTitle && (
           <div className="text-center mb-14">
