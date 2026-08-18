@@ -9,8 +9,6 @@ import {
   Cake, Gem, Building2, Baby, Flower2, Trophy,
   Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine
 } from "lucide-react";
-import dynamic from 'next/dynamic';
-const HeroWrappers = dynamic(() => import('@/components/home/HeroWrappers'), { ssr: false });
 import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -162,15 +160,28 @@ export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   const deliveryMessage = useTypewriter([
     "TouchGift makes gifting feel thoughtful.",
-    "Order before 3 PM for same-day gift delivery in Nairobi.",
-    "After 3 PM? We deliver tomorrow.",
+    "Order now for fast same-day gift delivery in Nairobi.",
     "Wrapped beautifully. Delivered with care.",
   ]);
 
   useEffect(() => { setLoaded(true); }, []);
 
+  const PRODUCTS = [
+    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1577212017184-80cc0da11082?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1554522851-140b2b801a61?q=80&w=600&auto=format&fit=crop",
+  ];
+
+  const LIFESTYLE = [
+    "https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1525026198548-4baa0d203f19?q=80&w=600&auto=format&fit=crop",
+  ];
+
   return (
-    <section className="relative h-[75vh] min-h-[560px] flex items-center justify-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
+    <section className="relative h-[85vh] min-h-[650px] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
       {/* Animated gradient orbs for smoother background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
@@ -178,99 +189,129 @@ export function HeroCinematic() {
         <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
-      {/* Background wrappers sit behind the copy as translucent glass cards */}
-      <HeroWrappers />
-
-      {/* Content */}
-      <div className="relative z-40 text-center px-4 max-w-4xl mx-auto">
-        {/* Typewriter delivery note */}
-        <div className={`inline-flex flex-col items-center bg-white/10 backdrop-blur-md rounded-full px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-          <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
-            TouchGift promise
-          </span>
-          <div className="flex items-center justify-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] text-center leading-snug">
-            <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
-            <span className="whitespace-normal tracking-tight">
-              {highlightDeliveryCopy(deliveryMessage)}
-              <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
-            </span>
-          </div>
-        </div>
-
-        {/* Main headline */}
-        <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <span className="relative inline-block px-3 py-1 rounded-md bg-black/12 backdrop-blur-sm" style={{ textShadow: '0 6px 26px rgba(0,0,0,0.55)', WebkitTextStroke: '0.6px rgba(0,0,0,0.35)' }}>
-            Send something
-            <br />
-            <span className="relative inline-block">
-              <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
-                they&apos;ll remember
+      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 relative z-40">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          
+          {/* ── LEFT COLUMN: COPY & CTA ── */}
+          <div className="max-w-2xl text-left">
+            {/* Typewriter delivery note */}
+            <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
+                TouchGift promise
               </span>
-              <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
-                <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
-                <defs>
-                  <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
-                    <stop offset="0%" stopColor="#D4A853" />
-                    <stop offset="100%" stopColor="#E8C97A" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </span>
-          </span>
-        </h1>
+              <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
+                <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
+                <span className="whitespace-normal tracking-tight">
+                  {highlightDeliveryCopy(deliveryMessage)}
+                  <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
+                </span>
+              </div>
+            </div>
 
-        {/* Subheadline */}
-        <p className={`text-lg md:text-xl text-white/60 max-w-xl mx-auto mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          Thoughtful gifts for birthdays, milestones, apologies, and just-because
-          moments, wrapped beautifully and delivered with care.
-        </p>
+            {/* Main headline */}
+            <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <span className="relative inline-block py-1 text-shadow-glow">
+                Send something
+                <br />
+                <span className="relative inline-block">
+                  <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
+                    they&apos;ll remember
+                  </span>
+                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                    <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
+                    <defs>
+                      <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
+                        <stop offset="0%" stopColor="#D4A853" />
+                        <stop offset="100%" stopColor="#E8C97A" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </span>
+              </span>
+            </h1>
 
-        {/* CTA */}
-        <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Link
-            href="/shop?category=birthdays"
-            className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1"
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              Browse Gifts
-              <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          </Link>
-          <Link
-            href="/gift-lab"
-            className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1"
-          >
-            <span className="flex items-center gap-2">
-              Build a Hamper
-              <Sparkles className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
-            </span>
-          </Link>
+            {/* Subheadline */}
+            <p className={`text-lg md:text-xl text-white/60 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              Thoughtful gifts for birthdays, milestones, apologies, and just-because
+              moments, wrapped beautifully and delivered with care.
+            </p>
+
+            {/* CTA */}
+            <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <Link
+                href="/shop?category=birthdays"
+                className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1 w-full sm:w-auto text-center"
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  Browse Gifts
+                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              </Link>
+              <Link
+                href="/gift-lab"
+                className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
+              >
+                <span className="flex items-center justify-center gap-2">
+                  Build a Hamper
+                  <Sparkles className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
+                </span>
+              </Link>
+            </div>
+
+            {/* Quick Action Pills */}
+            <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <Target className="w-3.5 h-3.5 text-coral" />
+                AI Gift Match
+              </Link>
+              <Link href="/gift-lab" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <ShoppingBag className="w-3.5 h-3.5 text-gold" />
+                Custom Hampers
+              </Link>
+              <Link href="/gift-lab/pool" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <span className="text-[14px]">👥</span>
+                Pool a Gift
+              </Link>
+              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <EyeOff className="w-3.5 h-3.5 text-brand-light" />
+                Send Anonymously
+              </Link>
+            </div>
+          </div>
+
+          {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
+          <div className={`relative h-[600px] hidden lg:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            {/* Soft gradient masks to fade top and bottom edges smoothly */}
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
+            
+            {/* Column 1: Premium Products (Scrolling Up) */}
+            <div className="flex-1 relative">
+              <div className="flex flex-col gap-4 animate-marquee-vertical hover:[animation-play-state:paused]">
+                {[...PRODUCTS, ...PRODUCTS].map((src, i) => (
+                  <div key={`prod-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-white/10 group border border-white/10">
+                    <img src={src} alt="Premium Gift" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Column 2: Emotional Reactions (Scrolling Down) */}
+            <div className="flex-1 relative pt-12">
+              <div className="flex flex-col gap-4 animate-marquee-vertical-reverse hover:[animation-play-state:paused]">
+                {[...LIFESTYLE, ...LIFESTYLE].map((src, i) => (
+                  <div key={`life-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-white/10 group border border-white/10">
+                    <img src={src} alt="Happy reaction" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          
         </div>
-
-        {/* Quick Action Pills */}
-        <div className={`mt-8 flex flex-wrap items-center justify-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-            <Target className="w-3.5 h-3.5 text-coral" />
-            AI Gift Match
-          </Link>
-          <Link href="/gift-lab" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-            <ShoppingBag className="w-3.5 h-3.5 text-gold" />
-            Custom Hampers
-          </Link>
-          <Link href="/gift-lab/pool" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-            <span className="text-[14px]">👥</span>
-            Pool a Gift
-          </Link>
-          <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-            <EyeOff className="w-3.5 h-3.5 text-brand-light" />
-            Send Anonymously
-          </Link>
-        </div>
-
-        {/* Scroll indicator removed - using live wrappers for pointer interaction instead */}
       </div>
     </section>
   );
