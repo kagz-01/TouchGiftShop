@@ -58,7 +58,6 @@ export default function FeaturedRow({
       : "";
 
   return (
-  return (
     <section
       ref={sectionRef}
       className={cn("p-6 md:p-8 rounded-[2rem] border border-surface-border shadow-sm mb-6 transition-colors", tintClass)}
