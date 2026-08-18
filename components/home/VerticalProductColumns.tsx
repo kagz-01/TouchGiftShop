@@ -68,7 +68,7 @@ export default function VerticalProductColumns({
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <section className="py-20 md:py-28 bg-[#FDFCFA] relative overflow-hidden">
+    <section className="py-16 md:py-20 bg-[#FDFCFA] relative overflow-hidden">
       {/* Subtle warm gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/20 via-transparent to-blush/10 pointer-events-none" />
 
@@ -85,11 +85,8 @@ export default function VerticalProductColumns({
           </div>
         )}
 
-        {/* 3-column vertical marquee grid */}
-        <div
-          className="grid gap-5"
-          style={{ gridTemplateColumns: `repeat(${columns.length}, 1fr)` }}
-        >
+        {/* Responsive vertical marquee grid */}
+        <div className="grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {columns.map((col, colIdx) => {
             const speed = col.speed ?? 35;
             // Double the products for seamless loop
