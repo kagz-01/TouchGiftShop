@@ -97,15 +97,15 @@ export default function VerticalProductColumns({
                 : "animate-marquee-vertical";
 
             return (
-              <div key={colIdx} className="flex flex-col gap-3">
+              <div key={colIdx} className="flex flex-col gap-4 bg-[#FAF8F9] border border-surface-border rounded-[2rem] p-5 md:p-6 shadow-sm">
                 {/* Column header */}
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-display font-bold text-base md:text-lg text-brand-deep">
+                <div className="flex items-center justify-between">
+                  <span className="font-display font-bold text-base md:text-xl text-brand-deep">
                     {col.title}
                   </span>
                   <Link
                     href={col.viewAllHref}
-                    className="text-xs font-semibold text-brand hover:text-gold transition-colors"
+                    className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-3 py-1.5 rounded-full border border-surface-border shadow-sm hover:shadow-md"
                   >
                     See all →
                   </Link>
@@ -113,13 +113,13 @@ export default function VerticalProductColumns({
 
                 {/* Scrolling column */}
                 <div
-                  className="relative overflow-hidden rounded-2xl"
+                  className="relative overflow-hidden -mx-2 px-2"
                   style={{ height }}
                 >
                   {/* Top fade */}
-                  <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
+                  <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[#FAF8F9] to-transparent z-10 pointer-events-none" />
                   {/* Bottom fade */}
-                  <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
+                  <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-[#FAF8F9] to-transparent z-10 pointer-events-none" />
 
                   {/* Marquee track */}
                   {mounted && (
