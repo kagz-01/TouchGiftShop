@@ -516,58 +516,106 @@ export function StoryHowItWorks() {
   const steps = [
     {
       num: "01",
-      icon: <ShoppingBag className="w-10 h-10 text-brand" />,
+      icon: <ShoppingBag className="w-9 h-9 text-gold" />,
       title: "Pick a gift",
-      desc: "Browse by occasion or let our Gift Finder suggest the perfect match.",
-      color: "from-brand to-brand-light",
+      desc: "Browse by occasion, mood, or budget — or let our AI Gift Finder recommend the perfect match in under 30 seconds.",
+      accent: "from-gold/20 to-gold/5",
+      borderHover: "hover:border-gold/50",
+      numColor: "text-gold",
     },
     {
       num: "02",
-      icon: <CreditCard className="w-10 h-10 text-gold" />,
-      title: "Pay with M-Pesa",
-      desc: "Quick checkout with M-Pesa, card, or Airtel Money. No account needed.",
-      color: "from-gold to-gold-light",
+      icon: <CreditCard className="w-9 h-9 text-brand-light" />,
+      title: "Checkout in seconds",
+      desc: "Pay with M-Pesa, card, or Airtel Money. No account needed. Add a personalised message and any special instructions.",
+      accent: "from-brand-light/20 to-brand-light/5",
+      borderHover: "hover:border-brand-light/40",
+      numColor: "text-brand-light",
     },
     {
       num: "03",
-      icon: <Rocket className="w-10 h-10 text-success" />,
-      title: "We deliver it",
-      desc: "Same-day in Nairobi, next-day nationwide. Photo proof before dispatch.",
-      color: "from-success to-emerald-400",
+      icon: <Rocket className="w-9 h-9 text-success" />,
+      title: "We deliver the wow",
+      desc: "Same-day in Nairobi, next-day nationwide. We send you a photo proof before it leaves — beautifully wrapped, ribbon and all.",
+      accent: "from-success/20 to-success/5",
+      borderHover: "hover:border-success/40",
+      numColor: "text-success",
     },
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-blush/30 relative">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
-        <Reveal>
-          <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
-            Simple as 1-2-3
-          </p>
-        </Reveal>
-        <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-12">
-            The Experience
-          </h2>
-        </Reveal>
+    <section className="py-24 md:py-32 bg-brand-deep relative overflow-hidden">
+      {/* Subtle dot grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
 
+      {/* Ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand/20 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 relative z-10">
+        {/* Heading */}
+        <div className="text-center mb-20">
+          <Reveal>
+            <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
+              Simple as 1-2-3
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
+              How it{" "}
+              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                works
+              </span>
+            </h2>
+          </Reveal>
+        </div>
+
+        {/* Steps */}
         <div className="relative">
-          {/* Connecting ribbon line */}
-          <div className="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-brand via-gold to-success -translate-y-1/2 z-0" />
+          {/* Desktop connector line */}
+          <div className="hidden md:block absolute top-[3.5rem] left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-[1px] bg-gradient-to-r from-gold/30 via-brand-light/30 to-success/30 z-0" />
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
             {steps.map((step, i) => (
-              <Reveal key={i} delay={200 + i * 200}>
-                <div className="relative bg-white rounded-3xl p-8 shadow-card hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2">
-                  {/* Step number */}
-                  <div className={`absolute -top-4 -left-2 w-12 h-12 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center text-white font-display font-bold text-lg shadow-ribbon group-hover:scale-110 transition-transform`}>
-                    {step.num}
-                  </div>
+              <Reveal key={i} delay={200 + i * 180} direction="up">
+                <div
+                  className={`group relative h-full rounded-[2rem] p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
+                >
+                  {/* Shimmer on hover */}
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                  <div className="pt-6">
-                    <div className="mb-4 group-hover:animate-wiggle">{step.icon}</div>
-                    <h3 className="font-display text-xl font-bold mb-2">{step.title}</h3>
-                    <p className="text-brand-muted text-sm leading-relaxed">{step.desc}</p>
+                  {/* Large background step number */}
+                  <span className={`absolute -top-2 -right-2 font-display text-[7rem] font-black leading-none opacity-[0.06] ${step.numColor} select-none pointer-events-none`}>
+                    {step.num}
+                  </span>
+
+                  <div className="relative z-10">
+                    {/* Small numbered badge */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <span className={`font-display text-xs font-black uppercase tracking-[0.2em] ${step.numColor}`}>
+                        Step {step.num}
+                      </span>
+                    </div>
+
+                    {/* Icon */}
+                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                      {step.icon}
+                    </div>
+
+                    <h3 className="font-display text-2xl font-bold text-white mb-3 group-hover:text-gold transition-colors duration-300">
+                      {step.title}
+                    </h3>
+                    <p className="text-white/65 leading-relaxed group-hover:text-white/85 transition-colors duration-300">
+                      {step.desc}
+                    </p>
                   </div>
                 </div>
               </Reveal>
@@ -592,110 +640,125 @@ export function SocialProof() {
       .catch(() => {});
   }, []);
 
-  // Fallback data if no reviews yet
   const displayReviews = reviews.length > 0
     ? reviews.map((r) => ({
         name: r.reviewer_name || r.reviewerName || "Anonymous",
         text: r.body || r.title || "",
         occasion: "Gift",
         stars: r.rating,
+        initials: (r.reviewer_name || r.reviewerName || "A").slice(0, 2).toUpperCase(),
       }))
     : [
-        { name: "Wanjiku M.", text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!", occasion: "Birthday", stars: 5 },
-        { name: "Brian K.", text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.", occasion: "Corporate", stars: 5 },
-        { name: "Amina H.", text: "Anonymous mode is everything. Sent my ex a 'just because' gift without them knowing it was me. No drama, just vibes.", occasion: "Just Because", stars: 5 },
-        { name: "Kevin O.", text: "The presentation is what did it for me. The box, the ribbon, the handwritten note — it felt so premium. Will definitely use TouchGift again.", occasion: "Anniversary", stars: 5 },
-        { name: "Stella N.", text: "My mom actually cried when she got the wellness hamper. They didn't just deliver a box, they delivered a moment. Thank you!", occasion: "Mother's Day", stars: 5 },
+        { name: "Wanjiku M.", initials: "WM", text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!", occasion: "Birthday", stars: 5 },
+        { name: "Brian K.", initials: "BK", text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.", occasion: "Corporate", stars: 5 },
+        { name: "Amina H.", initials: "AH", text: "Anonymous mode is everything. Sent a 'just because' gift without them knowing it was me. No drama, just vibes.", occasion: "Just Because", stars: 5 },
+        { name: "Kevin O.", initials: "KO", text: "The presentation is what did it for me. The box, the ribbon, the handwritten note — it felt so premium.", occasion: "Anniversary", stars: 5 },
+        { name: "Stella N.", initials: "SN", text: "My mom actually cried when she got the wellness hamper. They didn't just deliver a box, they delivered a moment.", occasion: "Mother's Day", stars: 5 },
       ];
 
-  const marqueeReviews = [...displayReviews, ...displayReviews];
+  const stats = [
+    { target: 2400, suffix: "+", label: "Gifts sent", icon: "🎁" },
+    { target: 98, suffix: "%", label: "On-time delivery", icon: "⚡" },
+    { target: 749, suffix: "+", label: "Products", icon: "🛍️" },
+    { target: 4, suffix: ".9★", label: "Average rating", icon: "⭐" },
+  ];
+
+  const StarRow = ({ count }: { count: number }) => (
+    <div className="flex gap-0.5">
+      {Array.from({ length: count }).map((_, j) => (
+        <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ))}
+    </div>
+  );
+
   return (
-    <section className="py-16 md:py-20 bg-white">
-      <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-          {[
-            { target: 2400, suffix: "+", label: "Gifts sent" },
-            { target: 98, suffix: "%", label: "On-time delivery" },
-            { target: 749, suffix: "+", label: "Products" },
-            { target: 4, suffix: ".9★", label: "Average rating" },
-          ].map((stat, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <div className="text-center">
-                <p className="font-display text-4xl md:text-5xl font-bold text-gradient">
-                  <Counter target={stat.target} suffix={stat.suffix} />
-                </p>
-                <p className="text-brand-muted text-sm mt-2">{stat.label}</p>
+    <section className="py-24 md:py-32 bg-[#FDFCFA] relative overflow-hidden">
+      {/* Subtle warm gradient top */}
+      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-blush/30 to-transparent pointer-events-none" />
+
+      <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8">
+        {/* Heading */}
+        <div className="text-center mb-16">
+          <Reveal>
+            <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
+              Real people. Real moments.
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight mb-4">
+              Loved by{" "}
+              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                gift-givers
+              </span>{" "}
+              across Nairobi
+            </h2>
+          </Reveal>
+        </div>
+
+        {/* Stats — editorial large numbers */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+          {stats.map((stat, i) => (
+            <Reveal key={i} delay={i * 80} direction="up">
+              <div className="group relative rounded-[1.5rem] p-6 bg-white border border-surface-border hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+                <div className="relative z-10">
+                  <div className="text-3xl mb-2">{stat.icon}</div>
+                  <p className="font-display text-4xl md:text-5xl font-black text-brand-deep mb-1">
+                    <Counter target={stat.target} suffix={stat.suffix} />
+                  </p>
+                  <p className="text-brand-muted text-sm font-medium">{stat.label}</p>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
 
-        {/* Testimonials */}
+        {/* Testimonials Marquee */}
         <Reveal>
-          <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
-            What people say
-          </p>
-        </Reveal>
-        <Reveal delay={100}>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center mb-12">
-            Loved by gift-givers
-          </h2>
-        </Reveal>
+          <div className="relative flex overflow-x-hidden group w-full py-4">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#FDFCFA] to-transparent z-10 pointer-events-none" />
 
-        {/* Scrolling Marquee Container */}
-        <div className="relative flex overflow-x-hidden group w-full py-4 -mx-4 px-4 md:mx-0 md:px-0">
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10" />
-          
-          <div className="animate-marquee whitespace-nowrap flex gap-6 group-hover:[animation-play-state:paused] min-w-full shrink-0 items-center justify-around">
-            {displayReviews.map((t, i) => (
-              <div 
-                key={i} 
-                className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300 w-[300px] md:w-[380px] flex-shrink-0 flex flex-col justify-between whitespace-normal h-full"
+            {[0, 1].map((track) => (
+              <div
+                key={track}
+                aria-hidden={track === 1}
+                className="animate-marquee flex gap-5 min-w-full shrink-0 items-stretch group-hover:[animation-play-state:paused]"
               >
-                <div>
-                  <div className="flex gap-1 mb-3">
-                    {Array.from({ length: t.stars }).map((_, j) => (
-                      <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    ))}
+                {displayReviews.map((t, i) => (
+                  <div
+                    key={i}
+                    className="flex-shrink-0 w-[300px] md:w-[360px] bg-white rounded-[1.5rem] p-6 border border-surface-border hover:border-brand/20 hover:shadow-card transition-all duration-300 flex flex-col gap-4 whitespace-normal"
+                  >
+                    {/* Stars */}
+                    <StarRow count={t.stars} />
+
+                    {/* Quote */}
+                    <p className="text-sm md:text-base leading-relaxed text-brand-deep flex-1">
+                      &ldquo;{t.text}&rdquo;
+                    </p>
+
+                    {/* Author row */}
+                    <div className="flex items-center justify-between pt-2 border-t border-surface-border">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
+                          <span className="text-white text-[10px] font-bold">{t.initials}</span>
+                        </div>
+                        <span className="font-semibold text-sm">{t.name}</span>
+                      </div>
+                      <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-brand px-3 py-1.5 rounded-full">
+                        {t.occasion}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-sm leading-relaxed mb-6 whitespace-normal">&ldquo;{t.text}&rdquo;</p>
-                </div>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="font-semibold text-sm">{t.name}</span>
-                  <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/10 text-brand px-3 py-1.5 rounded-full">{t.occasion}</span>
-                </div>
+                ))}
               </div>
             ))}
           </div>
-
-          <div className="animate-marquee whitespace-nowrap flex gap-6 group-hover:[animation-play-state:paused] min-w-full shrink-0 items-center justify-around" aria-hidden="true">
-            {displayReviews.map((t, i) => (
-              <div 
-                key={i} 
-                className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300 w-[300px] md:w-[380px] flex-shrink-0 flex flex-col justify-between whitespace-normal h-full ml-6"
-              >
-                <div>
-                  <div className="flex gap-1 mb-3">
-                    {Array.from({ length: t.stars }).map((_, j) => (
-                      <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="text-sm leading-relaxed mb-6 whitespace-normal">&ldquo;{t.text}&rdquo;</p>
-                </div>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="font-semibold text-sm">{t.name}</span>
-                  <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/10 text-brand px-3 py-1.5 rounded-full">{t.occasion}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
