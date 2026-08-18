@@ -197,7 +197,7 @@ export function HeroCinematic() {
             {/* Typewriter delivery note */}
             <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
-                TouchGift promise
+                TouchGift Promise
               </span>
               <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
                 <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
@@ -211,11 +211,11 @@ export function HeroCinematic() {
             {/* Main headline */}
             <h1 className={`font-display text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <span className="relative inline-block py-1 text-shadow-glow">
-                Send something
+                Elevate the art
                 <br />
                 <span className="relative inline-block">
                   <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
-                    they&apos;ll remember
+                    of gifting
                   </span>
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
                     <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
@@ -231,19 +231,18 @@ export function HeroCinematic() {
             </h1>
 
             {/* Subheadline */}
-            <p className={`text-lg md:text-xl text-white/60 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              Thoughtful gifts for birthdays, milestones, apologies, and just-because
-              moments, wrapped beautifully and delivered with care.
+            <p className={`text-lg md:text-xl text-white/70 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+              Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment.
             </p>
 
             {/* CTA */}
             <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <Link
-                href="/shop?category=birthdays"
+                href="/shop"
                 className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1 w-full sm:w-auto text-center"
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Browse Gifts
+                  Shop All Gifts
                   <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
@@ -267,9 +266,9 @@ export function HeroCinematic() {
                 <Target className="w-3.5 h-3.5 text-coral" />
                 AI Gift Match
               </Link>
-              <Link href="/gift-lab" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <ShoppingBag className="w-3.5 h-3.5 text-gold" />
-                Custom Hampers
+              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <Building2 className="w-3.5 h-3.5 text-gold" />
+                Corporate Gifts
               </Link>
               <Link href="/gift-lab/pool" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
                 <span className="text-[14px]">👥</span>
