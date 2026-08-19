@@ -331,28 +331,36 @@ export function ProblemSection() {
       desc: "Forgot an important date? We orchestrate lightning-fast same-day deliveries across Nairobi, ensuring your gesture arrives exactly when it should.",
       icon: <Clock className="w-8 h-8 text-brand" />,
       colSpan: "md:col-span-2",
-      bg: "bg-blush/40"
+      bg: "bg-blush/40",
+      titleColor: "text-brand-deep",
+      textColor: "text-brand-deep/75",
     },
     { 
       title: "Uninspired Choices", 
       desc: "We bypass the ordinary, offering only meticulously curated pieces designed to leave a lasting impression.",
       icon: <PackageX className="w-8 h-8 text-gold" />,
       colSpan: "md:col-span-1",
-      bg: "bg-surface-secondary"
+      bg: "bg-surface-secondary",
+      titleColor: "text-brand-deep",
+      textColor: "text-brand-deep/75",
     },
     { 
       title: "Logistical Headaches", 
       desc: "No address? No problem. We seamlessly coordinate with your recipient, preserving the magic without the stress.",
       icon: <MapPin className="w-8 h-8 text-coral" />,
       colSpan: "md:col-span-1",
-      bg: "bg-surface-warm"
+      bg: "bg-surface-warm",
+      titleColor: "text-brand-deep",
+      textColor: "text-brand-deep/75",
     },
     { 
       title: "Unexpected Costs", 
       desc: "Experience absolute transparency. What you see is exactly what you pay—no hidden fees, just pure peace of mind.",
-      icon: <Banknote className="w-8 h-8 text-brand-muted" />,
+      icon: <Banknote className="w-8 h-8 text-brand" />,
       colSpan: "md:col-span-2",
-      bg: "bg-white"
+      bg: "bg-white",
+      titleColor: "text-brand-deep",
+      textColor: "text-brand-deep/75",
     },
   ];
 
@@ -369,11 +377,11 @@ export function ProblemSection() {
             <h2 className="font-display section-heading font-bold mb-6">
               Finding the perfect gift
               <br />
-              <span className="text-brand-muted font-normal italic">is often harder than it should be.</span>
+              <span className="text-brand-deep/60 font-normal italic">is often harder than it should be.</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <p className="text-brand-muted text-lg">
+            <p className="text-brand-deep/70 text-lg leading-relaxed">
               You want to show how much you care, but finding the perfect gift shouldn't be stressful. We're here to make the experience as beautiful as the gesture itself.
             </p>
           </Reveal>
@@ -388,8 +396,8 @@ export function ProblemSection() {
                   <div className="mb-4 p-3 bg-white shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                     {p.icon}
                   </div>
-                  <h3 className="text-2xl font-display font-bold mb-2 heading-elegant">{p.title}</h3>
-                  <p className="text-brand-muted leading-relaxed text-elegant">{p.desc}</p>
+                  <h3 className={`text-2xl font-display font-bold mb-3 heading-elegant ${p.titleColor}`}>{p.title}</h3>
+                  <p className={`leading-relaxed text-elegant ${p.textColor}`}>{p.desc}</p>
                 </div>
               </div>
             </Reveal>
@@ -715,7 +723,7 @@ export function SocialProof() {
                   <p className="font-display text-4xl md:text-5xl font-black text-brand-deep mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-brand-muted text-sm font-medium italic">{stat.label}</p>
+                  <p className="text-brand-deep/60 text-sm font-medium italic">{stat.label}</p>
                 </div>
               </div>
             </Reveal>
@@ -804,7 +812,7 @@ export function OccasionsGrid() {
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-6">
+          <p className="text-brand-deep/70 text-center max-w-xl mx-auto mb-6 leading-relaxed">
             Every occasion deserves something special. Pick a category and
             we&apos;ll show you curated gifts that fit.
           </p>
@@ -870,7 +878,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-6 leading-relaxed">
+          <p className="text-lg md:text-xl text-brand-deep/70 max-w-2xl mx-auto mb-6 leading-relaxed">
             Skip the stress. We curate, wrap beautifully, and deliver with care — so all you have to do is watch them smile.
           </p>
         </Reveal>
