@@ -33,6 +33,13 @@ const CreatePoolSchema = z.object({
   privacyMode: z.enum(["named", "anonymous"]).default("named"),
   surpriseMode: z.boolean().default(true),
   ghostModeAllowed: z.boolean().default(true),
+  isPollMode: z.boolean().default(false),
+  pollOptions: z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    price: z.number(),
+    image: z.string().optional()
+  })).optional(),
 });
 
 export async function POST(req: Request) {
@@ -81,10 +88,13 @@ export async function POST(req: Request) {
       current_balance: 0,
       min_contribution: d.minContribution,
       over_target_behaviour: d.overTargetBehaviour,
+      under_target_action: null,
       expires_at: d.expiresAt,
       privacy_mode: d.privacyMode,
       surprise_mode: d.surpriseMode,
       ghost_mode_allowed: d.ghostModeAllowed,
+      is_poll_mode: d.isPollMode,
+      poll_options: d.pollOptions ? JSON.stringify(d.pollOptions) : null,
       status: "active",
     })
     .select()

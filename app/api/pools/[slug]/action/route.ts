@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabase } from "@/lib/supabase-server";
 
 const CloseSchema = z.object({
   action: z.enum(["refund", "extend", "downgrade", "place_order"]),
@@ -14,7 +14,7 @@ export async function POST(
   req: Request,
   { params }: { params: { slug: string } }
 ) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
@@ -47,6 +47,15 @@ export async function POST(
         .from("group_gifting_pools")
         .update({ status: "refunded", closed_at: new Date().toISOString() })
         .eq("id", pool.id);
+        
+      // Decrement trust score for cancelling
+      const { data: metrics } = await supabaseAdmin.from("user_metrics").select("trust_score").eq("user_id", user.id).single();
+      if (metrics) {
+        await supabaseAdmin.from("user_metrics").update({ trust_score: Math.max(0, metrics.trust_score - 10) }).eq("user_id", user.id);
+      } else {
+        await supabaseAdmin.from("user_metrics").insert({ user_id: user.id, trust_score: 90 });
+      }
+
       // TODO: trigger PesaPal refund API per contribution
       return NextResponse.json({ success: true, message: "Pool cancelled. Refunds will be processed within 3-5 business days." });
     }
