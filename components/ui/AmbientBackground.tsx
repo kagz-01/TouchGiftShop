@@ -15,154 +15,88 @@ export default function AmbientBackground() {
           : "#FDF5EE",
       }}
     >
-      {isDark ? (
         <>
           {/* ═══════════════════════════════════════════
-              DARK MODE — 3D flowing ribbon effect
-              Our brand colors: Magenta · Deep Rose · Plum
-              Not all dark — uses lighter shades for 3D pop
+              DARK MODE — Clean Deep Purple with Falling Stars
               ═══════════════════════════════════════════ */}
 
-          {/* Base glow — warm plum radial from centre, lifts the darkness */}
+          {/* Very smooth, deep clean background gradient */}
           <div style={{
             position: "absolute", inset: 0,
-            background:
-              "radial-gradient(ellipse 130% 90% at 35% 55%, #3D0A55 0%, #200030 45%, #120018 80%)",
+            background: "linear-gradient(180deg, #1A002A 0%, #290845 40%, #120018 100%)",
           }} />
 
-          {/* ── Ribbon 1 — large ribbon sweeping bottom-left → top-right
-              Cross-section gradient mimics 3D lighting:
-              dark edge → deep rose → bright highlight → deep rose → dark edge */}
+          {/* Glow at the top so it feels illuminated from above */}
           <div style={{
             position: "absolute",
-            width: "160%",
-            height: "42%",
-            bottom: "-8%",
-            left: "-30%",
-            transform: "rotate(-20deg)",
-            background:
-              "linear-gradient(to top, " +
-              "#0A000F 0%, " +           // shadow underside
-              "#2D0038 8%, " +            // deep shadow
-              "#6D1340 22%, " +           // deep rose
-              "#9B1B5A 38%, " +           // brand magenta
-              "#C4297A 52%, " +           // mid highlight
-              "#E060A8 63%, " +           // bright highlight peak
-              "#F5A0CC 70%, " +           // specular (light catching)
-              "#E060A8 76%, " +           // fade back
-              "#9B1B5A 84%, " +           // back to mid
-              "#4A0830 93%, " +           // shadow
-              "#0A000F 100%)",            // dark edge
-            filter: "blur(6px)",
-            opacity: 0.92,
-            animation: "ribbon-drift 18s ease-in-out infinite alternate",
+            top: "-20%", left: "-10%",
+            width: "120%", height: "60%",
+            background: "radial-gradient(ellipse at 50% 0%, rgba(155, 27, 90, 0.4) 0%, transparent 70%)",
+            filter: "blur(60px)",
           }} />
 
-          {/* ── Ribbon 2 — slimmer ribbon crossing above ribbon 1, slightly different angle */}
-          <div style={{
-            position: "absolute",
-            width: "160%",
-            height: "28%",
-            bottom: "22%",
-            left: "-25%",
-            transform: "rotate(-25deg)",
-            background:
-              "linear-gradient(to top, " +
-              "#0A000F 0%, " +
-              "#350045 10%, " +           // purple-plum shadow
-              "#7B1258 25%, " +           // rose mid
-              "#B0206A 45%, " +           // lighter rose
-              "#D94080 60%, " +           // brighter
-              "#F080B8 72%, " +           // bright highlight
-              "#FFB8DC 78%, " +           // specular peak
-              "#F080B8 83%, " +
-              "#8B1558 92%, " +
-              "#0A000F 100%)",
-            filter: "blur(10px)",
-            opacity: 0.78,
-            animation: "ribbon-drift 22s ease-in-out infinite alternate-reverse",
-          }} />
+          {/* ── Falling Light Trails / Stars ── */}
+          {/* 20 individual falling stars with stable values for SSR hydration */}
+          {[
+            { left: 5, delay: 0.2, duration: 18, opacity: 0.4, h: 25, w: 1 },
+            { left: 15, delay: 3.5, duration: 22, opacity: 0.6, h: 40, w: 2 },
+            { left: 25, delay: 1.1, duration: 16, opacity: 0.3, h: 30, w: 1 },
+            { left: 32, delay: 5.4, duration: 25, opacity: 0.7, h: 50, w: 1 },
+            { left: 45, delay: 2.3, duration: 19, opacity: 0.5, h: 35, w: 2 },
+            { left: 55, delay: 6.8, duration: 21, opacity: 0.8, h: 45, w: 1 },
+            { left: 62, delay: 0.9, duration: 17, opacity: 0.4, h: 28, w: 1 },
+            { left: 75, delay: 4.2, duration: 24, opacity: 0.6, h: 42, w: 2 },
+            { left: 85, delay: 1.7, duration: 20, opacity: 0.5, h: 32, w: 1 },
+            { left: 95, delay: 7.1, duration: 23, opacity: 0.7, h: 48, w: 1 },
+            { left: 8, delay: 8.5, duration: 15, opacity: 0.3, h: 22, w: 1 },
+            { left: 18, delay: 4.9, duration: 26, opacity: 0.6, h: 38, w: 2 },
+            { left: 28, delay: 2.8, duration: 19, opacity: 0.5, h: 33, w: 1 },
+            { left: 38, delay: 7.6, duration: 21, opacity: 0.8, h: 46, w: 1 },
+            { left: 48, delay: 1.4, duration: 18, opacity: 0.4, h: 29, w: 2 },
+            { left: 58, delay: 9.2, duration: 27, opacity: 0.7, h: 55, w: 1 },
+            { left: 68, delay: 3.7, duration: 22, opacity: 0.5, h: 36, w: 1 },
+            { left: 78, delay: 6.3, duration: 20, opacity: 0.6, h: 41, w: 2 },
+            { left: 88, delay: 2.1, duration: 25, opacity: 0.4, h: 31, w: 1 },
+            { left: 98, delay: 8.9, duration: 17, opacity: 0.8, h: 44, w: 1 },
+          ].map((star, i) => (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  left: `${star.left}%`,
+                  top: 0,
+                  width: `${star.w}px`,
+                  height: `${star.h}vh`,
+                  background: "linear-gradient(to bottom, transparent, rgba(255, 180, 220, 0.8), #FFF)",
+                  opacity: star.opacity,
+                  transform: "translateY(-100vh)", // Start offscreen top
+                  animation: `star-fall ${star.duration}s linear ${star.delay}s infinite`,
+                  boxShadow: "0 0 10px rgba(255, 180, 220, 0.5)",
+                  borderRadius: "50%",
+                }}
+              >
+                {/* Bright tip at the bottom of the trail */}
+                <div style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "4px",
+                  height: "4px",
+                  background: "#FFF",
+                  borderRadius: "50%",
+                  boxShadow: "0 0 8px 2px #E060A8",
+                  animation: `star-glow 3s ease-in-out infinite alternate ${star.delay}s`,
+                }} />
+              </div>
+            ))}
 
-          {/* ── Ribbon 3 — top area, shallower ribbon adds upper depth */}
-          <div style={{
-            position: "absolute",
-            width: "140%",
-            height: "25%",
-            top: "-2%",
-            left: "-20%",
-            transform: "rotate(-15deg)",
-            background:
-              "linear-gradient(to top, " +
-              "#0A000F 0%, " +
-              "#2A0035 12%, " +
-              "#5D1045 28%, " +
-              "#8B1B52 44%, " +
-              "#BA2870 60%, " +
-              "#DC5098 72%, " +           // highlight
-              "#F090C0 78%, " +           // specular
-              "#DC5098 84%, " +
-              "#6D1340 92%, " +
-              "#0A000F 100%)",
-            filter: "blur(14px)",
-            opacity: 0.65,
-            animation: "ribbon-drift 26s ease-in-out infinite alternate",
-          }} />
-
-          {/* ── Gold accent ribbon — thin warm stripe linking the rose bands */}
-          <div style={{
-            position: "absolute",
-            width: "120%",
-            height: "10%",
-            top: "52%",
-            left: "-10%",
-            transform: "rotate(-18deg)",
-            background:
-              "linear-gradient(to top, " +
-              "transparent 0%, " +
-              "#8B5A10 20%, " +
-              "#D4A853 48%, " +
-              "#F0C870 60%, " +           // gold specular
-              "#D4A853 72%, " +
-              "#8B5A10 88%, " +
-              "transparent 100%)",
-            filter: "blur(18px)",
-            opacity: 0.35,
-          }} />
-
-          {/* ── Specular pop-highlights — tiny bright streaks where light peaks */}
-          <div style={{
-            position: "absolute",
-            width: "35%", height: "5%",
-            bottom: "34%", left: "15%",
-            transform: "rotate(-22deg)",
-            background:
-              "linear-gradient(to right, transparent, rgba(255,190,230,0.7), transparent)",
-            filter: "blur(4px)",
-          }} />
-          <div style={{
-            position: "absolute",
-            width: "28%", height: "4%",
-            bottom: "13%", left: "48%",
-            transform: "rotate(-20deg)",
-            background:
-              "linear-gradient(to right, transparent, rgba(255,210,240,0.55), transparent)",
-            filter: "blur(5px)",
-          }} />
-          <div style={{
-            position: "absolute",
-            width: "22%", height: "3%",
-            top: "8%", left: "30%",
-            transform: "rotate(-14deg)",
-            background:
-              "linear-gradient(to right, transparent, rgba(255,180,220,0.5), transparent)",
-            filter: "blur(4px)",
-          }} />
-
-          {/* ── Edge vignette — darkens borders so centre ribbons pop */}
+          {/* ── Optional: Subtle noise overlay for the background itself (already on cards) ── */}
           <div style={{
             position: "absolute", inset: 0,
-            background:
-              "radial-gradient(ellipse 70% 70% at 50% 50%, transparent 25%, rgba(10,0,20,0.55) 100%)",
+            opacity: 0.15,
+            backgroundImage: "var(--noise-texture)",
+            mixBlendMode: "overlay",
           }} />
         </>
       ) : (

@@ -68,6 +68,20 @@ html {
 .text-on-theme   { color: var(--text-primary); }
 .text-muted-theme { color: var(--text-muted); }
 
+/* ========================
+   BACKGROUND ANIMATIONS
+   ======================== */
+@keyframes star-fall {
+  0% { transform: translateY(-10vh); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+@keyframes star-glow {
+  0%, 100% { opacity: 0.5; filter: blur(2px) drop-shadow(0 0 4px var(--color-brand)); }
+  50% { opacity: 1; filter: blur(4px) drop-shadow(0 0 12px var(--color-brand)); }
+}
 
 /* ========================
    FLUID TYPOGRAPHY SYSTEM
