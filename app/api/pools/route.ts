@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { createServerSupabase } from "@/lib/supabase-server";
 
 function slugify(text: string): string {
   return text
@@ -36,7 +36,7 @@ const CreatePoolSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createServerSupabase();
 
   // Organiser must be logged in
   const { data: { user } } = await supabase.auth.getUser();
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
   }
 
   const d = parsed.data;
-  const baseSlug = slugify(d.recipientName + "-" + d.occasion ?? "gift");
+  const baseSlug = slugify(d.recipientName + "-" + (d.occasion ?? "gift"));
   let slug = `${baseSlug}-${Date.now().toString(36)}`;
 
   // Ensure unique slug
@@ -101,7 +101,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
-  const supabase = createServerSupabaseClient();
+  const supabase = createServerSupabase();
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
 
