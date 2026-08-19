@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+import { useTheme } from "@/components/ui/ThemeProvider";
 
 function HomeIcon({ active }: { active: boolean }) {
   return (
@@ -54,13 +56,22 @@ const TABS: Array<{ href: string; label: string; Icon: ({ active }: { active: bo
 
 export default function BottomNav() {
   const pathname = usePathname()!;
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
     <nav
       className="fixed bottom-4 left-4 right-4 z-50 flex md:hidden"
       aria-label="Primary"
     >
-      <div className="flex-1 flex items-center justify-around bg-white/95 backdrop-blur-xl rounded-full border border-surface-border shadow-card px-2 py-1.5">
+      <div
+        className={cn(
+          "flex-1 flex items-center justify-around backdrop-blur-xl rounded-full border px-2 py-1.5 transition-all duration-500",
+          isDark
+            ? "bg-[rgba(30,10,50,0.85)] border-white/10 shadow-[0_8px_32px_rgba(155,27,90,0.3)]"
+            : "bg-white/95 border-[rgba(155,27,90,0.1)] shadow-card"
+        )}
+      >
         {TABS.map((tab) => {
           const active =
             tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
@@ -86,6 +97,14 @@ export default function BottomNav() {
             </Link>
           );
         })}
+
+        {/* Compact theme toggle */}
+        <div className="flex flex-col items-center gap-0.5 px-2 py-1">
+          <div className="scale-[0.65] origin-center">
+            <ThemeToggle />
+          </div>
+          <span className="text-[10px] text-brand-muted">Theme</span>
+        </div>
       </div>
     </nav>
   );

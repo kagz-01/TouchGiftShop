@@ -84,20 +84,20 @@ export default function ShopFilterBar() {
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-black/5 p-4 shadow-sm relative z-20">
+    <div className="bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 p-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative z-20">
       
       {/* ── Occasions ── */}
-      <div className="relative mb-4 pb-4 border-b border-black/5">
+      <div className="relative mb-4 pb-4 border-b border-white/10">
         <div className="flex items-center gap-2 mb-2 px-1">
-          <Sparkles className="w-4 h-4 text-brand-muted" />
-          <h3 className="text-xs font-bold text-brand-muted uppercase tracking-wider">Occasion / Theme</h3>
+          <Sparkles className="w-4 h-4 text-white/60" />
+          <h3 className="text-xs font-bold text-white/60 uppercase tracking-wider">Occasion / Theme</h3>
         </div>
         
         {canScrollLeft && (
-          <div className="absolute left-0 top-6 bottom-0 w-12 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-6 bottom-0 w-12 bg-gradient-to-r from-black/20 to-transparent z-10 pointer-events-none" />
         )}
         {canScrollRight && (
-          <div className="absolute right-0 top-6 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-6 bottom-0 w-12 bg-gradient-to-l from-black/20 to-transparent z-10 pointer-events-none" />
         )}
 
         <div
@@ -113,7 +113,7 @@ export default function ShopFilterBar() {
                 "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0",
                 activeCategory === cat.slug
                   ? "bg-brand text-white shadow-ribbon"
-                  : "bg-gray-50 text-brand-deep hover:bg-brand/5 hover:text-brand"
+                  : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
               )}
             >
               <div className="flex items-center justify-center shrink-0">{cat.icon}</div>
@@ -126,8 +126,8 @@ export default function ShopFilterBar() {
       {/* ── Budget ── */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-1">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-brand-muted" />
-          <h3 className="text-xs font-bold text-brand-muted uppercase tracking-wider">Budget:</h3>
+          <Filter className="w-4 h-4 text-white/60" />
+          <h3 className="text-xs font-bold text-white/60 uppercase tracking-wider">Budget:</h3>
         </div>
         
         <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
@@ -139,7 +139,7 @@ export default function ShopFilterBar() {
                 "flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
                 activeBudget === tier.slug
                   ? "bg-brand text-white border-brand shadow-sm"
-                  : "bg-white border-black/8 text-brand-muted hover:border-brand/30 hover:text-brand"
+                  : "bg-white/5 border-white/10 text-white/70 hover:border-white/30 hover:text-white"
               )}
             >
               {tier.label}

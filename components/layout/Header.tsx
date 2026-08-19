@@ -9,6 +9,7 @@ import NotificationBell from "@/components/layout/NotificationBell";
 import { createClient } from "@/lib/supabase-browser";
 import { ShoppingBag, Bell, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -171,6 +172,9 @@ export default function Header() {
 
             {/* Divider */}
             <div className="w-px h-5 bg-surface-border mx-1" />
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {user ? (
               /* Logged-in avatar */

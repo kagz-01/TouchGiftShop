@@ -111,7 +111,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
               "absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 z-10",
               wishlisted
                 ? "bg-brand text-white shadow-ribbon"
-                : "bg-white/90 backdrop-blur-sm text-brand-muted hover:text-brand hover:bg-white hover:scale-110"
+                : "bg-white/10 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-white/20 hover:scale-110"
             )}
             aria-label="Add to wishlist"
           >
@@ -128,16 +128,16 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
 
           {/* Wishlist slug input popup */}
           {showWishlistInput && (
-            <div className="absolute top-14 right-3 bg-white rounded-xl shadow-card-hover border border-surface-border p-3 z-20 w-56 animate-pop" onClick={(e) => e.stopPropagation()}>
-              <p className="text-xs font-semibold mb-2">Your wishlist link?</p>
-              <p className="text-[10px] text-brand-muted mb-2">Paste your wishlist slug (from the URL)</p>
+            <div className="absolute top-14 right-3 bg-white/10 backdrop-blur-xl rounded-xl shadow-card-hover border border-white/20 p-3 z-20 w-56 animate-pop" onClick={(e) => e.stopPropagation()}>
+              <p className="text-xs font-semibold mb-2 text-white">Your wishlist link?</p>
+              <p className="text-[10px] text-white/70 mb-2">Paste your wishlist slug (from the URL)</p>
               <div className="flex gap-1">
                 <input
                   type="text"
                   value={wishlistSlug}
                   onChange={(e) => setWishlistSlug(e.target.value)}
                   placeholder="e.g. grace"
-                  className="flex-1 bg-gray-50 border border-surface-border rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:border-brand"
+                  className="flex-1 bg-black/20 border border-white/20 rounded-lg px-2 py-1.5 text-xs text-white placeholder-white/50 focus:outline-none focus:border-white/50"
                   onClick={(e) => e.stopPropagation()}
                 />
                 <button
@@ -170,14 +170,14 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
                   if (isSelectedForSubscription) removeSubscriptionItem(product.id);
                   else addSubscriptionItem(product as any);
                 }}
-                className={cn("w-full bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold shadow-soft transition-colors", 
-                  isSelectedForSubscription ? "bg-brand text-white" : "text-brand hover:bg-white"
+                className={cn("w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-center text-sm font-semibold shadow-soft transition-colors", 
+                  isSelectedForSubscription ? "bg-white/30 text-white" : "text-white/90 hover:bg-white/20"
                 )}
               >
                 {isSelectedForSubscription ? "Added to Subscription" : "Add to Subscription"}
               </button>
             ) : (
-              <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2.5 text-center text-sm font-semibold text-brand shadow-soft">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-center text-sm font-semibold text-white/90 shadow-soft">
                 <span className="flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -219,15 +219,15 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 group-hover:text-brand transition-colors duration-300">
+          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-white/90 group-hover:text-white transition-colors duration-300">
             {product.name}
           </h3>
           <div className="flex items-center justify-between">
             <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
             <div
               className={cn(
-                "w-8 h-8 rounded-full bg-brand/5 flex items-center justify-center transition-all duration-300",
-                isHovered && "bg-brand text-white scale-110"
+                "w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300 text-white",
+                isHovered && "bg-white/30 scale-110"
               )}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

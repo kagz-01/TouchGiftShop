@@ -4,7 +4,9 @@ import BottomNav from "@/components/layout/BottomNav";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
+import AmbientBackground from "@/components/ui/AmbientBackground";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
 
 export const metadata: Metadata = {
@@ -58,17 +60,20 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-gradient-to-b from-[#FFF5F8] via-[#FDF8F4] to-[#FFF9FB] text-brand-deep font-sans">
-        <SubscriptionProvider>
-          <Header />
-          <main className="flex-1 pb-20 md:pb-0">
-            {children}
-          </main>
-          <Footer />
-          <BottomNav />
-          <WhatsAppFloat />
-          <GiftChatWidget />
-        </SubscriptionProvider>
+      <body className="min-h-screen flex flex-col font-sans overflow-x-hidden">
+        <ThemeProvider>
+          <AmbientBackground />
+          <SubscriptionProvider>
+            <Header />
+            <main className="flex-1 pb-20 md:pb-0 relative z-0">
+              {children}
+            </main>
+            <Footer />
+            <BottomNav />
+            <WhatsAppFloat />
+            <GiftChatWidget />
+          </SubscriptionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
