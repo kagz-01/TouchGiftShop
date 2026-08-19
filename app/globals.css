@@ -31,6 +31,8 @@
   --card-border:    rgba(155, 27, 90, 0.12);
   --card-shadow:    0 4px 24px rgba(155, 27, 90, 0.08);
   --card-hover-shadow: 0 12px 40px rgba(155, 27, 90, 0.18);
+  /* Frost Texture - subtle SVG noise */
+  --noise-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* DARK MODE — 3D ribbon magenta/plum/rose palette */
@@ -146,11 +148,30 @@ html {
 @layer components {
   /* Gift Card - Theme-aware Liquid Glass */
   .gift-card {
-    @apply relative backdrop-blur-xl rounded-[2.5rem] overflow-hidden transition-all duration-500;
+    @apply relative backdrop-blur-xl rounded-[2.5rem] transition-all duration-500;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
   }
+  
+  /* Physical Frosted Glass Noise Overlay */
+  .gift-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.25;
+    background-image: var(--noise-texture);
+    mix-blend-mode: overlay;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  .gift-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .gift-card:hover {
     transform: translateY(-6px) rotateX(2deg);
     box-shadow: var(--card-hover-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
