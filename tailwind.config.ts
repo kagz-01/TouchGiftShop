@@ -38,8 +38,8 @@ const config: Config = {
         success: "#22C55E",
       },
       fontFamily: {
-        display: ['"Playfair Display"', "Georgia", "serif"],
-        sans: ['"DM Sans"', "system-ui", "-apple-system", "sans-serif"],
+        display: ['"Cormorant Garamond"', "Georgia", "serif"],
+        sans: ['"Inter"', "system-ui", "-apple-system", "sans-serif"],
       },
       borderRadius: {
         "none": "0",

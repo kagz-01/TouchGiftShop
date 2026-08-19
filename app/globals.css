@@ -476,7 +476,7 @@ html {
     border-radius: 2.5rem 0.75rem 2.5rem 0.75rem;
   }
   .text-elegant {
-    @apply font-light italic tracking-wide;
+    @apply font-light tracking-wide leading-relaxed;
   }
   .heading-elegant {
     @apply font-display font-bold italic tracking-wide;
