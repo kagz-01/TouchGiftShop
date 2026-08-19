@@ -10,26 +10,48 @@ export default function AmbientBackground() {
   // Configuration for 3D falling strings with attached icons
   // 'z' represents depth: higher z = closer (larger, sharper, brighter), lower z = farther (smaller, blurred, darker)
   const fallingItems = [
-    { left: 5, delay: 0.2, duration: 12, z: 0.8, Icon: Gift },
-    { left: 15, delay: 3.5, duration: 15, z: 0.5, Icon: Sparkles },
-    { left: 25, delay: 1.1, duration: 10, z: 1.0, Icon: Heart },
-    { left: 32, delay: 5.4, duration: 18, z: 0.3, Icon: Star },
-    { left: 45, delay: 2.3, duration: 13, z: 0.7, Icon: Gift },
-    { left: 55, delay: 6.8, duration: 11, z: 0.9, Icon: Heart },
-    { left: 62, delay: 0.9, duration: 16, z: 0.4, Icon: Sparkles },
-    { left: 75, delay: 4.2, duration: 14, z: 0.6, Icon: Gift },
-    { left: 85, delay: 1.7, duration: 17, z: 0.4, Icon: Star },
-    { left: 95, delay: 7.1, duration: 12, z: 0.8, Icon: Heart },
-    { left: 8, delay: 8.5, duration: 19, z: 0.3, Icon: Sparkles },
-    { left: 18, delay: 4.9, duration: 10, z: 1.0, Icon: Gift },
-    { left: 28, delay: 2.8, duration: 14, z: 0.6, Icon: Heart },
-    { left: 38, delay: 7.6, duration: 13, z: 0.7, Icon: Star },
-    { left: 48, delay: 1.4, duration: 16, z: 0.4, Icon: Sparkles },
-    { left: 58, delay: 9.2, duration: 11, z: 0.9, Icon: Gift },
-    { left: 68, delay: 3.7, duration: 15, z: 0.5, Icon: Heart },
-    { left: 78, delay: 6.3, duration: 12, z: 0.8, Icon: Sparkles },
-    { left: 88, delay: 2.1, duration: 17, z: 0.3, Icon: Gift },
+    { left: 2, delay: 0.2, duration: 12, z: 0.8, Icon: Gift },
+    { left: 7, delay: 3.5, duration: 15, z: 0.5, Icon: Sparkles },
+    { left: 12, delay: 1.1, duration: 10, z: 1.0, Icon: Heart },
+    { left: 18, delay: 5.4, duration: 18, z: 0.3, Icon: Star },
+    { left: 23, delay: 2.3, duration: 13, z: 0.7, Icon: Gift },
+    { left: 28, delay: 6.8, duration: 11, z: 0.9, Icon: Heart },
+    { left: 33, delay: 0.9, duration: 16, z: 0.4, Icon: Sparkles },
+    { left: 38, delay: 4.2, duration: 14, z: 0.6, Icon: Gift },
+    { left: 43, delay: 1.7, duration: 17, z: 0.4, Icon: Star },
+    { left: 48, delay: 7.1, duration: 12, z: 0.8, Icon: Heart },
+    { left: 53, delay: 8.5, duration: 19, z: 0.3, Icon: Sparkles },
+    { left: 58, delay: 4.9, duration: 10, z: 1.0, Icon: Gift },
+    { left: 63, delay: 2.8, duration: 14, z: 0.6, Icon: Heart },
+    { left: 68, delay: 7.6, duration: 13, z: 0.7, Icon: Star },
+    { left: 73, delay: 1.4, duration: 16, z: 0.4, Icon: Sparkles },
+    { left: 78, delay: 9.2, duration: 11, z: 0.9, Icon: Gift },
+    { left: 83, delay: 3.7, duration: 15, z: 0.5, Icon: Heart },
+    { left: 88, delay: 6.3, duration: 12, z: 0.8, Icon: Sparkles },
+    { left: 93, delay: 2.1, duration: 17, z: 0.3, Icon: Gift },
     { left: 98, delay: 8.9, duration: 10, z: 1.0, Icon: Star },
+    
+    // Additional 20 items to increase density
+    { left: 4, delay: 4.1, duration: 14, z: 0.6, Icon: Star },
+    { left: 14, delay: 7.3, duration: 11, z: 0.9, Icon: Gift },
+    { left: 21, delay: 2.5, duration: 16, z: 0.4, Icon: Heart },
+    { left: 26, delay: 9.8, duration: 13, z: 0.8, Icon: Sparkles },
+    { left: 36, delay: 1.2, duration: 19, z: 0.2, Icon: Gift },
+    { left: 41, delay: 5.7, duration: 12, z: 0.7, Icon: Star },
+    { left: 49, delay: 8.4, duration: 15, z: 0.5, Icon: Heart },
+    { left: 54, delay: 3.1, duration: 10, z: 1.0, Icon: Sparkles },
+    { left: 61, delay: 6.9, duration: 17, z: 0.4, Icon: Gift },
+    { left: 66, delay: 0.6, duration: 14, z: 0.6, Icon: Star },
+    { left: 71, delay: 4.8, duration: 11, z: 0.9, Icon: Heart },
+    { left: 76, delay: 2.2, duration: 18, z: 0.3, Icon: Sparkles },
+    { left: 81, delay: 7.5, duration: 12, z: 0.8, Icon: Gift },
+    { left: 86, delay: 1.9, duration: 16, z: 0.5, Icon: Star },
+    { left: 91, delay: 5.3, duration: 13, z: 0.7, Icon: Heart },
+    { left: 96, delay: 9.5, duration: 10, z: 1.0, Icon: Sparkles },
+    { left: 9, delay: 3.8, duration: 15, z: 0.6, Icon: Gift },
+    { left: 31, delay: 8.2, duration: 14, z: 0.5, Icon: Heart },
+    { left: 59, delay: 1.5, duration: 17, z: 0.4, Icon: Star },
+    { left: 89, delay: 6.4, duration: 11, z: 0.9, Icon: Sparkles },
   ];
 
   return (
@@ -74,9 +96,11 @@ export default function AmbientBackground() {
         
         const trailColor = isDark 
           ? "rgba(255, 180, 220, 0.8)" 
-          : "rgba(212, 168, 83, 0.6)";
-        const iconColor = isDark ? "#FFF" : "#D4A853";
-        const dropShadow = isDark ? "drop-shadow(0 0 10px rgba(224, 96, 168, 0.8))" : "drop-shadow(0 0 10px rgba(212, 168, 83, 0.6))";
+          : "rgba(215, 115, 145, 0.65)"; // Darker, warmer rose-gold for light mode visibility
+        const iconColor = isDark ? "#FFF" : "#C45B78"; // Deeper rose-gold for the icon
+        const dropShadow = isDark 
+          ? "drop-shadow(0 0 10px rgba(224, 96, 168, 0.8))" 
+          : "drop-shadow(0 0 8px rgba(196, 91, 120, 0.5))"; // Softer but visible shadow
 
         return (
           <div
