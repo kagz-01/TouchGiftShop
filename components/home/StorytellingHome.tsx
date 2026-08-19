@@ -524,8 +524,8 @@ export function StoryHowItWorks() {
     {
       num: "01",
       icon: <ShoppingBag className="w-9 h-9 text-gold" />,
-      title: "Pick a gift",
-      desc: "Browse by occasion, mood, or budget — or let our AI Gift Finder recommend the perfect match in under 30 seconds.",
+      title: "Curate the Perfect Gift",
+      desc: "Explore our exquisite collections by occasion or mood, or let our intelligent concierge find the ideal match in seconds.",
       accent: "from-gold/20 to-gold/5",
       borderHover: "hover:border-gold/50",
       numColor: "text-gold",
@@ -533,8 +533,8 @@ export function StoryHowItWorks() {
     {
       num: "02",
       icon: <CreditCard className="w-9 h-9 text-brand-light" />,
-      title: "Checkout in seconds",
-      desc: "Pay with M-Pesa, card, or Airtel Money. No account needed. Add a personalised message and any special instructions.",
+      title: "Effortless Checkout",
+      desc: "A frictionless experience. Securely complete your order and add a bespoke, heartfelt message—no account required.",
       accent: "from-brand-light/20 to-brand-light/5",
       borderHover: "hover:border-brand-light/40",
       numColor: "text-brand-light",
@@ -542,8 +542,8 @@ export function StoryHowItWorks() {
     {
       num: "03",
       icon: <Rocket className="w-9 h-9 text-success" />,
-      title: "We deliver the wow",
-      desc: "Same-day in Nairobi, next-day nationwide. We send you a photo proof before it leaves — beautifully wrapped, ribbon and all.",
+      title: "The Grand Reveal",
+      desc: "We meticulously wrap and dispatch your gift. You receive a final photograph before it departs, ensuring absolute perfection.",
       accent: "from-success/20 to-success/5",
       borderHover: "hover:border-success/40",
       numColor: "text-success",
@@ -572,14 +572,14 @@ export function StoryHowItWorks() {
         <div className="text-center mb-4">
           <Reveal>
             <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
-              Simple as 1-2-3
+              Effortless Gifting
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold text-white">
-              How it{" "}
+            <h2 className="font-display section-heading font-bold italic tracking-wide text-white">
+              The Journey of a{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                works
+                Gift
               </span>
             </h2>
           </Reveal>
@@ -613,14 +613,14 @@ export function StoryHowItWorks() {
                     </div>
 
                     {/* Icon */}
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                    <div className="w-16 h-16 shape-premium-button bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                       {step.icon}
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-white mb-3 italic tracking-wide group-hover:text-gold transition-colors duration-300">
+                    <h3 className="font-display text-2xl font-bold text-white mb-3 heading-elegant group-hover:text-gold transition-colors duration-300">
                       {step.title}
                     </h3>
-                    <p className="text-white/65 leading-relaxed group-hover:text-white/85 transition-colors duration-300">
+                    <p className="text-white/65 leading-relaxed text-elegant group-hover:text-white/85 transition-colors duration-300">
                       {step.desc}
                     </p>
                   </div>
