@@ -22,7 +22,7 @@ export default function SuperpowersStrip() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Gift Pool Card */}
           <Link
-            href="/gift-lab/pool"
+            href="/pool/create"
             className="group relative block overflow-hidden bg-brand-bg shape-premium-bento p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
           >
             {/* Animated orb */}
