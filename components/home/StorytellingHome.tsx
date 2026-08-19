@@ -382,12 +382,12 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-5 md:p-6 rounded-[1.5rem] hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
+              <div className={`h-full p-6 md:p-8 rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-xl rounded-bl-xl hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
                 <div className="mb-4 p-3 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                   {p.icon}
                 </div>
-                <h3 className="text-2xl font-display font-bold mb-3">{p.title}</h3>
-                <p className="text-brand-muted leading-relaxed">{p.desc}</p>
+                <h3 className="text-2xl font-display font-bold mb-2">{p.title}</h3>
+                <p className="text-brand-muted leading-relaxed font-light italic">{p.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -484,7 +484,7 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full rounded-[2rem] p-6 md:p-8 text-left border border-white/10 ${
+                className={`group relative h-full rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-2xl rounded-bl-2xl p-6 md:p-8 text-left border border-white/10 ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
@@ -497,7 +497,7 @@ export function SolutionSection() {
                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                     {card.icon}
                   </div>
-                  <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-gold transition-colors duration-300">
+                  <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 italic group-hover:text-gold transition-colors duration-300">
                     {card.title}
                   </h3>
                   <p className="text-white/60 leading-relaxed group-hover:text-white/80 transition-colors duration-300">
@@ -591,7 +591,7 @@ export function StoryHowItWorks() {
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 180} direction="up">
                 <div
-                  className={`group relative h-full rounded-[2rem] p-5 md:p-6 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
+                  className={`group relative h-full rounded-tr-[3rem] rounded-bl-[3rem] rounded-tl-xl rounded-br-xl p-6 md:p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
                 >
                   {/* Shimmer on hover */}
                   <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -614,7 +614,7 @@ export function StoryHowItWorks() {
                       {step.icon}
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-white mb-3 group-hover:text-gold transition-colors duration-300">
+                    <h3 className="font-display text-2xl font-bold text-white mb-3 italic tracking-wide group-hover:text-gold transition-colors duration-300">
                       {step.title}
                     </h3>
                     <p className="text-white/65 leading-relaxed group-hover:text-white/85 transition-colors duration-300">
@@ -705,14 +705,14 @@ export function SocialProof() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4 md:mb-6">
           {stats.map((stat, i) => (
             <Reveal key={i} delay={i * 80} direction="up">
-              <div className="group relative rounded-[1.5rem] p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
+              <div className="group relative rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-lg rounded-bl-lg p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                 <div className="relative z-10">
                   <div className="text-3xl mb-2">{stat.icon}</div>
                   <p className="font-display text-4xl md:text-5xl font-black text-brand-deep mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-brand-muted text-sm font-medium">{stat.label}</p>
+                  <p className="text-brand-muted text-sm font-medium italic">{stat.label}</p>
                 </div>
               </div>
             </Reveal>
@@ -747,7 +747,7 @@ export function SocialProof() {
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
                           <span className="text-white text-[10px] font-bold">{t.initials}</span>
                         </div>
-                        <span className="font-semibold text-sm">{t.name}</span>
+                        <span className="font-semibold text-sm tracking-wide">{t.name}</span>
                       </div>
                       <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-brand px-3 py-1.5 rounded-full">
                         {t.occasion}
@@ -791,7 +791,7 @@ export function OccasionsGrid() {
     <section className="py-10 md:py-14 bg-transparent relative">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <Reveal>
-          <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
+          <p className="text-gold font-semibold text-sm tracking-wide uppercase tracking-widest mb-4 text-center">
             Find by occasion
           </p>
         </Reveal>
@@ -812,7 +812,7 @@ export function OccasionsGrid() {
             <Reveal key={occ.slug} delay={300 + i * 80}>
               <Link
                 href={`/?category=${occ.slug}`}
-                className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
+                className="group relative bg-white/70 backdrop-blur-sm rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
               >
                 {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -820,7 +820,7 @@ export function OccasionsGrid() {
                   <div className="mb-3 flex justify-center group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-500">
                     {occ.icon}
                   </div>
-                  <p className="font-semibold text-sm group-hover:text-white transition-colors duration-300">
+                  <p className="font-semibold text-sm tracking-wide group-hover:text-white transition-colors duration-300">
                     {occ.label}
                   </p>
                 </div>
