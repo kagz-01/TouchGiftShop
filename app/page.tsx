@@ -147,10 +147,10 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           INTERSTITIAL — AI Gift Finder CTA break
           ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full py-8 md:py-12" delay={0}>
+      <ScrollReveal className="w-full py-4 md:py-6" delay={0}>
         <a
           href="/gift-finder"
-          className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep py-12 md:py-16 px-4 md:px-8 text-white shadow-lg hover:shadow-2xl transition-all duration-500"
+          className="group block relative overflow-hidden bg-gradient-to-r from-brand to-brand-deep py-6 md:py-8 px-4 md:px-6 text-white shadow-lg hover:shadow-2xl transition-all duration-500"
         >
           <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full animate-pulse-soft" />
           <div className="absolute -right-4 -bottom-8 w-28 h-28 bg-gold/10 rounded-full animate-pulse-soft" style={{ animationDelay: "1s" }} />

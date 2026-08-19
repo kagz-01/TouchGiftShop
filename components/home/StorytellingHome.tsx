@@ -182,7 +182,7 @@ export function HeroCinematic() {
   ];
 
   return (
-    <section className="relative min-h-[90svh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
+    <section className="relative min-h-[60vh] md:min-h-[75vh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
@@ -190,13 +190,13 @@ export function HeroCinematic() {
         <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 md:py-20 relative z-40">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-12 relative z-40">
         <div className="grid md:grid-cols-2 gap-8 xl:gap-16 items-center max-w-[1800px] mx-auto">
           
           {/* ── LEFT COLUMN: COPY & CTA ── */}
           <div className="w-full text-left">
             {/* Typewriter delivery note */}
-            <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-4 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
                 TouchGift Promise
               </span>
@@ -210,7 +210,7 @@ export function HeroCinematic() {
             </div>
 
             {/* Main headline */}
-            <h1 className={`font-display font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <h1 className={`font-display font-bold text-white leading-[0.95] mb-4 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
             >
               <span className="relative inline-block py-1 text-shadow-glow">
@@ -234,7 +234,7 @@ export function HeroCinematic() {
             </h1>
 
             {/* Subheadline */}
-            <p className={`text-white/70 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <p className={`text-white/70 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
             >
               Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment.
@@ -287,7 +287,7 @@ export function HeroCinematic() {
           </div>
 
           {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className={`relative h-[420px] md:h-[500px] xl:h-[600px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* Soft gradient masks to fade top and bottom edges smoothly */}
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
             <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
@@ -357,9 +357,9 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-transparent relative overflow-hidden">
+    <section className="py-10 md:py-14 bg-transparent relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-4">
           <Reveal>
             <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
               The Gifting Dilemma
@@ -382,8 +382,8 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-8 rounded-[2rem] hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
-                <div className="mb-6 p-4 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+              <div className={`h-full p-5 md:p-6 rounded-[1.5rem] hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
+                <div className="mb-4 p-3 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                   {p.icon}
                 </div>
                 <h3 className="text-2xl font-display font-bold mb-3">{p.title}</h3>
@@ -445,7 +445,7 @@ export function SolutionSection() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-brand-deep relative overflow-hidden">
+    <section className="py-10 md:py-14 bg-brand-deep relative overflow-hidden">
       {/* Ambient glow orbs */}
       <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none" />
@@ -456,9 +456,9 @@ export function SolutionSection() {
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         {/* Heading block */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-4">
           <Reveal direction="scale">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-8 border border-gold/30 bg-gradient-to-br from-gold/20 to-gold/5 shadow-[0_0_48px_rgba(212,168,83,0.25)] animate-float">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 border border-gold/30 bg-gradient-to-br from-gold/20 to-gold/5 shadow-[0_0_48px_rgba(212,168,83,0.25)] animate-float">
               <Gift className="w-10 h-10 text-gold" />
             </div>
           </Reveal>
@@ -548,7 +548,7 @@ export function StoryHowItWorks() {
   ];
 
   return (
-    <section className="py-12 md:py-16 bg-brand-deep relative overflow-hidden">
+    <section className="py-10 md:py-14 bg-brand-deep relative overflow-hidden">
       {/* Subtle dot grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.04]"
@@ -566,7 +566,7 @@ export function StoryHowItWorks() {
 
       <div className="w-full px-4 md:px-12 lg:px-16 relative z-10">
         {/* Heading */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-4">
           <Reveal>
             <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
               Simple as 1-2-3
@@ -591,7 +591,7 @@ export function StoryHowItWorks() {
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 180} direction="up">
                 <div
-                  className={`group relative h-full rounded-[2rem] p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
+                  className={`group relative h-full rounded-[2rem] p-5 md:p-6 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
                 >
                   {/* Shimmer on hover */}
                   <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -678,13 +678,13 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-16 md:py-24 bg-transparent relative overflow-hidden">
+    <section className="py-10 md:py-14 bg-transparent relative overflow-hidden">
       {/* Subtle warm gradient top */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         {/* Heading */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-4">
           <Reveal>
             <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-4">
               Real people. Real moments.
@@ -702,7 +702,7 @@ export function SocialProof() {
         </div>
 
         {/* Stats — editorial large numbers */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4 md:mb-6">
           {stats.map((stat, i) => (
             <Reveal key={i} delay={i * 80} direction="up">
               <div className="group relative rounded-[1.5rem] p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
@@ -788,7 +788,7 @@ export function OccasionsGrid() {
   ];
 
   return (
-    <section className="py-16 md:py-20 bg-transparent relative">
+    <section className="py-10 md:py-14 bg-transparent relative">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <Reveal>
           <p className="text-gold font-semibold text-sm uppercase tracking-widest mb-4 text-center">
@@ -801,7 +801,7 @@ export function OccasionsGrid() {
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-muted text-center max-w-xl mx-auto mb-10">
+          <p className="text-brand-muted text-center max-w-xl mx-auto mb-6">
             Every occasion deserves something special. Pick a category and
             we&apos;ll show you curated gifts that fit.
           </p>
@@ -838,7 +838,7 @@ export function OccasionsGrid() {
    ══════════════════════════════════════════════════════════ */
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-white py-16 md:py-20 flex items-center justify-center text-center border-t border-surface-border">
+    <section className="relative overflow-hidden bg-white py-10 md:py-14 flex items-center justify-center text-center border-t border-surface-border">
       {/* Background orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-brand/5 rounded-full blur-[130px] animate-pulse-soft" />
@@ -848,14 +848,14 @@ export function FinalCTA() {
 
       <div className="w-full page-container relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         <Reveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-6">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
             <span className="text-brand-deep text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
           </div>
         </Reveal>
 
         <Reveal delay={100}>
-          <h2 className="font-display display-heading font-bold text-brand-deep mb-8">
+          <h2 className="font-display display-heading font-bold text-brand-deep mb-4">
             Ready to create
             <br />
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
@@ -867,7 +867,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-12 leading-relaxed">
+          <p className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto mb-6 leading-relaxed">
             Skip the stress. We curate, wrap beautifully, and deliver with care — so all you have to do is watch them smile.
           </p>
         </Reveal>
