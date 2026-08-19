@@ -80,7 +80,7 @@ export default async function ShopPage({
               Build Hamper
             </Link>
             <Link
-              href="/gift-lab/pool"
+              href="/pool/create"
               className="flex items-center gap-1.5 px-3 py-2 bg-white border border-black/8 rounded-xl text-xs font-semibold text-brand-muted hover:border-brand/30 hover:text-brand transition-all shadow-sm"
             >
               <Users className="w-3.5 h-3.5" />

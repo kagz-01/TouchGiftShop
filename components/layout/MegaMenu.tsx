@@ -95,7 +95,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         title: "Build & Create",
         links: [
           { href: "/gift-lab", label: "Build a Hamper", icon: <FlaskConical className="w-4 h-4" /> },
-          { href: "/gift-lab/pool", label: "Group Gift (Pool)", icon: <Users className="w-4 h-4" /> },
+          { href: "/pool/create", label: "Group Gift (Pool)", icon: <Users className="w-4 h-4" /> },
         ],
       },
       {

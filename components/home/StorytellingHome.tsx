@@ -275,7 +275,7 @@ export function HeroCinematic() {
                 <Building2 className="w-3.5 h-3.5 text-gold" />
                 Corporate Gifts
               </Link>
-              <Link href="/gift-lab/pool" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
                 <span className="text-[14px]">👥</span>
                 Pool a Gift
               </Link>

@@ -77,7 +77,7 @@ export default function GiftLabPage() {
 
           {/* Pool a Gift */}
           <Link
-            href="/gift-lab/pool"
+            href="/pool/create"
             id="gift-lab-pool-link"
             className="group block relative overflow-hidden bg-white rounded-3xl p-7 border border-black/6 shadow-sm hover:shadow-card hover:-translate-y-1 transition-all duration-300"
           >

@@ -20,7 +20,7 @@ const SLIDES = [
     tag: "Group Gifting",
     title: "Pool a Gift,\nSplit the Joy",
     subtitle: "Start a group fund for weddings, birthdays, or baby showers. Everyone contributes via M-Pesa.",
-    cta: { label: "Start a Pool", href: "/gift-lab/pool" },
+    cta: { label: "Start a Pool", href: "/pool/create" },
     secondaryCta: { label: "How it Works", href: "/gift-lab" },
     gradient: "from-brand-dark via-[#7B1144] to-brand",
     emoji: "Pool",

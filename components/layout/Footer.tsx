@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 const QUICK_LINKS = [
   { href: "/gift-finder", label: "AI Gift Finder" },
   { href: "/gift-lab", label: "Gift Lab" },
-  { href: "/gift-lab/pool", label: "Pool a Gift" },
+  { href: "/pool/create", label: "Pool a Gift" },
   { href: "/corporate", label: "Corporate Gifts" },
   { href: "/gift-cards", label: "Gift Cards" },
   { href: "/orders", label: "Track Order" },

@@ -298,7 +298,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                     {[
                       { href: "/orders", label: "My Orders", d: "M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" },
                       { href: "/reminders", label: "Reminders", d: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" },
-                      { href: "/gift-lab/pool", label: "Gift Pool", d: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
+                      { href: "/pool/create", label: "Gift Pool", d: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" },
                       { href: "/wishlist/create", label: "Wishlist", d: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" },
                     ].map((link) => (
                       <Link key={link.href} href={link.href} className="flex flex-col items-center gap-2 p-4 bg-surface rounded-xl hover:bg-brand/5 hover:border-brand/20 border border-transparent transition-all group text-center">
