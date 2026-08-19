@@ -5,8 +5,9 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Target, Users, Clock, TrendingUp, CheckCircle2,
-  AlertCircle, RefreshCw, ShoppingBag, CalendarPlus, DollarSign, Gift
+  AlertCircle, RefreshCw, ShoppingBag, CalendarPlus, DollarSign, Gift, QrCode
 } from "lucide-react";
+import QRCode from "react-qr-code";
 
 type Pool = {
   id: string; slug: string; title: string; recipient_name: string;
@@ -156,10 +157,17 @@ export default function ManagePoolPage() {
           {isActive && (
             <div className="space-y-3">
               <div className="p-4 rounded-2xl bg-brand/5 border border-brand/10">
-                <p className="text-sm font-semibold text-brand-deep mb-1">Share Pool Link</p>
-                <div className="flex gap-2">
-                  <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
-                  <button onClick={() => navigator.clipboard.writeText(shareUrl)} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">Copy</button>
+                <p className="text-sm font-semibold text-brand-deep mb-4">Share Pool Link</p>
+                <div className="flex gap-4">
+                  <div className="bg-white p-2 rounded-xl border border-brand/10 shrink-0">
+                    <QRCode value={shareUrl} size={80} level="M" fgColor="#312217" />
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center space-y-2">
+                    <div className="flex gap-2">
+                      <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
+                      <button onClick={() => navigator.clipboard.writeText(shareUrl)} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">Copy</button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <a href={`https://wa.me/?text=${encodeURIComponent(`🎁 ${pool.title}\n${shareUrl}`)}`} target="_blank" rel="noreferrer"
