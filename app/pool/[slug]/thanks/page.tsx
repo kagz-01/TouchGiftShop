@@ -10,8 +10,11 @@ export default function ThanksPage() {
   const searchParams = useSearchParams();
   const contributionId = searchParams.get("contribution");
   const [copied, setCopied] = useState(false);
+  const [splitCopied, setSplitCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}` : `/pool/${slug}`;
+  const splitUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}/contribute?split=${contributionId}` : `/pool/${slug}/contribute?split=${contributionId}`;
 
   useEffect(() => {
     setShowConfetti(true);
@@ -19,7 +22,8 @@ export default function ThanksPage() {
     return () => clearTimeout(t);
   }, []);
 
-  const copy = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const copyShare = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const copySplit = () => { navigator.clipboard.writeText(splitUrl); setSplitCopied(true); setTimeout(() => setSplitCopied(false), 2000); };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-white flex items-center justify-center px-4 relative overflow-hidden">
@@ -73,7 +77,7 @@ export default function ThanksPage() {
           <p className="text-sm font-semibold text-brand-deep mb-3">🎁 Know others who&apos;d like to contribute?</p>
           <div className="flex gap-2">
             <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
-            <button onClick={copy} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">
+            <button onClick={copyShare} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">
               {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
@@ -86,6 +90,22 @@ export default function ThanksPage() {
             <Share2 className="w-4 h-4" /> Share on WhatsApp
           </a>
         </div>
+
+        {/* Split with Friend CTA */}
+        {contributionId && (
+          <div className="bg-brand-deep/5 rounded-3xl p-5 mb-6 text-left">
+            <p className="text-sm font-semibold text-brand-deep mb-2">👯‍♀️ Split your contribution?</p>
+            <p className="text-xs text-brand-deep/60 mb-3">
+              Did a friend tell you to pay for both of you? Send them this link to collect their half directly into the pool.
+            </p>
+            <div className="flex gap-2">
+              <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{splitUrl}</code>
+              <button onClick={copySplit} className="px-3 py-2 bg-brand-deep text-white rounded-xl text-xs font-semibold">
+                {splitCopied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        )}
 
         <Link
           href={`/pool/${slug}`}
