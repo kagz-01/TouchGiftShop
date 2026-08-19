@@ -53,9 +53,9 @@ html, body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-base);
+  background-color: transparent;
   color: var(--text-primary);
-  transition: background-color 0.5s ease, color 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 html {
