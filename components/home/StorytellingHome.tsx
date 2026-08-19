@@ -374,7 +374,7 @@ export function ProblemSection() {
           </Reveal>
           <Reveal delay={200}>
             <p className="text-brand-muted text-lg">
-              Endless scrolling, generic options, and delivery anxiety. You want to make them feel special, but the process gets in the way. We fix that.
+              You want to show how much you care, but finding the perfect gift shouldn't be stressful. We're here to make the experience as beautiful as the gesture itself.
             </p>
           </Reveal>
         </div>
