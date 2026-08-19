@@ -160,10 +160,10 @@ export default function HamperBuilder() {
               </svg>
               Back
             </Link>
-            <h1 className="font-display text-lg font-bold">Corporate Hamper Builder</h1>
+            <h1 className="font-display italic text-lg font-bold">Corporate Hamper Builder</h1>
             <div className="text-sm text-brand-muted">
               {recipientCount > 0 && (
-                <span className="bg-brand/10 text-brand px-2 py-1 rounded-full text-xs font-semibold">
+                <span className="bg-brand/10 text-brand px-2 py-1 shape-premium-button text-xs font-semibold">
                   {recipientCount} recipient{recipientCount !== 1 ? "s" : ""}
                 </span>
               )}
@@ -177,7 +177,7 @@ export default function HamperBuilder() {
                 <button
                   onClick={() => s.id < step && setStep(s.id)}
                   disabled={s.id > step}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all w-full ${
+                  className={`flex items-center gap-2 px-3 py-2 shape-premium-card text-sm font-medium transition-all w-full ${
                     s.id === step
                       ? "bg-brand text-white shadow-ribbon"
                       : s.id < step
@@ -202,7 +202,7 @@ export default function HamperBuilder() {
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-2xl font-bold mb-2">Choose your gift</h2>
+              <h2 className="font-display italic text-2xl font-bold mb-2">Choose your gift</h2>
               <p className="text-brand-muted text-sm">Select one or more items to include in your corporate hamper.</p>
             </div>
 
@@ -212,7 +212,7 @@ export default function HamperBuilder() {
                 <button
                   key={cat.slug}
                   onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
                     selectedCategory === cat.slug
                       ? "bg-brand text-white"
                       : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
@@ -227,8 +227,8 @@ export default function HamperBuilder() {
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm animate-pulse">
-                    <div className="aspect-square bg-gray-100 rounded-xl mb-3" />
+                  <div key={i} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm animate-pulse">
+                    <div className="aspect-square bg-gray-100 shape-premium-card mb-3" />
                     <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
                     <div className="h-3 bg-gray-100 rounded w-1/2" />
                   </div>
@@ -243,18 +243,18 @@ export default function HamperBuilder() {
                     <div
                       key={product.id}
                       onClick={() => toggleProduct(product)}
-                      className={`relative bg-white/80 backdrop-blur-sm rounded-2xl p-4 border-2 cursor-pointer transition-all duration-300 hover:shadow-card-hover shadow-sm ${
+                      className={`relative bg-white/80 backdrop-blur-sm shape-premium-card p-4 border-2 cursor-pointer transition-all duration-300 hover:shadow-card-hover shadow-sm ${
                         selected ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"
                       }`}
                     >
                       {selected && (
-                        <div className="absolute top-3 right-3 w-6 h-6 bg-brand rounded-full flex items-center justify-center">
+                        <div className="absolute top-3 right-3 w-6 h-6 bg-brand shape-premium-button flex items-center justify-center">
                           <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
                       )}
-                      <div className="aspect-square bg-gray-50 rounded-xl mb-3 overflow-hidden">
+                      <div className="aspect-square bg-gray-50 shape-premium-card mb-3 overflow-hidden">
                         {product.image_url ? (
                           <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
                         ) : (
@@ -291,7 +291,7 @@ export default function HamperBuilder() {
 
             {/* Hamper summary */}
             {hamperItems.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+              <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold">{hamperItems.length} item{hamperItems.length !== 1 ? "s" : ""} in hamper</p>
@@ -299,7 +299,7 @@ export default function HamperBuilder() {
                   </div>
                   <button
                     onClick={() => setStep(2)}
-                    className="px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors"
+                    className="px-6 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors"
                   >
                     Next: Add Recipients →
                   </button>
@@ -313,7 +313,7 @@ export default function HamperBuilder() {
         {step === 2 && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-2xl font-bold mb-2">Add recipients</h2>
+              <h2 className="font-display italic text-2xl font-bold mb-2">Add recipients</h2>
               <p className="text-brand-muted text-sm">Add the people who will receive this gift. One hamper per recipient.</p>
             </div>
 
@@ -321,7 +321,7 @@ export default function HamperBuilder() {
             <div className="flex gap-2">
               <button
                 onClick={() => setCsvMode(false)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
                   !csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
                 }`}
               >
@@ -329,7 +329,7 @@ export default function HamperBuilder() {
               </button>
               <button
                 onClick={() => setCsvMode(true)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
                   csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
                 }`}
               >
@@ -338,7 +338,7 @@ export default function HamperBuilder() {
             </div>
 
             {csvMode ? (
-              <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-4">
+              <div className="bg-white shape-premium-card p-6 border border-surface-border space-y-4">
                 <div>
                   <p className="text-sm font-semibold mb-2">Paste CSV data</p>
                   <p className="text-xs text-brand-muted mb-3">
@@ -354,11 +354,11 @@ Peter Odhiambo, 0755555555`}
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
                   placeholder={`name, phone, note\nJohn Kamau, 0712345678, Happy birthday!\nJane Wanjiku, 0798765432`}
-                  className="w-full h-40 bg-white/50 border border-surface-border rounded-xl p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
+                  className="w-full h-40 bg-white/50 border border-surface-border shape-premium-card p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
                 />
                 <button
                   onClick={parseCsv}
-                  className="px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors"
+                  className="px-6 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors"
                 >
                   Import {csvText.trim().split("\n").filter((l) => l.trim()).length} Recipients
                 </button>
@@ -366,7 +366,7 @@ Peter Odhiambo, 0755555555`}
             ) : (
               <div className="space-y-3">
                 {recipients.map((recipient, index) => (
-                  <div key={index} className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm">
+                  <div key={index} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-semibold">Recipient {index + 1}</span>
                       {recipients.length > 1 && (
@@ -384,14 +384,14 @@ Peter Odhiambo, 0755555555`}
                         placeholder="Full name *"
                         value={recipient.name}
                         onChange={(e) => updateRecipient(index, "name", e.target.value)}
-                        className="bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                       <input
                         type="tel"
                         placeholder="Phone number (07XX) *"
                         value={recipient.phone}
                         onChange={(e) => updateRecipient(index, "phone", e.target.value)}
-                        className="bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                     </div>
                     <input
@@ -399,7 +399,7 @@ Peter Odhiambo, 0755555555`}
                       placeholder="Personal note (optional)"
                       value={recipient.note}
                       onChange={(e) => updateRecipient(index, "note", e.target.value)}
-                      className="w-full mt-3 bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                      className="w-full mt-3 bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                     />
                   </div>
                 ))}
@@ -407,7 +407,7 @@ Peter Odhiambo, 0755555555`}
             )}
 
             {/* Summary + nav */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{recipients.filter((r) => r.name && r.phone).length} recipient(s)</p>
@@ -420,21 +420,21 @@ Peter Odhiambo, 0755555555`}
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand rounded-xl font-semibold text-sm hover:bg-brand/20 transition-colors border border-brand/20"
+                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-brand/20"
                     >
                       + Add Recipient
                     </button>
                   )}
                   <button
                     onClick={() => setStep(1)}
-                    className="px-4 py-3 bg-gray-100 text-brand-muted rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
                     ← Back
                   </button>
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand rounded-xl font-bold text-lg hover:bg-brand/20 transition-colors border border-brand/20"
+                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-brand/20"
                       aria-label="Add Recipient"
                     >
                       +
@@ -443,7 +443,7 @@ Peter Odhiambo, 0755555555`}
                   <button
                     onClick={() => setStep(3)}
                     disabled={!canProceed()}
-                    className="px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Next: Customize →
                   </button>
@@ -457,11 +457,11 @@ Peter Odhiambo, 0755555555`}
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-2xl font-bold mb-2">Customize (optional)</h2>
+              <h2 className="font-display italic text-2xl font-bold mb-2">Customize (optional)</h2>
               <p className="text-brand-muted text-sm">Add your company branding and personal touches.</p>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-surface-border space-y-6 shadow-sm">
+            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border space-y-6 shadow-sm">
               {/* Company name */}
               <div>
                 <label className="block text-sm font-semibold mb-2">Company Name (for gift card)</label>
@@ -470,7 +470,7 @@ Peter Odhiambo, 0755555555`}
                   placeholder="e.g. Acme Technologies Ltd"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                 />
               </div>
 
@@ -482,7 +482,7 @@ Peter Odhiambo, 0755555555`}
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
                   rows={3}
-                  className="w-full bg-white/50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
                 />
                 <p className="text-xs text-brand-muted mt-1">{customMessage.length}/200 characters</p>
               </div>
@@ -499,7 +499,7 @@ Peter Odhiambo, 0755555555`}
                     <button
                       key={wrap.id}
                       onClick={() => setGiftWrap(wrap.id)}
-                      className={`p-4 rounded-xl border-2 text-center transition-all ${
+                      className={`p-4 shape-premium-card border-2 text-center transition-all ${
                         giftWrap === wrap.id
                           ? "border-brand bg-brand/5 shadow-ribbon"
                           : "border-surface-border hover:border-brand/30"
@@ -526,7 +526,7 @@ Peter Odhiambo, 0755555555`}
             />
 
             {/* Summary + nav */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">Order Summary</p>
@@ -540,13 +540,13 @@ Peter Odhiambo, 0755555555`}
                 <div className="flex gap-2">
                   <button
                     onClick={() => setStep(2)}
-                    className="px-4 py-3 bg-gray-100 text-brand-muted rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
                     ← Back
                   </button>
                   <button
                     onClick={() => setStep(4)}
-                    className="px-6 py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors"
+                    className="px-6 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors"
                   >
                     Review Order →
                   </button>
@@ -560,12 +560,12 @@ Peter Odhiambo, 0755555555`}
         {step === 4 && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-2xl font-bold mb-2">Review your order</h2>
+              <h2 className="font-display italic text-2xl font-bold mb-2">Review your order</h2>
               <p className="text-brand-muted text-sm">Double-check everything before placing your order.</p>
             </div>
 
             {/* Order breakdown */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-surface-border space-y-6 shadow-sm">
+            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border space-y-6 shadow-sm">
               {/* Items */}
               <div>
                 <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
@@ -603,7 +603,7 @@ Peter Odhiambo, 0755555555`}
                   <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                     <span className="text-lg">🎨</span> Customization
                   </h3>
-                  <div className="bg-white/50 border border-surface-border rounded-xl p-4 space-y-2 text-sm">
+                  <div className="bg-white/50 border border-surface-border shape-premium-card p-4 space-y-2 text-sm">
                     {companyName && <p><span className="text-brand-muted">Company:</span> {companyName}</p>}
                     {customMessage && <p><span className="text-brand-muted">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
                     {giftWrap !== "standard" && (
@@ -633,7 +633,7 @@ Peter Odhiambo, 0755555555`}
             </div>
 
             {/* Total */}
-            <div className="bg-brand-deep rounded-2xl p-6 text-white">
+            <div className="bg-brand-deep shape-premium-card p-6 text-white">
               <div className="space-y-2 text-sm mb-4">
                 <div className="flex justify-between">
                   <span className="text-white/60">Subtotal ({recipients.filter((r) => r.name && r.phone).length} × KSh {hamperTotal.toLocaleString()})</span>
@@ -652,7 +652,7 @@ Peter Odhiambo, 0755555555`}
               </div>
               <div className="flex justify-between items-center pt-4 border-t border-white/10">
                 <p className="text-lg font-bold">Total</p>
-                <p className="text-2xl font-display font-bold text-gold">KSh {discountedTotal.toLocaleString()}</p>
+                <p className="text-2xl font-display italic font-bold text-gold">KSh {discountedTotal.toLocaleString()}</p>
               </div>
             </div>
 
@@ -660,7 +660,7 @@ Peter Odhiambo, 0755555555`}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setStep(3)}
-                className="px-6 py-3 bg-gray-100 text-brand-muted rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
+                className="px-6 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
               >
                 ← Back
               </button>
@@ -697,11 +697,11 @@ Peter Odhiambo, 0755555555`}
                   }
                 }}
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-xl font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50"
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep shape-premium-card font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-5 h-5 border-2 border-brand-deep/30 border-t-brand-deep rounded-full animate-spin" />
+                    <span className="w-5 h-5 border-2 border-brand-deep/30 border-t-brand-deep shape-premium-button animate-spin" />
                     Processing...
                   </span>
                 ) : (

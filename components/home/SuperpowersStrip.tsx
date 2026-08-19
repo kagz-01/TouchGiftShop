@@ -11,7 +11,7 @@ export default function SuperpowersStrip() {
           <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-3">
             TouchGift Exclusives
           </p>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep leading-tight italic">
+          <h2 className="text-2xl md:text-3xl text-brand-deep leading-tight heading-elegant">
             Two ways to go{" "}
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
               beyond the ordinary
@@ -23,7 +23,7 @@ export default function SuperpowersStrip() {
           {/* Gift Pool Card */}
           <Link
             href="/gift-lab/pool"
-            className="group relative block overflow-hidden bg-brand-bg rounded-tr-[4rem] rounded-bl-[4rem] rounded-tl-2xl rounded-br-2xl p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
+            className="group relative block overflow-hidden bg-brand-bg shape-premium-bento p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
           >
             {/* Animated orb */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-gold/15 rounded-full group-hover:scale-125 transition-transform duration-700 blur-sm" />
@@ -39,10 +39,10 @@ export default function SuperpowersStrip() {
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold/10 rounded-full mb-4">
                   <span className="text-xs font-bold text-gold uppercase tracking-wider">New Feature</span>
                 </div>
-                <h3 className="font-display text-xl md:text-2xl font-bold text-brand-deep mb-2 italic">
+                <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
                   Start a Gift Pool
                 </h3>
-                <p className="text-brand-muted leading-relaxed max-w-sm font-light italic">
+                <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
                   Chip in with friends or colleagues to get them something truly premium. We handle the money collection and the flawless delivery — stress-free.
                 </p>
               </div>
@@ -57,7 +57,7 @@ export default function SuperpowersStrip() {
           {/* Build a Hamper Card */}
           <Link
             href="/gift-lab"
-            className="group relative block overflow-hidden bg-blush rounded-tr-[4rem] rounded-bl-[4rem] rounded-tl-2xl rounded-br-2xl p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
+            className="group relative block overflow-hidden bg-blush shape-premium-bento p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
           >
             {/* Animated orb */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-brand/8 rounded-full group-hover:scale-125 transition-transform duration-700 blur-sm" />
@@ -74,10 +74,10 @@ export default function SuperpowersStrip() {
                   <Sparkles className="w-3 h-3 text-brand" />
                   <span className="text-xs font-bold text-brand uppercase tracking-wider">Fully Custom</span>
                 </div>
-                <h3 className="font-display text-xl md:text-2xl font-bold text-brand-deep mb-2 italic">
+                <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
                   Build a Hamper
                 </h3>
-                <p className="text-brand-muted leading-relaxed max-w-sm font-light italic">
+                <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
                   Handpick every single item. We'll beautifully curate, package, and ribbon it up — creating a one-of-a-kind gifting experience they'll never forget.
                 </p>
               </div>

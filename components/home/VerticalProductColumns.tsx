@@ -97,7 +97,7 @@ export default function VerticalProductColumns({
                 : "animate-marquee-vertical";
 
             return (
-              <div key={colIdx} className="flex flex-col gap-4 bg-[#FAF8F9] border border-surface-border rounded-[2rem] p-5 md:p-6 shadow-sm">
+              <div key={colIdx} className="flex flex-col gap-4 bg-[#FAF8F9] border border-surface-border shape-premium-card p-5 md:p-6 shadow-sm">
                 {/* Column header */}
                 <div className="flex items-center justify-between">
                   <span className="font-display font-bold text-base md:text-xl text-brand-deep">
@@ -105,7 +105,7 @@ export default function VerticalProductColumns({
                   </span>
                   <Link
                     href={col.viewAllHref}
-                    className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-3 py-1.5 rounded-full border border-surface-border shadow-sm hover:shadow-md"
+                    className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-3 py-1.5 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
                   >
                     See all →
                   </Link>

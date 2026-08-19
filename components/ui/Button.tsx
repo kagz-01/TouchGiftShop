@@ -7,7 +7,7 @@ export default function Button({
   className = "",
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
-  const base = "rounded-lg py-3 px-4 text-sm font-medium w-full";
+  const base = "shape-premium-button py-3 px-4 text-sm font-medium w-full";
   const styles =
     variant === "primary"
       ? "bg-brand text-white"

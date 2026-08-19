@@ -363,7 +363,7 @@ export default function MegaMenu() {
           onMouseLeave={handleMouseLeave}
           className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl z-50 animate-slide-down origin-top"
         >
-          <div className="bg-white rounded-3xl shadow-2xl border border-surface-border overflow-hidden">
+          <div className="bg-white shape-premium-card shadow-2xl border border-surface-border overflow-hidden">
             <div className="grid grid-cols-12 gap-0">
               <div
                 className={`${
@@ -406,7 +406,7 @@ export default function MegaMenu() {
 
               {activeData.featured && activeData.featured[0] && (
                 <div className="col-span-4 bg-gradient-to-br from-brand/5 to-coral/5 p-6 flex flex-col items-center justify-center text-center">
-                  <div className="w-20 h-20 mb-4 rounded-2xl overflow-hidden bg-white shadow-soft p-2">
+                  <div className="w-20 h-20 mb-4 shape-premium-card overflow-hidden bg-white shadow-soft p-2">
                     <Image
                       src={activeData.featured[0].image}
                       alt={activeData.featured[0].title}

@@ -60,7 +60,7 @@ export default function FeaturedRow({
   return (
     <section
       ref={sectionRef}
-      className={cn("p-6 md:p-8 rounded-[2rem] border border-surface-border shadow-sm mb-6 transition-colors", tintClass)}
+      className={cn("p-6 md:p-8 shape-premium-card border border-surface-border shadow-sm mb-6 transition-colors", tintClass)}
     >
       {/* Header — slides in from left */}
       <div
@@ -84,7 +84,7 @@ export default function FeaturedRow({
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-4 py-2 rounded-full border border-surface-border shadow-sm hover:shadow-md"
+              className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-4 py-2 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
             >
               {viewAllLabel} →
             </Link>

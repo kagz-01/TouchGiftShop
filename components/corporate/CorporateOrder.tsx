@@ -116,7 +116,7 @@ export default function CorporateOrder() {
                   setSelectedProduct(product);
                   setStep("recipients");
                 }}
-                className={`rounded-2xl p-4 text-left transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-card-hover group border ${
+                className={`shape-premium-card p-4 text-left transition-all duration-300 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-card-hover group border ${
                   selectedProduct?.id === product.id
                     ? "border-brand"
                     : "border-gray-200 hover:border-gray-400"
@@ -172,7 +172,7 @@ export default function CorporateOrder() {
             type="file"
             accept=".csv"
             onChange={handleCsvUpload}
-            className="w-full text-sm border border-gray-200 rounded-xl px-4 py-3 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
+            className="w-full text-sm border border-gray-200 shape-premium-card px-4 py-3 focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
           />
         </div>
 
@@ -194,19 +194,19 @@ export default function CorporateOrder() {
                 placeholder="Name"
                 value={r.name}
                 onChange={(e) => updateRecipient(i, "name", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
+                className="w-full border border-gray-200 shape-premium-card px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
               />
               <input
                 placeholder="Phone (07XX XXX XXX)"
                 value={r.phone}
                 onChange={(e) => updateRecipient(i, "phone", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
+                className="w-full border border-gray-200 shape-premium-card px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
               />
               <input
                 placeholder="Gift note (optional)"
                 value={r.note}
                 onChange={(e) => updateRecipient(i, "note", e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
+                className="w-full border border-gray-200 shape-premium-card px-4 py-3 text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none transition-all bg-white/50"
               />
             </div>
           ))}
@@ -219,7 +219,7 @@ export default function CorporateOrder() {
           + Add another recipient
         </button>
 
-        <div className="sticky bottom-4 z-20 rounded-2xl bg-white/90 backdrop-blur-md border border-brand/20 shadow-xl p-5 text-sm space-y-2 mt-8">
+        <div className="sticky bottom-4 z-20 shape-premium-card bg-white/90 backdrop-blur-md border border-brand/20 shadow-xl p-5 text-sm space-y-2 mt-8">
           <div className="flex justify-between">
             <span className="text-brand-muted">
               {recipients.length} recipient{recipients.length !== 1 ? "s" : ""}

@@ -73,7 +73,7 @@ export default function Header() {
             {/* Glow ring on hover */}
             <span
               className={cn(
-                "absolute inset-0 rounded-full transition-all duration-500",
+                "absolute inset-0 shape-premium-button transition-all duration-500",
                 logoPressed
                   ? "scale-150 opacity-0 bg-brand/30"
                   : "scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10"
@@ -81,7 +81,7 @@ export default function Header() {
             />
             {/* Secondary ripple on press */}
             {logoPressed && (
-              <span className="absolute inset-0 rounded-full bg-brand/20 animate-ping" />
+              <span className="absolute inset-0 shape-premium-button bg-brand/20 animate-ping" />
             )}
             <Image
               src="/logo.webp"
@@ -90,7 +90,7 @@ export default function Header() {
               height={52}
               priority
               className={cn(
-                "relative rounded-full object-cover transition-all duration-500 ring-2 ring-transparent",
+                "relative shape-premium-button object-cover transition-all duration-500 ring-2 ring-transparent",
                 logoPressed
                   ? "scale-90 rotate-[15deg] ring-brand/50 brightness-110"
                   : "scale-100 rotate-0 group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]"
@@ -126,7 +126,7 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 aria-label="Search gifts"
-                className="w-9 h-9 flex items-center justify-center rounded-full text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                className="w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -140,7 +140,7 @@ export default function Header() {
               <Link
                 href={user ? "/orders" : "/login?next=/orders"}
                 aria-label="Your orders"
-                className="relative w-9 h-9 flex items-center justify-center rounded-full text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                className="relative w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
               >
                 <ShoppingBag className="w-4 h-4" />
               </Link>
@@ -158,7 +158,7 @@ export default function Header() {
                   <Link
                     href="/login?next=/reminders"
                     aria-label="Gift reminders"
-                    className="w-9 h-9 flex items-center justify-center rounded-full text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                    className="w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
                   >
                     <Bell className="w-4 h-4" />
                   </Link>
@@ -176,7 +176,7 @@ export default function Header() {
               /* Logged-in avatar */
               <Link
                 href="/account"
-                className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-light flex items-center justify-center text-white text-xs font-bold hover:shadow-glow hover:scale-105 transition-all duration-200 flex-shrink-0"
+                className="w-8 h-8 shape-premium-button bg-gradient-to-br from-brand to-brand-light flex items-center justify-center text-white text-xs font-bold hover:shadow-glow hover:scale-105 transition-all duration-200 flex-shrink-0"
                 aria-label="My account"
               >
                 {(user.email?.[0] ?? user.phone?.[3] ?? "G").toUpperCase()}
@@ -191,7 +191,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/login?mode=signup"
-                  className="px-4 py-2 rounded-full text-sm font-semibold bg-brand text-white hover:bg-brand-dark hover:shadow-[0_4px_16px_rgba(155,27,90,0.35)] hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0"
+                  className="px-4 py-2 shape-premium-button text-sm font-semibold bg-brand text-white hover:bg-brand-dark hover:shadow-[0_4px_16px_rgba(155,27,90,0.35)] hover:-translate-y-0.5 transition-all duration-300 flex-shrink-0"
                 >
                   Get started
                 </Link>
@@ -216,7 +216,7 @@ export default function Header() {
           onClick={() => setSearchOpen(false)}
         >
           <div
-            className="w-full max-w-xl mx-4 bg-white rounded-2xl shadow-card-hover overflow-hidden"
+            className="w-full max-w-xl mx-4 bg-white shape-premium-card shadow-card-hover overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <form onSubmit={handleSearch} className="flex items-center gap-3 px-5 py-4">
@@ -246,7 +246,7 @@ export default function Header() {
                     setSearchOpen(false);
                     router.push(`/shop?q=${encodeURIComponent(q)}`);
                   }}
-                  className="text-xs bg-brand/5 hover:bg-brand/10 text-brand px-3 py-1.5 rounded-full transition-colors border border-brand/10"
+                  className="text-xs bg-brand/5 hover:bg-brand/10 text-brand px-3 py-1.5 shape-premium-button transition-colors border border-brand/10"
                 >
                   {q}
                 </button>

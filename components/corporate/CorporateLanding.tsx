@@ -62,8 +62,8 @@ function CorporateHero() {
     <section className="relative min-h-[80vh] flex items-center bg-transparent overflow-hidden">
       {/* Decorative orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-brand/10 rounded-full blur-[120px] animate-pulse-soft" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-1/3 left-1/4 w-96 h-96 bg-brand/10 shape-premium-button blur-[120px] animate-pulse-soft" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/10 shape-premium-button blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
       </div>
 
       {/* Grid pattern overlay */}
@@ -79,11 +79,11 @@ function CorporateHero() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-12 items-center">
           {/* Left: Content */}
           <div>
-            <div className={`inline-flex items-center gap-2 bg-gold/10 border border-gold/20 rounded-full px-4 py-2 mb-6 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <div className={`inline-flex items-center gap-2 bg-gold/10 border border-gold/20 shape-premium-button px-4 py-2 mb-6 transition-all duration-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
               <span className="text-gold text-sm font-semibold"><Building2 className="w-4 h-4"/> Corporate Gifting</span>
             </div>
 
-            <h1 className={`font-display section-heading font-bold text-brand-deep leading-[1.05] mb-6 transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <h1 className={`font-display italic section-heading font-bold text-brand-deep leading-[1.05] mb-6 transition-all duration-700 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               Impress your team.
               <br />
               <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
@@ -99,7 +99,7 @@ function CorporateHero() {
             <div className={`flex flex-col sm:flex-row gap-4 transition-all duration-700 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <Link
                 href="/corporate/build"
-                className="group px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg transition-all duration-300 hover:shadow-gold hover:-translate-y-1 text-center"
+                className="group px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold shape-premium-card text-lg transition-all duration-300 hover:shadow-gold hover:-translate-y-1 text-center"
               >
                 <span className="flex items-center justify-center gap-2">
                   Build a Corporate Hamper
@@ -112,7 +112,7 @@ function CorporateHero() {
                 href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27m%20interested%20in%20corporate%20gifting"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-white/60 backdrop-blur-md text-brand-deep font-semibold rounded-2xl text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300 text-center"
+                className="px-8 py-4 bg-white/60 backdrop-blur-md text-brand-deep font-semibold shape-premium-card text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300 text-center"
               >
                 Talk to Us
               </a>
@@ -123,15 +123,15 @@ function CorporateHero() {
           <div className={`hidden lg:block transition-all duration-700 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
             <div className="relative">
               {/* Main card */}
-              <div className="bg-white/60 backdrop-blur-md border border-surface-border rounded-3xl p-8 relative overflow-hidden shadow-xl">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
+              <div className="bg-white/60 backdrop-blur-md border border-surface-border shape-premium-card p-8 relative overflow-hidden shadow-xl">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 shape-premium-button blur-3xl" />
                 <div className="relative z-10">
                   <div className="text-6xl mb-4 text-brand"><Gift className="w-12 h-12" /></div>
-                  <h3 className="font-display text-2xl font-bold text-brand-deep mb-2">Custom Hamper</h3>
+                  <h3 className="font-display italic text-2xl font-bold text-brand-deep mb-2">Custom Hamper</h3>
                   <p className="text-brand-muted text-sm mb-6">Pick items, add your branding, send to any number of recipients</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[<Candy key="1"/>, <Coffee key="2"/>, <Flame key="3"/>, <CakeIcon key="4"/>, <Package key="5"/>, <Gift key="6"/>].map((e, i) => (
-                      <div key={i} className="bg-white/50 border border-surface-border rounded-xl p-3 text-center text-2xl text-brand hover:bg-white hover:shadow-sm transition-all cursor-pointer">
+                      <div key={i} className="bg-white/50 border border-surface-border shape-premium-card p-3 text-center text-2xl text-brand hover:bg-white hover:shadow-sm transition-all cursor-pointer">
                         {e}
                       </div>
                     ))}
@@ -140,11 +140,11 @@ function CorporateHero() {
               </div>
 
               {/* Floating stats cards */}
-              <div className="absolute -top-4 -right-4 bg-brand-deep rounded-2xl px-4 py-3 shadow-xl animate-float border border-white/10">
+              <div className="absolute -top-4 -right-4 bg-brand-deep shape-premium-card px-4 py-3 shadow-xl animate-float border border-white/10">
                 <p className="text-white font-bold text-lg">500+</p>
                 <p className="text-white/70 text-xs">Corporate orders</p>
               </div>
-              <div className="absolute -bottom-3 -left-3 bg-gold rounded-2xl px-4 py-3 shadow-xl animate-float border border-gold-light" style={{ animationDelay: "1s" }}>
+              <div className="absolute -bottom-3 -left-3 bg-gold shape-premium-card px-4 py-3 shadow-xl animate-float border border-gold-light" style={{ animationDelay: "1s" }}>
                 <p className="text-brand-deep font-bold text-lg">24hrs</p>
                 <p className="text-brand-deep/70 text-xs">Turnaround</p>
               </div>
@@ -238,7 +238,7 @@ function UseCases() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-4">
+          <h2 className="font-display italic section-heading font-bold text-center mb-4">
             Why companies choose TouchGift
           </h2>
         </Reveal>
@@ -252,11 +252,11 @@ function UseCases() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cases.map((c, i) => (
             <Reveal key={i} delay={300 + i * 100}>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl border-white/20 p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1">
-                <div className={`w-14 h-14 bg-gradient-to-br ${c.color} rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
+              <div className="bg-white/80 backdrop-blur-sm shape-premium-card border-white/20 p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1">
+                <div className={`w-14 h-14 bg-gradient-to-br ${c.color} shape-premium-card flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform`}>
                   {c.icon}
                 </div>
-                <h3 className="font-display text-lg font-bold mb-2">{c.title}</h3>
+                <h3 className="font-display italic text-lg font-bold mb-2">{c.title}</h3>
                 <p className="text-brand-muted text-sm leading-relaxed">{c.desc}</p>
               </div>
             </Reveal>
@@ -311,7 +311,7 @@ function CorporateHowItWorks() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-16">
+          <h2 className="font-display italic section-heading font-bold text-center mb-16">
             How corporate gifting works
           </h2>
         </Reveal>
@@ -323,13 +323,13 @@ function CorporateHowItWorks() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 150}>
-                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border-white/20 p-6 border border-surface-border shadow-card hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2">
-                  <div className={`absolute -top-4 -left-2 w-12 h-12 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center text-white font-display font-bold text-lg shadow-ribbon group-hover:scale-110 transition-transform`}>
+                <div className="relative bg-white/80 backdrop-blur-sm shape-premium-card border-white/20 p-6 border border-surface-border shadow-card hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2">
+                  <div className={`absolute -top-4 -left-2 w-12 h-12 bg-gradient-to-br ${step.color} shape-premium-card flex items-center justify-center text-white font-display italic font-bold text-lg shadow-ribbon group-hover:scale-110 transition-transform`}>
                     {step.num}
                   </div>
                   <div className="pt-4">
                     <span className="text-4xl mb-3 block group-hover:animate-wiggle">{step.icon}</span>
-                    <h3 className="font-display text-lg font-bold mb-2">{step.title}</h3>
+                    <h3 className="font-display italic text-lg font-bold mb-2">{step.title}</h3>
                     <p className="text-brand-muted text-sm leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
@@ -379,7 +379,7 @@ function PricingTiers() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-4">
+          <h2 className="font-display italic section-heading font-bold text-center mb-4">
             The more you send, the more you save
           </h2>
         </Reveal>
@@ -392,18 +392,18 @@ function PricingTiers() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {tiers.map((tier, i) => (
             <Reveal key={i} delay={300 + i * 150}>
-              <div className={`relative rounded-2xl p-6 border transition-all duration-500 group hover:-translate-y-2 ${
+              <div className={`relative shape-premium-card p-6 border transition-all duration-500 group hover:-translate-y-2 ${
                 tier.popular
                   ? "bg-brand-deep text-white border-brand shadow-glow scale-105"
                   : "bg-white border-surface-border hover:shadow-card-hover"
               }`}>
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-brand-deep text-xs font-bold px-3 py-1 rounded-full">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gold text-brand-deep text-xs font-bold px-3 py-1 shape-premium-button">
                     MOST POPULAR
                   </div>
                 )}
                 <p className={`text-sm font-semibold mb-1 ${tier.popular ? "text-gold" : "text-brand"}`}>{tier.range}</p>
-                <p className={`text-3xl font-display font-bold mb-1 ${tier.popular ? "text-white" : ""}`}>{tier.discount}</p>
+                <p className={`text-3xl font-display italic font-bold mb-1 ${tier.popular ? "text-white" : ""}`}>{tier.discount}</p>
                 <p className={`text-sm mb-6 ${tier.popular ? "text-white/60" : "text-brand-muted"}`}>{tier.price}</p>
                 <ul className="space-y-3 mb-8">
                   {tier.features.map((f, j) => (
@@ -417,7 +417,7 @@ function PricingTiers() {
                 </ul>
                 <Link
                   href="/corporate/build"
-                  className={`block text-center py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  className={`block text-center py-3 shape-premium-card font-semibold transition-all duration-300 ${
                     tier.popular
                       ? "bg-gold text-brand-deep hover:bg-gold-light"
                       : "bg-brand/10 text-brand hover:bg-brand hover:text-white"
@@ -447,7 +447,7 @@ function CorporateTestimonials() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-12">
+          <h2 className="font-display italic section-heading font-bold text-center mb-12">
             What corporate clients say
           </h2>
         </Reveal>
@@ -474,16 +474,16 @@ function CorporateTestimonials() {
             },
           ].map((t, i) => (
             <Reveal key={i} delay={200 + i * 150}>
-              <div className="bg-gradient-warm rounded-2xl p-6 border border-surface-border hover:shadow-card transition-all duration-300">
+              <div className="bg-gradient-warm shape-premium-card p-6 border border-surface-border hover:shadow-card transition-all duration-300">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center text-brand font-bold text-sm">
+                  <div className="w-10 h-10 bg-brand/10 shape-premium-button flex items-center justify-center text-brand font-bold text-sm">
                     {t.name.split(" ").map(n => n[0]).join("")}
                   </div>
                   <div>
                     <p className="font-semibold text-sm">{t.name}</p>
                     <p className="text-brand-muted text-xs">{t.role}</p>
                   </div>
-                  <span className="ml-auto bg-brand/10 text-brand text-xs font-bold px-2 py-1 rounded-full">{t.count}</span>
+                  <span className="ml-auto bg-brand/10 text-brand text-xs font-bold px-2 py-1 shape-premium-button">{t.count}</span>
                 </div>
                 <p className="text-sm leading-relaxed">&ldquo;{t.text}&rdquo;</p>
               </div>
@@ -502,8 +502,8 @@ function CorporateCTA() {
   return (
     <section className="py-24 md:py-32 bg-brand-deep relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-10 left-[20%] w-72 h-72 bg-brand/30 rounded-full blur-[100px] animate-pulse-soft" />
-        <div className="absolute bottom-10 right-[20%] w-64 h-64 bg-gold/20 rounded-full blur-[80px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div className="absolute top-10 left-[20%] w-72 h-72 bg-brand/30 shape-premium-button blur-[100px] animate-pulse-soft" />
+        <div className="absolute bottom-10 right-[20%] w-64 h-64 bg-gold/20 shape-premium-button blur-[80px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
       </div>
 
       <div className="page-container text-center relative z-10 max-w-4xl mx-auto">
@@ -512,7 +512,7 @@ function CorporateCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          <h2 className="font-display italic text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
             Ready to impress?
           </h2>
         </Reveal>
@@ -528,7 +528,7 @@ function CorporateCTA() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/corporate/build"
-              className="group px-10 py-5 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg transition-all duration-300 hover:shadow-gold hover:-translate-y-1"
+              className="group px-10 py-5 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold shape-premium-card text-lg transition-all duration-300 hover:shadow-gold hover:-translate-y-1"
             >
               <span className="flex items-center gap-2">
                 Build a Corporate Hamper
@@ -541,7 +541,7 @@ function CorporateCTA() {
               href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27d%20like%20a%20custom%20corporate%20quote"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-10 py-5 bg-white/60 backdrop-blur-md text-brand-deep font-semibold rounded-2xl text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300"
+              className="px-10 py-5 bg-white/60 backdrop-blur-md text-brand-deep font-semibold shape-premium-card text-lg border border-surface-border hover:bg-white shadow-sm transition-all duration-300"
             >
               Get a Custom Quote
             </a>

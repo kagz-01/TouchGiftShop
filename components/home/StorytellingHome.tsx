@@ -382,7 +382,7 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-xl rounded-bl-xl hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
+              <div className={`h-full p-6 md:p-8 shape-premium-card hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
                 <div className="mb-4 p-3 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                   {p.icon}
                 </div>
@@ -484,7 +484,7 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full rounded-tl-[3rem] rounded-br-[3rem] rounded-tr-2xl rounded-bl-2xl p-6 md:p-8 text-left border border-white/10 ${
+                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border border-white/10 ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
@@ -591,7 +591,7 @@ export function StoryHowItWorks() {
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 180} direction="up">
                 <div
-                  className={`group relative h-full rounded-tr-[3rem] rounded-bl-[3rem] rounded-tl-xl rounded-br-xl p-6 md:p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
+                  className={`group relative h-full shape-premium-card p-6 md:p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
                 >
                   {/* Shimmer on hover */}
                   <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -705,7 +705,7 @@ export function SocialProof() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4 md:mb-6">
           {stats.map((stat, i) => (
             <Reveal key={i} delay={i * 80} direction="up">
-              <div className="group relative rounded-tl-[2rem] rounded-br-[2rem] rounded-tr-lg rounded-bl-lg p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
+              <div className="group relative shape-premium-card p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                 <div className="relative z-10">
                   <div className="text-3xl mb-2">{stat.icon}</div>
@@ -812,7 +812,7 @@ export function OccasionsGrid() {
             <Reveal key={occ.slug} delay={300 + i * 80}>
               <Link
                 href={`/?category=${occ.slug}`}
-                className="group relative bg-white/70 backdrop-blur-sm rounded-tl-3xl rounded-br-3xl rounded-tr-md rounded-bl-md p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
+                className="group relative bg-white/70 backdrop-blur-sm shape-premium-card p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
               >
                 {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />

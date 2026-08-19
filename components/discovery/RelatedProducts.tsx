@@ -75,7 +75,7 @@ export default async function RelatedProducts({
             href={`/product/${product.id}`}
             className="group block"
           >
-            <div className="relative aspect-[4/5] bg-blush rounded-xl overflow-hidden mb-2">
+            <div className="relative aspect-[4/5] bg-blush shape-premium-card overflow-hidden mb-2">
               {product.image_url ? (
                 <Image
                   src={product.image_url}

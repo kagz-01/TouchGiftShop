@@ -460,3 +460,25 @@ html {
   font-size: 9px !important;
   background: rgba(255,255,255,0.7) !important;
 }
+
+/* Premium Platform-Wide Design System */
+@layer utilities {
+  .shape-premium-card {
+    border-radius: 3rem 1rem 3rem 1rem;
+  }
+  .shape-premium-bento {
+    border-radius: 4rem 1.5rem 4rem 1.5rem;
+  }
+  .shape-premium-button {
+    border-radius: 2rem 0.5rem 2rem 0.5rem;
+  }
+  .shape-premium-image {
+    border-radius: 2.5rem 0.75rem 2.5rem 0.75rem;
+  }
+  .text-elegant {
+    @apply font-light italic tracking-wide;
+  }
+  .heading-elegant {
+    @apply font-display font-bold italic tracking-wide;
+  }
+}
