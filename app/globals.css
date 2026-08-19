@@ -33,18 +33,18 @@
   --card-hover-shadow: 0 12px 40px rgba(155, 27, 90, 0.18);
 }
 
-/* DARK MODE — vivid magenta-purple-gold palette */
+/* DARK MODE — 3D ribbon magenta/plum/rose palette */
 [data-theme="dark"] {
-  --bg-base:        #0D0510;
-  --bg-section-alt: #120818;
-  --surface:        rgba(255, 255, 255, 0.06);
-  --surface-border: rgba(255, 255, 255, 0.12);
-  --text-primary:   #F5E6FF;
-  --text-muted:     rgba(255, 200, 230, 0.6);
-  --card-bg:        rgba(255, 255, 255, 0.06);
-  --card-border:    rgba(255, 255, 255, 0.14);
-  --card-shadow:    0 8px 32px rgba(0, 0, 0, 0.4);
-  --card-hover-shadow: 0 16px 48px rgba(155, 27, 90, 0.45);
+  --bg-base:        #120018; /* deep plum, not black */
+  --bg-section-alt: #1A002A;
+  --surface:        rgba(255, 255, 255, 0.07);
+  --surface-border: rgba(255, 180, 220, 0.18);
+  --text-primary:   #FFF0F8;  /* warm near-white — readable on ribbons */
+  --text-muted:     rgba(255, 210, 235, 0.72); /* soft rose-white */
+  --card-bg:        rgba(40, 0, 60, 0.45);  /* dark plum glass */
+  --card-border:    rgba(255, 150, 200, 0.2);
+  --card-shadow:    0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,180,220,0.1);
+  --card-hover-shadow: 0 20px 60px rgba(155, 27, 90, 0.55), inset 0 1px 0 rgba(255,200,230,0.25);
 }
 
 
@@ -327,6 +327,15 @@ html {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* Ribbon breathe: subtle up-down warp for the 3D ribbon background */
+@keyframes ribbon-drift {
+  0%   { transform: rotate(-20deg) translateY(0px) scaleY(1); }
+  33%  { transform: rotate(-20deg) translateY(-12px) scaleY(1.02); }
+  66%  { transform: rotate(-20deg) translateY(6px) scaleY(0.99); }
+  100% { transform: rotate(-20deg) translateY(-4px) scaleY(1.01); }
+}
+
 
 @keyframes fadeInUp {
   0% { opacity: 0; transform: translateY(20px); }

@@ -219,16 +219,26 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-white/90 group-hover:text-white transition-colors duration-300">
+          <h3
+            className="font-display font-semibold text-sm mb-1.5 line-clamp-2 transition-colors duration-300"
+            style={{ color: "var(--text-primary)" }}
+          >
             {product.name}
           </h3>
           <div className="flex items-center justify-between">
             <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
             <div
               className={cn(
-                "w-8 h-8 rounded-full bg-white/10 flex items-center justify-center transition-all duration-300 text-white",
-                isHovered && "bg-white/30 scale-110"
+                "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                isHovered ? "scale-110" : ""
               )}
+              style={{
+                background: isHovered
+                  ? "rgba(155,27,90,0.25)"
+                  : "var(--surface)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--card-border)",
+              }}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

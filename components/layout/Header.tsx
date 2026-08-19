@@ -57,11 +57,15 @@ export default function Header() {
     <>
       <header
         className={cn(
-          "hidden md:block sticky top-0 z-50 transition-all duration-300",
-          scrolled
-            ? "bg-white/95 backdrop-blur-xl shadow-[0_1px_24px_rgba(155,27,90,0.08)]"
-            : "bg-white/80 backdrop-blur-sm"
+          "hidden md:block sticky top-0 z-50 transition-all duration-500 backdrop-blur-xl",
         )}
+        style={{
+          background: scrolled
+            ? "var(--surface)"
+            : "rgba(var(--surface), 0.8)",
+          borderBottom: scrolled ? "1px solid var(--surface-border)" : "none",
+          boxShadow: scrolled ? "0 1px 24px rgba(155,27,90,0.08)" : "none",
+        }}
       >
         <div className="page-container-capped py-2 flex items-center gap-6">
 

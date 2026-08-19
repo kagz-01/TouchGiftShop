@@ -84,13 +84,19 @@ export default function ShopFilterBar() {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-md rounded-[2rem] border border-white/20 p-4 shadow-[0_8px_32px_rgba(0,0,0,0.2)] relative z-20">
-      
+    <div
+      className="rounded-[2rem] p-4 relative z-20 backdrop-blur-xl"
+      style={{
+        background: "var(--card-bg)",
+        border: "1px solid var(--card-border)",
+        boxShadow: "var(--card-shadow)",
+      }}
+    >
       {/* ── Occasions ── */}
-      <div className="relative mb-4 pb-4 border-b border-white/10">
+      <div className="relative mb-4 pb-4" style={{ borderBottom: "1px solid var(--surface-border)" }}>
         <div className="flex items-center gap-2 mb-2 px-1">
-          <Sparkles className="w-4 h-4 text-white/60" />
-          <h3 className="text-xs font-bold text-white/60 uppercase tracking-wider">Occasion / Theme</h3>
+          <Sparkles className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+          <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Occasion / Theme</h3>
         </div>
         
         {canScrollLeft && (
@@ -111,10 +117,13 @@ export default function ShopFilterBar() {
               onClick={() => setCategory(cat.slug)}
               className={cn(
                 "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0",
-                activeCategory === cat.slug
-                  ? "bg-brand text-white shadow-ribbon"
-                  : "bg-white/5 text-white/80 hover:bg-white/15 hover:text-white"
+                activeCategory === cat.slug ? "bg-brand text-white shadow-ribbon" : ""
               )}
+              style={activeCategory !== cat.slug ? {
+                background: "var(--surface)",
+                color: "var(--text-muted)",
+                border: "1px solid var(--card-border)",
+              } : undefined}
             >
               <div className="flex items-center justify-center shrink-0">{cat.icon}</div>
               {cat.label}
@@ -126,8 +135,8 @@ export default function ShopFilterBar() {
       {/* ── Budget ── */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-1">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-white/60" />
-          <h3 className="text-xs font-bold text-white/60 uppercase tracking-wider">Budget:</h3>
+          <Filter className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+          <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Budget:</h3>
         </div>
         
         <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1">
@@ -136,11 +145,14 @@ export default function ShopFilterBar() {
               key={tier.slug}
               onClick={() => setBudget(tier.slug)}
               className={cn(
-                "flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all border",
-                activeBudget === tier.slug
-                  ? "bg-brand text-white border-brand shadow-sm"
-                  : "bg-white/5 border-white/10 text-white/70 hover:border-white/30 hover:text-white"
+                "flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                activeBudget === tier.slug ? "bg-brand text-white shadow-sm" : ""
               )}
+              style={activeBudget !== tier.slug ? {
+                background: "var(--surface)",
+                color: "var(--text-muted)",
+                border: "1px solid var(--card-border)",
+              } : undefined}
             >
               {tier.label}
             </button>
