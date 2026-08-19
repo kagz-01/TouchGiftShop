@@ -136,18 +136,43 @@ export async function PATCH(
 
   const { data: pool } = await supabaseAdmin
     .from("group_gifting_pools")
-    .select("target_amount, status")
+    .select("target_amount, status, milestone_25_sent, milestone_50_sent, milestone_75_sent, milestone_100_sent, organiser_user_id, title")
     .eq("id", contribution.pool_id)
     .single();
 
   const targetHit = pool && newBalance >= pool.target_amount && pool.status === "active";
 
+  const updates: Record<string, any> = { current_balance: newBalance };
+  
+  if (targetHit) {
+    updates.status = "completed";
+    updates.closed_at = new Date().toISOString();
+  }
+
+  // Milestone Notifications (Simulated)
+  if (pool && pool.target_amount > 0) {
+    const pct = newBalance / pool.target_amount;
+    if (pct >= 0.25 && !pool.milestone_25_sent) {
+      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🚀 Your pool "${pool.title}" just hit 25%! Keep sharing the link.`);
+      updates.milestone_25_sent = true;
+    }
+    if (pct >= 0.5 && !pool.milestone_50_sent) {
+      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🌟 Halfway there! Your pool "${pool.title}" just hit 50%.`);
+      updates.milestone_50_sent = true;
+    }
+    if (pct >= 0.75 && !pool.milestone_75_sent) {
+      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🔥 Almost there! Your pool "${pool.title}" just hit 75%.`);
+      updates.milestone_75_sent = true;
+    }
+    if (targetHit && !pool.milestone_100_sent) {
+      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🎉 AMAZING! Your pool "${pool.title}" has reached its target! Place the order now.`);
+      updates.milestone_100_sent = true;
+    }
+  }
+
   await supabaseAdmin
     .from("group_gifting_pools")
-    .update({
-      current_balance: newBalance,
-      ...(targetHit ? { status: "completed", closed_at: new Date().toISOString() } : {}),
-    })
+    .update(updates)
     .eq("id", contribution.pool_id);
 
   return NextResponse.json({ success: true, newBalance, targetHit: !!targetHit });
