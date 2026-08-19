@@ -36,14 +36,11 @@ export default function SuperpowersStrip() {
               </div>
 
               <div className="flex-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gold/10 rounded-full mb-4">
-                  <span className="text-xs font-bold text-gold uppercase tracking-wider">New Feature</span>
-                </div>
                 <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
                   Start a Gift Pool
                 </h3>
                 <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
-                  Chip in with friends or colleagues to get them something truly premium. We handle the money collection and the flawless delivery — stress-free.
+                  Gather friends and family to gift something extraordinary. We elegantly manage the contributions and deliver a breathtaking surprise.
                 </p>
               </div>
 
@@ -70,15 +67,11 @@ export default function SuperpowersStrip() {
               </div>
 
               <div className="flex-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand/8 rounded-full mb-4">
-                  <Sparkles className="w-3 h-3 text-brand" />
-                  <span className="text-xs font-bold text-brand uppercase tracking-wider">Fully Custom</span>
-                </div>
                 <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
                   Build a Hamper
                 </h3>
                 <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
-                  Handpick every single item. We'll beautifully curate, package, and ribbon it up — creating a one-of-a-kind gifting experience they'll never forget.
+                  Curate a masterpiece piece by piece. We meticulously arrange, wrap, and ribbon your selections into a bespoke experience they will cherish.
                 </p>
               </div>
 
