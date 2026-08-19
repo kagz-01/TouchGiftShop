@@ -5,11 +5,7 @@ import Image from "next/image";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
-const BOX_SIZES = [
-  { name: "Small", price: 500, maxItems: 3, description: "3 items" },
-  { name: "Medium", price: 800, maxItems: 5, description: "5 items" },
-  { name: "Large", price: 1200, maxItems: 8, description: "8 items" },
-];
+import QuickViewModal from "./QuickViewModal";
 
 const HAMPER_CATEGORIES = [
   { label: "All", slug: "" },
@@ -56,8 +52,8 @@ function ConfettiPiece({ delay, color }: { delay: number; color: string }) {
 }
 
 export default function HamperBuilder() {
-  const [selectedBox, setSelectedBox] = useState(0);
   const [items, setItems] = useState<HamperItem[]>([]);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("");
@@ -74,16 +70,27 @@ export default function HamperBuilder() {
   const prevTotalRef = useRef(0);
   const [displayTotal, setDisplayTotal] = useState(0);
 
-  const box = BOX_SIZES[selectedBox];
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const canAddMore = itemCount < 8; // Max 8 items
+  const isFull = itemCount >= 8;
+
+  // Auto-calculate box size
+  const box = itemCount <= 3 
+    ? { name: "Small", price: 500, maxItems: 3 }
+    : itemCount <= 5 
+      ? { name: "Medium", price: 800, maxItems: 5 }
+      : { name: "Large", price: 1200, maxItems: 8 };
+
   const itemsTotal = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const total = box.price + itemsTotal;
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const canAddMore = itemCount < box.maxItems;
-  const fillPercent = Math.min((itemCount / box.maxItems) * 100, 100);
-  const isFull = itemCount >= box.maxItems;
+  
+  // Base price is only applied if items are in the basket
+  const total = itemsTotal > 0 ? box.price + itemsTotal : 0;
+  
+  // Progress relative to absolute max (8)
+  const fillPercent = Math.min((itemCount / 8) * 100, 100);
 
   // Price count-up animation
   useEffect(() => {
@@ -108,12 +115,12 @@ export default function HamperBuilder() {
 
   // Confetti trigger when hamper fills
   useEffect(() => {
-    if (isFull && prevItemCount < box.maxItems) {
+    if (isFull && prevItemCount < 8) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 2000);
     }
     setPrevItemCount(itemCount);
-  }, [itemCount, isFull, box.maxItems, prevItemCount]);
+  }, [itemCount, isFull, prevItemCount]);
 
   useEffect(() => {
     fetch("/api/products?limit=100")
@@ -277,39 +284,16 @@ export default function HamperBuilder() {
       {/* LEFT: Hamper summary */}
       <div className="lg:w-[340px] shrink-0">
         <div className="lg:sticky lg:top-4 space-y-4">
-          {/* Box selector */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-brand-muted uppercase tracking-wider">Choose a box</p>
-            <div className="grid grid-cols-3 gap-2">
-              {BOX_SIZES.map((b, i) => (
-                <button
-                  key={b.name}
-                  onClick={() => {
-                    setSelectedBox(i);
-                    setItems([]);
-                  }}
-                  className={cn(
-                    "rounded-xl border-2 p-3 text-center transition-all duration-200",
-                    i === selectedBox
-                      ? "border-brand bg-brand text-white shadow-ribbon"
-                      : "border-surface-border hover:border-brand/30 bg-white"
-                  )}
-                >
-                  <p className="font-semibold text-sm">{b.name}</p>
-                  <p className={cn("text-[11px] mt-0.5", i === selectedBox ? "text-white/70" : "text-brand-muted")}>{b.description}</p>
-                  <p className={cn("text-xs mt-1 font-bold", i === selectedBox ? "text-gold" : "text-brand")}>{formatKsh(b.price)}</p>
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Hamper contents — the basket */}
           <div
             ref={hamperRef}
             className={cn(
-              "bg-white rounded-2xl border-2 p-4 space-y-3 transition-all duration-300",
+              "bg-white rounded-2xl border-2 p-4 space-y-3 transition-all duration-500 ease-out",
               hamperBorderColor,
               hamperGlow,
+              box.name === "Medium" && "scale-[1.02] shadow-xl",
+              box.name === "Large" && "scale-[1.04] shadow-2xl",
               pulseKey > 0 && "animate-hamper-pulse"
             )}
             key={pulseKey}
@@ -320,11 +304,11 @@ export default function HamperBuilder() {
                 "text-xs font-bold px-2.5 py-1 rounded-full transition-colors duration-300",
                 isFull
                   ? "bg-gold/20 text-brand-deep"
-                  : fillPercent >= 60
+                  : itemCount > 0
                   ? "bg-brand/10 text-brand"
                   : "bg-gray-100 text-brand-muted"
               )}>
-                {itemCount}/{box.maxItems}
+                {itemCount}/8
               </span>
             </div>
 
@@ -404,10 +388,12 @@ export default function HamperBuilder() {
 
             {/* Totals with animated price */}
             <div className="border-t border-surface-border pt-3 space-y-1.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-brand-muted text-xs">Box ({box.name})</span>
-                <span className="text-xs">{formatKsh(box.price)}</span>
-              </div>
+              {itemCount > 0 && (
+                <div className="flex justify-between animate-in fade-in slide-in-from-top-2 duration-300">
+                  <span className="text-brand-muted text-xs">Auto Box ({box.name})</span>
+                  <span className="text-xs">{formatKsh(box.price)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-brand-muted text-xs">Items ({itemCount})</span>
                 <span className="text-xs">{formatKsh(itemsTotal)}</span>
@@ -504,8 +490,7 @@ export default function HamperBuilder() {
                 return (
                   <button
                     key={product.id}
-                    onClick={(e) => addItem(product, e)}
-                    disabled={disabled}
+                    onClick={() => setQuickViewProduct(product)}
                     className={cn(
                       "group rounded-xl border-2 overflow-hidden text-left transition-all duration-200 active:scale-[0.95]",
                       disabled
@@ -557,6 +542,14 @@ export default function HamperBuilder() {
           </>
         )}
       </div>
+
+      <QuickViewModal 
+        product={quickViewProduct} 
+        isOpen={!!quickViewProduct} 
+        onClose={() => setQuickViewProduct(null)} 
+        onAdd={addItem}
+        disabled={!canAddMore}
+      />
     </div>
   );
 }
