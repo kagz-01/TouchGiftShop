@@ -474,7 +474,7 @@ export function SolutionSection() {
 
           <Reveal delay={200}>
             <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed">
-              We transform a chore into a memorable moment — premium curation, flawless delivery, and features that make every surprise truly special.
+              We believe giving should be as joyful as receiving. We take care of every detail to ensure your surprise is effortless and truly memorable.
             </p>
           </Reveal>
         </div>
