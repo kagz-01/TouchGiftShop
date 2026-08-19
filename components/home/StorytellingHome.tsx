@@ -464,10 +464,10 @@ export function SolutionSection() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold text-white mb-6">
-              Experience{" "}
+            <h2 className="font-display section-heading font-bold italic tracking-wide text-white mb-6">
+              The Art of{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                TouchGift
+                Gifting
               </span>
             </h2>
           </Reveal>
