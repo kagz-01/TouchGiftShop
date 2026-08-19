@@ -327,32 +327,32 @@ export function HeroCinematic() {
 export function ProblemSection() {
   const problems = [
     { 
-      title: "The Last-Minute Panic", 
-      desc: "Forgot an important date? We provide lightning-fast same-day delivery across Nairobi so you never miss a moment.",
+      title: "The Racing Clock", 
+      desc: "Forgot an important date? We orchestrate lightning-fast same-day deliveries across Nairobi, ensuring your gesture arrives exactly when it should.",
       icon: <Clock className="w-8 h-8 text-brand" />,
       colSpan: "md:col-span-2",
       bg: "bg-blush/40"
     },
     { 
-      title: "Generic Gifts", 
-      desc: "No more boring mugs. We curate only premium, thoughtful items.",
+      title: "Uninspired Choices", 
+      desc: "We bypass the ordinary, offering only meticulously curated pieces designed to leave a lasting impression.",
       icon: <PackageX className="w-8 h-8 text-gold" />,
       colSpan: "md:col-span-1",
       bg: "bg-surface-secondary"
     },
     { 
-      title: "Delivery Hassles", 
-      desc: "Don't know their exact address? We coordinate directly with the recipient to keep the surprise intact.",
+      title: "Logistical Headaches", 
+      desc: "No address? No problem. We seamlessly coordinate with your recipient, preserving the magic without the stress.",
       icon: <MapPin className="w-8 h-8 text-coral" />,
       colSpan: "md:col-span-1",
       bg: "bg-surface-warm"
     },
     { 
-      title: "Hidden Fees", 
-      desc: "What you see is what you pay. Complete pricing transparency at checkout with zero surprises.",
+      title: "Unexpected Costs", 
+      desc: "Experience absolute transparency. What you see is exactly what you pay—no hidden fees, just pure peace of mind.",
       icon: <Banknote className="w-8 h-8 text-brand-muted" />,
       colSpan: "md:col-span-2",
-      bg: "bg-white border border-surface-border"
+      bg: "bg-white"
     },
   ];
 
@@ -382,12 +382,15 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 shape-premium-card hover:shadow-card transition-all duration-500 group ${p.bg} backdrop-blur-sm`}>
-                <div className="mb-4 p-3 bg-white rounded-2xl shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
-                  {p.icon}
+              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group ${p.bg} backdrop-blur-sm relative overflow-hidden`}>
+                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="mb-4 p-3 bg-white shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                    {p.icon}
+                  </div>
+                  <h3 className="text-2xl font-display font-bold mb-2 heading-elegant">{p.title}</h3>
+                  <p className="text-brand-muted leading-relaxed text-elegant">{p.desc}</p>
                 </div>
-                <h3 className="text-2xl font-display font-bold mb-2">{p.title}</h3>
-                <p className="text-brand-muted leading-relaxed font-light italic">{p.desc}</p>
               </div>
             </Reveal>
           ))}
