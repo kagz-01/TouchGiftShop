@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Clock, Users, Heart, Share2, Copy, CheckCircle2,
   Lock, Sparkles, ChevronRight, AlertCircle
@@ -123,6 +124,7 @@ export default function PoolLandingPage() {
   const [progressPercent, setProgressPercent] = useState(0);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
   const [error, setError] = useState("");
 
   const fetchPool = useCallback(async () => {
@@ -142,11 +144,32 @@ export default function PoolLandingPage() {
 
   useEffect(() => { fetchPool(); }, [fetchPool]);
 
-  // Poll for live updates every 30s
+  // Realtime updates
   useEffect(() => {
-    const interval = setInterval(fetchPool, 30000);
-    return () => clearInterval(interval);
-  }, [fetchPool]);
+    if (!pool?.id) return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`public:pool-${pool.id}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
+        fetchPool();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
+        fetchPool();
+      })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "group_gifting_pools", filter: `id=eq.${pool.id}` }, (payload) => {
+        fetchPool();
+        // If it just completed
+        if (payload.new.status === "completed" && pool.status === "active") {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 5000);
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [pool?.id, pool?.status, fetchPool]);
 
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}` : `/pool/${slug}`;
   const copyLink = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
@@ -179,7 +202,28 @@ export default function PoolLandingPage() {
   const isCompleted = pool.status === "completed" || pool.status === "fulfilled";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4]">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4] relative overflow-hidden">
+      {/* Confetti layer */}
+      {showConfetti && (
+        <div className="absolute inset-0 pointer-events-none z-50">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute animate-confetti-fall"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `-20px`,
+                animationDelay: `${Math.random() * 2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+                fontSize: `${12 + Math.random() * 16}px`,
+              }}
+            >
+              {["🎉", "🎊", "💛", "🌸", "⭐", "💝", "🎁"][Math.floor(Math.random() * 7)]}
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Hero Banner */}
       <div className="relative bg-gradient-to-br from-brand-deep via-brand to-brand-light overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
