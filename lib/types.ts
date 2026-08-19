@@ -28,23 +28,64 @@ export interface Order {
   createdAt: string;
 }
 
+export type PoolStatus = "active" | "completed" | "expired" | "fulfilled" | "cancelled" | "refunded";
+export type PoolPrivacyMode = "named" | "anonymous";
+export type PoolOverTargetBehaviour = "wallet_credit" | "gift_upgrade";
+
 export interface GiftPool {
   id: string;
   creatorId: string | null;
+  organiserUserId: string | null;
+  // Recipient
+  recipientName: string;
+  recipientPhotoUrl: string | null;
+  occasion: string | null;
+  // Pool basics
+  title: string;
+  description: string | null;
+  slug: string;
+  // Gift
+  giftProductId: string | null;
+  giftName: string | null;
+  giftPrice: number | null;
+  giftImageUrl: string | null;
+  // Financial
   targetAmount: number;
   currentBalance: number;
-  title: string;
-  slug: string;
-  status: "active" | "completed" | "expired";
+  minContribution: number;
+  overTargetBehaviour: PoolOverTargetBehaviour;
+  underTargetAction: "refund" | "extend" | "downgrade" | null;
+  // Privacy
+  privacyMode: PoolPrivacyMode;
+  surpriseMode: boolean;
+  ghostModeAllowed: boolean;
+  // Media
+  voiceMessageUrl: string | null;
+  videoMessageUrl: string | null;
+  // Status & timing
+  status: PoolStatus;
   expiresAt: string;
+  closedAt: string | null;
+  orderPlacedAt: string | null;
+  createdAt: string;
+  // Computed (joined)
+  contributions?: PoolContribution[];
 }
 
 export interface PoolContribution {
   id: string;
-  contributorName: string;
+  poolId: string;
+  contributorName: string | null;
   contributorPhone: string;
   amount: number;
+  message: string | null;
+  paymentMethod: string;
+  paymentRef: string | null;
+  pesapalTrackingId: string | null;
   isVerified: boolean;
+  isAnonymous: boolean;
+  isGhost: boolean;
+  splitParentId: string | null;
   createdAt: string;
 }
 
