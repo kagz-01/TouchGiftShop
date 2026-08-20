@@ -56,32 +56,99 @@ export default function AmbientBackground() {
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-700 bg-[#120018]">
-      {/* ── Rich Multi-Point Background Gradient ── */}
+      {/* ── Base Background Gradient (No Circular Orbs) ── */}
       {isDark ? (
         <>
-          {/* Base gradient layer */}
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, #1A002A 0%, #120018 100%)",
+            background: "linear-gradient(180deg, #1A002A 0%, #0F0014 100%)",
           }} />
-          {/* Glowing Orbs for a varied, complex background (Not one flat color) */}
-          <div style={{ position: "absolute", top: "-10%", left: "-10%", width: "70%", height: "70%", background: "radial-gradient(circle, rgba(90, 15, 60, 0.4) 0%, transparent 70%)", filter: "blur(60px)" }} />
-          <div style={{ position: "absolute", bottom: "-20%", right: "-10%", width: "80%", height: "80%", background: "radial-gradient(circle, rgba(40, 5, 80, 0.4) 0%, transparent 70%)", filter: "blur(80px)" }} />
-          <div style={{ position: "absolute", top: "20%", right: "10%", width: "50%", height: "50%", background: "radial-gradient(circle, rgba(155, 27, 90, 0.2) 0%, transparent 70%)", filter: "blur(50px)" }} />
-          
           <div style={{ position: "absolute", inset: 0, opacity: 0.15, backgroundImage: "var(--noise-texture)", mixBlendMode: "overlay" }} />
         </>
       ) : (
         <>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(135deg, #FFF9F0 0%, #FDF5EE 100%)",
+            background: "linear-gradient(180deg, #FFF9F0 0%, #FDF5EE 50%, #FDECD5 100%)",
           }} />
-          <div style={{ position: "absolute", top: "-10%", left: "-10%", width: "70%", height: "70%", background: "radial-gradient(circle, rgba(255, 221, 232, 0.6) 0%, transparent 70%)", filter: "blur(60px)" }} />
-          <div style={{ position: "absolute", bottom: "-20%", right: "-10%", width: "80%", height: "80%", background: "radial-gradient(circle, rgba(253, 230, 138, 0.4) 0%, transparent 70%)", filter: "blur(80px)" }} />
-          <div style={{ position: "absolute", top: "20%", right: "10%", width: "50%", height: "50%", background: "radial-gradient(circle, rgba(250, 212, 224, 0.4) 0%, transparent 70%)", filter: "blur(50px)" }} />
         </>
       )}
+
+      {/* ── Central Floating Cluster (Sparkles & Gift Wraps) ── */}
+      {/* This mimics the horizontal band of floating gifts and sparkles seen in the reference */}
+      <div className="absolute top-[20%] left-0 right-0 h-[30vh] flex items-center justify-center opacity-60">
+        {/* Floating Sparkles Cluster */}
+        {[
+          { left: 15, top: 40, size: 3, delay: 0.5, dur: 4 },
+          { left: 22, top: 60, size: 5, delay: 1.2, dur: 5 },
+          { left: 35, top: 25, size: 2, delay: 3.0, dur: 6 },
+          { left: 45, top: 75, size: 4, delay: 2.1, dur: 3 },
+          { left: 55, top: 30, size: 6, delay: 4.5, dur: 5 },
+          { left: 65, top: 80, size: 3, delay: 0.8, dur: 7 },
+          { left: 75, top: 45, size: 5, delay: 2.5, dur: 4 },
+          { left: 85, top: 65, size: 2, delay: 1.7, dur: 5 },
+          { left: 12, top: 85, size: 4, delay: 3.3, dur: 6 },
+          { left: 28, top: 35, size: 7, delay: 0.9, dur: 4 },
+          { left: 38, top: 50, size: 3, delay: 4.1, dur: 5 },
+          { left: 48, top: 20, size: 5, delay: 2.8, dur: 7 },
+          { left: 58, top: 70, size: 2, delay: 1.5, dur: 4 },
+          { left: 68, top: 40, size: 4, delay: 3.7, dur: 6 },
+          { left: 78, top: 55, size: 6, delay: 0.4, dur: 5 },
+          { left: 88, top: 25, size: 3, delay: 2.2, dur: 4 },
+          { left: 18, top: 55, size: 5, delay: 1.9, dur: 6 },
+          { left: 32, top: 75, size: 2, delay: 4.8, dur: 5 },
+          { left: 42, top: 45, size: 4, delay: 0.7, dur: 7 },
+          { left: 52, top: 85, size: 6, delay: 2.6, dur: 4 },
+          { left: 62, top: 30, size: 3, delay: 3.5, dur: 6 },
+          { left: 72, top: 60, size: 5, delay: 1.1, dur: 5 },
+          { left: 82, top: 35, size: 2, delay: 4.2, dur: 4 },
+          { left: 92, top: 50, size: 4, delay: 0.3, dur: 7 },
+          { left: 25, top: 80, size: 5, delay: 2.4, dur: 5 },
+          { left: 45, top: 35, size: 3, delay: 3.9, dur: 6 },
+          { left: 65, top: 65, size: 6, delay: 1.6, dur: 4 },
+          { left: 85, top: 20, size: 4, delay: 4.7, dur: 5 },
+          { left: 15, top: 30, size: 2, delay: 0.6, dur: 7 },
+          { left: 50, top: 50, size: 5, delay: 2.9, dur: 4 },
+        ].map((sparkle, i) => (
+            <div
+              key={`sparkle-${i}`}
+              className="absolute rounded-full animate-pulse"
+              style={{
+                left: `${sparkle.left}%`,
+                top: `${sparkle.top}%`,
+                width: `${sparkle.size}px`,
+                height: `${sparkle.size}px`,
+                backgroundColor: isDark ? "rgba(255, 180, 220, 0.8)" : "rgba(215, 115, 145, 0.8)",
+                boxShadow: isDark ? "0 0 8px 2px rgba(224, 96, 168, 0.5)" : "0 0 8px 2px rgba(196, 91, 120, 0.4)",
+                animationDuration: `${sparkle.dur}s`,
+                animationDelay: `${sparkle.delay}s`,
+              }}
+            />
+          ))}
+        
+        {/* Floating Gift Wraps (3D-like) */}
+        {[
+          { left: 15, top: 25, scale: 1.5, delay: 0 },
+          { left: 35, top: 40, scale: 1.0, delay: 2 },
+          { left: 65, top: 30, scale: 1.3, delay: 1 },
+          { left: 85, top: 45, scale: 0.9, delay: 3 },
+        ].map((gift, i) => (
+          <div
+            key={`giftbox-${i}`}
+            className="absolute flex items-center justify-center drop-shadow-xl"
+            style={{
+              left: `${gift.left}%`,
+              top: `${gift.top}%`,
+              transform: `scale(${gift.scale})`,
+              animation: `float-y 6s ease-in-out ${gift.delay}s infinite alternate`,
+              opacity: isDark ? 0.9 : 0.8,
+              filter: isDark ? "sepia(0.3) hue-rotate(290deg) brightness(0.8) contrast(1.2)" : "sepia(0.2) hue-rotate(330deg) brightness(0.95)", // Tints the emoji to match theme
+            }}
+          >
+            <span style={{ fontSize: "2.5rem" }}>🎁</span>
+          </div>
+        ))}
+      </div>
 
       {/* ── Glowing Strings with Attached Gifts ── */}
       {fallingItems.map((item, i) => {
