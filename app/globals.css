@@ -78,6 +78,11 @@ html {
   100% { transform: translateY(110vh); opacity: 0; }
 }
 
+@keyframes sway {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
+}
+
 @keyframes star-glow {
   0%, 100% { opacity: 0.5; filter: blur(2px) drop-shadow(0 0 4px var(--color-brand)); }
   50% { opacity: 1; filter: blur(4px) drop-shadow(0 0 12px var(--color-brand)); }

@@ -196,24 +196,24 @@ export function HeroCinematic() {
           {/* ── LEFT COLUMN: COPY & CTA ── */}
           <div className="w-full text-left">
             {/* Typewriter delivery note */}
-            <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-4 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1">
+            <div className={`inline-flex flex-col items-start bg-brand-deep/5 dark:bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-4 border border-brand-deep/10 dark:border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-brand-deep/70 dark:text-gold/80 mb-1 font-bold">
                 TouchGift Promise
               </span>
-              <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
+              <div className="flex items-center gap-2 text-sm md:text-[15px] text-brand-deep/90 dark:text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
                 <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
                 <span className="whitespace-normal tracking-tight">
                   {highlightDeliveryCopy(deliveryMessage)}
-                  <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
+                  <span className="inline-block w-[1px] h-4 align-middle bg-brand-deep/50 dark:bg-white/70 ml-0.5 animate-pulse" />
                 </span>
               </div>
             </div>
 
             {/* Main headline */}
-            <h1 className={`font-display font-bold text-white leading-[0.95] mb-4 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <h1 className={`font-display font-bold text-brand-deep dark:text-white leading-[0.95] mb-4 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
             >
-              <span className="relative inline-block py-1 text-shadow-glow">
+              <span className="relative inline-block py-1 dark:text-shadow-glow">
                 Elevate the art
                 <br />
                 <span className="relative inline-block">
@@ -234,7 +234,7 @@ export function HeroCinematic() {
             </h1>
 
             {/* Subheadline */}
-            <p className={`text-white/70 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <p className={`text-brand-deep/75 dark:text-white/70 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
             >
               Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment.
@@ -256,7 +256,7 @@ export function HeroCinematic() {
               </Link>
               <Link
                 href="/gift-lab"
-                className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
+                className="group px-8 py-4 bg-brand-deep/5 dark:bg-white/10 backdrop-blur-sm text-brand-deep dark:text-white font-semibold rounded-2xl text-lg border border-brand-deep/10 dark:border-white/20 hover:bg-brand-deep/10 dark:hover:bg-white/20 hover:shadow-[0_0_20px_rgba(0,0,0,0.05)] dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
               >
                 <span className="flex items-center justify-center gap-2">
                   Build a Hamper
@@ -267,19 +267,19 @@ export function HeroCinematic() {
 
             {/* Quick Action Pills */}
             <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <Target className="w-3.5 h-3.5 text-coral" />
                 AI Gift Match
               </Link>
-              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <Building2 className="w-3.5 h-3.5 text-gold" />
                 Corporate Gifts
               </Link>
-              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <span className="text-[14px]">👥</span>
                 Pool a Gift
               </Link>
-              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <EyeOff className="w-3.5 h-3.5 text-brand-light" />
                 Send Anonymously
               </Link>
@@ -287,16 +287,16 @@ export function HeroCinematic() {
           </div>
 
           {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/5 backdrop-blur-md border border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-brand-deep/5 dark:bg-white/5 backdrop-blur-md border border-brand-deep/10 dark:border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* Soft gradient masks to fade top and bottom edges smoothly */}
-            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-deep/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#FFF9F0] dark:from-[#1A1A2E]/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
+            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#FFF9F0] dark:from-[#1A1A2E]/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
             
             {/* Column 1: Premium Products (Scrolling Up) */}
             <div className="flex-1 relative">
               <div className="flex flex-col gap-4 animate-marquee-vertical hover:[animation-play-state:paused]">
                 {[...PRODUCTS, ...PRODUCTS].map((src, i) => (
-                  <div key={`prod-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-white/10 group border border-white/10">
+                  <div key={`prod-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-brand-deep/5 dark:bg-white/10 group border border-brand-deep/10 dark:border-white/10">
                     <img src={src} alt="Premium Gift" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
                 ))}
@@ -307,7 +307,7 @@ export function HeroCinematic() {
             <div className="flex-1 relative pt-12">
               <div className="flex flex-col gap-4 animate-marquee-vertical-reverse hover:[animation-play-state:paused]">
                 {[...LIFESTYLE, ...LIFESTYLE].map((src, i) => (
-                  <div key={`life-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-white/10 group border border-white/10">
+                  <div key={`life-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-brand-deep/5 dark:bg-white/10 group border border-brand-deep/10 dark:border-white/10">
                     <img src={src} alt="Happy reaction" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   </div>
                 ))}
@@ -331,36 +331,36 @@ export function ProblemSection() {
       desc: "Forgot an important date? We orchestrate lightning-fast same-day deliveries across Nairobi, ensuring your gesture arrives exactly when it should.",
       icon: <Clock className="w-8 h-8 text-brand" />,
       colSpan: "md:col-span-2",
-      bg: "bg-blush/40",
-      titleColor: "text-brand-deep",
-      textColor: "text-brand-deep/75",
+      bg: "bg-blush/40 dark:bg-white/5",
+      titleColor: "text-brand-deep dark:text-white",
+      textColor: "text-brand-deep/75 dark:text-white/70",
     },
     { 
       title: "Uninspired Choices", 
       desc: "We bypass the ordinary, offering only meticulously curated pieces designed to leave a lasting impression.",
       icon: <PackageX className="w-8 h-8 text-gold" />,
       colSpan: "md:col-span-1",
-      bg: "bg-surface-secondary",
-      titleColor: "text-brand-deep",
-      textColor: "text-brand-deep/75",
+      bg: "bg-surface-secondary dark:bg-white/5",
+      titleColor: "text-brand-deep dark:text-white",
+      textColor: "text-brand-deep/75 dark:text-white/70",
     },
     { 
       title: "Logistical Headaches", 
       desc: "No address? No problem. We seamlessly coordinate with your recipient, preserving the magic without the stress.",
       icon: <MapPin className="w-8 h-8 text-coral" />,
       colSpan: "md:col-span-1",
-      bg: "bg-surface-warm",
-      titleColor: "text-brand-deep",
-      textColor: "text-brand-deep/75",
+      bg: "bg-surface-warm dark:bg-white/5",
+      titleColor: "text-brand-deep dark:text-white",
+      textColor: "text-brand-deep/75 dark:text-white/70",
     },
     { 
       title: "Unexpected Costs", 
       desc: "Experience absolute transparency. What you see is exactly what you pay—no hidden fees, just pure peace of mind.",
       icon: <Banknote className="w-8 h-8 text-brand" />,
       colSpan: "md:col-span-2",
-      bg: "bg-white",
-      titleColor: "text-brand-deep",
-      textColor: "text-brand-deep/75",
+      bg: "bg-white dark:bg-white/5",
+      titleColor: "text-brand-deep dark:text-white",
+      textColor: "text-brand-deep/75 dark:text-white/70",
     },
   ];
 
@@ -374,14 +374,14 @@ export function ProblemSection() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold mb-6">
+            <h2 className="font-display section-heading font-bold mb-6 text-brand-deep dark:text-white">
               Finding the perfect gift
               <br />
-              <span className="text-brand-deep/60 font-normal italic">is often harder than it should be.</span>
+              <span className="text-brand-deep/60 dark:text-white/60 font-normal italic">is often harder than it should be.</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <p className="text-brand-deep/70 text-lg leading-relaxed">
+            <p className="text-brand-deep/70 dark:text-white/70 text-lg leading-relaxed">
               You want to show how much you care, but finding the perfect gift shouldn't be stressful. We're here to make the experience as beautiful as the gesture itself.
             </p>
           </Reveal>
