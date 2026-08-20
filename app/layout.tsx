@@ -8,6 +8,7 @@ import AmbientBackground from "@/components/ui/AmbientBackground";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
@@ -65,6 +66,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AmbientBackground />
           <Analytics />
+          <SpeedInsights />
           <SubscriptionProvider>
             <Header />
             <main className="flex-1 pb-20 md:pb-0 relative z-0">
