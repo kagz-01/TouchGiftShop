@@ -1,23 +1,24 @@
 "use client";
 
 import { useTheme } from "@/components/ui/ThemeProvider";
+import { Gift, Heart, Sparkles, Star } from "lucide-react";
 
 export default function AmbientBackground() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   
-  // Configuration for 3D falling strings (just glowing lines that fall straight down)
+  // Configuration for 3D falling strings (just glowing lines that fall straight down with small icons)
   const fallingItems = [
-    { left: 5, delay: 0.2, duration: 30, length: 25, z: 0.8 },
-    { left: 25, delay: 1.1, duration: 25, length: 15, z: 1.0 },
-    { left: 45, delay: 2.3, duration: 32, length: 35, z: 0.7 },
-    { left: 62, delay: 0.9, duration: 40, length: 45, z: 0.4 },
-    { left: 75, delay: 4.2, duration: 35, length: 30, z: 0.6 },
-    { left: 85, delay: 1.7, duration: 42, length: 20, z: 0.4 },
-    { left: 18, delay: 4.9, duration: 25, length: 40, z: 1.0 },
-    { left: 38, delay: 7.6, duration: 32, length: 25, z: 0.7 },
-    { left: 68, delay: 3.7, duration: 37, length: 18, z: 0.5 },
-    { left: 98, delay: 2.1, duration: 25, length: 32, z: 1.0 },
+    { left: 5, delay: 0.2, duration: 30, length: 25, z: 0.8, Icon: Gift },
+    { left: 25, delay: 1.1, duration: 25, length: 15, z: 1.0, Icon: Heart },
+    { left: 45, delay: 2.3, duration: 32, length: 35, z: 0.7, Icon: Gift },
+    { left: 62, delay: 0.9, duration: 40, length: 45, z: 0.4, Icon: Sparkles },
+    { left: 75, delay: 4.2, duration: 35, length: 30, z: 0.6, Icon: Gift },
+    { left: 85, delay: 1.7, duration: 42, length: 20, z: 0.4, Icon: Star },
+    { left: 18, delay: 4.9, duration: 25, length: 40, z: 1.0, Icon: Gift },
+    { left: 38, delay: 7.6, duration: 32, length: 25, z: 0.7, Icon: Heart },
+    { left: 68, delay: 3.7, duration: 37, length: 18, z: 0.5, Icon: Gift },
+    { left: 98, delay: 2.1, duration: 25, length: 32, z: 1.0, Icon: Star },
   ];
 
   // Configuration for swaying hanging gifts (hang from the top edge, don't fall, just sway)
@@ -61,8 +62,10 @@ export default function AmbientBackground() {
         </>
       )}
 
-      {/* ── Falling Glowing Strings (Fall normally, no sway, tiny tip) ── */}
+      {/* ── Falling Glowing Strings (Fall normally, no sway, original icons at tip) ── */}
       {fallingItems.map((item, i) => {
+        const Icon = item.Icon;
+        const scale = 0.5 + (item.z * 0.7); // 0.5 to 1.2
         const opacity = 0.2 + (item.z * 0.6); // 0.2 to 0.8
         const blur = (1 - item.z) * 4; // 0px to 4px
         const trailWidth = item.z > 0.7 ? "2px" : "1px";
@@ -71,6 +74,9 @@ export default function AmbientBackground() {
           ? "rgba(255, 180, 220, 0.8)" 
           : "rgba(215, 115, 145, 0.65)";
         const iconColor = isDark ? "#FFF" : "#C45B78";
+        const dropShadow = isDark 
+          ? "drop-shadow(0 0 10px rgba(224, 96, 168, 0.8))" 
+          : "drop-shadow(0 0 8px rgba(196, 91, 120, 0.5))";
 
         return (
           <div
@@ -88,18 +94,17 @@ export default function AmbientBackground() {
               transform: `translateY(-10vh)`, // Initial state before animation
             }}
           >
-            {/* The tiny glowing dot at the tip of the string */}
+            {/* The attached Icon at the tip of the string */}
             <div style={{
               position: "absolute",
-              bottom: 0,
+              bottom: "-12px",
               left: "50%",
-              transform: `translateX(-50%)`,
-              width: "4px",
-              height: "4px",
-              borderRadius: "50%",
-              background: iconColor,
-              boxShadow: `0 0 8px 2px ${iconColor}`,
-            }} />
+              transform: `translateX(-50%) scale(${scale})`,
+              color: iconColor,
+              filter: dropShadow,
+            }} className="flex items-center justify-center">
+              <Icon size={24} strokeWidth={item.z > 0.7 ? 2 : 1.5} />
+            </div>
           </div>
         );
       })}
