@@ -8,6 +8,7 @@ import AmbientBackground from "@/components/ui/AmbientBackground";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: {
@@ -63,6 +64,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col font-sans overflow-x-hidden">
         <ThemeProvider>
           <AmbientBackground />
+          <Analytics />
           <SubscriptionProvider>
             <Header />
             <main className="flex-1 pb-20 md:pb-0 relative z-0">
