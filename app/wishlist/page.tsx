@@ -97,7 +97,7 @@ export default function WishlistPage() {
 
   if (!loaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen section-theme-d flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin" />
       </div>
     );
@@ -128,7 +128,7 @@ export default function WishlistPage() {
   const shareUrl = wishlist ? `${SITE_URL}/wishlist/${wishlist.slug}` : "";
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen section-theme-d">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">

@@ -77,7 +77,7 @@ export default async function ProductPage({
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-transparent flex items-center justify-center px-4">
+      <div className="min-h-screen section-theme-a flex items-center justify-center px-4">
         <div className="text-center">
           <span className="text-6xl block mb-4">🔍</span>
           <p className="font-display text-xl font-semibold mb-2">Product not found</p>
@@ -104,7 +104,7 @@ export default async function ProductPage({
     product.is_personalizable || PERSONALIZE_KEYWORDS.some((kw) => haystack.includes(kw));
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-a">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="page-container-capped py-3 flex items-center gap-3">

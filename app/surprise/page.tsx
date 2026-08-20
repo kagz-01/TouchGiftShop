@@ -69,7 +69,7 @@ export default function SurpriseFeaturePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-a">
       {/* ── Header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">

@@ -4,7 +4,7 @@ import HamperBuilder from "@/components/gift-lab/HamperBuilder";
 
 export default function BuildHamperPage() {
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-a">
       {/* ── Sticky header ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="page-container-capped py-3 flex items-center gap-3">

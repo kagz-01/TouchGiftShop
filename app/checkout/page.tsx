@@ -22,7 +22,7 @@ export default async function CheckoutPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-e">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="page-container-capped py-3 flex items-center justify-between">

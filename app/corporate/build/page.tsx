@@ -149,7 +149,7 @@ export default function HamperBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-a">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-md border-b border-surface-border sticky top-0 z-40">
         <div className="page-container-capped py-4">

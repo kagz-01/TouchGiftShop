@@ -22,9 +22,9 @@ export default async function ShopPage({
   const params = await searchParams;
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen section-theme-f">
       {/* ── Sticky header ── */}
-      <div className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-30">
+      <div className="backdrop-blur-md border-b sticky top-0 z-30" style={{ background: 'var(--surface)', borderColor: 'var(--surface-border)' }}>
         <div className="page-container-capped py-3 flex items-center justify-between gap-4">
           <Link
             href="/"
@@ -83,21 +83,24 @@ export default async function ShopPage({
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href="/gift-lab/build-hamper"
-              className="flex items-center gap-1.5 px-3 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-semibold text-white/80 hover:border-white/40 hover:text-white transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <ShoppingBag className="w-3.5 h-3.5" />
               Build Hamper
             </Link>
             <Link
               href="/pool/create"
-              className="flex items-center gap-1.5 px-3 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-semibold text-white/80 hover:border-white/40 hover:text-white transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <Users className="w-3.5 h-3.5" />
               Pool a Gift
             </Link>
             <Link
               href="/surprise"
-              className="flex items-center gap-1.5 px-3 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-xl text-xs font-semibold text-white/80 hover:border-white/40 hover:text-white transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <Zap className="w-3.5 h-3.5" />
               Send Anonymously

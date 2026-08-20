@@ -365,7 +365,7 @@ export function ProblemSection() {
   ];
 
   return (
-    <section className="py-10 md:py-14 bg-transparent relative overflow-hidden">
+    <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <div className="text-center max-w-2xl mx-auto mb-4">
           <Reveal>
@@ -374,14 +374,14 @@ export function ProblemSection() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold mb-6 text-brand-deep dark:text-white">
+            <h2 className="font-display section-heading font-bold mb-6 text-theme-heading">
               Finding the perfect gift
               <br />
-              <span className="text-brand-deep/60 dark:text-white/60 font-normal italic">is often harder than it should be.</span>
+              <span className="text-theme-muted font-normal italic">is often harder than it should be.</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <p className="text-brand-deep/70 dark:text-white/70 text-lg leading-relaxed">
+            <p className="text-theme-body text-lg leading-relaxed">
               You want to show how much you care, but finding the perfect gift shouldn't be stressful. We're here to make the experience as beautiful as the gesture itself.
             </p>
           </Reveal>
@@ -390,14 +390,14 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group ${p.bg} backdrop-blur-sm relative overflow-hidden`}>
+              <div className={`h-full p-6 md:p-8 section-theme-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme backdrop-blur-sm relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10">
-                  <div className="mb-4 p-3 bg-white shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                  <div className="mb-4 p-3 bg-brand/10 dark:bg-white/10 section-theme-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                     {p.icon}
                   </div>
-                  <h3 className={`text-2xl font-display font-bold mb-3 heading-elegant ${p.titleColor}`}>{p.title}</h3>
-                  <p className={`leading-relaxed text-elegant ${p.textColor}`}>{p.desc}</p>
+                  <h3 className={`text-2xl font-display font-bold mb-3 heading-elegant text-theme-heading`}>{p.title}</h3>
+                  <p className={`leading-relaxed text-elegant text-theme-body`}>{p.desc}</p>
                 </div>
               </div>
             </Reveal>
@@ -456,7 +456,7 @@ export function SolutionSection() {
   ];
 
   return (
-    <section className="py-10 md:py-14 bg-brand-deep relative overflow-hidden">
+    <section className="py-10 md:py-14 section-theme-c relative overflow-hidden">
       {/* Ambient glow orbs */}
       <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none" />
@@ -475,7 +475,7 @@ export function SolutionSection() {
           </Reveal>
 
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold italic tracking-wide text-white mb-6">
+            <h2 className="font-display section-heading font-bold italic tracking-wide text-theme-heading mb-6">
               The Art of{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 Gifting
@@ -484,8 +484,8 @@ export function SolutionSection() {
           </Reveal>
 
           <Reveal delay={200}>
-            <p className="text-lg md:text-xl text-white/65 max-w-2xl mx-auto leading-relaxed">
-              We believe giving should be as joyful as receiving. We take care of every detail to ensure your surprise is effortless and truly memorable.
+            <p className="text-theme-body max-w-2xl mx-auto mb-4 text-lg leading-relaxed">
+              We don't just fulfil orders. We architect emotional experiences, transforming the act of giving into an unforgettable story.
             </p>
           </Reveal>
         </div>
@@ -495,7 +495,7 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border border-white/10 ${
+                className={`group relative h-full section-theme-card p-6 md:p-8 text-left border border-white/10 ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
@@ -508,10 +508,10 @@ export function SolutionSection() {
                   <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                     {card.icon}
                   </div>
-                  <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 italic group-hover:text-gold transition-colors duration-300">
+                  <h3 className="font-display text-xl md:text-2xl font-bold text-theme-heading mb-3 italic group-hover:text-gold transition-colors duration-300">
                     {card.title}
                   </h3>
-                  <p className="text-white/60 leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                  <p className="text-theme-body leading-relaxed group-hover:text-white/80 transition-colors duration-300">
                     {card.desc}
                   </p>
                 </div>
@@ -559,18 +559,18 @@ export function StoryHowItWorks() {
   ];
 
   return (
-    <section className="py-10 md:py-14 bg-brand-deep relative overflow-hidden">
+    <section className="py-10 md:py-14 section-theme-b relative overflow-hidden">
       {/* Subtle dot grid pattern */}
       <div
         className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
           backgroundSize: "32px 32px",
         }}
       />
 
       {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand/15 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
@@ -584,7 +584,7 @@ export function StoryHowItWorks() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold italic tracking-wide text-white">
+            <h2 className="font-display section-heading font-bold italic tracking-wide text-theme-heading">
               The Journey of a{" "}
               <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 Gift
@@ -602,7 +602,7 @@ export function StoryHowItWorks() {
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 180} direction="up">
                 <div
-                  className={`group relative h-full shape-premium-card p-6 md:p-8 border border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
+                  className={`group relative h-full shape-premium-card p-6 md:p-8 border border-brand/10 dark:border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm card-theme transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.15)] hover:-translate-y-2 overflow-hidden`}
                 >
                   {/* Shimmer on hover */}
                   <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -621,14 +621,14 @@ export function StoryHowItWorks() {
                     </div>
 
                     {/* Icon */}
-                    <div className="w-16 h-16 shape-premium-button bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                    <div className="w-16 h-16 shape-premium-button bg-brand/10 dark:bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                       {step.icon}
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-white mb-3 heading-elegant group-hover:text-gold transition-colors duration-300">
+                    <h3 className="font-display text-2xl font-bold text-theme-heading mb-3 heading-elegant group-hover:text-gold transition-colors duration-300">
                       {step.title}
                     </h3>
-                    <p className="text-white/65 leading-relaxed text-elegant group-hover:text-white/85 transition-colors duration-300">
+                    <p className="text-theme-body leading-relaxed text-elegant group-hover:text-theme-heading transition-colors duration-300">
                       {step.desc}
                     </p>
                   </div>
@@ -689,7 +689,7 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-10 md:py-14 bg-transparent relative overflow-hidden">
+    <section className="py-10 md:py-14 section-theme-e relative overflow-hidden">
       {/* Subtle warm gradient top */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
 
@@ -799,7 +799,7 @@ export function OccasionsGrid() {
   ];
 
   return (
-    <section className="py-10 md:py-14 bg-transparent relative">
+    <section className="py-10 md:py-14 section-theme-d relative">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <Reveal>
           <p className="text-gold font-semibold text-sm tracking-wide uppercase tracking-widest mb-4 text-center">
@@ -807,12 +807,12 @@ export function OccasionsGrid() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-4">
+          <h2 className="font-display section-heading font-bold text-center mb-4 text-theme-heading">
             Who are you gifting?
           </h2>
         </Reveal>
         <Reveal delay={200}>
-          <p className="text-brand-deep/70 text-center max-w-xl mx-auto mb-6 leading-relaxed">
+          <p className="text-theme-body text-center max-w-xl mx-auto mb-6 leading-relaxed">
             Every occasion deserves something special. Pick a category and
             we&apos;ll show you curated gifts that fit.
           </p>
@@ -823,7 +823,7 @@ export function OccasionsGrid() {
             <Reveal key={occ.slug} delay={300 + i * 80}>
               <Link
                 href={`/?category=${occ.slug}`}
-                className="group relative bg-white/70 backdrop-blur-sm shape-premium-card p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-white/60 overflow-hidden"
+                className="group relative card-theme backdrop-blur-sm shape-premium-card p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-brand/5 overflow-hidden"
               >
                 {/* Gradient bg on hover */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
@@ -831,7 +831,7 @@ export function OccasionsGrid() {
                   <div className="mb-3 flex justify-center group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-500">
                     {occ.icon}
                   </div>
-                  <p className="font-semibold text-sm tracking-wide group-hover:text-white transition-colors duration-300">
+                  <p className="font-semibold text-sm tracking-wide text-theme-body group-hover:text-white transition-colors duration-300">
                     {occ.label}
                   </p>
                 </div>
@@ -849,24 +849,24 @@ export function OccasionsGrid() {
    ══════════════════════════════════════════════════════════ */
 export function FinalCTA() {
   return (
-    <section className="relative overflow-hidden bg-white py-10 md:py-14 flex items-center justify-center text-center border-t border-surface-border">
+    <section className="relative overflow-hidden section-theme-g py-10 md:py-14 flex items-center justify-center text-center border-t border-brand/10 dark:border-white/10">
       {/* Background orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-brand/5 rounded-full blur-[130px] animate-pulse-soft" />
         <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-gold/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-blush/60 rounded-full blur-[80px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-brand/5 rounded-full blur-[80px]" />
       </div>
 
       <div className="w-full page-container relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         <Reveal>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-6">
             <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-brand-deep text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
+            <span className="text-theme-body text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
           </div>
         </Reveal>
 
         <Reveal delay={100}>
-          <h2 className="font-display display-heading font-bold text-brand-deep mb-4">
+          <h2 className="font-display display-heading font-bold text-theme-heading mb-4">
             Ready to create
             <br />
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
@@ -878,7 +878,7 @@ export function FinalCTA() {
         </Reveal>
 
         <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-brand-deep/70 max-w-2xl mx-auto mb-6 leading-relaxed">
+          <p className="text-lg md:text-xl text-theme-body max-w-2xl mx-auto mb-6 leading-relaxed">
             Skip the stress. We curate, wrap beautifully, and deliver with care — so all you have to do is watch them smile.
           </p>
         </Reveal>

@@ -111,7 +111,7 @@ export default function Footer() {
       </div>
 
       {/* Main Footer */}
-      <div className="bg-gradient-dark text-white">
+      <div className="section-theme-g">
         <div className="page-container-capped py-8">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             {/* Brand + Newsletter */}
