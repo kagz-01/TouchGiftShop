@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/components/ui/ThemeProvider";
-import { Gift, Heart, Sparkles, Star } from "lucide-react";
+import { Gift, Heart, Sparkles, Star, ShoppingBag, Package } from "lucide-react";
 
 export default function AmbientBackground() {
   const { theme } = useTheme();
@@ -9,49 +9,18 @@ export default function AmbientBackground() {
   
   // Configuration for 3D falling strings with attached icons
   // 'z' represents depth: higher z = closer (larger, sharper, brighter), lower z = farther (smaller, blurred, darker)
+  // Reduced to ~10 items and slowed down (duration * 2.5) as requested
   const fallingItems = [
-    { left: 2, delay: 0.2, duration: 12, z: 0.8, Icon: Gift },
-    { left: 7, delay: 3.5, duration: 15, z: 0.5, Icon: Sparkles },
-    { left: 12, delay: 1.1, duration: 10, z: 1.0, Icon: Heart },
-    { left: 18, delay: 5.4, duration: 18, z: 0.3, Icon: Star },
-    { left: 23, delay: 2.3, duration: 13, z: 0.7, Icon: Gift },
-    { left: 28, delay: 6.8, duration: 11, z: 0.9, Icon: Heart },
-    { left: 33, delay: 0.9, duration: 16, z: 0.4, Icon: Sparkles },
-    { left: 38, delay: 4.2, duration: 14, z: 0.6, Icon: Gift },
-    { left: 43, delay: 1.7, duration: 17, z: 0.4, Icon: Star },
-    { left: 48, delay: 7.1, duration: 12, z: 0.8, Icon: Heart },
-    { left: 53, delay: 8.5, duration: 19, z: 0.3, Icon: Sparkles },
-    { left: 58, delay: 4.9, duration: 10, z: 1.0, Icon: Gift },
-    { left: 63, delay: 2.8, duration: 14, z: 0.6, Icon: Heart },
-    { left: 68, delay: 7.6, duration: 13, z: 0.7, Icon: Star },
-    { left: 73, delay: 1.4, duration: 16, z: 0.4, Icon: Sparkles },
-    { left: 78, delay: 9.2, duration: 11, z: 0.9, Icon: Gift },
-    { left: 83, delay: 3.7, duration: 15, z: 0.5, Icon: Heart },
-    { left: 88, delay: 6.3, duration: 12, z: 0.8, Icon: Sparkles },
-    { left: 93, delay: 2.1, duration: 17, z: 0.3, Icon: Gift },
-    { left: 98, delay: 8.9, duration: 10, z: 1.0, Icon: Star },
-    
-    // Additional 20 items to increase density
-    { left: 4, delay: 4.1, duration: 14, z: 0.6, Icon: Star },
-    { left: 14, delay: 7.3, duration: 11, z: 0.9, Icon: Gift },
-    { left: 21, delay: 2.5, duration: 16, z: 0.4, Icon: Heart },
-    { left: 26, delay: 9.8, duration: 13, z: 0.8, Icon: Sparkles },
-    { left: 36, delay: 1.2, duration: 19, z: 0.2, Icon: Gift },
-    { left: 41, delay: 5.7, duration: 12, z: 0.7, Icon: Star },
-    { left: 49, delay: 8.4, duration: 15, z: 0.5, Icon: Heart },
-    { left: 54, delay: 3.1, duration: 10, z: 1.0, Icon: Sparkles },
-    { left: 61, delay: 6.9, duration: 17, z: 0.4, Icon: Gift },
-    { left: 66, delay: 0.6, duration: 14, z: 0.6, Icon: Star },
-    { left: 71, delay: 4.8, duration: 11, z: 0.9, Icon: Heart },
-    { left: 76, delay: 2.2, duration: 18, z: 0.3, Icon: Sparkles },
-    { left: 81, delay: 7.5, duration: 12, z: 0.8, Icon: Gift },
-    { left: 86, delay: 1.9, duration: 16, z: 0.5, Icon: Star },
-    { left: 91, delay: 5.3, duration: 13, z: 0.7, Icon: Heart },
-    { left: 96, delay: 9.5, duration: 10, z: 1.0, Icon: Sparkles },
-    { left: 9, delay: 3.8, duration: 15, z: 0.6, Icon: Gift },
-    { left: 31, delay: 8.2, duration: 14, z: 0.5, Icon: Heart },
-    { left: 59, delay: 1.5, duration: 17, z: 0.4, Icon: Star },
-    { left: 89, delay: 6.4, duration: 11, z: 0.9, Icon: Sparkles },
+    { left: 5, delay: 0.2, duration: 30, z: 0.8, Icon: Gift },
+    { left: 25, delay: 1.1, duration: 25, z: 1.0, Icon: Heart },
+    { left: 45, delay: 2.3, duration: 32, z: 0.7, Icon: Gift },
+    { left: 62, delay: 0.9, duration: 40, z: 0.4, Icon: Sparkles },
+    { left: 75, delay: 4.2, duration: 35, z: 0.6, Icon: Gift },
+    { left: 85, delay: 1.7, duration: 42, z: 0.4, Icon: Star },
+    { left: 18, delay: 4.9, duration: 25, z: 1.0, Icon: Gift },
+    { left: 38, delay: 7.6, duration: 32, z: 0.7, Icon: Star },
+    { left: 68, delay: 3.7, duration: 37, z: 0.5, Icon: Heart },
+    { left: 98, delay: 8.9, duration: 25, z: 1.0, Icon: Star },
   ];
 
   return (
@@ -126,28 +95,32 @@ export default function AmbientBackground() {
             />
           ))}
         
-        {/* Floating Gift Wraps (3D-like) */}
+        {/* Floating Gift Wraps and Bags (using Lucide icons to avoid emojis) */}
         {[
-          { left: 15, top: 25, scale: 1.5, delay: 0 },
-          { left: 35, top: 40, scale: 1.0, delay: 2 },
-          { left: 65, top: 30, scale: 1.3, delay: 1 },
-          { left: 85, top: 45, scale: 0.9, delay: 3 },
-        ].map((gift, i) => (
-          <div
-            key={`giftbox-${i}`}
-            className="absolute flex items-center justify-center drop-shadow-xl"
-            style={{
-              left: `${gift.left}%`,
-              top: `${gift.top}%`,
-              transform: `scale(${gift.scale})`,
-              animation: `float-y 6s ease-in-out ${gift.delay}s infinite alternate`,
-              opacity: isDark ? 0.9 : 0.8,
-              filter: isDark ? "sepia(0.3) hue-rotate(290deg) brightness(0.8) contrast(1.2)" : "sepia(0.2) hue-rotate(330deg) brightness(0.95)", // Tints the emoji to match theme
-            }}
-          >
-            <span style={{ fontSize: "2.5rem" }}>🎁</span>
-          </div>
-        ))}
+          { left: 15, top: 25, scale: 1.5, delay: 0, Icon: Gift },
+          { left: 35, top: 40, scale: 1.0, delay: 2, Icon: ShoppingBag },
+          { left: 65, top: 30, scale: 1.3, delay: 1, Icon: Package },
+          { left: 85, top: 45, scale: 0.9, delay: 3, Icon: Gift },
+        ].map((item, i) => {
+          const Icon = item.Icon;
+          return (
+            <div
+              key={`giftbox-${i}`}
+              className="absolute flex items-center justify-center drop-shadow-xl"
+              style={{
+                left: `${item.left}%`,
+                top: `${item.top}%`,
+                transform: `scale(${item.scale})`,
+                animation: `float-y 6s ease-in-out ${item.delay}s infinite alternate`,
+                opacity: isDark ? 0.9 : 0.8,
+                color: isDark ? "rgba(255, 180, 220, 0.9)" : "rgba(215, 115, 145, 0.9)",
+                filter: isDark ? "drop-shadow(0 0 12px rgba(224, 96, 168, 0.7))" : "drop-shadow(0 0 8px rgba(196, 91, 120, 0.5))",
+              }}
+            >
+              <Icon size={40} strokeWidth={1.5} />
+            </div>
+          );
+        })}
       </div>
 
       {/* ── Glowing Strings with Attached Gifts ── */}
