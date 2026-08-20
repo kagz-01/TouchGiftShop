@@ -39,7 +39,7 @@ const TRUST_ITEMS = [
 
 export default function TrustSignals() {
   return (
-    <section className="py-8 border-t border-surface-border">
+    <section className="py-8 border-t border-surface-border section-theme-a">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {TRUST_ITEMS.map((item) => (
           <div key={item.title} className="flex items-start gap-3 p-3">

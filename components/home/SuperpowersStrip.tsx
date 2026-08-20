@@ -4,14 +4,14 @@ import { Users, ShoppingBag, Sparkles, ArrowRight } from "lucide-react";
 
 export default function SuperpowersStrip() {
   return (
-    <section className="py-10 md:py-14 bg-white">
+    <section className="py-10 md:py-14 section-theme-c">
       <div className="w-full page-container-capped">
         {/* Section label */}
         <div className="text-center mb-6">
           <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-3">
             TouchGift Exclusives
           </p>
-          <h2 className="text-2xl md:text-3xl text-brand-deep leading-tight heading-elegant">
+          <h2 className="text-2xl md:text-3xl text-theme-heading leading-tight heading-elegant">
             Two ways to go{" "}
             <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
               beyond the ordinary
@@ -36,7 +36,7 @@ export default function SuperpowersStrip() {
               </div>
 
               <div className="flex-1">
-                <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
+                <h3 className="text-xl md:text-2xl text-theme-heading mb-2 heading-elegant">
                   Start a Gift Pool
                 </h3>
                 <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
@@ -67,7 +67,7 @@ export default function SuperpowersStrip() {
               </div>
 
               <div className="flex-1">
-                <h3 className="text-xl md:text-2xl text-brand-deep mb-2 heading-elegant">
+                <h3 className="text-xl md:text-2xl text-theme-heading mb-2 heading-elegant">
                   Build a Hamper
                 </h3>
                 <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">

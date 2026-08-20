@@ -24,7 +24,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="py-12 md:py-16 bg-surface-secondary">
+    <section className="py-12 md:py-16 section-theme-b">
       <div className="page-container">
         <div className="text-center mb-10">
           <span className="text-xs text-brand font-semibold uppercase tracking-wider">Simple as 1-2-3</span>

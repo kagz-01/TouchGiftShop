@@ -112,7 +112,7 @@ export default function Testimonials() {
   if (reviews.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-12 md:py-16 section-theme-e">
       <div className="page-container">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">

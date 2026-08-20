@@ -390,10 +390,10 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 section-theme-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme backdrop-blur-sm relative overflow-hidden`}>
+              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme backdrop-blur-sm relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10">
-                  <div className="mb-4 p-3 bg-brand/10 dark:bg-white/10 section-theme-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                  <div className="mb-4 p-3 bg-brand/10 dark:bg-white/10 shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
                     {p.icon}
                   </div>
                   <h3 className={`text-2xl font-display font-bold mb-3 heading-elegant text-theme-heading`}>{p.title}</h3>
@@ -495,7 +495,7 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full section-theme-card p-6 md:p-8 text-left border border-white/10 ${
+                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border border-white/10 ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
