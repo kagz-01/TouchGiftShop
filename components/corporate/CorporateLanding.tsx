@@ -146,7 +146,7 @@ function CorporateHero() {
               </div>
               <div className="absolute -bottom-3 -left-3 bg-gold shape-premium-card px-4 py-3 shadow-xl animate-float border border-gold-light" style={{ animationDelay: "1s" }}>
                 <p className="text-brand-deep font-bold text-lg">24hrs</p>
-                <p className="text-brand-deep/70 text-xs">Turnaround</p>
+                <p className="text-on-theme text-xs">Turnaround</p>
               </div>
             </div>
           </div>

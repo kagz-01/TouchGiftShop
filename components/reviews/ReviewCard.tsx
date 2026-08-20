@@ -177,10 +177,10 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
         {/* Seller reply */}
         {review.sellerReply && (
           <div className="bg-brand/5 border border-brand/10 rounded-xl p-3 mb-3">
-            <p className="text-[11px] font-semibold text-brand mb-1">
+            <p className="text-[11px] font-semibold text-on-theme mb-1">
               TouchGift Reply
             </p>
-            <p className="text-xs text-brand-muted leading-relaxed">
+            <p className="text-xs text-theme-body leading-relaxed">
               {review.sellerReply}
             </p>
           </div>

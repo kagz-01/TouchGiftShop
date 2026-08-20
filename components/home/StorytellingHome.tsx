@@ -197,10 +197,10 @@ export function HeroCinematic() {
           <div className="w-full text-left">
             {/* Typewriter delivery note */}
             <div className={`inline-flex flex-col items-start bg-brand-deep/5 dark:bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-4 border border-brand-deep/10 dark:border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-brand-deep/70 dark:text-gold/80 mb-1 font-bold">
+              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-on-theme dark:text-gold/80 mb-1 font-bold">
                 TouchGift Promise
               </span>
-              <div className="flex items-center gap-2 text-sm md:text-[15px] text-brand-deep/90 dark:text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
+              <div className="flex items-center gap-2 text-sm md:text-[15px] text-on-theme dark:text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
                 <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
                 <span className="whitespace-normal tracking-tight">
                   {highlightDeliveryCopy(deliveryMessage)}
@@ -267,19 +267,19 @@ export function HeroCinematic() {
 
             {/* Quick Action Pills */}
             <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
+              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-on-theme hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <Target className="w-3.5 h-3.5 text-coral" />
                 AI Gift Match
               </Link>
-              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
+              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-on-theme hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <Building2 className="w-3.5 h-3.5 text-gold" />
                 Corporate Gifts
               </Link>
-              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
+              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-on-theme hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <span className="text-[14px]">👥</span>
                 Pool a Gift
               </Link>
-              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-brand-deep/80 hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
+              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-on-theme hover:text-brand-deep dark:text-white/80 dark:hover:text-white transition-all">
                 <EyeOff className="w-3.5 h-3.5 text-brand-light" />
                 Send Anonymously
               </Link>
@@ -418,48 +418,53 @@ export function SolutionSection() {
       title: "Bespoke Curation",
       desc: "Each piece is hand-selected for uncompromising quality and elegance, ensuring every unboxing is a moment of pure delight.",
       colSpan: "md:col-span-2 lg:col-span-2",
-      bg: "bg-gradient-to-br from-white/10 to-white/5",
+      bg: "bento-card-theme",
       accentColor: "group-hover:border-gold/50",
+      isBrand: false,
     },
     {
-      icon: <Zap className="w-8 h-8 text-white" />,
+      icon: <Zap className="w-8 h-8 text-brand" />,
       title: "Impeccable Timing",
       desc: "Swift, seamless delivery across Nairobi, arriving beautifully presented exactly when it matters most.",
       colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bg-gradient-to-br from-brand to-brand-deep",
-      accentColor: "group-hover:border-brand-light/50",
+      bg: "bento-card-theme",
+      accentColor: "group-hover:border-brand/40",
+      isBrand: false,
     },
     {
       icon: <MapPin className="w-8 h-8 text-coral" />,
       title: "The Mystery Pin-Drop",
       desc: "A touch of mystery. We discreetly coordinate the delivery location with them, preserving the magic of the surprise.",
       colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bg-white/5",
+      bg: "bento-card-theme",
       accentColor: "group-hover:border-coral/40",
+      isBrand: false,
     },
     {
       icon: <EyeOff className="w-8 h-8 text-brand-light" />,
       title: "Absolute Discretion",
       desc: "Total discretion. Price tags and sender details are entirely removed, allowing the sentiment to speak for itself.",
       colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bg-white/5",
+      bg: "bento-card-theme",
       accentColor: "group-hover:border-brand-light/40",
+      isBrand: false,
     },
     {
       icon: <Camera className="w-8 h-8 text-success" />,
       title: "A Glimpse of Joy",
       desc: "See the magic unfold. You receive a photograph of the exquisitely wrapped gift just before it begins its journey.",
       colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bg-white/5",
+      bg: "bento-card-theme",
       accentColor: "group-hover:border-success/40",
+      isBrand: false,
     },
   ];
 
   return (
     <section className="py-10 md:py-14 section-theme-c relative overflow-hidden">
       {/* Ambient glow orbs */}
-      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none animate-pulse-soft" />
+      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none animate-pulse-soft" style={{ animationDelay: "1s" }} />
 
       {/* Top/bottom gold rule */}
       <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
@@ -495,7 +500,9 @@ export function SolutionSection() {
           {bentoCards.map((card, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
               <div
-                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border border-white/10 ${
+                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border ${
+                  card.isBrand ? 'border-white/10' : 'border-brand/8 dark:border-white/10'
+                } ${
                   card.accentColor
                 } transition-all duration-500 overflow-hidden cursor-default ${
                   card.bg
@@ -505,13 +512,15 @@ export function SolutionSection() {
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                 <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
+                  <div className={`w-14 h-14 rounded-2xl ${
+                    card.isBrand ? 'bg-white/10' : 'bg-brand/8 dark:bg-white/10'
+                  } backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500`}>
                     {card.icon}
                   </div>
                   <h3 className="font-display text-xl md:text-2xl font-bold text-theme-heading mb-3 italic group-hover:text-gold transition-colors duration-300">
                     {card.title}
                   </h3>
-                  <p className="text-theme-body leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                  <p className="text-theme-body leading-relaxed group-hover:text-theme-heading transition-colors duration-300">
                     {card.desc}
                   </p>
                 </div>
@@ -716,14 +725,14 @@ export function SocialProof() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4 md:mb-6">
           {stats.map((stat, i) => (
             <Reveal key={i} delay={i * 80} direction="up">
-              <div className="group relative shape-premium-card p-6 bg-white/80 backdrop-blur-sm border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-400 text-center overflow-hidden">
+              <div className="group relative shape-premium-card p-6 card-theme text-center overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
                 <div className="relative z-10">
                   <div className="text-3xl mb-2">{stat.icon}</div>
-                  <p className="font-display text-4xl md:text-5xl font-black text-brand-deep mb-1">
+                  <p className="font-display text-4xl md:text-5xl font-black text-theme-heading mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-brand-deep/60 text-sm font-medium italic">{stat.label}</p>
+                  <p className="text-theme-body text-sm font-medium italic">{stat.label}</p>
                 </div>
               </div>
             </Reveal>
@@ -742,13 +751,13 @@ export function SocialProof() {
                 {displayReviews.map((t, i) => (
                   <div
                     key={i}
-                    className="flex-shrink-0 w-[300px] md:w-[360px] bg-white/80 backdrop-blur-sm rounded-[1.5rem] p-6 border border-white/60 hover:border-brand/20 hover:shadow-card transition-all duration-300 flex flex-col gap-4 whitespace-normal"
+                    className="flex-shrink-0 w-[300px] md:w-[360px] card-theme rounded-[1.5rem] p-6 flex flex-col gap-4 whitespace-normal"
                   >
                     {/* Stars */}
                     <StarRow count={t.stars} />
 
                     {/* Quote */}
-                    <p className="text-sm md:text-base leading-relaxed text-brand-deep flex-1">
+                    <p className="text-sm md:text-base leading-relaxed text-theme-heading flex-1">
                       &ldquo;{t.text}&rdquo;
                     </p>
 
@@ -758,7 +767,7 @@ export function SocialProof() {
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
                           <span className="text-white text-[10px] font-bold">{t.initials}</span>
                         </div>
-                        <span className="font-semibold text-sm tracking-wide">{t.name}</span>
+                        <span className="font-semibold text-sm tracking-wide text-theme-heading">{t.name}</span>
                       </div>
                       <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-brand px-3 py-1.5 rounded-full">
                         {t.occasion}

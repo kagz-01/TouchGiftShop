@@ -47,8 +47,8 @@ export default function TrustSignals() {
               {item.icon}
             </div>
             <div>
-              <p className="text-sm font-semibold text-brand-deep">{item.title}</p>
-              <p className="text-xs text-brand-muted">{item.description}</p>
+              <p className="text-sm font-semibold text-theme-heading">{item.title}</p>
+              <p className="text-xs text-theme-body">{item.description}</p>
             </div>
           </div>
         ))}

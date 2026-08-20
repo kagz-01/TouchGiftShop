@@ -126,12 +126,12 @@ export default function Testimonials() {
               </svg>
             </div>
             <div>
-              <h3 className="font-display font-bold text-lg text-brand-deep">TouchGift Shop</h3>
+              <h3 className="font-display font-bold text-lg text-theme-heading">TouchGift Shop</h3>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm">4.9</span>
+                <span className="font-bold text-sm text-theme-heading">4.9</span>
                 <StarRating rating={5} />
-                <span className="text-xs text-brand-muted">·</span>
-                <span className="text-xs text-brand-muted">{reviews.length}+ reviews on</span>
+                <span className="text-xs text-theme-body">·</span>
+                <span className="text-xs text-theme-body">{reviews.length}+ reviews on</span>
                 <svg className="w-12 h-4" viewBox="0 0 72 24">
                   <text x="0" y="18" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#4285F4">G</text>
                   <text x="14" y="18" fontFamily="Arial, sans-serif" fontSize="16" fontWeight="bold" fill="#EA4335">o</text>
@@ -165,7 +165,7 @@ export default function Testimonials() {
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-10 h-10 rounded-full bg-white shadow-card-hover border border-surface-border flex items-center justify-center text-brand-muted hover:text-brand hover:shadow-card transition-all opacity-0 group-hover:opacity-100"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -176,7 +176,7 @@ export default function Testimonials() {
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-10 h-10 rounded-full bg-white shadow-card-hover border border-surface-border flex items-center justify-center text-brand-muted hover:text-brand hover:shadow-card transition-all opacity-0 group-hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -194,7 +194,7 @@ export default function Testimonials() {
             {[...reviews, ...reviews].map((review, i) => (
               <div
                 key={`${review.id}-${i}`}
-                className="flex-shrink-0 w-[340px] bg-surface-secondary rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300"
+                className="flex-shrink-0 w-[340px] card-theme rounded-2xl p-5"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
@@ -210,8 +210,8 @@ export default function Testimonials() {
                           {(review.reviewer_name || "A").charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm font-semibold text-brand-deep">{review.reviewer_name || "Anonymous"}</p>
-                          <p className="text-[11px] text-brand-muted">{timeAgo(review.createdAt)}</p>
+                          <p className="text-sm font-semibold text-theme-heading">{review.reviewer_name || "Anonymous"}</p>
+                          <p className="text-[11px] text-theme-body">{timeAgo(review.createdAt)}</p>
                         </div>
                       </>
                     )}
@@ -234,10 +234,10 @@ export default function Testimonials() {
                 </div>
 
                 {review.title && (
-                  <p className="text-sm font-semibold text-brand-deep mb-1">{review.title}</p>
+                  <p className="text-sm font-semibold text-theme-heading mb-1">{review.title}</p>
                 )}
 
-                <p className="text-sm text-brand-muted leading-relaxed mb-3">
+                <p className="text-sm text-theme-body leading-relaxed mb-3">
                   {review.body || ""}
                 </p>
 
@@ -261,7 +261,7 @@ export default function Testimonials() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-brand-muted mt-6">
+        <p className="text-center text-xs text-theme-body mt-6">
           All reviews are from verified Google reviews.{" "}
           <a
             href={GOOGLE_REVIEW_URL}

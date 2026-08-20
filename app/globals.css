@@ -30,12 +30,12 @@
 :root:not([data-theme="dark"]) {
   --bg-base:        #FDF5EE;
   --bg-section-alt: #FFF9F2;
-  --surface:        rgba(255, 255, 255, 0.85);
-  --surface-border: rgba(212, 168, 83, 0.2);
-  --text-primary:   #1A0A10;
-  --text-muted:     #7A4A55;
-  --card-bg:        rgba(255, 255, 255, 0.75);
-  --card-border:    rgba(155, 27, 90, 0.12);
+  --surface:        rgba(255, 255, 255, 0.5);
+  --surface-border: rgba(155, 27, 90, 0.08);
+  --text-primary:   #1A000A;
+  --text-muted:     #6D5B64;
+  --card-bg:        rgba(255, 255, 255, 0.72);
+  --card-border:    rgba(155, 27, 90, 0.10);
   --card-shadow:    0 4px 24px rgba(155, 27, 90, 0.08);
   --card-hover-shadow: 0 12px 40px rgba(155, 27, 90, 0.18);
   /* Themed text */
@@ -48,24 +48,24 @@
   --noise-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* DARK MODE — deep plum/magenta/rose palette */
+/* DARK MODE — clean, sophisticated charcoal/slate palette */
 [data-theme="dark"] {
-  --bg-base:        #120018;
-  --bg-section-alt: #1A002A;
-  --surface:        rgba(255, 255, 255, 0.07);
-  --surface-border: rgba(255, 180, 220, 0.18);
-  --text-primary:   #FFD6E8;
-  --text-muted:     rgba(255, 190, 220, 0.6);
-  --card-bg:        rgba(40, 0, 60, 0.45);
-  --card-border:    rgba(255, 150, 200, 0.2);
-  --card-shadow:    0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,180,220,0.1);
-  --card-hover-shadow: 0 20px 60px rgba(155, 27, 90, 0.55), inset 0 1px 0 rgba(255,200,230,0.25);
+  --bg-base:        #0B0B0E;
+  --bg-section-alt: #121217;
+  --surface:        rgba(255, 255, 255, 0.04);
+  --surface-border: rgba(255, 255, 255, 0.08);
+  --text-primary:   #FFFFFF;
+  --text-muted:     rgba(255, 255, 255, 0.65);
+  --card-bg:        rgba(20, 15, 25, 0.52);
+  --card-border:    rgba(255, 150, 200, 0.18);
+  --card-shadow:    0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1);
   /* Themed text */
-  --heading-color:   #FFD6E8;
-  --body-color:      #D4A8C0;
-  --accent-color:    #E8A0C8;
+  --heading-color:   #FFFFFF;
+  --body-color:      #E2E2E5;
+  --accent-color:    #FFD6E8;
   --link-color:      #FF80C0;
-  --muted-color:     rgba(255, 190, 220, 0.6);
+  --muted-color:     rgba(255, 255, 255, 0.65);
 }
 
 /* ========================
@@ -76,70 +76,70 @@
 
 /* A — Warm Cream / Midnight Indigo */
 .section-theme-a {
-  background: linear-gradient(160deg, #FDF5EE 0%, #FFF9F2 100%);
+  background: linear-gradient(160deg, #FDF5EED9 0%, #FFF9F2D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-a {
-  background: linear-gradient(160deg, #080820 0%, #12103A 100%);
+  background: linear-gradient(160deg, #0B0B0ED9 0%, #101016D9 100%);
 }
 
-/* B — Blush Ivory / Velvet Rose */
+/* B — Blush Ivory / Deep Slate */
 .section-theme-b {
-  background: linear-gradient(160deg, #FFF5F8 0%, #FDE8F0 100%);
+  background: linear-gradient(160deg, #FFF5F8D9 0%, #FDE8F0D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-b {
-  background: linear-gradient(160deg, #1A0020 0%, #2A0035 100%);
+  background: linear-gradient(160deg, #121217D9 0%, #16161DD9 100%);
 }
 
-/* C — Peach Whisper / Noir Magenta */
+/* C — Peach Whisper / Midnight Ink */
 .section-theme-c {
-  background: linear-gradient(160deg, #FDF0E8 0%, #FFF5EE 100%);
+  background: linear-gradient(160deg, #FDF0E8D9 0%, #FFF5EED9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-c {
-  background: linear-gradient(160deg, #180018 0%, #300040 100%);
+  background: linear-gradient(160deg, #101014D9 0%, #181820D9 100%);
 }
 
-/* D — Rose Haze / Deep Garnet */
+/* D — Rose Haze / Obsidian */
 .section-theme-d {
-  background: linear-gradient(160deg, #FDE8F0 0%, #FFF0F5 100%);
+  background: linear-gradient(160deg, #FDE8F0D9 0%, #FFF0F5D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-d {
-  background: linear-gradient(160deg, #1A0010 0%, #2A0020 100%);
+  background: linear-gradient(160deg, #0D0D12D9 0%, #14141BD9 100%);
 }
 
-/* E — Champagne / Obsidian */
+/* E — Champagne / Dark Charcoal */
 .section-theme-e {
-  background: linear-gradient(160deg, #FDF8F0 0%, #FDEEE0 100%);
+  background: linear-gradient(160deg, #FDF8F0D9 0%, #FDEEE0D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-e {
-  background: linear-gradient(160deg, #0A0A18 0%, #181828 100%);
+  background: linear-gradient(160deg, #141419D9 0%, #1A1A22D9 100%);
 }
 
-/* F — Soft Linen / Dark Onyx */
+/* F — Soft Linen / Slate Gray */
 .section-theme-f {
-  background: linear-gradient(160deg, #F8F4F0 0%, #FDF8F4 100%);
+  background: linear-gradient(160deg, #F8F4F0D9 0%, #FDF8F4D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-f {
-  background: linear-gradient(160deg, #100A18 0%, #1C1430 100%);
+  background: linear-gradient(160deg, #16161CD9 0%, #1E1E26D9 100%);
 }
 
-/* G — White Blush / Deep Plum */
+/* G — White Blush / Midnight */
 .section-theme-g {
-  background: linear-gradient(160deg, #FFFFFF 0%, #FFF5F8 100%);
+  background: linear-gradient(160deg, #FFFFFFD9 0%, #FFF5F8D9 100%);
   transition: background 0.4s ease;
 }
 [data-theme="dark"] .section-theme-g {
-  background: linear-gradient(160deg, #0E0018 0%, #1A0030 100%);
+  background: linear-gradient(160deg, #09090CD9 0%, #121218D9 100%);
 }
 
-/* Hero — stays dark in BOTH modes (dramatic centrepiece) */
+/* Hero — stays dark in BOTH modes (elegant, dramatic centrepiece) */
 .section-hero {
-  background: radial-gradient(ellipse at top, #9B1B5A 0%, #1A1A2E 55%, #14080D 100%);
+  background: radial-gradient(ellipse at top, #2C1A2ED9 0%, #121217D9 55%, #0B0B0ED9 100%);
 }
 
 /* ========================
@@ -152,19 +152,110 @@
 .text-theme-link    { color: var(--link-color); }
 .text-theme-muted   { color: var(--muted-color); }
 
-/* Legacy aliases — kept for backward compat */
-.text-on-theme    { color: var(--text-primary); }
-.text-muted-theme { color: var(--text-muted); }
+/* Gold text - brand gold primary */
+.text-gold { @apply text-brand-deep; }
+/* Gold light variant for dark mode */
+.dark .text-gold { @apply text-brand; }
 
-/* Card backgrounds — auto theme */
+/* Legacy aliases — kept for backward compat */
+.text-white { color: #FFFFFF; }
+
+/* Card backgrounds — auto theme with real glassmorphism */
 .card-theme {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
-  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  color: var(--text-primary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Glass sheen — thin light streak at top edge */
+.card-theme::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Subtle opposite-colour hover glow:
+   Light mode → gold-warm shadow (dark on light = contrast)
+   Dark mode  → blush-rose shadow (light on dark = contrast) */
 .card-theme:hover {
-  box-shadow: var(--card-hover-shadow);
+  box-shadow:
+    var(--card-hover-shadow),
+    0 0 0 1px var(--card-border),
+    0 8px 32px -4px var(--card-glow);
+}
+
+/* Light mode: warm gold glow (opposite to the light bg) */
+[data-theme="light"] .card-theme,
+:root:not([data-theme="dark"]) .card-theme {
+  --card-glow: rgba(212, 168, 83, 0.15);
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(212, 168, 83, 0.12);
+}
+[data-theme="light"] .card-theme:hover,
+:root:not([data-theme="dark"]) .card-theme:hover {
+  --card-glow: rgba(212, 168, 83, 0.25);
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(212, 168, 83, 0.35);
+  box-shadow:
+    0 16px 50px rgba(212, 168, 83, 0.15),
+    0 0 0 1px rgba(212, 168, 83, 0.30),
+    0 8px 28px -4px rgba(212, 168, 83, 0.20);
+}
+
+/* Dark mode: blush-rose glow (opposite to dark bg) */
+[data-theme="dark"] .card-theme {
+  --card-glow: rgba(255, 130, 180, 0.18);
+  background: rgba(35, 0, 50, 0.55);
+  border-color: rgba(255, 150, 200, 0.22);
+}
+[data-theme="dark"] .card-theme:hover {
+  --card-glow: rgba(255, 180, 220, 0.30);
+  background: rgba(50, 0, 70, 0.70);
+  border-color: rgba(255, 180, 220, 0.40);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.50),
+    0 0 0 1px rgba(255, 180, 220, 0.35),
+    0 10px 40px -4px rgba(255, 130, 180, 0.25);
+}
+
+/* Bento card — adapts its transparent bg to whichever section it sits in */
+.bento-card-theme {
+  position: relative;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  overflow: hidden;
+}
+[data-theme="light"] .bento-card-theme,
+:root:not([data-theme="dark"]) .bento-card-theme {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(212, 168, 83, 0.12);
+}
+[data-theme="light"] .bento-card-theme:hover,
+:root:not([data-theme="dark"]) .bento-card-theme:hover {
+  background: rgba(255, 255, 255, 0.90);
+  border-color: rgba(212, 168, 83, 0.35);
+  box-shadow: 0 16px 50px rgba(212, 168, 83, 0.12), 0 0 0 1px rgba(212, 168, 83, 0.25);
+}
+[data-theme="dark"] .bento-card-theme {
+  background: rgba(35, 0, 50, 0.55);
+  border-color: rgba(255, 150, 200, 0.22);
+}
+[data-theme="dark"] .bento-card-theme:hover {
+  background: rgba(50, 0, 70, 0.72);
+  border-color: rgba(255, 180, 220, 0.38);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 180, 220, 0.32);
 }
 
 /* ========================

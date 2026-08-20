@@ -28,7 +28,7 @@ export default function HowItWorks() {
       <div className="page-container">
         <div className="text-center mb-10">
           <span className="text-xs text-brand font-semibold uppercase tracking-wider">Simple as 1-2-3</span>
-          <h2 className="font-display text-2xl md:text-3xl font-bold mt-2">How TouchGift Works</h2>
+          <h2 className="font-display text-2xl md:text-3xl font-bold mt-2 text-theme-heading">How TouchGift Works</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -39,7 +39,7 @@ export default function HowItWorks() {
                 <div className="hidden md:block absolute top-10 left-[calc(50%+40px)] right-[calc(-50%+40px)] h-0.5 bg-gradient-to-r from-brand/20 to-brand/5 z-0" />
               )}
 
-              <div className="relative bg-white rounded-2xl p-6 border border-surface-border text-center space-y-3 hover:shadow-card-hover transition-all duration-300 group">
+              <div className="relative card-theme rounded-2xl p-6 text-center space-y-3 group">
                 {/* Step number */}
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-brand text-white text-xs font-bold flex items-center justify-center shadow-ribbon">
                   {i + 1}
@@ -49,9 +49,9 @@ export default function HowItWorks() {
                   {step.icon}
                 </div>
 
-                <h3 className="font-display font-bold text-lg">{step.title}</h3>
+                <h3 className="font-display font-bold text-lg text-theme-heading">{step.title}</h3>
 
-                <p className="text-sm text-brand-muted leading-relaxed">
+                <p className="text-sm text-theme-body leading-relaxed">
                   {step.description}
                 </p>
 

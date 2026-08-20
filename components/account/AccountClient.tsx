@@ -27,12 +27,12 @@ const NAV_ITEMS = [
 ];
 
 const STATUS_COLORS: Record<string, string> = {
-  pending_payment: "bg-yellow-100 text-yellow-700",
-  processing: "bg-blue-100 text-blue-700",
-  wrapped: "bg-purple-100 text-purple-700",
-  dispatched: "bg-orange-100 text-orange-700",
-  delivered: "bg-green-100 text-green-700",
-  failed: "bg-red-100 text-red-700",
+  pending_payment: "[data-theme=light]:bg-yellow-100 [data-theme=dark]:bg-yellow-900 [data-theme=light]:text-yellow-700 [data-theme=dark]:text-yellow-300",
+  processing: "[data-theme=light]:bg-blue-100 [data-theme=dark]:bg-blue-900 [data-theme=light]:text-blue-700 [data-theme=dark]:text-blue-300",
+  wrapped: "[data-theme=light]:bg-purple-100 [data-theme=dark]:bg-purple-900 [data-theme=light]:text-purple-700 [data-theme=dark]:text-purple-300",
+  dispatched: "[data-theme=light]:bg-orange-100 [data-theme=dark]:bg-orange-900 [data-theme=light]:text-orange-700 [data-theme=dark]:text-orange-300",
+  delivered: "[data-theme=light]:bg-green-100 [data-theme=dark]:bg-green-900 [data-theme=light]:text-green-700 [data-theme=dark]:text-green-300",
+  failed: "[data-theme=light]:bg-red-100 [data-theme=dark]:bg-red-900 [data-theme=light]:text-red-700 [data-theme=dark]:text-red-300",
 };
 const STATUS_LABELS: Record<string, string> = {
   pending_payment: "Awaiting payment",
@@ -151,9 +151,9 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm pb-24">
+    <div className="min-h-screen pb-24">
       {/* ─── HERO HEADER ─── */}
-      <div className="bg-gradient-to-br from-brand-dark via-brand to-brand/80 px-4 pt-10 pb-24">
+      <div className="card-theme bg-gradient-to-br from-brand-dark via-brand to-brand/80 px-4 pt-10 pb-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
@@ -174,10 +174,10 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 {currentAvatarUrl ? (
                   <Image src={currentAvatarUrl} alt={displayName} width={80} height={80} className="object-cover w-full h-full" />
                 ) : (
-                  <span className="text-2xl font-display font-bold text-white">{initials}</span>
+                  <span className="text-2xl font-display font-bold text-theme-body">{initials}</span>
                 )}
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                  <Camera className="w-5 h-5 text-white" />
+                  <Camera className="w-5 h-5 text-theme-body" />
                 </div>
                 {avatarLoading && <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-2xl"><div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /></div>}
               </button>
@@ -185,8 +185,8 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
             </div>
 
             <div className="flex-1 min-w-0">
-              <h1 className="font-display text-2xl md:text-3xl font-bold text-white truncate">{displayName}</h1>
-              <p className="text-white/70 text-sm mt-0.5">{phone ?? email ?? "Gift Sender"}</p>
+              <h1 className="font-display text-2xl md:text-3xl font-bold text-theme-heading truncate">{displayName}</h1>
+              <p className="text-theme-body/70 text-sm mt-0.5">{phone ?? email ?? "Gift Sender"}</p>
               <div className="flex items-center gap-2 mt-2">
                 <span
                   className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full"
@@ -195,7 +195,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                   <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: tier.color }} />
                   {tier.name} Member
                 </span>
-                <span className="text-white/50 text-xs">{orderCount} orders</span>
+                <span className="text-theme-body/50 text-xs">{orderCount} orders</span>
               </div>
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
 
           {/* ─── SIDEBAR NAV ─── */}
           <div className="lg:w-56 flex-shrink-0">
-            <div className="bg-white rounded-2xl border border-surface-border shadow-card overflow-hidden">
+            <div className="card-theme rounded-2xl border border-surface-border shadow-card overflow-hidden">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
@@ -242,7 +242,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
             {activeSection === "profile" && (
               <div className="space-y-5 animate-fade-in">
                 {/* Name editing */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-6">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6">
                   <h2 className="font-display font-bold text-brand-deep text-lg mb-5">Your Profile</h2>
                   <div className="space-y-4">
                     {/* Display name */}
@@ -292,7 +292,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 </div>
 
                 {/* Quick Links */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-5">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-5">
                   <h2 className="font-display font-bold text-brand-deep mb-4">Quick Access</h2>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     {[
@@ -314,7 +314,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 </div>
 
                 {/* Contact support */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-5">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-5">
                   <h2 className="font-display font-bold text-brand-deep mb-4">Need Help?</h2>
                   <div className="grid grid-cols-2 gap-3">
                     <a href="https://wa.me/254142677898" target="_blank" rel="noreferrer" className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-4 hover:shadow-card transition-all">
@@ -362,7 +362,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                       <div className="w-7 h-7 border-4 border-brand border-t-transparent rounded-full animate-spin" />
                     </div>
                   ) : orders.length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-2xl border border-surface-border">
+                    <div className="text-center py-12 card-theme rounded-2xl border border-surface-border">
                       <ShoppingBag className="w-12 h-12 mx-auto text-brand/20 mb-3" />
                       <p className="font-semibold text-brand-deep mb-1">No orders yet</p>
                       <Link href="/shop" className="text-sm text-brand hover:underline">Browse gifts →</Link>
@@ -401,7 +401,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
             {activeSection === "rewards" && (
               <div className="space-y-5 animate-fade-in">
                 {/* Current tier hero */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card overflow-hidden">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card overflow-hidden">
                   <div className="p-6" style={{ background: `linear-gradient(135deg, ${tier.color}15 0%, transparent 100%)` }}>
                     <div className="flex items-center gap-4 mb-5">
                       <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md flex-shrink-0" style={{ backgroundColor: tier.color + "22", border: `2px solid ${tier.color}44` }}>
@@ -461,7 +461,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 </div>
 
                 {/* All tiers overview */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-6">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6">
                   <h3 className="font-display font-bold text-brand-deep mb-4">All Loyalty Tiers</h3>
                   <div className="space-y-3">
                     {LOYALTY_TIERS.map((t) => {
@@ -485,7 +485,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 </div>
 
                 {/* Refer & Earn */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-6 space-y-5">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6 space-y-5">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center flex-shrink-0">
                       <Gift className="w-6 h-6 text-brand" />
@@ -530,7 +530,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 <h2 className="font-display font-bold text-brand-deep text-xl">Settings</h2>
 
                 {/* Preferences */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-6 space-y-5">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6 space-y-5">
                   <h3 className="font-bold text-brand-deep flex items-center gap-2"><Eye className="w-4 h-4" /> Privacy & Gifting</h3>
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -541,14 +541,14 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                       onClick={toggleAnonymous}
                       className={cn("relative inline-flex h-7 w-12 items-center rounded-full transition-colors flex-shrink-0", anonymousDefault ? "bg-brand" : "bg-gray-200")}
                     >
-                      <span className={cn("inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform", anonymousDefault ? "translate-x-6" : "translate-x-1")} />
+                      <span className={cn("inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform", anonymousDefault ? "[data-theme=light]:translate-x-6 [data-theme=dark]:translate-x-4" : "[data-theme=light]:translate-x-1 [data-theme=dark]:translate-x-3")} />
                     </button>
                   </div>
                   {prefSaved && <p className="text-xs text-green-600 font-medium flex items-center gap-1"><Check className="w-3 h-3" /> Saved</p>}
                 </div>
 
                 {/* Legal */}
-                <div className="bg-white rounded-2xl border border-surface-border shadow-card p-4">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-4">
                   <h3 className="font-bold text-brand-deep px-2 pb-3">Policies</h3>
                   {[
                     { href: "/privacy", label: "Privacy Policy" },

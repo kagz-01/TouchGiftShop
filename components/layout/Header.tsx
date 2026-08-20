@@ -110,10 +110,10 @@ export default function Header() {
             href="/"
             className="hidden lg:flex flex-col leading-none group flex-shrink-0"
           >
-            <span className="font-display text-lg font-bold text-brand-deep tracking-tight group-hover:text-brand transition-colors duration-200">
+            <span className="font-display text-lg font-bold text-theme-heading tracking-tight group-hover:text-brand transition-colors duration-200">
               Touch<span className="text-brand">Gift</span>
             </span>
-            <span className="text-[10px] text-brand-muted font-medium tracking-widest uppercase">
+            <span className="text-[10px] text-theme-body font-medium tracking-widest uppercase">
               Kenya&apos;s gift platform
             </span>
           </Link>
@@ -131,7 +131,7 @@ export default function Header() {
               <button
                 onClick={() => setSearchOpen(true)}
                 aria-label="Search gifts"
-                className="w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                className="w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
               >
                 <Search className="w-4 h-4" />
               </button>
@@ -145,7 +145,7 @@ export default function Header() {
               <Link
                 href={user ? "/orders" : "/login?next=/orders"}
                 aria-label="Your orders"
-                className="relative w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                className="relative w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
               >
                 <ShoppingBag className="w-4 h-4" />
               </Link>
@@ -163,7 +163,7 @@ export default function Header() {
                   <Link
                     href="/login?next=/reminders"
                     aria-label="Gift reminders"
-                    className="w-9 h-9 flex items-center justify-center shape-premium-button text-brand-muted hover:text-brand hover:bg-brand/5 transition-all duration-200"
+                    className="w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
                   >
                     <Bell className="w-4 h-4" />
                   </Link>
@@ -193,7 +193,7 @@ export default function Header() {
               <>
                 <Link
                   href="/login"
-                  className="hidden lg:block px-3 py-1.5 text-xs font-medium text-brand-muted hover:text-brand transition-colors"
+                  className="hidden lg:block px-3 py-1.5 text-xs font-medium text-theme-heading hover:text-brand transition-colors"
                 >
                   Sign in
                 </Link>
@@ -224,7 +224,7 @@ export default function Header() {
           onClick={() => setSearchOpen(false)}
         >
           <div
-            className="w-full max-w-xl mx-4 bg-white shape-premium-card shadow-card-hover overflow-hidden"
+            className="w-full max-w-xl mx-4 card-theme shape-premium-card shadow-card-hover overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <form onSubmit={handleSearch} className="flex items-center gap-3 px-5 py-4">
@@ -235,12 +235,12 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search gifts, occasions, categories…"
-                className="flex-1 bg-transparent text-brand-deep placeholder:text-brand-muted text-sm focus:outline-none"
+                className="flex-1 bg-transparent text-theme-heading placeholder:text-theme-body text-sm focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => setSearchOpen(false)}
-                className="text-brand-muted hover:text-brand-deep transition-colors"
+                className="text-theme-body hover:text-theme-heading transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

@@ -23,7 +23,7 @@ export default function SuperpowersStrip() {
           {/* Gift Pool Card */}
           <Link
             href="/pool/create"
-            className="group relative block overflow-hidden bg-brand-bg shape-premium-bento p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
+            className="group relative block overflow-hidden bento-card-theme shape-premium-bento p-8 md:p-10 border border-brand/8 hover:border-gold/30 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(155,27,90,0.12)] hover:-translate-y-1.5"
           >
             {/* Animated orb */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-gold/15 rounded-full group-hover:scale-125 transition-transform duration-700 blur-sm" />
@@ -31,7 +31,7 @@ export default function SuperpowersStrip() {
 
             <div className="relative z-10 flex flex-col h-full gap-4">
               {/* Icon */}
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-gold group-hover:scale-110 transition-all duration-300 self-start">
+              <div className="w-14 h-14 bg-brand/8 dark:bg-white/10 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-gold group-hover:scale-110 transition-all duration-300 self-start">
                 <Users className="w-7 h-7 text-brand group-hover:text-white transition-colors" />
               </div>
 
@@ -39,7 +39,7 @@ export default function SuperpowersStrip() {
                 <h3 className="text-xl md:text-2xl text-theme-heading mb-2 heading-elegant">
                   Start a Gift Pool
                 </h3>
-                <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
+                <p className="text-theme-body leading-relaxed max-w-sm text-elegant">
                   Gather friends and family to gift something extraordinary. We elegantly manage the contributions and deliver a breathtaking surprise.
                 </p>
               </div>
@@ -54,7 +54,7 @@ export default function SuperpowersStrip() {
           {/* Build a Hamper Card */}
           <Link
             href="/gift-lab"
-            className="group relative block overflow-hidden bg-blush shape-premium-bento p-8 md:p-10 border border-brand/5 hover:border-brand/25 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)] hover:-translate-y-1.5"
+            className="group relative block overflow-hidden bento-card-theme shape-premium-bento p-8 md:p-10 border border-brand/8 hover:border-brand/30 transition-all duration-500 hover:shadow-[0_20px_60px_rgba(155,27,90,0.12)] hover:-translate-y-1.5"
           >
             {/* Animated orb */}
             <div className="absolute -top-16 -right-16 w-64 h-64 bg-brand/8 rounded-full group-hover:scale-125 transition-transform duration-700 blur-sm" />
@@ -62,7 +62,7 @@ export default function SuperpowersStrip() {
 
             <div className="relative z-10 flex flex-col h-full gap-4">
               {/* Icon */}
-              <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-brand group-hover:scale-110 transition-all duration-300 self-start">
+              <div className="w-14 h-14 bg-brand/8 dark:bg-white/10 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-brand group-hover:scale-110 transition-all duration-300 self-start">
                 <ShoppingBag className="w-7 h-7 text-brand group-hover:text-white transition-colors" />
               </div>
 
@@ -70,7 +70,7 @@ export default function SuperpowersStrip() {
                 <h3 className="text-xl md:text-2xl text-theme-heading mb-2 heading-elegant">
                   Build a Hamper
                 </h3>
-                <p className="text-brand-muted leading-relaxed max-w-sm text-elegant">
+                <p className="text-theme-body leading-relaxed max-w-sm text-elegant">
                   Curate a masterpiece piece by piece. We meticulously arrange, wrap, and ribbon your selections into a bespoke experience they will cherish.
                 </p>
               </div>

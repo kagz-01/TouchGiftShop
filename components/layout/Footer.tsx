@@ -74,7 +74,7 @@ export default function Footer() {
 
   // Define which paths should show the footer. 
   // We keep it off app-like pages (dashboard, shop, product, checkout, etc) for a cleaner UX.
-  const SHOW_FOOTER_PATHS = ["/", "/corporate", "/terms", "/privacy", "/returns", "/delivery"];
+  const SHOW_FOOTER_PATHS = ["/", "/corporate", "/terms", "/privacy", "/returns", "/delivery", "/login"];
   
   if (!SHOW_FOOTER_PATHS.includes(pathname)) {
     return null;
@@ -118,7 +118,7 @@ export default function Footer() {
             <div className="md:col-span-4 space-y-5">
               <div>
                 <h3 className="font-display text-lg font-bold mb-1">TouchGift</h3>
-                <p className="text-white/50 text-sm">Just say it. We&apos;ll make it happen.</p>
+                <p className="text-on-theme text-sm">Just say it. We&apos;ll make it happen.</p>
               </div>
 
               <div>
@@ -136,7 +136,7 @@ export default function Footer() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Your email"
-                      className="flex-1 bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-sm placeholder:text-white/40 focus:outline-none focus:border-gold transition-colors"
+                      className="flex-1 bg-gray-100/10 border border-gray-200 rounded-xl px-3 py-2 text-sm placeholder:text-gray-600 focus:outline-none focus:border-gold transition-colors"
                       required
                     />
                     <button
@@ -156,7 +156,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:bg-gold/20 hover:text-gold transition-all"
+                    className="w-8 h-8 rounded-full bg-gray-100/10 flex items-center justify-center text-on-theme hover:bg-gold/20 hover:text-gold transition-all"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -175,7 +175,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-gold transition-colors"
+                      className="text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -196,7 +196,7 @@ export default function Footer() {
                       href={link.href}
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
-                      className="text-sm text-white/60 hover:text-gold transition-colors"
+                      className="text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -215,7 +215,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-white/60 hover:text-gold transition-colors"
+                      className="text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -223,8 +223,8 @@ export default function Footer() {
                 ))}
               </ul>
 
-              <div className="mt-5 bg-white/5 rounded-xl p-3 border border-white/10">
-                <p className="text-xs text-white/40">
+              <div className="mt-5 bg-gray-800/20 rounded-xl p-3 border border-gray-500/30">
+                <p className="text-xs text-on-theme">
                   Same-day delivery in Nairobi. Next-day nationwide.
                 </p>
               </div>
@@ -232,24 +232,24 @@ export default function Footer() {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mt-8 pt-5 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-white/30">
+          <div className="mt-8 pt-5 border-t border-gray-700/30 flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-on-theme">
               © {new Date().getFullYear()} TouchGift — Just Say It 🎁
             </p>
-            <div className="flex items-center gap-4 text-xs text-white/30">
-              <Link href="/privacy" className="hover:text-white/60 transition-colors">
+            <div className="flex items-center gap-4 text-xs text-on-theme">
+              <Link href="/privacy" className="hover:text-on-theme transition-colors">
                 Privacy
               </Link>
-              <Link href="/terms" className="hover:text-white/60 transition-colors">
+              <Link href="/terms" className="hover:text-on-theme transition-colors">
                 Terms
               </Link>
-              <Link href="/returns" className="hover:text-white/60 transition-colors">
+              <Link href="/returns" className="hover:text-on-theme transition-colors">
                 Returns
               </Link>
-              <Link href="/delivery" className="hover:text-white/60 transition-colors">
+              <Link href="/delivery" className="hover:text-on-theme transition-colors">
                 Delivery
               </Link>
-              <a href="https://wa.me/254142677898" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">
+              <a href="https://wa.me/254142677898" target="_blank" rel="noopener noreferrer" className="hover:text-on-theme transition-colors">
                 Contact
               </a>
             </div>

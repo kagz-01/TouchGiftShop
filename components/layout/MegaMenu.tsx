@@ -345,7 +345,7 @@ export default function MegaMenu() {
                 ? "bg-brand/10 text-brand"
                 : item.highlight
                 ? "bg-brand/5 text-brand hover:bg-brand/10"
-                : "text-brand-deep hover:bg-brand/5 hover:text-brand"
+                : "text-theme-heading hover:bg-brand/5 hover:text-brand"
             }`}
           >
             {item.icon && <span className="flex items-center">{item.icon}</span>}
@@ -363,7 +363,7 @@ export default function MegaMenu() {
           onMouseLeave={handleMouseLeave}
           className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl z-50 animate-slide-down origin-top"
         >
-          <div className="bg-white shape-premium-card shadow-2xl border border-surface-border overflow-hidden">
+          <div className="card-theme shape-premium-card shadow-2xl border border-surface-border overflow-hidden">
             <div className="grid grid-cols-12 gap-0">
               <div
                 className={`${
@@ -383,7 +383,7 @@ export default function MegaMenu() {
                     key={section.title}
                     className="p-6 border-r border-surface-border last:border-r-0"
                   >
-                    <h4 className="text-xs font-semibold text-brand-muted uppercase tracking-wider mb-4">
+                    <h4 className="text-xs font-semibold text-theme-body uppercase tracking-wider mb-4">
                       {section.title}
                     </h4>
                     <ul className="space-y-2.5">
@@ -392,7 +392,7 @@ export default function MegaMenu() {
                           <Link
                             href={link.href}
                             onClick={() => setActiveMenu(null)}
-                            className="flex items-center gap-2 text-sm text-brand-deep/80 hover:text-brand transition-all duration-300 hover:translate-x-1 group"
+                            className="flex items-center gap-2 text-sm text-theme-heading opacity-80 hover:opacity-100 hover:text-brand transition-all duration-300 hover:translate-x-1 group"
                           >
                             {link.icon && (<span className="opacity-70 group-hover:opacity-100 transition-opacity">{link.icon}</span>)}
                             <span>{link.label}</span>
@@ -415,10 +415,10 @@ export default function MegaMenu() {
                       className="object-contain w-full h-full"
                     />
                   </div>
-                  <p className="font-display font-semibold text-sm mb-1">
+                  <p className="font-display font-semibold text-sm mb-1 text-theme-heading">
                     {activeData.featured[0].title}
                   </p>
-                  <p className="text-xs text-brand-muted mb-3 max-w-[200px]">
+                  <p className="text-xs text-theme-body mb-3 max-w-[200px]">
                     {activeData.featured[0].description}
                   </p>
                   <Link

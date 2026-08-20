@@ -74,7 +74,7 @@ export default function OrderSummary({
       </div>
 
       {/* M-Pesa note */}
-      <div className="bg-brand/5 rounded-xl p-3 text-xs text-brand-muted flex items-start gap-2">
+      <div className="bg-brand/5 rounded-xl p-3 text-xs text-on-theme flex items-start gap-2">
         <span className="text-lg">📱</span>
         <p>
           Payment via <strong className="text-brand-deep">M-Pesa Lipa Na M-Pesa</strong>.

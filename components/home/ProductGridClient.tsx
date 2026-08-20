@@ -18,7 +18,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
-      <div className="bg-white rounded-3xl border border-black/6 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300">
+      <div className="bg-white/95 rounded-3xl border border-black/6 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300">
         {/* Image */}
         <div className="relative aspect-[4/5] bg-blush overflow-hidden">
           {product.image_url ? (

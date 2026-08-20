@@ -127,7 +127,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blush via-white to-blush flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen [&_:not([data-theme=dark])]:bg-section-theme-a [data-theme=dark]:bg-section-theme-f flex flex-col items-center justify-center px-4 py-12">
       {/* Card */}
       <div className="w-full max-w-md">
         {/* Logo */}
