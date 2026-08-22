@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
   // Send via WhatsApp (using the existing WhatsApp number)
   const whatsappMessage = encodeURIComponent(
-    `Hey! 🎁\n\nSomeone sent you a gift on TouchGift! To receive it, please tap the link below and drop your delivery pin (your exact location) and pick a time window that works for you.\n\n🕵️‍♀️ Anonymous sender — your identity and the gift price are hidden. This is purely about making sure the gift reaches you perfectly.\n\n📍 Drop your pin here:\n${pinDropUrl}\n\n⏰ If you don't complete this within 24 hours, we'll send you a gentle reminder. If you still need help, we'll contact the sender to arrange an alternative delivery point.\n\nThank you! 🎁`
+    `Hey! 🎁\n\nSomeone sent you a gift on TouchGift! To receive it, please tap the link below and drop your delivery pin (your exact location) and pick a time window that works for you.\n\n📍 Drop your pin here:\n${pinDropUrl}\n\n⏰ If you don't complete this within 24 hours, we'll send you a gentle reminder. If you still need help, we'll contact the sender to arrange an alternative delivery point.\n\nThank you! 🎁`
   );
   const whatsappUrl = `https://wa.me/${order.recipient_phone.replace(/[^0-9]/g, "")}?text=${whatsappMessage}`;
 
