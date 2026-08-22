@@ -71,6 +71,7 @@ export async function createPaymentOrder(params: {
   callbackUrl: string;
   phoneNumber?: string;
   email?: string;
+  name?: string;
 }): Promise<{ orderTrackingId: string; redirectUrl: string }> {
   const token = await getAccessToken();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.ac.ke";
@@ -93,6 +94,8 @@ export async function createPaymentOrder(params: {
         phone_number: params.phoneNumber || "",
         email_address: params.email || "",
         country_code: "KE",
+        first_name: params.name ? params.name.split(" ")[0] : "Customer",
+        last_name: params.name ? params.name.split(" ").slice(1).join(" ") || "TouchGift" : "TouchGift",
       },
     }),
   });
@@ -100,8 +103,10 @@ export async function createPaymentOrder(params: {
   const data = await res.json();
 
   if (!res.ok || !data.order_tracking_id) {
+    const errorDetails = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
+    const message = typeof data.message === 'object' ? JSON.stringify(data.message) : data.message;
     throw new Error(
-      `PesaPal order failed: ${data.message || data.error || res.status}`
+      `PesaPal order failed: ${message || errorDetails || res.status} - Full response: ${JSON.stringify(data)}`
     );
   }
 
