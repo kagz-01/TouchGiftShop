@@ -67,6 +67,16 @@ export default function PinDropLandingPage() {
             {error && (
               <p className="text-xs text-brand-coral text-center">{error}</p>
             )}
+            {error && error.includes("expired") && (
+              <p className="text-xs text-brand-coral text-center mt-2">
+                <button
+                  onClick={() => setPhone("")}
+                  className="text-xs text-brand underline cursor-pointer"
+                >
+                  Contact sender to resend link
+                </button>
+              </p>
+            )}
 
             <button
               onClick={handleLookup}

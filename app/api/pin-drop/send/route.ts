@@ -25,15 +25,34 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
 
-  // Reuse existing token if already generated
+  // Check if link already used or expired
+  if (order.pin_drop_token && order.expires_at) {
+    const expires = new Date(order.expires_at);
+    const now = new Date();
+    if (now > expires) {
+      return NextResponse.json({ error: "Link has expired. Contact sender to resend." }, { status: 410 });
+    }
+    if (order.pin_drop_token_used) {
+      return NextResponse.json({ error: "This link has already been used." }, { status: 411 });
+    }
+  }
+
+  // Reuse existing token if already generated and not used/expired
   let token = order.pin_drop_token;
-  if (!token) {
+  let now = new Date();
+  
+  // Generate token if missing or expired
+  if (!token || new Date(order.expires_at) < now) {
+    const expiryDays = 1; // Token valid for 1 day
+    const expiresAt = new Date(now.getTime() + expiryDays * 24 * 60 * 60 * 1000);
     token = crypto.randomBytes(32).toString("hex");
+    
     const { error: updateError } = await supabase
       .from("orders")
       .update({
         pin_drop_token: token,
-        recipient_pin_requested: true,
+        expires_at: expiresAt.toISOString(),
+        pin_drop_token_used: false,
       })
       .eq("id", orderId);
 
@@ -47,7 +66,7 @@ export async function POST(req: Request) {
 
   // Send via WhatsApp (using the existing WhatsApp number)
   const whatsappMessage = encodeURIComponent(
-    `Hey ${order.recipient_name}! 🎁\n\nSomeone sent you a gift on TouchGift! To receive it, please tap the link below and drop your delivery pin (your exact location) and pick a time window that works for you.\n\nNobody will see the price — this is all about making sure the gift reaches you perfectly.\n\n📍 Drop your pin here:\n${pinDropUrl}\n\nThank you! 🎁`
+    `Hey! 🎁\n\nSomeone sent you a gift on TouchGift! To receive it, please tap the link below and drop your delivery pin (your exact location) and pick a time window that works for you.\n\n🕵️‍♀️ Anonymous sender — your identity and the gift price are hidden. This is purely about making sure the gift reaches you perfectly.\n\n📍 Drop your pin here:\n${pinDropUrl}\n\n⏰ If you don't complete this within 24 hours, we'll send you a gentle reminder. If you still need help, we'll contact the sender to arrange an alternative delivery point.\n\nThank you! 🎁`
   );
   const whatsappUrl = `https://wa.me/${order.recipient_phone.replace(/[^0-9]/g, "")}?text=${whatsappMessage}`;
 

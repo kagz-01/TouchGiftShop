@@ -34,7 +34,13 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
       .then((r) => r.json())
       .then((data) => {
         if (data.error) {
-          setError(data.error);
+          if (data.error === "Invalid link") {
+            setError("This link is no longer valid. The sender may have resend a new link.");
+          } else if (data.error.includes("expired")) {
+            setError(data.error);
+          } else {
+            setError(data.error);
+          }
         } else {
           setRecipientName(data.recipientName);
           if (data.alreadyPinned) {
@@ -100,6 +106,14 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
           <span className="text-5xl block mb-4">😔</span>
           <p className="font-display text-xl font-semibold mb-2">Link not valid</p>
           <p className="text-sm text-brand-muted">{error}</p>
+          {error.includes("expired") || error.includes("already been used") && (
+            <button
+              onClick={() => window.location.href = `/pin-drop/${orderId}`}
+              className="mt-4 py-2 bg-brand text-white rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Resend link
+            </button>
+          )}
         </div>
       </div>
     );
