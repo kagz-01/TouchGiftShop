@@ -769,6 +769,15 @@ function CorporateCTA() {
               </span>
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
             </Link>
+            <Link
+              href="/corporate/pool/create"
+              className="group px-10 py-5 bg-white/10 backdrop-blur-sm text-theme-heading font-semibold rounded-2xl text-xl border border-surface-border hover:bg-white/20 transition-all duration-300 hover:-translate-y-1"
+            >
+              <span className="flex items-center gap-2">
+                Start a Team Gift Pool
+                <Users className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
+              </span>
+            </Link>
             <a
               href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27d%20like%20a%20custom%20corporate%20quote"
               target="_blank"
