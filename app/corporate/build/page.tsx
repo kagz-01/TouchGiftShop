@@ -4,7 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import HandwrittenNote from "@/components/ai/HandwrittenNote";
 import type { NoteStyle } from "@/lib/handwritten-note";
-import { Gift, Users, Palette, CreditCard, PenLine, ClipboardList, Package, Ribbon, Building2 } from "lucide-react";
+import TemplateLibrary, { type HamperTemplate } from "@/components/corporate/TemplateLibrary";
+import BrandStudio from "@/components/corporate/BrandStudio";
+import BudgetMode from "@/components/corporate/BudgetMode";
+import { Gift, Users, Palette, CreditCard, PenLine, ClipboardList, Package, Ribbon, Building2, Layout, Target } from "lucide-react";
 
 type Product = {
   id: string;
@@ -43,6 +46,11 @@ export default function HamperBuilder() {
   // Step 1: Gift selection
   const [hamperItems, setHamperItems] = useState<HamperItem[]>([]);
 
+  // Step 1: Budget mode & templates
+  const [budget, setBudget] = useState(0);
+  const [budgetMode, setBudgetMode] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<HamperTemplate | null>(null);
+
   // Step 2: Recipients
   const [recipients, setRecipients] = useState<Recipient[]>([{ name: "", phone: "", note: "" }]);
   const [csvMode, setCsvMode] = useState(false);
@@ -53,6 +61,10 @@ export default function HamperBuilder() {
   const [customMessage, setCustomMessage] = useState("");
   const [giftWrap, setGiftWrap] = useState("standard");
   const [noteData, setNoteData] = useState<{ text: string; style: NoteStyle } | null>(null);
+
+  // Step 3: Brand Studio
+  const [brandLogo, setBrandLogo] = useState<string | null>(null);
+  const [brandColor, setBrandColor] = useState("#9B1B5A");
 
   // Fetch products
   useEffect(() => {
@@ -90,6 +102,31 @@ export default function HamperBuilder() {
       }
       return [...prev, { product, quantity: 1 }];
     });
+  };
+
+  // Template auto-fill: map template items to matching products
+  const handleTemplateSelect = (template: HamperTemplate) => {
+    setSelectedTemplate(template);
+    // Try to match template items to fetched products
+    const matched: HamperItem[] = [];
+    for (const templateItem of template.items) {
+      const product = products.find(
+        (p) =>
+          p.name.toLowerCase().includes(templateItem.name.toLowerCase().split(" ")[0]) ||
+          p.categories?.some((c) => c.toLowerCase().includes(templateItem.category))
+      );
+      if (product && !matched.some((m) => m.product.id === product.id)) {
+        matched.push({ product, quantity: 1 });
+      }
+    }
+    if (matched.length > 0) {
+      setHamperItems(matched);
+    }
+  };
+
+  // Budget auto-fill: replace hamper with budget-suggested items
+  const handleBudgetAutoFill = (items: HamperItem[]) => {
+    setHamperItems(items);
   };
 
   const updateQuantity = (productId: string, qty: number) => {
@@ -203,25 +240,100 @@ export default function HamperBuilder() {
           <div className="space-y-6">
             <div>
               <h2 className="font-display italic text-2xl font-bold mb-2">Choose your gift</h2>
-              <p className="text-brand-muted text-sm">Select one or more items to include in your corporate hamper.</p>
+              <p className="text-brand-muted text-sm">Start with a template or build your hamper from scratch.</p>
             </div>
 
-            {/* Category filter */}
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat.slug}
-                  onClick={() => setSelectedCategory(cat.slug)}
-                  className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
-                    selectedCategory === cat.slug
-                      ? "bg-brand text-white"
-                      : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
-                  }`}
-                >
-                  {cat.label}
-                </button>
-              ))}
+            {/* Template vs Build toggle */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => { setBudgetMode(false); }}
+                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
+                  !budgetMode && !selectedTemplate
+                    ? "bg-brand text-white"
+                    : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                }`}
+              >
+                <Layout className="w-4 h-4" /> Start from Template
+              </button>
+              <button
+                onClick={() => { setSelectedTemplate(null); setBudgetMode(false); }}
+                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
+                  !budgetMode && !selectedTemplate
+                    ? "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted"
+                    : budgetMode
+                    ? "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted"
+                    : "bg-brand text-white"
+                }`}
+              >
+                <Gift className="w-4 h-4" /> Build from Scratch
+              </button>
+              <button
+                onClick={() => { setSelectedTemplate(null); setBudgetMode(true); }}
+                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
+                  budgetMode
+                    ? "bg-brand text-white"
+                    : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                }`}
+              >
+                <Target className="w-4 h-4" /> Budget Mode
+              </button>
             </div>
+
+            {/* Template library */}
+            {!budgetMode && !selectedTemplate && (
+              <TemplateLibrary onSelect={handleTemplateSelect} selectedId={undefined} />
+            )}
+
+            {/* Show selected template summary */}
+            {selectedTemplate && (
+              <div className="bg-brand/5 border border-brand/20 shape-premium-card p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 bg-gradient-to-br ${selectedTemplate.gradient} shape-premium-card flex items-center justify-center text-white`}>
+                    {selectedTemplate.icon}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-theme-heading">{selectedTemplate.name}</p>
+                    <p className="text-xs text-theme-muted">{selectedTemplate.priceRange} · {selectedTemplate.itemCount} items</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedTemplate(null)}
+                  className="text-xs text-brand hover:text-brand-dark font-medium"
+                >
+                  Change template
+                </button>
+              </div>
+            )}
+
+            {/* Budget mode */}
+            {budgetMode && (
+              <BudgetMode
+                budget={budget}
+                onBudgetChange={setBudget}
+                products={products}
+                onAutoFill={handleBudgetAutoFill}
+                currentItems={hamperItems}
+              />
+            )}
+
+            {/* Category filter - show when building from scratch or after template selection */}
+            {(budgetMode || selectedTemplate || hamperItems.length > 0) && (
+              <>
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.slug}
+                      onClick={() => setSelectedCategory(cat.slug)}
+                      className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
+                        selectedCategory === cat.slug
+                          ? "bg-brand text-white"
+                          : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
 
             {/* Products grid */}
             {loading ? (
@@ -287,6 +399,8 @@ export default function HamperBuilder() {
                   );
                 })}
               </div>
+            )}
+              </>
             )}
 
             {/* Hamper summary */}
@@ -512,6 +626,17 @@ Peter Odhiambo, 0755555555`}
                   ))}
                 </div>
               </div>
+            </div>
+
+            {/* Brand Studio */}
+            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
+              <BrandStudio
+                companyName={companyName}
+                logo={brandLogo}
+                brandColor={brandColor}
+                onLogoChange={setBrandLogo}
+                onBrandColorChange={setBrandColor}
+              />
             </div>
 
             {/* Handwritten Note */}
