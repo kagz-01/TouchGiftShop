@@ -171,8 +171,10 @@ CREATE TABLE reminders (
     is_subscription BOOLEAN DEFAULT FALSE,
     frequency VARCHAR(50),
     product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+    product_ids JSONB DEFAULT '[]'::jsonb,
     delivery_day VARCHAR(20),
     delivery_address TEXT,
+    google_maps_link TEXT,
     reminder_sent BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
