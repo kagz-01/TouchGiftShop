@@ -146,16 +146,19 @@
    THEME-AWARE TEXT UTILITIES
    Apply these instead of hardcoded text-white / text-brand-deep
    ======================== */
-.text-theme-heading { color: var(--heading-color); }
-.text-theme-body    { color: var(--body-color); }
-.text-theme-accent  { color: var(--accent-color); }
-.text-theme-link    { color: var(--link-color); }
-.text-theme-muted   { color: var(--muted-color); }
+@layer utilities {
+  .text-theme-heading { color: var(--heading-color); }
+  .text-theme-body    { color: var(--body-color); }
+  .text-theme-accent  { color: var(--accent-color); }
+  .text-theme-link    { color: var(--link-color); }
+  .text-theme-muted   { color: var(--muted-color); }
+  .text-on-theme      { color: var(--text-primary); }
+}
 
 /* Gold text - brand gold primary */
-.text-gold { @apply text-brand-deep; }
-/* Gold light variant for dark mode */
-.dark .text-gold { @apply text-brand; }
+@layer utilities {
+  .text-gold { color: var(--color-gold); }
+}
 
 /* Legacy aliases — kept for backward compat */
 .text-white { color: #FFFFFF; }

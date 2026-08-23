@@ -76,10 +76,10 @@ export default function VerticalProductColumns({
         {/* Section heading */}
         {sectionTitle && (
           <div className="text-center mb-14">
-            <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-3">
+            <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-3">
               {sectionSubtitle || "Discover"}
             </p>
-            <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight">
+            <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight text-theme-heading">
               {sectionTitle}
             </h2>
           </div>
@@ -100,12 +100,12 @@ export default function VerticalProductColumns({
               <div key={colIdx} className="flex flex-col gap-4 card-theme shape-premium-card p-5 md:p-6">
                 {/* Column header */}
                 <div className="flex items-center justify-between">
-                  <span className="font-display font-bold text-base md:text-xl text-brand-deep">
+                  <span className="font-display font-bold text-base md:text-xl text-theme-heading">
                     {col.title}
                   </span>
                   <Link
                     href={col.viewAllHref}
-                    className="text-xs font-semibold text-brand hover:text-gold transition-colors card-theme px-3 py-1.5 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
+                    className="text-xs font-semibold text-theme-accent hover:text-gold transition-colors card-theme px-3 py-1.5 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
                   >
                     See all →
                   </Link>

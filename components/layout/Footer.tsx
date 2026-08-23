@@ -91,7 +91,7 @@ export default function Footer() {
   return (
     <footer className="mt-auto">
       {/* Guarantees Ribbon */}
-      <div className="bg-gradient-brand text-white">
+      <div className="bg-gradient-brand text-theme-body">
         <div className="page-container-capped py-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div className="flex items-center justify-center gap-2">
@@ -141,7 +141,7 @@ export default function Footer() {
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gold text-brand-deep rounded-xl font-semibold text-sm hover:bg-gold-light transition-colors"
+                      className="px-4 py-2 bg-gold text-theme-heading rounded-xl font-semibold text-sm hover:bg-gold-light transition-colors"
                     >
                       Sign Up
                     </button>
