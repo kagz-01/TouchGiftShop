@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Calendar, ChevronLeft, ChevronRight, Gift, Plus,
@@ -53,8 +53,32 @@ export default function CorporateCalendar() {
   const [currentYear, setCurrentYear] = useState(2026);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [view, setView] = useState<"calendar" | "list">("calendar");
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
 
-  const events = MOCK_EVENTS;
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch(`/api/corporate/calendar?month=${currentMonth + 1}&year=${currentYear}`);
+        const data = await res.json();
+        if (data.events) {
+          setEvents(data.events.map((e: Record<string, unknown>) => ({
+            id: e.id,
+            title: e.title,
+            recipientName: e.recipient_name,
+            date: e.event_date,
+            type: e.event_type,
+            status: e.status,
+            giftBudget: e.gift_budget || 0,
+            department: e.department || "",
+            autoOrder: e.auto_order,
+          })));
+        }
+      } catch {
+        // Use empty state on error
+      }
+    };
+    fetchEvents();
+  }, [currentMonth, currentYear]);
 
   const getDaysInMonth = (month: number, year: number) => new Date(year, month + 1, 0).getDate();
   const getFirstDayOfMonth = (month: number, year: number) => new Date(year, month, 1).getDay();

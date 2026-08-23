@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Plus, Gift, Users, TrendingUp, Clock, CheckCircle,
@@ -101,9 +101,40 @@ const OCCASION_ICONS: Record<string, string> = {
 };
 
 export default function CorporatePoolsDashboard() {
-  const [pools] = useState<CorporatePool[]>(MOCK_POOLS);
+  const [pools, setPools] = useState<CorporatePool[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const fetchPools = async () => {
+      try {
+        const res = await fetch("/api/corporate/pools");
+        const data = await res.json();
+        if (data.pools) {
+          setPools(data.pools.map((p: Record<string, unknown>) => ({
+            id: p.id,
+            title: p.title,
+            recipientName: p.recipient_name,
+            occasion: p.occasion,
+            targetAmount: p.target_amount,
+            currentAmount: p.current_balance,
+            contributors: p.contributor_count,
+            deadline: p.deadline,
+            status: p.status,
+            companyMatch: p.company_match_enabled,
+            department: p.recipient_department || "",
+            createdAt: p.created_at,
+          })));
+        }
+      } catch {
+        // Use empty state on error
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPools();
+  }, []);
 
   const filtered = pools.filter((p) => {
     const matchesFilter = filter === "all" || p.status === filter;

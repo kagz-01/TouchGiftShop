@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Zap, Clock, Gift, Users, Calendar, Check, Plus,
@@ -101,8 +101,38 @@ const MOCK_RULES: MilestoneRule[] = [
 ];
 
 export default function AutomatedMilestones() {
-  const [rules, setRules] = useState(MOCK_RULES);
+  const [rules, setRules] = useState<MilestoneRule[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRule, setSelectedRule] = useState<MilestoneRule | null>(null);
+
+  useEffect(() => {
+    const fetchRules = async () => {
+      try {
+        const res = await fetch("/api/corporate/milestones");
+        const data = await res.json();
+        if (data.rules) {
+          setRules(data.rules.map((r: Record<string, unknown>) => ({
+            id: r.id,
+            name: r.name,
+            trigger: r.trigger_type,
+            description: r.description || "",
+            giftBudget: r.gift_budget,
+            giftType: r.gift_product_id ? "Custom Product" : "Template Gift",
+            enabled: r.is_active,
+            autoOrder: r.auto_order,
+            notifyHR: r.notify_hr,
+            lastTriggered: r.last_triggered_at,
+            totalTriggered: r.total_triggered,
+          })));
+        }
+      } catch {
+        // Use empty state on error
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRules();
+  }, []);
 
   const toggleRule = (id: string) => {
     setRules((prev) => prev.map((r) => (r.id === id ? { ...r, enabled: !r.enabled } : r)));

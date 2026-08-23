@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Users, Gift, TrendingUp, Calendar, Star, Heart,
@@ -121,10 +121,44 @@ const TIER_CONFIG = {
 };
 
 export default function ClientAppreciationNetwork() {
-  const [clients] = useState<Client[]>(MOCK_CLIENTS);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [tierFilter, setTierFilter] = useState<string>("all");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const res = await fetch("/api/corporate/clients");
+        const data = await res.json();
+        if (data.clients) {
+          setClients(data.clients.map((c: Record<string, unknown>) => ({
+            id: c.id,
+            name: c.name,
+            company: c.company || "",
+            role: c.role || "",
+            email: c.email || "",
+            phone: c.phone || "",
+            location: c.location || "",
+            tier: c.tier,
+            totalGifts: c.total_gifts_sent || 0,
+            totalSpent: c.total_amount_spent || 0,
+            lastGiftDate: c.last_gift_date || "",
+            nextOccasion: c.next_occasion || "",
+            nextOccasionDate: c.next_occasion_date || "",
+            notes: c.notes || "",
+            relationship: c.relationship_strength || 50,
+          })));
+        }
+      } catch {
+        // Use empty state on error
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchClients();
+  }, []);
 
   const filtered = clients.filter((c) => {
     const matchesSearch = search === "" || c.name.toLowerCase().includes(search.toLowerCase()) || c.company.toLowerCase().includes(search.toLowerCase());

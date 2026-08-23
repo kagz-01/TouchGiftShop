@@ -71,14 +71,47 @@ export default function CorporatePoolCreate() {
   const [poolLink, setPoolLink] = useState("");
   const [creating, setCreating] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleCreate = async () => {
     setCreating(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1500));
-    const slug = `corp-${Date.now().toString(36)}`;
-    setPoolLink(`${window.location.origin}/pool/${slug}`);
-    setCreating(false);
-    setStep(4);
+    setError(null);
+    try {
+      const res = await fetch("/api/corporate/pools", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: config.title,
+          description: config.description || undefined,
+          recipientName: recipient.name,
+          recipientRole: recipient.role || undefined,
+          recipientDepartment: recipient.department || undefined,
+          occasion: recipient.occasion,
+          targetAmount: config.targetAmount,
+          minContribution: config.minContribution,
+          deadline: config.deadline,
+          companyMatch: config.companyMatch
+            ? { enabled: true, ratio: config.matchRatio, cap: config.matchCap }
+            : undefined,
+          showLeaderboard: config.showLeaderboard,
+          autoReminders: config.autoReminders,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Failed to create pool");
+        return;
+      }
+
+      setPoolLink(data.shareUrl);
+      setStep(4);
+    } catch (err) {
+      setError("Network error. Please try again.");
+    } finally {
+      setCreating(false);
+    }
   };
 
   const selectedOccasion = OCCASIONS.find((o) => o.id === recipient.occasion);
