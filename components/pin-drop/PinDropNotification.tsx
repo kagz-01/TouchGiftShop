@@ -92,7 +92,12 @@ export default function PinDropNotification({
         <div>
           <p className="text-sm font-semibold">{notification.message}</p>
           {notification.type === "pin-dropped" && (
-            <p className="text-xs opacity-70">Refresh the page to see details.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="text-xs font-semibold underline opacity-70 hover:opacity-100"
+            >
+              Tap to refresh
+            </button>
           )}
         </div>
         <button

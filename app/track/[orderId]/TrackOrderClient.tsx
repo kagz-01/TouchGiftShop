@@ -44,7 +44,7 @@ export default function TrackOrderClient({
   } | null>(null);
 
   useEffect(() => {
-    fetch(`/api/orders/${orderId}/recipient?token=${token}`)
+    fetch(`/api/orders/${orderId}/recipient?token=${token}&purpose=track`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error) {

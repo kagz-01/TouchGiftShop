@@ -28,7 +28,7 @@ export default function SendTrackLinkButton({
       const tokenRes = await fetch(`/api/orders/${orderId}/recipient`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipientPhone }),
+        body: JSON.stringify({ recipientPhone, purpose: "track" }),
       });
 
       const tokenData = await tokenRes.json();

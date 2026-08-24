@@ -12,7 +12,7 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { recipientPhone } = await req.json();
+  const { recipientPhone, purpose } = await req.json();
 
   if (!recipientPhone) {
     return NextResponse.json({ error: "recipientPhone required" }, { status: 400 });
@@ -30,10 +30,11 @@ export async function POST(
   }
 
   const token = crypto.randomBytes(32).toString("hex");
+  const column = purpose === "pin-drop" ? "pin_drop_token" : "track_token";
 
   const { error: updateError } = await supabase
     .from("orders")
-    .update({ pin_drop_token: token })
+    .update({ [column]: token })
     .eq("id", params.id);
 
   if (updateError) {
@@ -43,23 +44,26 @@ export async function POST(
   return NextResponse.json({ token, orderId: order.id });
 }
 
-// GET /api/orders/[id]/recipient?token=... — fetch order for recipient view
+// GET /api/orders/[id]/recipient?token=...&purpose=track — fetch order for recipient view
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
 ) {
   const { searchParams } = new URL(req.url);
   const token = searchParams.get("token");
+  const purpose = searchParams.get("purpose") || "track";
 
   if (!token) {
     return NextResponse.json({ error: "Token required" }, { status: 400 });
   }
 
+  const column = purpose === "pin-drop" ? "pin_drop_token" : "track_token";
+
   const { data: order, error } = await supabase
     .from("orders")
     .select("id, recipient_name, is_anonymous, status, gift_note, pre_dispatch_photo_url, recipient_pin_requested, delivery_time_window, created_at, total_amount")
     .eq("id", params.id)
-    .eq("pin_drop_token", token)
+    .eq(column, token)
     .single();
 
   if (error || !order) {

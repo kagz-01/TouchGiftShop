@@ -106,14 +106,14 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
           <span className="text-5xl block mb-4">😔</span>
           <p className="font-display text-xl font-semibold mb-2">Link not valid</p>
           <p className="text-sm text-brand-muted">{error}</p>
-          {error.includes("expired") || error.includes("already been used") && (
+          {error.includes("expired") || error.includes("already been used") ? (
             <button
               onClick={() => window.location.href = `/pin-drop/${orderId}`}
               className="mt-4 py-2 bg-brand text-white rounded-xl text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Resend link
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     );
