@@ -18,16 +18,21 @@ export async function GET(
     return NextResponse.json({ error: "Token required" }, { status: 400 });
   }
 
+  // Accept either track_token (customer) or rider_token (rider)
   const { data: order, error } = await supabase
     .from("orders")
     .select(
-      "id, status, rider_lat, rider_lng, rider_updated_at, delivery_lat, delivery_lng, delivery_landmark, delivery_time_window, recipient_name"
+      "id, status, rider_lat, rider_lng, rider_updated_at, delivery_lat, delivery_lng, delivery_landmark, delivery_time_window, recipient_name, track_token, rider_token"
     )
     .eq("id", params.orderId)
-    .eq("track_token", token)
     .single();
 
   if (error || !order) {
+    return NextResponse.json({ error: "Invalid link" }, { status: 404 });
+  }
+
+  // Verify token matches either track_token or rider_token
+  if (order.track_token !== token && order.rider_token !== token) {
     return NextResponse.json({ error: "Invalid link" }, { status: 404 });
   }
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatKsh } from "@/lib/utils";
 import OrderStatusTimeline from "@/components/orders/OrderStatusTimeline";
 import SendTrackLinkButton from "@/components/orders/SendTrackLinkButton";
+import DispatchRiderButton from "@/components/orders/DispatchRiderButton";
 import ResendPinDropButton from "@/components/pin-drop/ResendPinDropButton";
 import PinDropStatus from "@/components/pin-drop/PinDropStatus";
 import PinDropNotification from "@/components/pin-drop/PinDropNotification";
@@ -171,6 +172,14 @@ export default async function OrderDetailPage({
           <ResendPinDropButton
             orderId={order.id}
             recipientName={order.recipient_name}
+          />
+        )}
+
+        {/* Dispatch Rider */}
+        {!isFailed && (
+          <DispatchRiderButton
+            orderId={order.id}
+            currentStatus={order.status}
           />
         )}
 

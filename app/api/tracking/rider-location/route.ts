@@ -29,20 +29,20 @@ export async function POST(req: Request) {
   const { orderId, lat, lng, token } = parsed.data;
 
   // Verify the rider is assigned to this order
-  // Token can be: admin API key, or a rider-specific token
+  // Token can be: admin API key, rider API key, or the order's rider_token
   const isValidToken =
     token === process.env.RIDER_API_KEY ||
     token === process.env.ADMIN_API_KEY;
 
   if (!isValidToken) {
-    // Also check if token matches the order's pin_drop_token (rider access)
+    // Check if token matches the order's rider_token (assigned rider)
     const { data: order } = await supabase
       .from("orders")
-      .select("id, pin_drop_token")
+      .select("id, rider_token")
       .eq("id", orderId)
       .single();
 
-    if (!order || order.pin_drop_token !== token) {
+    if (!order || order.rider_token !== token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }

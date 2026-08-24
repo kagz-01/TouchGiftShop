@@ -33,6 +33,7 @@ CREATE TABLE orders (
     pin_drop_token VARCHAR(64) UNIQUE,
     pin_drop_token_expires_at TIMESTAMPTZ,
     track_token TEXT UNIQUE,
+    rider_token TEXT UNIQUE,
     delivery_time_window VARCHAR(50),
     pre_dispatch_photo_url TEXT,
     gift_note TEXT,
@@ -118,6 +119,7 @@ CREATE INDEX idx_orders_recipient_phone ON orders(recipient_phone);
 CREATE INDEX idx_group_pools_slug ON group_gifting_pools(slug);
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE UNIQUE INDEX idx_orders_track_token ON orders(track_token) WHERE track_token IS NOT NULL;
+CREATE UNIQUE INDEX idx_orders_rider_token ON orders(rider_token) WHERE rider_token IS NOT NULL;
 CREATE INDEX idx_wishlists_slug ON wishlists(slug);
 
 -- ---------------------------------------------------------------------
