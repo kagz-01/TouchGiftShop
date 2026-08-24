@@ -2,15 +2,13 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
-import { 
-  Gift, Sparkles, Heart, Mail, 
+import {
+  Gift, Sparkles, Heart,
   Clock, PackageX, MapPin, Banknote,
   Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
-  Cake, Gem, Building2, Baby, Flower2, Trophy,
-  Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine,
+  Building2,
   Camera
 } from "lucide-react";
-import VisitUs from "./VisitUs";
 import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -786,75 +784,6 @@ export function SocialProof() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   SECTION 6: OCCASIONS — Browse by who you're gifting
-   ══════════════════════════════════════════════════════════ */
-export function OccasionsGrid() {
-  const occasions = [
-    { icon: <Cake className="w-8 h-8 group-hover:text-white text-pink-500 transition-colors" />, label: "Birthdays", slug: "birthdays", color: "from-pink-400 to-rose-500" },
-    { icon: <Gem className="w-8 h-8 group-hover:text-white text-pink-500 transition-colors" />, label: "Anniversaries", slug: "anniversaries", color: "from-red-400 to-pink-500" },
-    { icon: <Heart className="w-8 h-8 group-hover:text-white text-indigo-500 transition-colors" />, label: "Weddings", slug: "weddings", color: "from-purple-400 to-indigo-500" },
-    { icon: <Building2 className="w-8 h-8 group-hover:text-white text-cyan-500 transition-colors" />, label: "Corporate", slug: "corporate", color: "from-blue-400 to-cyan-500" },
-    { icon: <Baby className="w-8 h-8 group-hover:text-white text-cyan-400 transition-colors" />, label: "New Baby", slug: "baby", color: "from-blue-300 to-cyan-400" },
-    { icon: <Flower2 className="w-8 h-8 group-hover:text-white text-orange-500 transition-colors" />, label: "Apology", slug: "apology", color: "from-amber-400 to-orange-500" },
-    { icon: <Trophy className="w-8 h-8 group-hover:text-white text-teal-500 transition-colors" />, label: "Milestone", slug: "milestone", color: "from-emerald-400 to-teal-500" },
-    { icon: <Heart className="w-8 h-8 group-hover:text-white text-purple-500 transition-colors" />, label: "Just Because", slug: "just-because", color: "from-violet-400 to-purple-500" },
-    { icon: <Feather className="w-8 h-8 group-hover:text-white text-gray-500 transition-colors" />, label: "Condolences", slug: "condolences", color: "from-slate-400 to-gray-500" },
-    { icon: <Dumbbell className="w-8 h-8 group-hover:text-white text-red-500 transition-colors" />, label: "Fitness", slug: "fitness", color: "from-orange-400 to-red-500" },
-    { icon: <Gamepad2 className="w-8 h-8 group-hover:text-white text-purple-500 transition-colors" />, label: "Gaming", slug: "gaming", color: "from-violet-400 to-purple-500" },
-    { icon: <Music className="w-8 h-8 group-hover:text-white text-fuchsia-500 transition-colors" />, label: "Music", slug: "music", color: "from-pink-400 to-fuchsia-500" },
-    { icon: <Tent className="w-8 h-8 group-hover:text-white text-emerald-500 transition-colors" />, label: "Outdoor", slug: "outdoor", color: "from-green-400 to-emerald-500" },
-    { icon: <Home className="w-8 h-8 group-hover:text-white text-orange-500 transition-colors" />, label: "Home Decor", slug: "home-decor", color: "from-amber-400 to-orange-500" },
-    { icon: <ChefHat className="w-8 h-8 group-hover:text-white text-rose-500 transition-colors" />, label: "Kitchen", slug: "kitchen", color: "from-red-400 to-rose-500" },
-    { icon: <Wine className="w-8 h-8 group-hover:text-white text-red-500 transition-colors" />, label: "Beverages", slug: "beverages", color: "from-amber-500 to-red-500" },
-  ];
-
-  return (
-    <section className="py-10 md:py-14 section-theme-d relative">
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        <Reveal>
-          <p className="text-gold font-semibold text-sm tracking-wide uppercase tracking-widest mb-4 text-center">
-            Find by occasion
-          </p>
-        </Reveal>
-        <Reveal delay={100}>
-          <h2 className="font-display section-heading font-bold text-center mb-4 text-theme-heading">
-            Who are you gifting?
-          </h2>
-        </Reveal>
-        <Reveal delay={200}>
-          <p className="text-theme-body text-center max-w-xl mx-auto mb-6 leading-relaxed">
-            Every occasion deserves something special. Pick a category and
-            we&apos;ll show you curated gifts that fit.
-          </p>
-        </Reveal>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-          {occasions.map((occ, i) => (
-            <Reveal key={occ.slug} delay={300 + i * 80}>
-              <Link
-                href={`/?category=${occ.slug}`}
-                className="group relative card-theme backdrop-blur-sm shape-premium-card p-6 text-center hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 border border-brand/5 overflow-hidden"
-              >
-                {/* Gradient bg on hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${occ.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className="relative z-10">
-                  <div className="mb-3 flex justify-center group-hover:scale-125 group-hover:animate-wiggle transition-transform duration-500">
-                    {occ.icon}
-                  </div>
-                  <p className="font-semibold text-sm tracking-wide text-theme-body group-hover:text-white transition-colors duration-300">
-                    {occ.label}
-                  </p>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════
    SECTION 7: FINAL CTA — Convert
    ══════════════════════════════════════════════════════════ */
 export function FinalCTA() {
@@ -960,20 +889,3 @@ export function FinalCTA() {
   );
 }
 
-/* ══════════════════════════════════════════════════════════
-   EXPORT — Full storytelling homepage
-   ══════════════════════════════════════════════════════════ */
-export default function StorytellingHome() {
-  return (
-    <div>
-      <HeroCinematic />
-      <ProblemSection />
-      <SolutionSection />
-      <StoryHowItWorks />
-      <SocialProof />
-      <OccasionsGrid />
-      <FinalCTA />
-      <VisitUs />
-    </div>
-  );
-}
