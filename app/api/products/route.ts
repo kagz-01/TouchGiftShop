@@ -46,6 +46,9 @@ export async function GET(req: Request) {
   // Apply in_stock filter
   query = query.eq("in_stock", true);
 
+  // Only show published products in the shop
+  query = query.eq("status", "published");
+
   // Apply pagination: fetch `limit + 1` to determine if there's a next page
   const from = (page - 1) * limit;
   const fetchLimit = limit + 1;

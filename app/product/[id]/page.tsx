@@ -149,12 +149,80 @@ export default async function ProductPage({
                 {product.name}
               </h1>
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-bold text-gold">{formatKsh(product.price)}</span>
+                {product.sale_price && product.sale_price < product.price ? (
+                  <>
+                    <span className="text-3xl font-bold text-red-500">{formatKsh(product.sale_price)}</span>
+                    <span className="text-xl text-gray-400 line-through">{formatKsh(product.price)}</span>
+                    <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">
+                      Save {Math.round(((product.price - product.sale_price) / product.price) * 100)}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-3xl font-bold text-gold">{formatKsh(product.price)}</span>
+                )}
                 {!product.in_stock && (
                   <span className="text-sm text-red-500 font-semibold">Out of stock</span>
                 )}
               </div>
+              {product.sku && (
+                <p className="text-xs text-gray-400 mt-1 font-mono">SKU: {product.sku}</p>
+              )}
+              {product.stock_quantity != null && product.in_stock && (
+                <p className="text-xs text-green-600 mt-1 font-medium">{product.stock_quantity} in stock</p>
+              )}
             </div>
+
+            {/* Color Variants */}
+            {product.color_variants && product.color_variants.length > 0 && (
+              <div>
+                <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Color</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.color_variants.map((cv, i) => (
+                    <button
+                      key={i}
+                      className="flex items-center gap-2 px-3 py-2 border border-black/10 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
+                    >
+                      <span className="w-4 h-4 rounded-full border border-gray-200" style={{ backgroundColor: cv.name.toLowerCase() }} />
+                      {cv.name}
+                      {cv.priceOverride && (
+                        <span className="text-xs text-brand font-bold">{formatKsh(cv.priceOverride)}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Size Variants */}
+            {product.size_variants && product.size_variants.length > 0 && (
+              <div>
+                <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Size</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.size_variants.map((sv, i) => (
+                    <button
+                      key={i}
+                      className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
+                    >
+                      {sv.name}
+                      {sv.priceOverride && (
+                        <span className="text-xs text-brand font-bold">{formatKsh(sv.priceOverride)}</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tags */}
+            {product.tags && product.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {product.tags.map((tag) => (
+                  <span key={tag} className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
             {/* Trust pills */}
             <div className="flex flex-wrap gap-2">

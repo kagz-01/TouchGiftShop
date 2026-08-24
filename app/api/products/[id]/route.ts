@@ -9,6 +9,7 @@ export async function GET(
     .from("products")
     .select("*")
     .eq("id", params.id)
+    .eq("status", "published")
     .single();
 
   if (error || !product) {

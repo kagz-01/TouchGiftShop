@@ -139,10 +139,20 @@ CREATE TABLE products (
     slug VARCHAR(200) UNIQUE NOT NULL,
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
+    sale_price DECIMAL(10,2),
     image_url TEXT,
     images JSONB DEFAULT '[]'::jsonb,
     is_personalizable BOOLEAN DEFAULT FALSE,
     in_stock BOOLEAN DEFAULT TRUE,
+    stock_quantity INTEGER,
+    sku VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'published',
+    weight_kg DECIMAL(8,2),
+    tags JSONB DEFAULT '[]'::jsonb,
+    seo_title VARCHAR(200),
+    seo_description TEXT,
+    color_variants JSONB DEFAULT '[]'::jsonb,
+    size_variants JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -14,11 +14,13 @@ export interface CartItem {
   customizationImageUrl?: string;
   giftWrapping?: boolean;
   giftWrappingStyle?: "classic" | "premium" | "luxury";
+  selectedColor?: string;
+  selectedSize?: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle">>) => void;
+  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -59,12 +61,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, mounted]);
 
   const addItem = useCallback(
-    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle">>) => {
+    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => {
+      // Calculate effective price: size variant override > sale price > regular price
+      let effectivePrice = product.sale_price ?? product.price;
+      if (options?.selectedSize && product.size_variants?.length) {
+        const sizeVariant = product.size_variants.find(v => v.name === options.selectedSize);
+        if (sizeVariant?.priceOverride != null) {
+          effectivePrice = sizeVariant.priceOverride;
+        }
+      }
+
       setItems((prev) => {
-        const existing = prev.find((i) => i.productId === product.id);
+        const existing = prev.find((i) => i.productId === product.id && i.selectedColor === options?.selectedColor && i.selectedSize === options?.selectedSize);
         if (existing) {
           return prev.map((i) =>
-            i.productId === product.id ? { ...i, quantity: i.quantity + quantity } : i
+            i.productId === product.id && i.selectedColor === options?.selectedColor && i.selectedSize === options?.selectedSize
+              ? { ...i, quantity: i.quantity + quantity }
+              : i
           );
         }
         return [
@@ -72,7 +85,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           {
             productId: product.id,
             name: product.name,
-            price: product.price,
+            price: effectivePrice,
             image_url: product.image_url,
             quantity,
             giftNote: options?.giftNote,
@@ -80,6 +93,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             customizationImageUrl: options?.customizationImageUrl,
             giftWrapping: options?.giftWrapping,
             giftWrappingStyle: options?.giftWrappingStyle,
+            selectedColor: options?.selectedColor,
+            selectedSize: options?.selectedSize,
           },
         ];
       });

@@ -18,6 +18,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [customizationImageUrl, setCustomizationImageUrl] = useState<string | null>(null);
   const [giftNote, setGiftNote] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -42,10 +44,27 @@ export default function AddToCartButton({ product }: { product: Product }) {
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
 
-  const total = product.price * quantity;
+  // Calculate effective price
+  const getEffectivePrice = () => {
+    let price = product.sale_price ?? product.price;
+    if (selectedSize && product.size_variants?.length) {
+      const sv = product.size_variants.find(v => v.name === selectedSize);
+      if (sv?.priceOverride != null) price = sv.priceOverride;
+    }
+    return price;
+  };
+
+  const effectivePrice = getEffectivePrice();
+  const total = effectivePrice * quantity;
 
   function handleAddToCart() {
-    addItem(product, quantity, { giftNote, personalization, customizationImageUrl: customizationImageUrl ?? undefined });
+    addItem(product, quantity, {
+      giftNote,
+      personalization,
+      customizationImageUrl: customizationImageUrl ?? undefined,
+      selectedColor,
+      selectedSize,
+    });
     setAddedToCart(true);
     setTimeout(() => {
       setAddedToCart(false);
@@ -63,6 +82,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
       amount: total.toString(),
       qty: quantity.toString(),
     });
+    if (selectedColor) params.set("color", selectedColor);
+    if (selectedSize) params.set("size", selectedSize);
     if (product.is_personalizable && personalization) params.set("engraving", personalization);
     if (customizationImageUrl) params.set("customizationImage", customizationImageUrl);
     if (giftNote) params.set("note", giftNote);
@@ -82,7 +103,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
           disabled={!product.in_stock}
           className="flex-1 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
         >
-          Send this Gift &mdash; {formatKsh(product.price)}
+          Send this Gift &mdash; {formatKsh(effectivePrice)}
         </button>
       </div>
       <p className="text-xs text-center text-brand-muted">
@@ -127,9 +148,66 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-brand-deep text-sm truncate">{product.name}</p>
-                  <p className="text-gold font-bold text-base mt-0.5">{formatKsh(product.price)}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {product.sale_price && product.sale_price < product.price ? (
+                      <>
+                        <p className="text-red-500 font-bold text-base">{formatKsh(product.sale_price)}</p>
+                        <p className="text-gray-400 text-xs line-through">{formatKsh(product.price)}</p>
+                      </>
+                    ) : (
+                      <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
+                    )}
+                  </div>
                 </div>
               </div>
+
+              {/* Color Variants */}
+              {product.color_variants && product.color_variants.length > 0 && (
+                <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-brand-deep mb-2">Color</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.color_variants.map((cv, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSelectedColor(selectedColor === cv.name ? undefined : cv.name)}
+                        className={`flex items-center gap-2 px-3 py-2 border rounded-xl text-sm font-medium transition-colors ${
+                          selectedColor === cv.name
+                            ? "border-brand bg-brand/5 text-brand"
+                            : "border-black/10 hover:border-brand/50"
+                        }`}
+                      >
+                        <span className="w-4 h-4 rounded-full border border-gray-200" style={{ backgroundColor: cv.name.toLowerCase() }} />
+                        {cv.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Size Variants */}
+              {product.size_variants && product.size_variants.length > 0 && (
+                <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-brand-deep mb-2">Size</p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.size_variants.map((sv, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setSelectedSize(selectedSize === sv.name ? undefined : sv.name)}
+                        className={`flex items-center gap-2 px-4 py-2 border rounded-xl text-sm font-medium transition-colors ${
+                          selectedSize === sv.name
+                            ? "border-brand bg-brand/5 text-brand"
+                            : "border-black/10 hover:border-brand/50"
+                        }`}
+                      >
+                        {sv.name}
+                        {sv.priceOverride && (
+                          <span className="text-xs text-brand/70">{formatKsh(sv.priceOverride)}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Quantity */}
               <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm">
@@ -204,7 +282,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
             <div className="p-5 border-t border-black/5 bg-white space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-brand-muted">
-                  {quantity} × {formatKsh(product.price)}
+                  {quantity} × {formatKsh(effectivePrice)}
                 </span>
                 <span className="font-bold text-xl text-brand-deep">{formatKsh(total)}</span>
               </div>

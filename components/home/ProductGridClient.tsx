@@ -17,6 +17,8 @@ const supabase = createClient(
 
 export function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
   const badges = getProductBadges(product, index, categorySlug);
+  const hasSale = product.sale_price && product.sale_price < product.price;
+  const hasColors = product.color_variants && product.color_variants.length > 0;
 
   return (
     <Link
@@ -53,6 +55,11 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+            {hasSale && (
+              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+                SALE
+              </span>
+            )}
             {badges.map((badge) => (
               <span
                 key={badge.label}
@@ -77,11 +84,45 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
           <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-brand-deep group-hover:text-brand transition-colors leading-snug">
             {product.name}
           </h3>
+
+          {/* Price */}
+          <div className="flex items-center gap-2 mb-1.5">
+            {hasSale ? (
+              <>
+                <p className="text-red-500 font-bold text-base">{formatKsh(product.sale_price!)}</p>
+                <p className="text-gray-400 text-sm line-through">{formatKsh(product.price)}</p>
+              </>
+            ) : (
+              <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
+            )}
+          </div>
+
+          {/* Color dots */}
+          {hasColors && (
+            <div className="flex items-center gap-1 mb-1.5">
+              {product.color_variants!.slice(0, 5).map((cv, i) => (
+                <span
+                  key={i}
+                  className="w-3.5 h-3.5 rounded-full border border-gray-200"
+                  style={{ backgroundColor: cv.name.toLowerCase() }}
+                  title={cv.name}
+                />
+              ))}
+              {product.color_variants!.length > 5 && (
+                <span className="text-[10px] text-gray-400 ml-0.5">+{product.color_variants!.length - 5}</span>
+              )}
+            </div>
+          )}
+
           <div className="flex items-center justify-between gap-2">
-            <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
             {product.is_personalizable && (
               <span className="text-[9px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
                 ✏️ Custom
+              </span>
+            )}
+            {product.size_variants && product.size_variants.length > 0 && (
+              <span className="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full flex-shrink-0">
+                {product.size_variants.length} sizes
               </span>
             )}
           </div>

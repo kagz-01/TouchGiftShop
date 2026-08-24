@@ -17,19 +17,48 @@ function requireAdmin() {
   return true;
 }
 
+const ColorVariantSchema = z.object({
+  name: z.string().min(1),
+  image: z.string().url().optional().nullable(),
+  priceOverride: z.number().optional().nullable(),
+});
+
+const SizeVariantSchema = z.object({
+  name: z.string().min(1),
+  priceOverride: z.number().optional().nullable(),
+});
+
 const ProductSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(200),
   description: z.string().optional(),
   price: z.number().positive(),
+  sale_price: z.number().positive().optional().nullable(),
   image_url: z.string().url().optional().nullable(),
   images: z.array(z.string().url()).optional(),
   is_personalizable: z.boolean().optional(),
   in_stock: z.boolean().optional(),
+  stock_quantity: z.number().int().optional().nullable(),
+  sku: z.string().max(50).optional().nullable(),
+  status: z.enum(["draft", "published", "archived"]).optional(),
+  weight_kg: z.number().optional().nullable(),
+  tags: z.array(z.string()).optional(),
+  seo_title: z.string().max(200).optional().nullable(),
+  seo_description: z.string().optional().nullable(),
+  color_variants: z.array(ColorVariantSchema).optional(),
+  size_variants: z.array(SizeVariantSchema).optional(),
   categoryIds: z.array(z.string().uuid()).optional(),
 });
 
-// GET /api/admin/products?search=...&category=...&in_stock=true&limit=50&offset=0
+const ALLOWED_FIELDS = [
+  "name", "slug", "description", "price", "sale_price",
+  "image_url", "images", "is_personalizable", "in_stock",
+  "stock_quantity", "sku", "status", "weight_kg",
+  "tags", "seo_title", "seo_description",
+  "color_variants", "size_variants",
+];
+
+// GET /api/admin/products?search=...&category=...&in_stock=true&status=published&limit=50&offset=0
 export async function GET(req: Request) {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,6 +67,7 @@ export async function GET(req: Request) {
   const search = searchParams.get("search") || "";
   const category = searchParams.get("category");
   const inStock = searchParams.get("in_stock");
+  const status = searchParams.get("status");
   const limit = Number(searchParams.get("limit")) || 50;
   const offset = Number(searchParams.get("offset")) || 0;
 
@@ -51,11 +81,15 @@ export async function GET(req: Request) {
     .range(offset, offset + limit - 1);
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
+    query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%,sku.ilike.%${search}%`);
   }
 
   if (inStock !== null && inStock !== undefined) {
     query = query.eq("in_stock", inStock === "true");
+  }
+
+  if (status && status !== "all") {
+    query = query.eq("status", status);
   }
 
   if (category) {
@@ -89,19 +123,31 @@ export async function POST(req: Request) {
 
   const { categoryIds, ...productData } = parsed.data;
 
-  // Create product
+  const insertData: Record<string, unknown> = {
+    name: productData.name,
+    slug: productData.slug,
+    description: productData.description || "",
+    price: productData.price,
+    image_url: productData.image_url || null,
+    images: productData.images || [],
+    is_personalizable: productData.is_personalizable ?? false,
+    in_stock: productData.in_stock ?? true,
+    status: productData.status ?? "published",
+    tags: productData.tags || [],
+    color_variants: productData.color_variants || [],
+    size_variants: productData.size_variants || [],
+  };
+
+  if (productData.sale_price != null) insertData.sale_price = productData.sale_price;
+  if (productData.stock_quantity != null) insertData.stock_quantity = productData.stock_quantity;
+  if (productData.sku != null) insertData.sku = productData.sku;
+  if (productData.weight_kg != null) insertData.weight_kg = productData.weight_kg;
+  if (productData.seo_title != null) insertData.seo_title = productData.seo_title;
+  if (productData.seo_description != null) insertData.seo_description = productData.seo_description;
+
   const { data: product, error } = await supabase
     .from("products")
-    .insert({
-      name: productData.name,
-      slug: productData.slug,
-      description: productData.description || "",
-      price: productData.price,
-      image_url: productData.image_url || null,
-      images: productData.images || [],
-      is_personalizable: productData.is_personalizable ?? false,
-      in_stock: productData.in_stock ?? true,
-    })
+    .insert(insertData)
     .select()
     .single();
 
@@ -142,16 +188,13 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "Product ID required" }, { status: 400 });
   }
 
-  // Clean up undefined values
+  // Only include fields that are explicitly provided and allowed
   const cleanUpdates: Record<string, unknown> = {};
-  if (updates.name !== undefined) cleanUpdates.name = updates.name;
-  if (updates.slug !== undefined) cleanUpdates.slug = updates.slug;
-  if (updates.description !== undefined) cleanUpdates.description = updates.description;
-  if (updates.price !== undefined) cleanUpdates.price = updates.price;
-  if (updates.image_url !== undefined) cleanUpdates.image_url = updates.image_url;
-  if (updates.images !== undefined) cleanUpdates.images = updates.images;
-  if (updates.is_personalizable !== undefined) cleanUpdates.is_personalizable = updates.is_personalizable;
-  if (updates.in_stock !== undefined) cleanUpdates.in_stock = updates.in_stock;
+  for (const field of ALLOWED_FIELDS) {
+    if (updates[field] !== undefined) {
+      cleanUpdates[field] = updates[field];
+    }
+  }
 
   if (Object.keys(cleanUpdates).length === 0 && !categoryIds) {
     return NextResponse.json({ error: "No updates provided" }, { status: 400 });

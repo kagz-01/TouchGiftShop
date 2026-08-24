@@ -93,17 +93,38 @@ export interface PoolContribution {
 // currently passes the query result straight through without remapping.
 // TODO: decide whether to remap to camelCase in the API layer as the app
 // grows — fine to leave as-is for now.
+export interface ColorVariant {
+  name: string;
+  image?: string;
+  priceOverride?: number;
+}
+
+export interface SizeVariant {
+  name: string;
+  priceOverride?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   slug: string;
   description: string | null;
   price: number;
+  sale_price: number | null;
   image_url: string | null;
   category?: string;
   images?: string[];
   is_personalizable: boolean;
   in_stock: boolean;
+  stock_quantity: number | null;
+  sku: string | null;
+  status: string;
+  weight_kg: number | null;
+  tags: string[];
+  seo_title: string | null;
+  seo_description: string | null;
+  color_variants: ColorVariant[];
+  size_variants: SizeVariant[];
 }
 
 export interface WishlistItem {
