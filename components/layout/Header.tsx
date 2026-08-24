@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase-browser";
 import { ShoppingBag, Bell, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import CartBadge from "@/components/layout/CartBadge";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -140,19 +141,8 @@ export default function Header() {
               </span>
             </div>
 
-            {/* Orders */}
-            <div className="group relative flex flex-col items-center justify-center">
-              <Link
-                href={user ? "/orders" : "/login?next=/orders"}
-                aria-label="Your orders"
-                className="relative w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
-              >
-                <ShoppingBag className="w-4 h-4" />
-              </Link>
-              <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
-                {user ? "Orders" : "Sign in to see Orders"}
-              </span>
-            </div>
+            {/* Cart */}
+            <CartBadge />
 
             {/* Notifications / Reminders */}
             <div className="hidden lg:block">

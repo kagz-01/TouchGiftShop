@@ -6,7 +6,8 @@ import SurpriseToggle from "./SurpriseToggle";
 import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
-import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown } from "lucide-react";
+import type { CartItem } from "@/lib/cart";
 
 type Step = "form" | "redirecting" | "error";
 
@@ -16,9 +17,20 @@ interface DeliveryZone {
   timeframe: string;
 }
 
-/* ── reusable input style ── */
+interface LoyaltyInfo {
+  tier: string;
+  tierConfig?: { name: string; color: string; discount: number };
+  discountPercent: number;
+  totalOrders: number;
+  totalSpend: number;
+  nextTier: string | null;
+  ordersToNext: number;
+}
+
 const INPUT =
   "w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm text-brand-deep placeholder:text-brand-muted/50 focus:outline-none focus:border-brand focus:bg-white transition-all";
+
+const WRAPPING_PRICES = { classic: 200, premium: 500, luxury: 1000 };
 
 export default function CheckoutForm({
   productId,
@@ -49,6 +61,45 @@ export default function CheckoutForm({
   const [senderPhoneError, setSenderPhoneError] = useState<string | null>(null);
   const [recipientPhoneError, setRecipientPhoneError] = useState<string | null>(null);
 
+  // Cart items
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartCheckout, setIsCartCheckout] = useState(false);
+
+  // Gift wrapping
+  const [giftWrapping, setGiftWrapping] = useState(false);
+  const [giftWrappingStyle, setGiftWrappingStyle] = useState<"classic" | "premium" | "luxury">("classic");
+
+  // Loyalty
+  const [loyaltyInfo, setLoyaltyInfo] = useState<LoyaltyInfo | null>(null);
+
+  // Load cart items from localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cartParam = params.get("cart");
+    const wrappingParam = params.get("wrapping");
+
+    if (cartParam === "true") {
+      setIsCartCheckout(true);
+      try {
+        const raw = localStorage.getItem("touchgift_cart");
+        if (raw) setCartItems(JSON.parse(raw));
+      } catch {}
+    }
+
+    if (wrappingParam && ["classic", "premium", "luxury"].includes(wrappingParam)) {
+      setGiftWrapping(true);
+      setGiftWrappingStyle(wrappingParam as "classic" | "premium" | "luxury");
+    }
+  }, []);
+
+  // Load loyalty info
+  useEffect(() => {
+    fetch("/api/loyalty")
+      .then((r) => r.json())
+      .then((data) => { if (data.tier) setLoyaltyInfo(data); })
+      .catch(() => {});
+  }, []);
+
   const lookupDelivery = useCallback(async (value: string) => {
     setLandmark(value);
     if (value.length < 3) { setDeliveryZone(null); return; }
@@ -63,13 +114,11 @@ export default function CheckoutForm({
     const clean = v.replace(/[^0-9+]/g, "");
     if (!clean) return v;
     if (clean.startsWith("+")) return clean;
-    // Local Kenyan mobile numbers (07xx or 7xxx)
     if (countryCode === "+254") {
       if (clean.startsWith("07")) return "+254" + clean.slice(1);
       if (clean.startsWith("7") && clean.length === 9) return "+254" + clean;
       if (clean.startsWith("254")) return "+" + clean;
     }
-    // Fallback: prefix selected country code if provided
     if (countryCode) {
       const noLead = clean.replace(/^0+/, "");
       return countryCode + noLead;
@@ -92,7 +141,16 @@ export default function CheckoutForm({
   useEffect(() => { setSenderPhoneError(senderPhone ? (isPhoneValid(senderPhone) ? null : "Invalid number") : null); }, [senderPhone]);
   useEffect(() => { setRecipientPhoneError(recipientPhone ? (isPhoneValid(recipientPhone) ? null : "Invalid number") : null); }, [recipientPhone]);
 
-  const total = amount + (usePinDrop ? 0 : (deliveryZone?.fee ?? 0));
+  // Calculate totals
+  const itemsTotal = isCartCheckout
+    ? cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
+    : amount;
+  const deliveryFee = usePinDrop ? 0 : (deliveryZone?.fee ?? 0);
+  const wrappingCost = giftWrapping ? WRAPPING_PRICES[giftWrappingStyle] : 0;
+  const loyaltyDiscount = loyaltyInfo && loyaltyInfo.discountPercent > 0
+    ? Math.round(itemsTotal * (loyaltyInfo.discountPercent / 100))
+    : 0;
+  const total = itemsTotal + deliveryFee + wrappingCost - loyaltyDiscount;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -105,39 +163,50 @@ export default function CheckoutForm({
     const form = new FormData(e.currentTarget);
 
     try {
-      const orderRes = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId,
-          totalAmount: total,
-          senderName: form.get("senderName"),
-          senderPhone: normalizedSender,
-          recipientName: form.get("recipientName"),
-          recipientPhone: normalizedRecipient,
-          isAnonymous: safeguards.anonymous,
-          dontCallRecipient: safeguards.dontCall,
-          deliveryLandmark: usePinDrop ? "" : landmark,
-          giftNote: form.get("giftNote") || giftNote,
-          engraving: engraving || undefined,
-          quantity,
-          shippingFee: usePinDrop ? 0 : (deliveryZone?.fee ?? 0),
-          recipientPinRequested: usePinDrop,
-        }),
-      });
+      // Create orders for each item (or single item)
+      const itemsToOrder = isCartCheckout && cartItems.length > 0
+        ? cartItems
+        : [{ productId, name: "", price: amount, image_url: null, quantity }];
 
-      const orderData = await orderRes.json();
-      if (!orderRes.ok) throw new Error(orderData.error?.formErrors?.join(", ") ?? orderData.error ?? "Something went wrong.");
+      const orderIds: string[] = [];
 
-      const orderId = orderData.order.id;
+      for (const item of itemsToOrder) {
+        const orderRes = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: item.productId,
+            totalAmount: item.price * item.quantity,
+            senderName: form.get("senderName"),
+            senderPhone: normalizedSender,
+            recipientName: form.get("recipientName"),
+            recipientPhone: normalizedRecipient,
+            isAnonymous: safeguards.anonymous,
+            dontCallRecipient: safeguards.dontCall,
+            deliveryLandmark: usePinDrop ? "" : landmark,
+            giftNote: (item as CartItem).giftNote || form.get("giftNote") || giftNote,
+            engraving: (item as CartItem).personalization || engraving || undefined,
+            quantity: item.quantity,
+            shippingFee: deliveryFee,
+            recipientPinRequested: usePinDrop,
+          }),
+        });
 
+        const orderData = await orderRes.json();
+        if (!orderRes.ok) throw new Error(orderData.error?.formErrors?.join(", ") ?? orderData.error ?? "Failed to create order.");
+        orderIds.push(orderData.order.id);
+      }
+
+      // Create payment for the total
       const paymentRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: total,
-          merchantReference: orderId,
-          description: `TouchGift order #${orderId.slice(0, 8)}`,
+          merchantReference: orderIds.length === 1 ? orderIds[0] : `multi-${orderIds.join(",")}`,
+          description: isCartCheckout
+            ? `TouchGift order (${cartItems.length} items)`
+            : `TouchGift order #${orderIds[0].slice(0, 8)}`,
           phoneNumber: normalizedSender,
         }),
       });
@@ -145,11 +214,18 @@ export default function CheckoutForm({
       const paymentData = await paymentRes.json();
       if (!paymentRes.ok) throw new Error(paymentData.error ?? "Failed to start payment.");
 
+      // Clear cart if cart checkout
+      if (isCartCheckout) {
+        localStorage.removeItem("touchgift_cart");
+      }
+
       if (usePinDrop) {
         try {
-          const pinRes = await fetch("/api/pin-drop/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId }) });
-          const pinData = await pinRes.json();
-          if (pinData.whatsappUrl) window.open(pinData.whatsappUrl, "_blank");
+          for (const oid of orderIds) {
+            const pinRes = await fetch("/api/pin-drop/send", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ orderId: oid }) });
+            const pinData = await pinRes.json();
+            if (pinData.whatsappUrl) window.open(pinData.whatsappUrl, "_blank");
+          }
         } catch { /* admin can resend */ }
       }
 
@@ -204,7 +280,6 @@ export default function CheckoutForm({
   /* ── Main Form ── */
   return (
     <form onSubmit={handleSubmit}>
-      {/* Screen-reader live region for form status and phone validation errors */}
       <div role="status" aria-live="polite" className="sr-only">
         {step === "error" && errorMessage ? `Error: ${errorMessage}` : ""}
         {senderPhoneError ? ` ${senderPhoneError}` : ""}
@@ -287,15 +362,11 @@ export default function CheckoutForm({
           {/* SECTION: Delivery */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-4">
             <h2 className="font-display font-bold text-brand-deep">Delivery</h2>
-
-            {/* Pin Drop toggle */}
             <MapPinPicker
               onPinDropToggle={setUsePinDrop}
               recipientPhone={recipientPhone}
               recipientName={recipientName || undefined}
             />
-
-            {/* Landmark — hidden when pin drop is on */}
             {!usePinDrop && (
               <div>
                 <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">
@@ -314,6 +385,56 @@ export default function CheckoutForm({
                     {deliveryZone.name} — {formatKsh(deliveryZone.fee)} · {deliveryZone.timeframe}
                   </p>
                 )}
+              </div>
+            )}
+          </div>
+
+          {/* SECTION: Gift Wrapping */}
+          <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="font-display font-bold text-brand-deep">Gift Wrapping 🎁</h2>
+                <p className="text-xs text-brand-muted mt-0.5">Make it extra special</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={giftWrapping}
+                  onChange={(e) => setGiftWrapping(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
+              </label>
+            </div>
+            {giftWrapping && (
+              <div className="space-y-2">
+                {[
+                  { style: "classic" as const, label: "Classic Wrap", price: 200, emoji: "🎀" },
+                  { style: "premium" as const, label: "Premium Box", price: 500, emoji: "🎁" },
+                  { style: "luxury" as const, label: "Luxury Experience", price: 1000, emoji: "✨" },
+                ].map((opt) => (
+                  <label
+                    key={opt.style}
+                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                      giftWrappingStyle === opt.style
+                        ? "border-brand bg-brand/5"
+                        : "border-black/8 hover:border-brand/30"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="wrapping"
+                      checked={giftWrappingStyle === opt.style}
+                      onChange={() => setGiftWrappingStyle(opt.style)}
+                      className="w-4 h-4 text-brand focus:ring-brand"
+                    />
+                    <span className="text-lg">{opt.emoji}</span>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-brand-deep">{opt.label}</p>
+                    </div>
+                    <span className="text-sm font-bold text-brand-deep">+{formatKsh(opt.price)}</span>
+                  </label>
+                ))}
               </div>
             )}
           </div>
@@ -349,10 +470,24 @@ export default function CheckoutForm({
               )}
             </div>
             <div className="p-5 space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-brand-muted">{quantity > 1 ? `${quantity}× item` : "1 item"}</span>
-                <span className="font-medium">{formatKsh(amount)}</span>
-              </div>
+              {/* Items */}
+              {isCartCheckout && cartItems.length > 0 ? (
+                cartItems.map((item, idx) => (
+                  <div key={idx} className="flex justify-between">
+                    <span className="text-brand-muted truncate flex-1 mr-2">
+                      {item.quantity > 1 ? `${item.quantity}× ` : ""}{item.name}
+                    </span>
+                    <span className="font-medium">{formatKsh(item.price * item.quantity)}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="flex justify-between">
+                  <span className="text-brand-muted">{quantity > 1 ? `${quantity}× item` : "1 item"}</span>
+                  <span className="font-medium">{formatKsh(amount)}</span>
+                </div>
+              )}
+
+              {/* Delivery */}
               {deliveryZone && !usePinDrop && (
                 <div className="flex justify-between">
                   <span className="text-brand-muted">Delivery ({deliveryZone.name})</span>
@@ -365,11 +500,32 @@ export default function CheckoutForm({
                   <span className="text-emerald-600 font-semibold text-xs">Calculated after pin drop</span>
                 </div>
               )}
+
+              {/* Gift wrapping */}
+              {giftWrapping && (
+                <div className="flex justify-between">
+                  <span className="text-brand-muted">Gift wrapping</span>
+                  <span className="font-medium">{formatKsh(wrappingCost)}</span>
+                </div>
+              )}
+
+              {/* Loyalty discount */}
+              {loyaltyInfo && loyaltyInfo.discountPercent > 0 && (
+                <div className="flex justify-between text-emerald-600">
+                  <span className="flex items-center gap-1.5">
+                    <Crown className="w-3.5 h-3.5" />
+                    {loyaltyInfo.tier} ({loyaltyInfo.discountPercent}% off)
+                  </span>
+                  <span className="font-medium">-{formatKsh(loyaltyDiscount)}</span>
+                </div>
+              )}
+
               {engraving && (
                 <div className="border-t border-black/5 pt-3">
                   <p className="text-brand-muted text-xs">Engraving: &ldquo;{engraving}&rdquo;</p>
                 </div>
               )}
+
               <div className="border-t border-black/5 pt-3 flex justify-between font-bold text-brand-deep">
                 <span>Total</span>
                 <span>{formatKsh(total)}</span>
@@ -377,6 +533,25 @@ export default function CheckoutForm({
               {deliveryZone && <p className="text-xs text-brand-muted">{deliveryZone.timeframe}</p>}
             </div>
           </div>
+
+          {/* Loyalty tier badge */}
+          {loyaltyInfo && (
+            <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center">
+                <Crown className="w-5 h-5 text-brand-deep" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-brand-deep capitalize">{loyaltyInfo.tier} Member</p>
+                <p className="text-[10px] text-brand-muted">
+                  {loyaltyInfo.discountPercent > 0
+                    ? `${loyaltyInfo.discountPercent}% off every order`
+                    : loyaltyInfo.ordersToNext > 0
+                      ? `${loyaltyInfo.ordersToNext} more orders for ${loyaltyInfo.nextTier}`
+                      : "You've reached the top tier!"}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Trust badges */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">

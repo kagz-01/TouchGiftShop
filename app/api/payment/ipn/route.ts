@@ -32,15 +32,18 @@ export async function POST(req: Request) {
   const merchantReference = payload.order_merchant_reference || "";
 
   if (status.status === "completed") {
-    // Check if this is an order or a pool contribution
-    // Pool contributions use "pool-{slug}-{id}" as merchant reference
-    if (merchantReference.startsWith("pool-")) {
+    // Check if this is a gift card purchase
+    if (merchantReference.startsWith("giftcard-")) {
+      await handleGiftCardPayment(merchantReference, status.receiptNumber);
+    } else if (merchantReference.startsWith("pool-")) {
       await handlePoolPayment(merchantReference, status.receiptNumber);
     } else {
       await handleOrderPayment(merchantReference, status.receiptNumber);
     }
   } else if (status.status === "failed") {
-    if (merchantReference.startsWith("pool-")) {
+    if (merchantReference.startsWith("giftcard-")) {
+      await handleGiftCardFailure(merchantReference);
+    } else if (merchantReference.startsWith("pool-")) {
       await handlePoolFailure(merchantReference);
     } else {
       await handleOrderFailure(merchantReference);
@@ -48,6 +51,48 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ success: true });
+}
+
+async function handleGiftCardPayment(
+  reference: string,
+  receiptNumber: string | undefined
+) {
+  const cardId = reference.replace("giftcard-", "");
+
+  // Get the card to find the initial_amount
+  const { data: card } = await supabaseAdmin
+    .from("gift_cards")
+    .select("initial_amount")
+    .eq("id", cardId)
+    .single();
+
+  if (!card) {
+    console.error("Gift card not found for IPN:", cardId);
+    return;
+  }
+
+  // Activate the card — set balance to initial_amount and status to active
+  const { error } = await supabaseAdmin
+    .from("gift_cards")
+    .update({
+      status: "active",
+      balance: card.initial_amount,
+    })
+    .eq("id", cardId)
+    .eq("status", "pending_payment");
+
+  if (error) {
+    console.error("Failed to activate gift card from IPN:", error);
+  }
+}
+
+async function handleGiftCardFailure(reference: string) {
+  const cardId = reference.replace("giftcard-", "");
+  await supabaseAdmin
+    .from("gift_cards")
+    .update({ status: "failed" })
+    .eq("id", cardId)
+    .eq("status", "pending_payment");
 }
 
 async function handleOrderPayment(

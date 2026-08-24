@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
+import { createPaymentOrder } from "@/lib/payment";
 
 function generateCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -19,7 +20,7 @@ const PurchaseInput = z.object({
   message: z.string().optional(),
 });
 
-// POST /api/gift-cards — purchase a gift card
+// POST /api/gift-cards — purchase a gift card (creates pending card + PesaPal payment)
 export async function POST(req: Request) {
   const parsed = PurchaseInput.safeParse(await req.json());
   if (!parsed.success) {
@@ -50,17 +51,19 @@ export async function POST(req: Request) {
   const expiresAt = new Date();
   expiresAt.setMonth(expiresAt.getMonth() + 12);
 
+  // Create gift card with pending_payment status
   const { data: card, error } = await supabaseAdmin
     .from("gift_cards")
     .insert({
       code,
       initial_amount: amount,
-      balance: amount,
+      balance: 0, // Will be set to amount on payment success
       sender_name: senderName,
       recipient_name: recipientName,
       recipient_phone: recipientPhone ?? null,
       message: message ?? null,
       expires_at: expiresAt.toISOString(),
+      status: "pending_payment",
     })
     .select()
     .single();
@@ -72,7 +75,30 @@ export async function POST(req: Request) {
     );
   }
 
-  return NextResponse.json({ card });
+  // Create PesaPal payment order
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.ac.ke";
+  try {
+    const payment = await createPaymentOrder({
+      amount,
+      merchantReference: `giftcard-${card.id}`,
+      description: `TouchGift Gift Card KSh ${amount.toLocaleString()} for ${recipientName}`,
+      callbackUrl: `${siteUrl}/payment-success?ref=giftcard-${card.id}`,
+      name: senderName,
+    });
+
+    return NextResponse.json({
+      card,
+      redirectUrl: payment.redirectUrl,
+      orderTrackingId: payment.orderTrackingId,
+    });
+  } catch (payErr: any) {
+    // Payment failed — clean up the pending card
+    await supabaseAdmin.from("gift_cards").delete().eq("id", card.id);
+    return NextResponse.json(
+      { error: payErr?.message ?? "Failed to start payment" },
+      { status: 500 }
+    );
+  }
 }
 
 // GET /api/gift-cards?code=TG-XXXXXXXX — check balance
@@ -86,7 +112,7 @@ export async function GET(req: Request) {
 
   const { data: card, error } = await supabaseAdmin
     .from("gift_cards")
-    .select("code, balance, initial_amount, expires_at, recipient_name")
+    .select("code, balance, initial_amount, expires_at, recipient_name, status")
     .eq("code", code.toUpperCase())
     .single();
 
@@ -100,7 +126,7 @@ export async function GET(req: Request) {
     card: {
       ...card,
       is_expired: isExpired,
-      is_usable: !isExpired && card.balance > 0,
+      is_usable: card.status === "active" && !isExpired && card.balance > 0,
     },
   });
 }

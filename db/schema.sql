@@ -189,12 +189,13 @@ CREATE TABLE gift_cards (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     code VARCHAR(20) UNIQUE NOT NULL,
     initial_amount DECIMAL(10,2) NOT NULL,
-    balance DECIMAL(10,2) NOT NULL,
+    balance DECIMAL(10,2) NOT NULL DEFAULT 0,
     sender_name VARCHAR(100),
     recipient_name VARCHAR(100),
     recipient_phone VARCHAR(20),
     message TEXT,
     is_redeemed BOOLEAN DEFAULT FALSE,
+    status VARCHAR(20) DEFAULT 'active',
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMPTZ
 );

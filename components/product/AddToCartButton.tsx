@@ -4,16 +4,19 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { formatKsh } from "@/lib/utils";
+import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/types";
-import { X, Minus, Plus, Sparkles, Zap } from "lucide-react";
+import { X, Minus, Plus, Sparkles, Zap, ShoppingCart, Check } from "lucide-react";
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const router = useRouter();
+  const { addItem, itemCount } = useCart();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [personalization, setPersonalization] = useState("");
   const [giftNote, setGiftNote] = useState("");
+  const [addedToCart, setAddedToCart] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -38,7 +41,19 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
   const total = product.price * quantity;
 
-  function handleCheckout() {
+  function handleAddToCart() {
+    addItem(product, quantity, { giftNote, personalization });
+    setAddedToCart(true);
+    setTimeout(() => {
+      setAddedToCart(false);
+      setIsOpen(false);
+      setQuantity(1);
+      setGiftNote("");
+      setPersonalization("");
+    }, 1200);
+  }
+
+  function handleBuyNow() {
     const params = new URLSearchParams({
       productId: product.id,
       amount: total.toString(),
@@ -55,14 +70,16 @@ export default function AddToCartButton({ product }: { product: Product }) {
   return (
     <>
       {/* Primary CTA */}
-      <button
-        id="add-to-cart-btn"
-        onClick={() => setIsOpen(true)}
-        disabled={!product.in_stock}
-        className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-      >
-        Send this Gift &mdash; {formatKsh(product.price)}
-      </button>
+      <div className="flex gap-3">
+        <button
+          id="add-to-cart-btn"
+          onClick={() => setIsOpen(true)}
+          disabled={!product.in_stock}
+          className="flex-1 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
+        >
+          Send this Gift &mdash; {formatKsh(product.price)}
+        </button>
+      </div>
       <p className="text-xs text-center text-brand-muted">
         Same-day Nairobi · Next-day nationwide
       </p>
@@ -186,13 +203,37 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 </span>
                 <span className="font-bold text-xl text-brand-deep">{formatKsh(total)}</span>
               </div>
-              <button
-                id="proceed-checkout-btn"
-                onClick={handleCheckout}
-                className="w-full py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all"
-              >
-                Proceed to Checkout →
-              </button>
+              <div className="flex gap-3">
+                <button
+                  id="add-to-cart-confirm-btn"
+                  onClick={handleAddToCart}
+                  disabled={addedToCart}
+                  className={`flex-1 py-3 rounded-xl font-semibold text-sm border-2 transition-all flex items-center justify-center gap-2 ${
+                    addedToCart
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-700"
+                      : "border-brand text-brand hover:bg-brand/5"
+                  }`}
+                >
+                  {addedToCart ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Added!
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4" />
+                      Add to Cart
+                    </>
+                  )}
+                </button>
+                <button
+                  id="proceed-checkout-btn"
+                  onClick={handleBuyNow}
+                  className="flex-1 py-3 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-sm rounded-xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all"
+                >
+                  Buy Now →
+                </button>
+              </div>
             </div>
           </div>
         </>,

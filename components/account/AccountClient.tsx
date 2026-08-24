@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-browser";
 import { cn, formatKsh } from "@/lib/utils";
-import { getLoyaltyTier, getNextTier, LOYALTY_TIERS } from "@/lib/loyalty";
+import { getLoyaltyTier, getNextTier, LOYALTY_TIERS, TIER_LIST } from "@/lib/loyalty";
 import {
   User, ShoppingBag, Gift, Settings, ChevronRight,
   Camera, Check, Copy, Star, LogOut, Bell, Eye, EyeOff
@@ -448,7 +448,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                   <div className="px-6 pb-6">
                     <p className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-3">Your {tier.name} benefits</p>
                     <div className="space-y-2">
-                      {tier.benefits.map((b: string) => (
+                      {tier.perks.map((b: string) => (
                         <div key={b} className="flex items-center gap-2 text-sm">
                           <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: tier.color + "22" }}>
                             <Check className="w-3 h-3" style={{ color: tier.color }} />
@@ -464,7 +464,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6">
                   <h3 className="font-display font-bold text-brand-deep mb-4">All Loyalty Tiers</h3>
                   <div className="space-y-3">
-                    {LOYALTY_TIERS.map((t) => {
+                    {TIER_LIST.map((t) => {
                       const isActive = t.name === tier.name;
                       const isUnlocked = orderCount >= t.minOrders && totalSpend >= t.minSpend;
                       return (

@@ -17,9 +17,12 @@ export default async function CheckoutPage({
     qty?: string;
     engraving?: string;
     note?: string;
+    cart?: string;
+    wrapping?: string;
   }>;
 }) {
   const params = await searchParams;
+  const isCart = params.cart === "true";
 
   return (
     <div className="min-h-screen section-theme-e">
@@ -27,16 +30,16 @@ export default async function CheckoutPage({
       <div className="bg-white border-b border-black/5 sticky top-0 z-30">
         <div className="page-container-capped py-3 flex items-center justify-between">
           <Link
-            href="/shop"
+            href={isCart ? "/cart" : "/shop"}
             className="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Back to Shop</span>
+            <span>{isCart ? "Back to Cart" : "Back to Shop"}</span>
           </Link>
 
           {/* Breadcrumb */}
           <div className="hidden md:flex items-center gap-1.5 text-xs text-brand-muted">
-            <span className="text-brand-deep font-semibold">Cart</span>
+            <span className="text-brand-deep font-semibold">{isCart ? "Cart" : "Cart"}</span>
             <span>/</span>
             <span className="text-brand font-semibold">Checkout</span>
             <span>/</span>

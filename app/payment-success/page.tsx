@@ -24,24 +24,35 @@ export default async function PaymentSuccessPage({
   const params = await searchParams;
   const ref = params.ref;
 
+  // Gift card purchases use "giftcard-{cardId}" as the reference
+  const isGiftCard = ref?.startsWith("giftcard-");
   // Pool contributions use "pool-{contributionId}" as the reference
   const isPool = ref?.startsWith("pool-");
 
   // Check if this is a pin-drop order
   let isPinDrop = false;
-  if (ref && !isPool) {
+  let giftCardCode: string | null = null;
+
+  if (isGiftCard) {
+    // For gift cards, we don't have the code yet in the success page
+    // The card will be activated via IPN
+  } else if (ref && !isPool) {
     const order = await getOrder(ref);
     isPinDrop = order?.recipient_pin_requested ?? false;
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="text-6xl mb-4">🎉</div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment received!</h1>
+      <div className="text-6xl mb-4">{isGiftCard ? "🎁" : "🎉"}</div>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">
+        {isGiftCard ? "Gift card purchased!" : "Payment received!"}
+      </h1>
       <p className="text-gray-500 mb-2 max-w-sm">
-        {isPool
-          ? "Thank you for your contribution! The pool balance has been updated."
-          : "Thank you for your order. We'll start preparing your gift right away."}
+        {isGiftCard
+          ? "Your gift card has been created. The recipient will receive the code shortly."
+          : isPool
+            ? "Thank you for your contribution! The pool balance has been updated."
+            : "Thank you for your order. We'll start preparing your gift right away."}
       </p>
       {ref && (
         <p className="text-xs text-gray-400 mb-6">
@@ -49,29 +60,36 @@ export default async function PaymentSuccessPage({
         </p>
       )}
       
-        <div className="flex gap-3">
-          {isPool ? (
-            <Link
-              href="/gift-lab"
-              className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-            >
-              View Gift Lab
-            </Link>
-          ) : (
-            <Link
-              href={ref ? `/orders/${ref}` : "/orders"}
-              className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-            >
-              View Order
-            </Link>
-          )}
-          <BackToHome label="Back to Home" />
-        </div>
+      <div className="flex gap-3">
+        {isGiftCard ? (
+          <Link
+            href="/gift-cards"
+            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+          >
+            View Gift Cards
+          </Link>
+        ) : isPool ? (
+          <Link
+            href="/gift-lab"
+            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+          >
+            View Gift Lab
+          </Link>
+        ) : (
+          <Link
+            href={ref ? `/orders/${ref}` : "/orders"}
+            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
+          >
+            View Order
+          </Link>
+        )}
+        <BackToHome label="Back to Home" />
+      </div>
 
-      {isPinDrop && ref && (
+      {!isGiftCard && isPinDrop && ref && (
         <PaymentSuccessPinDrop orderId={ref} />
       )}
-      {ref && (
+      {!isGiftCard && ref && (
         <div className="w-full max-w-md mt-6">
           <PaymentStatusPoller trackingId={ref} />
         </div>

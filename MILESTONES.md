@@ -581,3 +581,85 @@ TouchGift is a Kenya-first online gifting platform — flowers, hampers, persona
 ---
 
 *Last updated: Stage 13 — Hamper builder redesign + animations (67 features, 27 commits)*
+1. Team Gift Pool (Corporate "Kuchanga")
+Like Pool a Gift but for the workplace:
+- Manager creates a pool: "It's James's work anniversary — contribute KSh 500 each"
+- Links shared via WhatsApp/SMS to the team
+- Auto-closes on the date, triggers gift delivery
+- Unique twist: The recipient sees a live "appreciation meter" filling up — builds anticipation
+- Revenue: Platform fee per pool, or free with corporate subscription
+2. Corporate Hamper Builder (Gift Lab for Companies)
+The magical hamper builder but with corporate superpowers:
+- Brand Studio: Upload your logo → auto-preview it on cards, packaging, ribbon, stickers
+- Budget Mode: Set KSh per recipient → system auto-fills with best items in budget
+- Recipient Profiles: Different hampers for different people from the same order (CEO gets premium, team gets standard, clients get luxury)
+- Bulk Personalization: CSV upload with personalized messages per recipient, system generates individual gift cards
+- Template Library: "New Hire Welcome Kit", "Client Thank You", "Event Gift Bag" — pre-built templates you customize
+3. Corporate Gifting Calendar (Unique — no competitor has this)
+- Syncs with Google Calendar / company HR system
+- Auto-reminds: "3 employees have birthdays next month", "20 client contracts renewing in Q2"
+- One-click: "Send birthday gifts to all March birthdays" → pre-filled builder
+- Revenue: Premium feature for corporate accounts
+4. Gift Concierge WhatsApp Bot (Unique — Kenya-first)
+- Company DMs: "Send 10 welcome kits to these numbers" + CSV attachment
+- Bot confirms: budget, branding, delivery date
+- Bot sends tracking links to each recipient individually
+- Why it works: Kenya runs on WhatsApp. No app download needed. HR managers can gift from their phone.
+5. White-Label Corporate Portal (Unique — enterprise play)
+- Your client gets their own subdomain: techco.touchgift.co.ke
+- Their logo, their colors, their branded experience
+- They manage their own orders, track deliveries, upload CSVs
+- Revenue: Monthly SaaS fee + per-gift margin
+6. Client Appreciation Network (Unique — viral growth)
+- Company A sends a gift to Company B's employee
+- Company B sees the TouchGift branding → "We should do this for our clients too"
+- Built-in referral: "Send a gift? Get KSh 500 credit for your next order"
+- Revenue: Referral credits drive repeat orders
+7. Gift Impact Dashboard (Unique — data play)
+- "Your 200 event gifts generated 45 WhatsApp mentions, 12 LinkedIn posts, 3 client referrals"
+- Sentiment tracking on thank-you messages
+- ROI calculation: "KSh 300K in gifts → KSh 2.1M in pipeline influenced"
+- Revenue: Enterprise analytics tier
+8. Physical Touchpoint: Gift Showroom (Unique — offline-to-online)
+- A small physical space (Nairobi) where corporate clients can:
+- See and feel hamper options
+- Test packaging textures
+- Meet their dedicated account manager
+- QR code at showroom → instant digital builder access
+- Revenue: Higher conversion from showroom visits, premium pricing justification
+9. Automated Milestone Gifting (Unique — set-and-forget)
+- Connect HR system (BambooHR, Sapling, or even a Google Sheet)
+- Auto-gift on: work anniversaries, birthdays, promotions, project completions
+- Company sets budget + preferences once, TouchGift handles everything forever
+- Revenue: Monthly subscription per employee tracked
+10. Gift Marketplace for Companies (Unique — B2B2C)
+- Companies buy gifts for each other's employees
+- Example: Tech Co sends gifts to Law Firm's team as a thank-you
+- TouchGift handles logistics, both companies get branded experience
+- Revenue: Transaction fee from both sides
+
+Consumer Platform Innovation Roadmap
+🔴 Broken / Dead Code (Fix First — Immediate Revenue)
+Issue	Impact	Fix
+Loyalty discounts not wired at checkout	Tiers exist (Bronze→Platinum, 0-15% off) but never apply. Dead code.	Wire getLoyaltyTier() into checkout. Silver 5%, Gold 10%, Platinum 15%.
+Gift card payment broken	Card creation works but PesaPal redirect never happens. ~80% margin product is dead.	Complete the payment flow. Gift cards = pure profit.
+No multi-item cart	Single-product checkout via query params. Caps revenue per transaction.	Add proper cart (localStorage + Supabase for logged-in users).
+🟡 Missing Features (Market Differentiation)
+Feature	Market Benefit	Revenue Benefit
+Referral program	"Give KSh 500, Get KSh 500" — viral growth in Kenya's mobile-first market	Acquisition cost drops 60%+ vs ads
+Push notifications (FCM)	Re-engage users for birthdays, pool milestones, delivery updates	3-5x higher repeat purchase rate
+Saved addresses / address book	Frictionless checkout for repeat senders	Reduces cart abandonment
+Delivery time slots	"Express 3hr", "Weekend", "Scheduled" — real convenience	Premium delivery = margin expansion
+Gift wrapping upsell	Wrappers exist in DB but aren't monetized	KSh 200-500 pure margin per order
+Subscription boxes	Recurring revenue (flowers, wine, snacks)	Monthly recurring = predictable revenue
+🟢 Untapped Gold Mines
+Innovation	Market Impact	Revenue Model
+AI Gift Subscriptions	"Never forget a birthday — T-Gifter auto-sends the perfect gift yearly"	Premium SaaS: KSh 500/mo per recipient
+Social delivery moments	"Share your delivery moment" → viral loop after every delivery	Free organic growth
+Corporate crossover	"Ordering for 5+ people? Try TouchGift for Business" on consumer checkout	Funnel to high-value corporate
+Marketplace vendors	DB exists, not exposed to consumers. Third-party sellers = more catalog	10-15% commission per sale
+Data-driven gifting insights	"You've spent KSh 45K on gifts this year" — premium analytics	Upsell to Platinum tier
+💰 Highest ROI Recommendations
+Phase A (This Week): Fix gift card payment + activate loyalty discounts + add multi-item cart. These are small engineering tasks with outsized revenue impact.
+Phase B (Next Month): Referral program + push notifications + delivery time slots. These drive acquisition and retention.
+Phase C (Next Quarter): AI gift subscriptions + marketplace + corporate crossover. These create new revenue streams.
