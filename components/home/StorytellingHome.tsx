@@ -10,6 +10,7 @@ import {
   Feather, Dumbbell, Gamepad2, Music, Tent, Home, ChefHat, Wine,
   Camera
 } from "lucide-react";
+import VisitUs from "./VisitUs";
 import type { ReviewWithMedia } from "@/lib/types";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -972,6 +973,7 @@ export default function StorytellingHome() {
       <SocialProof />
       <OccasionsGrid />
       <FinalCTA />
+      <VisitUs />
     </div>
   );
 }
