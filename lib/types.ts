@@ -125,6 +125,7 @@ export interface Product {
   seo_description: string | null;
   color_variants: ColorVariant[] | null;
   size_variants: SizeVariant[] | null;
+  is_coming_soon: boolean | null;
   product_specs?: { spec_key: string; spec_value: string; icon: string | null; sort_order?: number }[];
 }
 
@@ -218,9 +219,36 @@ export interface HamperBundle {
   item_count: number;
   is_active: boolean;
   is_featured: boolean;
+  is_coming_soon: boolean | null;
   sort_order: number;
   created_at: string;
   items?: HamperBundleItem[];
+}
+
+// Corporate pre-made templates (B2B — price ranges, bulk recipients)
+export interface HamperTemplate {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  price_range_min: number | null;
+  price_range_max: number | null;
+  item_count: number;
+  occasions: string[];
+  is_active: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  items?: HamperTemplateItem[];
+}
+
+export interface HamperTemplateItem {
+  id?: string;
+  template_id?: string;
+  product_id: string | null;
+  product_name: string;
+  price: number;
+  quantity: number;
+  sort_order?: number;
 }
 
 export interface HamperBundleItem {

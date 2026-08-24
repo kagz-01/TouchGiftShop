@@ -65,8 +65,15 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             ))}
           </div>
 
+          {/* Coming soon */}
+          {product.is_coming_soon && (
+            <div className="absolute top-3 right-3 bg-brand-deep text-gold text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
+              Coming soon
+            </div>
+          )}
+
           {/* Out of stock */}
-          {!product.in_stock && (
+          {!product.in_stock && !product.is_coming_soon && (
             <div className="absolute top-3 right-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg font-medium">
               Sold out
             </div>

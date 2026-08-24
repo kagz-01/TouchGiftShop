@@ -33,6 +33,7 @@ interface Category {
 
 interface Bundle {
   id: string;
+is_coming_soon?: boolean;
   name: string;
   image_url: string | null;
   regular_price: number;
@@ -153,6 +154,7 @@ export default function CatalogPage() {
               const waText = encodeURIComponent(
                 `Hi TouchGift! I'd like to order the *${b.name}* (${formatKsh(b.bundle_price)}${pct > 0 ? `, saving ${pct}%` : ""}).`
               );
+              const notifyText = encodeURIComponent(`Hi TouchGift! Please notify me when the *${b.name}* hamper is available.`);
               return (
                 <div key={b.id} className="min-w-[260px] w-[260px] snap-start bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
                   <div className="aspect-video bg-gray-100 relative">
@@ -161,23 +163,32 @@ export default function CatalogPage() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center"><Gift className="w-8 h-8 text-gray-300" /></div>
                     )}
-                    {pct > 0 && (
+                    {b.is_coming_soon && (
+                      <span className="absolute inset-0 bg-brand-deep/40 backdrop-blur-[1px] flex items-center justify-center">
+                        <span className="bg-brand-deep text-gold text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest">Coming Soon</span>
+                      </span>
+                    )}
+                    {!b.is_coming_soon && pct > 0 && (
                       <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">SAVE {pct}%</span>
                     )}
                   </div>
                   <div className="p-3">
                     <h3 className="font-semibold text-sm truncate">{b.name}</h3>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-base font-bold text-red-500">{formatKsh(b.bundle_price)}</span>
-                      {pct > 0 && <span className="text-xs text-gray-400 line-through">{formatKsh(b.regular_price)}</span>}
+                      <span className={`text-base font-bold ${b.is_coming_soon ? "text-gray-500" : "text-red-500"}`}>{formatKsh(b.bundle_price)}</span>
+                      {!b.is_coming_soon && pct > 0 && <span className="text-xs text-gray-400 line-through">{formatKsh(b.regular_price)}</span>}
                     </div>
                     <a
-                      href={`https://wa.me/254142677898?text=${waText}`}
+                      href={`https://wa.me/254142677898?text=${b.is_coming_soon ? notifyText : waText}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block mt-2 py-2 bg-brand text-white rounded-xl text-xs font-semibold text-center hover:bg-brand-deep transition-colors"
+                      className={`block mt-2 py-2 rounded-xl text-xs font-semibold text-center transition-colors ${
+                        b.is_coming_soon
+                          ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          : "bg-brand text-white hover:bg-brand-deep"
+                      }`}
                     >
-                      Order This Hamper
+                      {b.is_coming_soon ? "Notify Me When Available" : "Order This Hamper"}
                     </a>
                   </div>
                 </div>

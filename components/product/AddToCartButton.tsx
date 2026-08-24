@@ -100,10 +100,12 @@ export default function AddToCartButton({ product }: { product: Product }) {
         <button
           id="add-to-cart-btn"
           onClick={() => setIsOpen(true)}
-          disabled={!product.in_stock}
+          disabled={!product.in_stock || !!product.is_coming_soon}
           className="flex-1 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
         >
-          Send this Gift &mdash; {formatKsh(effectivePrice)}
+          {product.is_coming_soon ? "Coming Soon — Not Yet Available" : (
+            <>Send this Gift &mdash; {formatKsh(effectivePrice)}</>
+          )}
         </button>
       </div>
       <p className="text-xs text-center text-brand-muted">

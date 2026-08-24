@@ -30,6 +30,7 @@ interface Product {
   seo_description: string | null;
   color_variants: ColorVariant[];
   size_variants: SizeVariant[];
+  is_coming_soon: boolean | null;
   is_personalizable: boolean;
   created_at: string;
   product_categories?: { category_id: string; categories: { name: string; slug: string } | null }[];
@@ -63,6 +64,7 @@ function getDefaultForm() {
     images: [] as string[],
     in_stock: true,
     is_personalizable: false,
+    is_coming_soon: false,
     stock_quantity: "" as string | number,
     sku: "",
     status: "published" as string,
@@ -146,6 +148,7 @@ export default function AdminProductsPage() {
       images: product.images || [],
       in_stock: product.in_stock,
       is_personalizable: product.is_personalizable,
+      is_coming_soon: !!product.is_coming_soon,
       stock_quantity: product.stock_quantity ?? "",
       sku: product.sku || "",
       status: product.status || "published",
@@ -561,10 +564,16 @@ export default function AdminProductsPage() {
                       ))}
                     </div>
                   </div>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.is_personalizable} onChange={(e) => setForm({ ...form, is_personalizable: e.target.checked })} className="rounded border-gray-300" />
-                    <span className="text-sm text-gray-700">Personalizable (custom text/image)</span>
-                  </label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={form.is_personalizable} onChange={(e) => setForm({ ...form, is_personalizable: e.target.checked })} className="rounded border-gray-300" />
+                      <span className="text-sm text-gray-700">Personalizable (custom text/image)</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={form.is_coming_soon} onChange={(e) => setForm({ ...form, is_coming_soon: e.target.checked })} className="rounded border-gray-300" />
+                      <span className="text-sm text-gray-700">Coming Soon (visible but not purchasable)</span>
+                    </label>
+                  </div>
                 </>
               )}
 

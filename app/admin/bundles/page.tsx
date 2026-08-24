@@ -27,6 +27,7 @@ function getDefaultForm() {
     occasions: "",
     is_active: true,
     is_featured: false,
+    is_coming_soon: false,
     items: [] as BundleItem[],
   };
 }
@@ -101,6 +102,7 @@ export default function AdminBundlesPage() {
       occasions: (b.occasions || []).join(", "),
       is_active: b.is_active,
       is_featured: b.is_featured,
+      is_coming_soon: !!b.is_coming_soon,
       items: (b.items ?? []).map((it) => ({
         product_id: it.product_id,
         product_name: it.product_name,
@@ -146,6 +148,7 @@ export default function AdminBundlesPage() {
         occasions: form.occasions.split(",").map((o) => o.trim()).filter(Boolean),
         is_active: form.is_active,
         is_featured: form.is_featured,
+        is_coming_soon: form.is_coming_soon,
         items: form.items,
       };
 
@@ -369,6 +372,10 @@ export default function AdminBundlesPage() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="rounded border-gray-300" />
                 <span className="text-sm text-gray-700">Featured</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={form.is_coming_soon} onChange={(e) => setForm({ ...form, is_coming_soon: e.target.checked })} className="rounded border-gray-300" />
+                <span className="text-sm text-gray-700">Coming Soon (notify instead of order)</span>
               </label>
             </div>
 

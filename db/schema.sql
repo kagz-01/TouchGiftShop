@@ -1331,6 +1331,7 @@ CREATE TABLE hamper_bundles (
     item_count INTEGER DEFAULT 0,
     is_active BOOLEAN DEFAULT TRUE,
     is_featured BOOLEAN DEFAULT FALSE,
+    is_coming_soon BOOLEAN DEFAULT FALSE,
     sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

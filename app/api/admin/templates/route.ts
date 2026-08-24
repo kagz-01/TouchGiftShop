@@ -16,46 +16,41 @@ function requireAdmin() {
   return true;
 }
 
-async function broadcast(event: string, payload: Record<string, unknown>) {
-  try {
-    const channel = supabase.channel("catalog-updates");
-    await channel.send({ type: "broadcast", event, payload });
-  } catch {}
-}
-
-interface BundleItemInput {
+interface TemplateItemInput {
   product_id?: string | null;
   product_name: string;
+  price: number;
   quantity?: number;
 }
 
-async function replaceItems(bundleId: string, items: BundleItemInput[]) {
-  await supabase.from("hamper_bundle_items").delete().eq("bundle_id", bundleId);
+async function replaceItems(templateId: string, items: TemplateItemInput[]) {
+  await supabase.from("hamper_template_items").delete().eq("template_id", templateId);
   if (items.length > 0) {
     const rows = items.map((it, i) => ({
-      bundle_id: bundleId,
+      template_id: templateId,
       product_id: it.product_id ?? null,
       product_name: it.product_name,
+      price: it.price ?? 0,
       quantity: it.quantity ?? 1,
       sort_order: i,
     }));
-    await supabase.from("hamper_bundle_items").insert(rows);
+    await supabase.from("hamper_template_items").insert(rows);
   }
   await supabase
-    .from("hamper_bundles")
+    .from("hamper_templates")
     .update({ item_count: items.reduce((s, it) => s + (it.quantity ?? 1), 0) })
-    .eq("id", bundleId);
+    .eq("id", templateId);
 }
 
-// GET /api/admin/bundles
+// GET /api/admin/templates
 export async function GET() {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { data, error } = await supabase
-    .from("hamper_bundles")
-    .select("*, hamper_bundle_items(id, product_id, product_name, quantity)")
+    .from("hamper_templates")
+    .select("*, hamper_template_items(id, product_id, product_name, price, quantity)")
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
@@ -63,36 +58,33 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ bundles: data ?? [] });
+  return NextResponse.json({ templates: data ?? [] });
 }
 
-// POST /api/admin/bundles — create bundle (optionally with items)
+// POST /api/admin/templates
 export async function POST(req: Request) {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const body = await req.json();
-  const { name, slug, description, image_url, regular_price, bundle_price, category, occasions, items, is_active, is_featured, sort_order } = body;
+  const { name, description, category, price_range_min, price_range_max, occasions, items, is_active, is_featured, sort_order } = body;
 
-  if (!name || !slug || regular_price == null || bundle_price == null) {
-    return NextResponse.json({ error: "name, slug, regular_price and bundle_price are required" }, { status: 400 });
+  if (!name || !category) {
+    return NextResponse.json({ error: "name and category are required" }, { status: 400 });
   }
 
-  const { data: bundle, error } = await supabase
-    .from("hamper_bundles")
+  const { data: template, error } = await supabase
+    .from("hamper_templates")
     .insert({
       name,
-      slug,
       description: description || null,
-      image_url: image_url || null,
-      regular_price,
-      bundle_price,
-      category: category || "general",
+      category,
+      price_range_min: price_range_min ?? null,
+      price_range_max: price_range_max ?? null,
       occasions: occasions || [],
       is_active: is_active ?? true,
       is_featured: is_featured ?? false,
-      is_coming_soon: body.is_coming_soon ?? false,
       sort_order: sort_order ?? 0,
     })
     .select()
@@ -103,15 +95,13 @@ export async function POST(req: Request) {
   }
 
   if (Array.isArray(items)) {
-    await replaceItems(bundle.id, items);
+    await replaceItems(template.id, items);
   }
 
-  await broadcast("bundles-changed", { action: "created", id: bundle.id });
-
-  return NextResponse.json({ bundle }, { status: 201 });
+  return NextResponse.json({ template }, { status: 201 });
 }
 
-// PATCH /api/admin/bundles — update bundle (pass id in body; pass items to replace)
+// PATCH /api/admin/templates — update (pass id; pass items to replace)
 export async function PATCH(req: Request) {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -121,16 +111,16 @@ export async function PATCH(req: Request) {
   const { id, items, ...updates } = body;
 
   if (!id) {
-    return NextResponse.json({ error: "Bundle ID required" }, { status: 400 });
+    return NextResponse.json({ error: "Template ID required" }, { status: 400 });
   }
 
   const clean: Record<string, unknown> = {};
-  for (const field of ["name", "slug", "description", "image_url", "regular_price", "bundle_price", "category", "occasions", "is_active", "is_featured", "is_coming_soon", "sort_order"]) {
+  for (const field of ["name", "description", "category", "price_range_min", "price_range_max", "occasions", "is_active", "is_featured", "sort_order"]) {
     if (updates[field] !== undefined) clean[field] = updates[field];
   }
 
   if (Object.keys(clean).length > 0) {
-    const { error } = await supabase.from("hamper_bundles").update(clean).eq("id", id);
+    const { error } = await supabase.from("hamper_templates").update(clean).eq("id", id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -140,12 +130,10 @@ export async function PATCH(req: Request) {
     await replaceItems(id, items);
   }
 
-  await broadcast("bundles-changed", { action: "updated", id });
-
   return NextResponse.json({ success: true });
 }
 
-// DELETE /api/admin/bundles?id=...
+// DELETE /api/admin/templates?id=...
 export async function DELETE(req: Request) {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -155,16 +143,14 @@ export async function DELETE(req: Request) {
   const id = searchParams.get("id");
 
   if (!id) {
-    return NextResponse.json({ error: "Bundle ID required" }, { status: 400 });
+    return NextResponse.json({ error: "Template ID required" }, { status: 400 });
   }
 
-  const { error } = await supabase.from("hamper_bundles").delete().eq("id", id);
+  const { error } = await supabase.from("hamper_templates").delete().eq("id", id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-
-  await broadcast("bundles-changed", { action: "deleted", id });
 
   return NextResponse.json({ success: true });
 }

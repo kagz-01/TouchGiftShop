@@ -55,7 +55,7 @@ const ALLOWED_FIELDS = [
   "image_url", "images", "is_personalizable", "in_stock",
   "stock_quantity", "sku", "status", "weight_kg",
   "tags", "seo_title", "seo_description",
-  "color_variants", "size_variants",
+  "color_variants", "size_variants", "is_coming_soon",
 ];
 
 // GET /api/admin/products?search=...&category=...&in_stock=true&status=published&limit=50&offset=0
