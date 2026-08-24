@@ -118,13 +118,13 @@ export interface Product {
   in_stock: boolean;
   stock_quantity: number | null;
   sku: string | null;
-  status: string;
+  status: string | null;
   weight_kg: number | null;
-  tags: string[];
+  tags: string[] | null;
   seo_title: string | null;
   seo_description: string | null;
-  color_variants: ColorVariant[];
-  size_variants: SizeVariant[];
+  color_variants: ColorVariant[] | null;
+  size_variants: SizeVariant[] | null;
 }
 
 export interface WishlistItem {

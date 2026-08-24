@@ -34,6 +34,7 @@ async function getProducts(category?: string, budget?: string): Promise<{ produc
   }
 
   query = query.eq("in_stock", true);
+  query = query.eq("status", "published");
 
   const limit = 24;
   const { data, count, error } = await query.range(0, limit);
