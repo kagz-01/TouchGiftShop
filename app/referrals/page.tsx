@@ -22,6 +22,7 @@ interface ReferralData {
 
 export default function ReferralsPage() {
   const [data, setData] = useState<ReferralData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [shareText, setShareText] = useState("");
@@ -30,6 +31,12 @@ export default function ReferralsPage() {
     fetch("/api/referrals")
       .then((r) => r.json())
       .then((d) => {
+        if (d.error) {
+          // 401 etc — leave data null, show sign-in prompt
+          setError(d.error);
+          setLoading(false);
+          return;
+        }
         setData(d);
         setShareText(
           `Join TouchGift using my referral code ${d.referralCode} and we both get KSh 500 off our next gift! 🎁 https://touchgiftshop.ac.ke/ref/${d.referralCode}`
@@ -65,6 +72,34 @@ export default function ReferralsPage() {
     return (
       <div className="min-h-screen section-theme-e flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen section-theme-e flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <span className="text-4xl block mb-4">🎁</span>
+          <p className="font-display text-lg font-bold text-brand-deep mb-2">Sign in to Refer &amp; Earn</p>
+          <p className="text-sm text-brand-muted mb-6">
+            Create an account or sign in to get your referral code and start earning.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Link
+              href="/login?next=/referrals"
+              className="px-6 py-3 bg-brand text-white rounded-2xl font-semibold text-sm hover:bg-brand-deep transition-colors"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/login?mode=signup&next=/referrals"
+              className="px-6 py-3 border-2 border-brand text-brand rounded-2xl font-semibold text-sm hover:bg-brand/5 transition-colors"
+            >
+              Create account
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
