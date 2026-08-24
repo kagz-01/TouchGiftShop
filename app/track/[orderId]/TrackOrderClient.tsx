@@ -211,6 +211,17 @@ export default function TrackOrderClient({
             </div>
           )}
 
+          {/* Live tracking button */}
+          {order.status === "dispatched" && (
+            <Link
+              href={`/track/${orderId}/live?token=${token}`}
+              className="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 text-white rounded-2xl font-semibold text-sm hover:bg-blue-700 transition-colors"
+            >
+              <span className="text-lg">🛵</span>
+              View Live Rider Tracking
+            </Link>
+          )}
+
           {/* No price shown for anonymous */}
           {isAnonymous && (
             <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4 text-center">
