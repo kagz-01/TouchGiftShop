@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
-export default function AdminLoginPage() {
-  const router = useRouter();
+export default function AdminAccessPage() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/admin";
   const [password, setPassword] = useState("");
@@ -31,7 +30,6 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Cookie is set by the API route — redirect
       window.location.href = from;
     } catch {
       setError("Something went wrong");
@@ -44,8 +42,8 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <span className="text-4xl block mb-3">🔐</span>
-          <h1 className="font-display text-2xl font-bold text-gray-900">Admin Access</h1>
-          <p className="text-sm text-gray-500 mt-1">Enter your admin password to continue</p>
+          <h1 className="font-display text-2xl font-bold text-gray-900">Access</h1>
+          <p className="text-sm text-gray-500 mt-1">Enter your password to continue</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -59,7 +57,7 @@ export default function AdminLoginPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Admin password"
+                placeholder="Password"
                 autoFocus
                 className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand"
               />
@@ -82,7 +80,7 @@ export default function AdminLoginPage() {
             disabled={loading || !password}
             className="w-full py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-deep transition-colors disabled:opacity-50"
           >
-            {loading ? "Verifying..." : "Login"}
+            {loading ? "Verifying..." : "Continue"}
           </button>
         </form>
       </div>

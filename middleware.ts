@@ -28,12 +28,14 @@ export async function middleware(request: NextRequest) {
 
   await supabase.auth.getSession();
 
-  // Admin route protection: check for tg_admin session cookie
+  // Admin route protection: redirect to secret login if no session
   const pathname = request.nextUrl.pathname;
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+  const ADMIN_LOGIN = "/admin-access-2026";
+
+  if (pathname.startsWith("/admin") && pathname !== ADMIN_LOGIN) {
     const adminSession = request.cookies.get("tg_admin_session")?.value;
     if (!adminSession || adminSession !== process.env.ADMIN_API_KEY) {
-      const loginUrl = new URL("/admin/login", request.url);
+      const loginUrl = new URL(ADMIN_LOGIN, request.url);
       loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
