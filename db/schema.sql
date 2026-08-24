@@ -1029,3 +1029,101 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trigger_check_corporate_pool_completion
   AFTER UPDATE ON corporate_pool_contributions
   FOR EACH ROW EXECUTE FUNCTION check_corporate_pool_completion();
+
+-- ---------------------------------------------------------------------
+-- Consumer Platform Phase B: Referrals, Addresses, Delivery Slots
+-- ---------------------------------------------------------------------
+
+-- Referral program
+CREATE TABLE referrals (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    referrer_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    referred_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    referral_code VARCHAR(20) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    referrer_bonus DECIMAL(10,2) DEFAULT 500.00,
+    referred_bonus DECIMAL(10,2) DEFAULT 500.00,
+    referrer_bonus_credited BOOLEAN DEFAULT FALSE,
+    referred_bonus_credited BOOLEAN DEFAULT FALSE,
+    first_order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    converted_at TIMESTAMPTZ
+);
+
+CREATE INDEX idx_referrals_referrer ON referrals(referrer_id);
+CREATE INDEX idx_referrals_code ON referrals(referral_code);
+CREATE INDEX idx_referrals_referred ON referrals(referred_user_id);
+
+-- Saved addresses / address book
+CREATE TABLE saved_addresses (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    label VARCHAR(50) NOT NULL DEFAULT 'Home',
+    full_name VARCHAR(100),
+    phone VARCHAR(20),
+    address_line1 TEXT NOT NULL,
+    address_line2 TEXT,
+    city VARCHAR(100) NOT NULL DEFAULT 'Nairobi',
+    county VARCHAR(100),
+    postal_code VARCHAR(10),
+    landmark TEXT,
+    latitude DECIMAL(10,8),
+    longitude DECIMAL(11,8),
+    is_default BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_saved_addresses_user ON saved_addresses(user_id);
+
+-- Delivery time slots
+CREATE TABLE delivery_slots (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    slot_name VARCHAR(100) NOT NULL,
+    slot_key VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    start_hour INTEGER NOT NULL,
+    end_hour INTEGER NOT NULL,
+    extra_fee DECIMAL(10,2) DEFAULT 0.00,
+    is_active BOOLEAN DEFAULT TRUE,
+    max_orders_per_day INTEGER DEFAULT 20,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Delivery slot orders (tracking which slots are booked)
+CREATE TABLE delivery_slot_bookings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    slot_id UUID REFERENCES delivery_slots(id) ON DELETE CASCADE,
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+    delivery_date DATE NOT NULL,
+    booked_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(slot_id, order_id)
+);
+
+CREATE INDEX idx_slot_bookings_date ON delivery_slot_bookings(delivery_date);
+CREATE INDEX idx_slot_bookings_slot ON delivery_slot_bookings(slot_id);
+
+-- Referral credits wallet
+CREATE TABLE referral_credits (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    amount DECIMAL(10,2) NOT NULL,
+    source VARCHAR(50) NOT NULL DEFAULT 'referral',
+    referral_id UUID REFERENCES referrals(id) ON DELETE SET NULL,
+    is_used BOOLEAN DEFAULT FALSE,
+    used_in_order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    expires_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_referral_credits_user ON referral_credits(user_id);
+CREATE INDEX idx_referral_credits_unused ON referral_credits(user_id) WHERE is_used = FALSE;
+
+-- Seed default delivery slots
+INSERT INTO delivery_slots (slot_name, slot_key, description, start_hour, end_hour, extra_fee) VALUES
+    ('Same-Day Express', 'same_day_express', 'Order before 2 PM for delivery today (2-6 PM)', 14, 18, 0.00),
+    ('Morning Delivery', 'morning', 'Next-day morning delivery (8 AM - 12 PM)', 8, 12, 0.00),
+    ('Afternoon Delivery', 'afternoon', 'Next-day afternoon delivery (12 PM - 5 PM)', 12, 17, 0.00),
+    ('Evening Delivery', 'evening', 'Next-day evening delivery (5 PM - 9 PM)', 17, 21, 100.00),
+    ('Weekend Delivery', 'weekend', 'Saturday/Sunday delivery (10 AM - 4 PM)', 10, 16, 200.00)
+ON CONFLICT (slot_key) DO NOTHING;
