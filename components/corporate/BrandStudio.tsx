@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Upload, Image as ImageIcon, X, Eye } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Upload, Image as ImageIcon, X, Eye, Check, Loader2 } from "lucide-react";
 
 interface BrandStudioProps {
   companyName: string;
@@ -21,12 +21,70 @@ export default function BrandStudio({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [previewMode, setPreviewMode] = useState<"card" | "packaging" | "sticker">("card");
+  const [uploading, setUploading] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [loadingConfig, setLoadingConfig] = useState(true);
 
-  const handleFile = (file: File) => {
-    if (!file.type.startsWith("image/")) return;
+  // Load saved brand config on mount
+  useEffect(() => {
+    fetch("/api/corporate/brand-config")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.config) {
+          if (data.config.logo_url && !logo) onLogoChange(data.config.logo_url);
+          if (data.config.brand_color) onBrandColorChange(data.config.brand_color);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingConfig(false));
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const uploadLogo = async (file: File): Promise<string | null> => {
     const reader = new FileReader();
-    reader.onload = (e) => onLogoChange(e.target?.result as string);
-    reader.readAsDataURL(file);
+    const dataUrl = await new Promise<string>((resolve) => {
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.readAsDataURL(file);
+    });
+
+    const res = await fetch("/api/customizations/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: dataUrl }),
+    });
+
+    const { url, error } = await res.json();
+    if (!res.ok) {
+      console.error("Logo upload failed:", error);
+      return null;
+    }
+    return url;
+  };
+
+  const handleFile = async (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Logo must be under 2MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      // Show local preview immediately
+      const reader = new FileReader();
+      reader.onload = (e) => onLogoChange(e.target?.result as string);
+      reader.readAsDataURL(file);
+
+      // Upload to storage
+      const url = await uploadLogo(file);
+      if (url) {
+        // Update with the persistent URL
+        onLogoChange(url);
+        // Auto-save
+        saveConfig(url, brandColor);
+      }
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -34,6 +92,34 @@ export default function BrandStudio({
     setDragOver(false);
     const file = e.dataTransfer.files[0];
     if (file) handleFile(file);
+  };
+
+  const saveConfig = async (logoUrl: string | null, color: string) => {
+    try {
+      await fetch("/api/corporate/brand-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          logoUrl,
+          brandColor: color,
+          companyName,
+        }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (err) {
+      console.error("Failed to save brand config:", err);
+    }
+  };
+
+  const handleColorChange = (color: string) => {
+    onBrandColorChange(color);
+    saveConfig(logo, color);
+  };
+
+  const handleRemoveLogo = () => {
+    onLogoChange(null);
+    saveConfig(null, brandColor);
   };
 
   const brandColors = [
@@ -47,9 +133,17 @@ export default function BrandStudio({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="font-display italic text-xl font-bold mb-2 text-theme-heading">Brand Studio</h3>
-        <p className="text-theme-muted text-sm">Upload your logo and choose brand colors. Preview how they look on gifts.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-display italic text-xl font-bold mb-2 text-theme-heading">Brand Studio</h3>
+          <p className="text-theme-muted text-sm">Upload your logo and choose brand colors. Preview how they look on gifts.</p>
+        </div>
+        {saved && (
+          <div className="flex items-center gap-1.5 text-success text-sm font-medium animate-fade-in">
+            <Check className="w-4 h-4" />
+            Saved
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -67,7 +161,7 @@ export default function BrandStudio({
             onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => !uploading && fileInputRef.current?.click()}
           >
             <input
               ref={fileInputRef}
@@ -79,7 +173,12 @@ export default function BrandStudio({
                 if (file) handleFile(file);
               }}
             />
-            {logo ? (
+            {uploading ? (
+              <div className="space-y-3">
+                <Loader2 className="w-10 h-10 mx-auto text-brand animate-spin" />
+                <p className="text-sm font-semibold text-brand">Uploading logo...</p>
+              </div>
+            ) : logo ? (
               <div className="space-y-3">
                 <div className="w-20 h-20 mx-auto bg-white rounded-xl shadow-sm border border-surface-border flex items-center justify-center overflow-hidden">
                   <img src={logo} alt="Company logo" className="max-w-full max-h-full object-contain p-2" />
@@ -89,7 +188,7 @@ export default function BrandStudio({
                   <p className="text-xs text-theme-muted">Click to replace</p>
                 </div>
                 <button
-                  onClick={(e) => { e.stopPropagation(); onLogoChange(null); }}
+                  onClick={(e) => { e.stopPropagation(); handleRemoveLogo(); }}
                   className="text-red-400 hover:text-red-600 text-xs flex items-center gap-1 mx-auto"
                 >
                   <X className="w-3 h-3" /> Remove logo
@@ -108,7 +207,7 @@ export default function BrandStudio({
                   {dragOver ? "Drop your logo here" : "Upload company logo"}
                 </p>
                 <p className="text-xs text-theme-muted">
-                  PNG, JPG, or SVG. Max 2MB. Recommended: 400×400px
+                  PNG, JPG, or SVG. Max 2MB. Recommended: 400x400px
                 </p>
               </div>
             )}
@@ -121,7 +220,7 @@ export default function BrandStudio({
               {brandColors.map((c) => (
                 <button
                   key={c.value}
-                  onClick={() => onBrandColorChange(c.value)}
+                  onClick={() => handleColorChange(c.value)}
                   className={`w-10 h-10 rounded-full border-2 transition-all ${
                     brandColor === c.value
                       ? "border-theme-heading scale-110 shadow-lg"
@@ -135,7 +234,7 @@ export default function BrandStudio({
                 <input
                   type="color"
                   value={brandColor}
-                  onChange={(e) => onBrandColorChange(e.target.value)}
+                  onChange={(e) => handleColorChange(e.target.value)}
                   className="sr-only"
                 />
                 <span className="text-xs text-theme-muted">+</span>

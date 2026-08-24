@@ -53,6 +53,7 @@ const OrderInput = z.object({
   recipientPinRequested: z.boolean().default(false),
   giftNote: z.string().optional(),
   engraving: z.string().optional(),
+  customizationImageUrl: z.string().url().optional(),
   quantity: z.number().int().positive().default(1),
   shippingFee: z.number().default(0),
   senderCountry: z.string().optional(),
@@ -131,6 +132,7 @@ export async function POST(req: Request) {
       recipient_pin_requested: input.recipientPinRequested,
       gift_note: input.giftNote ?? null,
       engraving: input.engraving ?? null,
+      customization_image_url: input.customizationImageUrl ?? null,
       quantity: input.quantity,
       shipping_fee: input.shippingFee,
     })
@@ -162,6 +164,7 @@ export async function POST(req: Request) {
             recipient_pin_requested: input.recipientPinRequested,
             gift_note: input.giftNote ?? null,
             engraving: input.engraving ?? null,
+            customization_image_url: input.customizationImageUrl ?? null,
             quantity: input.quantity,
             shipping_fee: input.shippingFee,
           })

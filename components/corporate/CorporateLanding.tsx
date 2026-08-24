@@ -213,13 +213,21 @@ function CorporateHero() {
                 <PartyPopper className="w-3.5 h-3.5 text-coral" />
                 Event Gifts
               </Link>
-              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Upload className="w-3.5 h-3.5 text-success" />
-                CSV Upload
-              </Link>
-              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+              <Link href="/corporate/templates" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
                 <Palette className="w-3.5 h-3.5 text-brand-light" />
-                Custom Branding
+                Template Library
+              </Link>
+              <Link href="/corporate/whatsapp" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <MessageSquare className="w-3.5 h-3.5 text-success" />
+                WhatsApp Bot
+              </Link>
+              <Link href="/corporate/white-label" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <Briefcase className="w-3.5 h-3.5 text-cyan-400" />
+                White-Label Portal
+              </Link>
+              <Link href="/corporate/showroom" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <Tent className="w-3.5 h-3.5 text-orange-400" />
+                Virtual Showroom
               </Link>
             </div>
           </div>
@@ -348,8 +356,38 @@ function CorporateSolution() {
     },
     {
       icon: <Palette className="w-6 h-6 text-success" />,
-      title: "Custom Branding",
-      desc: "Your logo on cards, branded packaging, personalized messages. Every detail reflects you.",
+      title: "Template Library",
+      desc: "20+ pre-built templates for onboarding, holidays, milestones. Customize in 2 minutes.",
+      span: "md:col-span-1",
+    },
+    {
+      icon: <MessageSquare className="w-6 h-6 text-emerald-400" />,
+      title: "WhatsApp Bot",
+      desc: "Recipients reply with delivery instructions via WhatsApp. No app install required.",
+      span: "md:col-span-1",
+    },
+    {
+      icon: <Briefcase className="w-6 h-6 text-cyan-400" />,
+      title: "White-Label Portal",
+      desc: "Your team sends gifts from your branded portal. Fully customizable with your logo.",
+      span: "md:col-span-1",
+    },
+    {
+      icon: <Tent className="w-6 h-6 text-orange-400" />,
+      title: "Virtual Showroom",
+      desc: "Browse hampers in 3D. Recipients choose their own gift. Zero returns.",
+      span: "md:col-span-1",
+    },
+    {
+      icon: <Trophy className="w-6 h-6 text-gold" />,
+      title: "Automated Milestones",
+      desc: "Set it and forget it. Auto-send gifts on work anniversaries, birthdays, and promotions.",
+      span: "md:col-span-2",
+    },
+    {
+      icon: <HeartHandshake className="w-6 h-6 text-brand-light" />,
+      title: "Client Appreciation",
+      desc: "VIP client tracking, CRM integration, and personalized follow-ups. Strengthen relationships.",
       span: "md:col-span-1",
     },
     {
@@ -789,6 +827,28 @@ function CorporateCTA() {
                 <Sparkles className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
               </span>
             </a>
+          </div>
+        </Reveal>
+
+        {/* Secondary feature links */}
+        <Reveal delay={400}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10 max-w-3xl mx-auto">
+            <Link href="/corporate/templates" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <Palette className="w-4 h-4 text-gold" />
+              <span className="text-xs font-semibold text-theme-heading">Template Library</span>
+            </Link>
+            <Link href="/corporate/whatsapp" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <MessageSquare className="w-4 h-4 text-success" />
+              <span className="text-xs font-semibold text-theme-heading">WhatsApp Bot</span>
+            </Link>
+            <Link href="/corporate/white-label" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <Briefcase className="w-4 h-4 text-cyan-400" />
+              <span className="text-xs font-semibold text-theme-heading">White-Label Portal</span>
+            </Link>
+            <Link href="/corporate/showroom" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+              <Tent className="w-4 h-4 text-orange-400" />
+              <span className="text-xs font-semibold text-theme-heading">Virtual Showroom</span>
+            </Link>
           </div>
         </Reveal>
       </div>

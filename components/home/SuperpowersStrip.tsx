@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Users, ShoppingBag, Sparkles, ArrowRight } from "lucide-react";
+import { Users, ShoppingBag, Sparkles, ArrowRight, Gift, Heart, CreditCard, Rocket } from "lucide-react";
 
 export default function SuperpowersStrip() {
   return (
@@ -80,6 +80,46 @@ export default function SuperpowersStrip() {
                 Start Building
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
+            </div>
+          </Link>
+        </div>
+
+        {/* New features row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+          <Link href="/gift-cards" className="group flex items-center gap-3 card-theme rounded-2xl p-4 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+            <div className="w-10 h-10 bg-gold/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Gift className="w-5 h-5 text-gold" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-theme-heading">Gift Cards</p>
+              <p className="text-[11px] text-theme-body">Digital, instant delivery</p>
+            </div>
+          </Link>
+          <Link href="/referrals" className="group flex items-center gap-3 card-theme rounded-2xl p-4 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+            <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Heart className="w-5 h-5 text-emerald-500" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-theme-heading">Refer & Earn</p>
+              <p className="text-[11px] text-theme-body">Give KSh 500, get KSh 500</p>
+            </div>
+          </Link>
+          <Link href="/subscriptions" className="group flex items-center gap-3 card-theme rounded-2xl p-4 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+            <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Rocket className="w-5 h-5 text-brand" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-theme-heading">Gift Subscriptions</p>
+              <p className="text-[11px] text-theme-body">Never forget a birthday</p>
+            </div>
+          </Link>
+          <Link href="/account" className="group flex items-center gap-3 card-theme rounded-2xl p-4 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+            <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <CreditCard className="w-5 h-5 text-brand" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-theme-heading">Loyalty Points</p>
+              <p className="text-[11px] text-theme-body">Earn & redeem on every order</p>
             </div>
           </Link>
         </div>

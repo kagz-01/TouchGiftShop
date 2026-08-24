@@ -32,6 +32,7 @@ CREATE TABLE orders (
     pre_dispatch_photo_url TEXT,
     gift_note TEXT,
     engraving TEXT,
+    customization_image_url TEXT,
     quantity INTEGER DEFAULT 1,
     mpesa_checkout_request_id VARCHAR(50) UNIQUE,
     mpesa_receipt_number VARCHAR(50),
@@ -1249,3 +1250,32 @@ CREATE TABLE referral_codes (
 );
 
 CREATE INDEX idx_referral_codes_code ON referral_codes(code);
+
+-- Corporate brand configs (logo + color per user)
+CREATE TABLE corporate_brand_configs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    logo_url TEXT,
+    brand_color VARCHAR(7) DEFAULT '#9B1B5A',
+    company_name VARCHAR(255),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_corporate_brand_configs_user ON corporate_brand_configs(user_id);
+
+-- Hamper builds (server-side hamper records)
+CREATE TABLE hamper_builds (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    ref_code VARCHAR(30) UNIQUE NOT NULL,
+    items JSONB NOT NULL DEFAULT '[]',
+    box_size VARCHAR(10) NOT NULL,
+    box_price DECIMAL(10,2) NOT NULL,
+    items_total DECIMAL(10,2) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+    status VARCHAR(30) DEFAULT 'pending_payment',
+    order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_hamper_builds_ref ON hamper_builds(ref_code);

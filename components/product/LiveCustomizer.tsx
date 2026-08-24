@@ -3,7 +3,9 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { Rnd } from "react-rnd";
+import { toPng } from "html-to-image";
 import { cn } from "@/lib/utils";
+
 interface CustomLayer {
   id: string;
   type: "text" | "image" | "shape";
@@ -28,6 +30,7 @@ interface LiveCustomizerProps {
 export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerProps) {
   const [layers, setLayers] = useState<CustomLayer[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const addTextLayer = () => {
@@ -92,18 +95,64 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
     if (selectedId === id) setSelectedId(null);
   };
 
-  const handleSave = () => {
-    const texts = layers.filter(l => l.type === "text").map(l => l.content).filter(Boolean);
-    const hasLogo = layers.some(l => l.type === "image");
-    const summaryParts = [];
-    if (texts.length > 0) summaryParts.push(texts.join(" | "));
-    if (hasLogo) summaryParts.push("(Includes Custom Logo)");
-    
-    const summary = summaryParts.join(" ");
-    if (summary) {
-      window.dispatchEvent(new CustomEvent("customizationSaved", { detail: summary }));
+  const handleSave = async () => {
+    if (!containerRef.current || layers.length === 0) return;
+
+    setSaving(true);
+    try {
+      // Export canvas as PNG
+      const dataUrl = await toPng(containerRef.current, {
+        quality: 0.95,
+        pixelRatio: 2,
+        cacheBust: true,
+      });
+
+      // Upload to server
+      const res = await fetch("/api/customizations/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl }),
+      });
+
+      const { url, error } = await res.json();
+      if (!res.ok) throw new Error(error ?? "Upload failed");
+
+      // Build text summary for engraving field
+      const texts = layers.filter(l => l.type === "text").map(l => l.content).filter(Boolean);
+      const hasLogo = layers.some(l => l.type === "image");
+      const summaryParts: string[] = [];
+      if (texts.length > 0) summaryParts.push(texts.join(" | "));
+      if (hasLogo) summaryParts.push("(Includes Custom Logo)");
+      const textSummary = summaryParts.join(" ");
+
+      // Dispatch both the image URL and text summary
+      window.dispatchEvent(
+        new CustomEvent("customizationSaved", {
+          detail: { imageUrl: url, text: textSummary },
+        })
+      );
+      onClose();
+    } catch (err) {
+      console.error("Customization save failed:", err);
+      // Fallback: dispatch text only if upload fails
+      const texts = layers.filter(l => l.type === "text").map(l => l.content).filter(Boolean);
+      const hasLogo = layers.some(l => l.type === "image");
+      const summaryParts: string[] = [];
+      if (texts.length > 0) summaryParts.push(texts.join(" | "));
+      if (hasLogo) summaryParts.push("(Includes Custom Logo)");
+      const textSummary = summaryParts.join(" ");
+
+      if (textSummary) {
+        window.dispatchEvent(
+          new CustomEvent("customizationSaved", {
+            detail: { imageUrl: null, text: textSummary },
+          })
+        );
+      }
+      onClose();
+    } finally {
+      setSaving(false);
     }
-    onClose();
   };
 
   return (
@@ -231,18 +280,32 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
         </div>
 
         <div className="p-6 border-t border-surface-border bg-white mt-auto">
-          <button onClick={handleSave} className="w-full btn-brand py-3 rounded-xl shadow-button">
-            Looks Good
+          <button
+            onClick={handleSave}
+            disabled={saving || layers.length === 0}
+            className="w-full btn-brand py-3 rounded-xl shadow-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {saving ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Saving design...
+              </>
+            ) : (
+              "Looks Good"
+            )}
           </button>
           <p className="text-xs text-brand-muted mt-3 text-center">
-            * This is a visual preview. Final placement will be optimized by our experts.
+            * Your design is saved as a high-res image for our fulfillment team.
           </p>
         </div>
       </div>
 
       {/* Canvas Area */}
       <div className="flex-1 bg-surface-secondary flex items-center justify-center p-4 md:p-12 overflow-hidden relative" onClick={() => setSelectedId(null)}>
-        <div 
+        <div
           ref={containerRef}
           className="relative w-full max-w-2xl aspect-square md:aspect-[4/3] bg-white rounded-3xl shadow-card overflow-hidden"
           style={{ backgroundImage: `url(${baseImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
@@ -272,7 +335,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
                   style={{
                     color: layer.color,
                     fontFamily: layer.fontFamily,
-                    fontSize: `${layer.height * 0.8}px`, // approximate scaling
+                    fontSize: `${layer.height * 0.8}px`,
                     lineHeight: 1,
                     whiteSpace: "nowrap",
                   }}

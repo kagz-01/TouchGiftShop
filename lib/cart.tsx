@@ -11,13 +11,14 @@ export interface CartItem {
   quantity: number;
   giftNote?: string;
   personalization?: string;
+  customizationImageUrl?: string;
   giftWrapping?: boolean;
   giftWrappingStyle?: "classic" | "premium" | "luxury";
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "giftWrapping" | "giftWrappingStyle">>) => void;
+  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle">>) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -58,7 +59,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, mounted]);
 
   const addItem = useCallback(
-    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "giftWrapping" | "giftWrappingStyle">>) => {
+    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle">>) => {
       setItems((prev) => {
         const existing = prev.find((i) => i.productId === product.id);
         if (existing) {
@@ -76,6 +77,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             quantity,
             giftNote: options?.giftNote,
             personalization: options?.personalization,
+            customizationImageUrl: options?.customizationImageUrl,
             giftWrapping: options?.giftWrapping,
             giftWrappingStyle: options?.giftWrappingStyle,
           },

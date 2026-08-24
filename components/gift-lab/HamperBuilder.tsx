@@ -215,17 +215,42 @@ export default function HamperBuilder() {
     }, 350);
   }
 
-  function goToCheckout() {
-    const itemIds = items.map((i) => i.product.id).join(",");
-    const params = new URLSearchParams({
-      productId: items[0]?.product.id ?? "",
-      amount: total.toString(),
-      qty: itemCount.toString(),
-      hamper: "true",
-      hamperBox: box.name,
-      hamperItems: itemIds,
-    });
-    window.location.href = `/checkout?${params.toString()}`;
+  async function goToCheckout() {
+    if (items.length === 0) return;
+
+    try {
+      // Save hamper build server-side
+      const res = await fetch("/api/hamper-builds", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
+          boxSize: box.name,
+          boxPrice: box.price,
+          itemsTotal,
+          total,
+        }),
+      });
+
+      const { hamper, error } = await res.json();
+      if (!res.ok) throw new Error(error ?? "Failed to save hamper");
+
+      // Redirect to checkout with hamper ref
+      window.location.href = `/checkout?hamperRef=${hamper.ref_code}&amount=${total}&qty=${itemCount}`;
+    } catch (err) {
+      console.error("Failed to save hamper:", err);
+      // Fallback: redirect with URL params (legacy mode)
+      const itemIds = items.map((i) => i.product.id).join(",");
+      const params = new URLSearchParams({
+        productId: items[0]?.product.id ?? "",
+        amount: total.toString(),
+        qty: itemCount.toString(),
+        hamper: "true",
+        hamperBox: box.name,
+        hamperItems: itemIds,
+      });
+      window.location.href = `/checkout?${params.toString()}`;
+    }
   }
 
   // Hamper border/fill color based on progress

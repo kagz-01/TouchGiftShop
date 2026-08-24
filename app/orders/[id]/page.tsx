@@ -272,7 +272,7 @@ export default async function OrderDetailPage({
           </div>
 
           {/* Notes */}
-          {(order.gift_note || order.engraving) && (
+          {(order.gift_note || order.engraving || order.customization_image_url) && (
             <div className="mt-5 pt-5 border-t border-black/5 space-y-4">
               {order.gift_note && (
                 <div className="bg-brand/5 p-4 rounded-2xl">
@@ -284,6 +284,16 @@ export default async function OrderDetailPage({
                 <div className="bg-gray-50 p-4 rounded-2xl border border-black/5">
                   <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">Custom Engraving</p>
                   <p className="text-sm font-medium text-brand-deep">"{order.engraving}"</p>
+                </div>
+              )}
+              {order.customization_image_url && (
+                <div className="bg-gray-50 p-4 rounded-2xl border border-black/5">
+                  <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-2">Custom Design</p>
+                  <img
+                    src={order.customization_image_url}
+                    alt="Custom design"
+                    className="w-32 h-32 object-cover rounded-xl border border-black/10"
+                  />
                 </div>
               )}
             </div>

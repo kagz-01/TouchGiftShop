@@ -15,6 +15,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [personalization, setPersonalization] = useState("");
+  const [customizationImageUrl, setCustomizationImageUrl] = useState<string | null>(null);
   const [giftNote, setGiftNote] = useState("");
   const [addedToCart, setAddedToCart] = useState(false);
 
@@ -25,7 +26,9 @@ export default function AddToCartButton({ product }: { product: Product }) {
     const handleCustomization = (e: Event) => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail) {
-        setPersonalization(customEvent.detail);
+        const { imageUrl, text } = customEvent.detail;
+        if (imageUrl) setCustomizationImageUrl(imageUrl);
+        if (text) setPersonalization(text);
         setIsOpen(true);
       }
     };
@@ -42,7 +45,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const total = product.price * quantity;
 
   function handleAddToCart() {
-    addItem(product, quantity, { giftNote, personalization });
+    addItem(product, quantity, { giftNote, personalization, customizationImageUrl: customizationImageUrl ?? undefined });
     setAddedToCart(true);
     setTimeout(() => {
       setAddedToCart(false);
@@ -50,6 +53,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
       setQuantity(1);
       setGiftNote("");
       setPersonalization("");
+      setCustomizationImageUrl(null);
     }, 1200);
   }
 
@@ -60,6 +64,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
       qty: quantity.toString(),
     });
     if (product.is_personalizable && personalization) params.set("engraving", personalization);
+    if (customizationImageUrl) params.set("customizationImage", customizationImageUrl);
     if (giftNote) params.set("note", giftNote);
     router.push(`/checkout?${params.toString()}`);
   }

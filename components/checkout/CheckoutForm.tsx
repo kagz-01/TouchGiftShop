@@ -38,12 +38,16 @@ export default function CheckoutForm({
   quantity = 1,
   engraving = "",
   giftNote = "",
+  customizationImageUrl = "",
+  hamperRef = "",
 }: {
   productId: string;
   amount: number;
   quantity?: number;
   engraving?: string;
   giftNote?: string;
+  customizationImageUrl?: string;
+  hamperRef?: string;
 }) {
   const [step, setStep] = useState<Step>("form");
   const [errorMessage, setErrorMessage] = useState("");
@@ -113,6 +117,29 @@ export default function CheckoutForm({
       setGiftWrappingStyle(wrappingParam as "classic" | "premium" | "luxury");
     }
   }, []);
+
+  // Load hamper build from server
+  useEffect(() => {
+    if (!hamperRef) return;
+    setIsCartCheckout(true);
+    fetch(`/api/hamper-builds?ref=${encodeURIComponent(hamperRef)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.hamper?.resolvedItems) {
+          const items = data.hamper.resolvedItems
+            .filter((i: any) => i.product)
+            .map((i: any) => ({
+              productId: i.productId,
+              name: i.product.name,
+              price: i.product.price,
+              image_url: i.product.image_url,
+              quantity: i.quantity,
+            }));
+          setCartItems(items);
+        }
+      })
+      .catch(() => {});
+  }, [hamperRef]);
 
   // Load loyalty info
   useEffect(() => {
@@ -256,6 +283,7 @@ export default function CheckoutForm({
             deliveryLandmark: usePinDrop ? "" : landmark,
             giftNote: (item as CartItem).giftNote || form.get("giftNote") || giftNote,
             engraving: (item as CartItem).personalization || engraving || undefined,
+            customizationImageUrl: (item as CartItem).customizationImageUrl || customizationImageUrl || undefined,
             quantity: item.quantity,
             shippingFee: deliveryFee,
             recipientPinRequested: usePinDrop,
@@ -692,6 +720,17 @@ export default function CheckoutForm({
               {engraving && (
                 <div className="border-t border-black/5 pt-3">
                   <p className="text-brand-muted text-xs">Engraving: &ldquo;{engraving}&rdquo;</p>
+                </div>
+              )}
+
+              {customizationImageUrl && (
+                <div className="border-t border-black/5 pt-3">
+                  <p className="text-brand-muted text-xs mb-2">Custom Design:</p>
+                  <img
+                    src={customizationImageUrl}
+                    alt="Custom design preview"
+                    className="w-20 h-20 object-cover rounded-lg border border-black/10"
+                  />
                 </div>
               )}
 

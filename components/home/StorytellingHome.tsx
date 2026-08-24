@@ -892,19 +892,67 @@ export function FinalCTA() {
           </p>
         </Reveal>
 
+        {/* Primary CTAs */}
         <Reveal delay={300}>
-          <Link
-            href="/shop"
-            className="group relative inline-flex px-10 py-5 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-xl overflow-hidden transition-all duration-300 hover:shadow-[0_8px_40px_rgba(212,168,83,0.5)] hover:-translate-y-1 items-center justify-center"
-          >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              Send a Gift Now
-              <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+            <Link
+              href="/shop"
+              className="group relative inline-flex px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-[0_8px_40px_rgba(212,168,83,0.5)] hover:-translate-y-1 items-center justify-center"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Send a Gift Now
+                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            </Link>
+            <Link
+              href="/gift-finder"
+              className="group px-8 py-4 bg-brand-deep/5 dark:bg-white/10 backdrop-blur-sm text-theme-heading font-semibold rounded-2xl text-lg border border-surface-border hover:bg-brand/10 dark:hover:bg-white/20 transition-all duration-300 hover:-translate-y-1"
+            >
+              <span className="flex items-center justify-center gap-2">
+                AI Gift Finder
+                <Target className="w-5 h-5 text-coral group-hover:scale-110 transition-transform" />
+              </span>
+            </Link>
+          </div>
+        </Reveal>
+
+        {/* Secondary CTAs — new features */}
+        <Reveal delay={400}>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+            <Link
+              href="/gift-cards"
+              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
+            >
+              <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <Gift className="w-6 h-6 text-gold" />
+              </div>
+              <p className="font-display font-bold text-theme-heading text-sm mb-1">Gift Cards</p>
+              <p className="text-theme-body text-xs">Let them choose. Digital codes sent instantly.</p>
+            </Link>
+            <Link
+              href="/referrals"
+              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
+            >
+              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <Heart className="w-6 h-6 text-emerald-500" />
+              </div>
+              <p className="font-display font-bold text-theme-heading text-sm mb-1">Refer & Earn</p>
+              <p className="text-theme-body text-xs">Give KSh 500, get KSh 500. Share with friends.</p>
+            </Link>
+            <Link
+              href="/subscriptions"
+              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
+            >
+              <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+                <Rocket className="w-6 h-6 text-brand" />
+              </div>
+              <p className="font-display font-bold text-theme-heading text-sm mb-1">Gift Subscriptions</p>
+              <p className="text-theme-body text-xs">Never forget a birthday. AI auto-sends gifts.</p>
+            </Link>
+          </div>
         </Reveal>
       </div>
     </section>
