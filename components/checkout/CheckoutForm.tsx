@@ -72,6 +72,28 @@ export default function CheckoutForm({
   // Loyalty
   const [loyaltyInfo, setLoyaltyInfo] = useState<LoyaltyInfo | null>(null);
 
+  // Gift card redemption
+  const [giftCardCode, setGiftCardCode] = useState("");
+  const [giftCardDiscount, setGiftCardDiscount] = useState(0);
+  const [giftCardError, setGiftCardError] = useState<string | null>(null);
+  const [giftCardChecking, setGiftCardChecking] = useState(false);
+
+  // Delivery slots
+  const [deliverySlots, setDeliverySlots] = useState<Array<{
+    id: string; name: string; key: string; description: string;
+    extraFee: number; isAvailable: boolean; remainingSlots: number;
+  }>>([]);
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [slotExtraFee, setSlotExtraFee] = useState(0);
+
+  // Saved addresses
+  const [savedAddresses, setSavedAddresses] = useState<Array<{
+    id: string; label: string; address_line1: string; city: string;
+    landmark: string | null;
+  }>>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
   // Load cart items from localStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -99,6 +121,53 @@ export default function CheckoutForm({
       .then((data) => { if (data.tier) setLoyaltyInfo(data); })
       .catch(() => {});
   }, []);
+
+  // Load delivery slots
+  useEffect(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateStr = tomorrow.toISOString().split("T")[0];
+    setDeliveryDate(dateStr);
+
+    fetch(`/api/delivery-slots?date=${dateStr}`)
+      .then((r) => r.json())
+      .then((data) => setDeliverySlots(data.slots ?? []))
+      .catch(() => {});
+  }, []);
+
+  // Load saved addresses
+  useEffect(() => {
+    fetch("/api/addresses")
+      .then((r) => r.json())
+      .then((data) => setSavedAddresses(data.addresses ?? []))
+      .catch(() => {});
+  }, []);
+
+  // Gift card lookup
+  async function lookupGiftCard(code: string) {
+    if (!code || code.length < 5) {
+      setGiftCardDiscount(0);
+      setGiftCardError(null);
+      return;
+    }
+    setGiftCardChecking(true);
+    try {
+      const res = await fetch(`/api/gift-cards?code=${encodeURIComponent(code)}`);
+      const data = await res.json();
+      if (data.card?.is_usable) {
+        const applicable = Math.min(Number(data.card.balance), total);
+        setGiftCardDiscount(applicable);
+        setGiftCardError(null);
+      } else {
+        setGiftCardDiscount(0);
+        setGiftCardError(data.card?.is_expired ? "Gift card expired" : "Gift card invalid or empty");
+      }
+    } catch {
+      setGiftCardDiscount(0);
+      setGiftCardError("Failed to check gift card");
+    }
+    setGiftCardChecking(false);
+  }
 
   const lookupDelivery = useCallback(async (value: string) => {
     setLandmark(value);
@@ -150,7 +219,8 @@ export default function CheckoutForm({
   const loyaltyDiscount = loyaltyInfo && loyaltyInfo.discountPercent > 0
     ? Math.round(itemsTotal * (loyaltyInfo.discountPercent / 100))
     : 0;
-  const total = itemsTotal + deliveryFee + wrappingCost - loyaltyDiscount;
+  const subtotal = itemsTotal + deliveryFee + wrappingCost - loyaltyDiscount + slotExtraFee;
+  const total = Math.max(0, subtotal - giftCardDiscount);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -213,6 +283,28 @@ export default function CheckoutForm({
 
       const paymentData = await paymentRes.json();
       if (!paymentRes.ok) throw new Error(paymentData.error ?? "Failed to start payment.");
+
+      // Book delivery slot if selected
+      if (selectedSlotId && deliveryDate) {
+        for (const oid of orderIds) {
+          await fetch("/api/delivery-slots/book", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slotId: selectedSlotId, deliveryDate, orderId: oid }),
+          }).catch(() => {});
+        }
+      }
+
+      // Redeem gift card if applied
+      if (giftCardCode && giftCardDiscount > 0) {
+        for (const oid of orderIds) {
+          await fetch("/api/gift-cards/redeem", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code: giftCardCode, orderId: oid, amount: giftCardDiscount / orderIds.length }),
+          }).catch(() => {});
+        }
+      }
 
       // Clear cart if cart checkout
       if (isCartCheckout) {
@@ -367,6 +459,37 @@ export default function CheckoutForm({
               recipientPhone={recipientPhone}
               recipientName={recipientName || undefined}
             />
+
+            {/* Saved addresses */}
+            {!usePinDrop && savedAddresses.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider">
+                  Saved Addresses
+                </label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {savedAddresses.map((addr) => (
+                    <button
+                      key={addr.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedAddressId(addr.id);
+                        setLandmark(addr.landmark || addr.address_line1);
+                        lookupDelivery(addr.landmark || addr.address_line1);
+                      }}
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${
+                        selectedAddressId === addr.id
+                          ? "border-brand bg-brand/5"
+                          : "border-black/8 hover:border-brand/20"
+                      }`}
+                    >
+                      <p className="text-xs font-bold text-brand-deep">{addr.label}</p>
+                      <p className="text-[11px] text-brand-muted truncate">{addr.address_line1}, {addr.city}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {!usePinDrop && (
               <div>
                 <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">
@@ -376,7 +499,7 @@ export default function CheckoutForm({
                   name="deliveryLandmark"
                   placeholder="e.g. Karen, near Shell station"
                   value={landmark}
-                  onChange={(e) => lookupDelivery(e.target.value)}
+                  onChange={(e) => { lookupDelivery(e.target.value); setSelectedAddressId(null); }}
                   className={INPUT}
                 />
                 {deliveryZone && (
@@ -385,6 +508,52 @@ export default function CheckoutForm({
                     {deliveryZone.name} — {formatKsh(deliveryZone.fee)} · {deliveryZone.timeframe}
                   </p>
                 )}
+              </div>
+            )}
+
+            {/* Delivery time slots */}
+            {!usePinDrop && deliverySlots.length > 0 && (
+              <div className="space-y-2">
+                <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider">
+                  Delivery Time Slot
+                </label>
+                <div className="space-y-2">
+                  {deliverySlots.filter((s) => s.isAvailable).map((slot) => (
+                    <label
+                      key={slot.id}
+                      className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
+                        selectedSlotId === slot.id
+                          ? "border-brand bg-brand/5"
+                          : "border-black/8 hover:border-brand/30"
+                      }`}
+                      onClick={() => {
+                        setSelectedSlotId(slot.id);
+                        setSlotExtraFee(slot.extraFee);
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="deliverySlot"
+                        checked={selectedSlotId === slot.id}
+                        onChange={() => {
+                          setSelectedSlotId(slot.id);
+                          setSlotExtraFee(slot.extraFee);
+                        }}
+                        className="w-4 h-4 text-brand focus:ring-brand"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-brand-deep">{slot.name}</p>
+                        <p className="text-[11px] text-brand-muted">{slot.description}</p>
+                      </div>
+                      {slot.extraFee > 0 && (
+                        <span className="text-xs font-bold text-brand-deep">+{formatKsh(slot.extraFee)}</span>
+                      )}
+                      {slot.remainingSlots <= 5 && (
+                        <span className="text-[10px] font-bold text-orange-500">{slot.remainingSlots} left</span>
+                      )}
+                    </label>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -552,6 +721,40 @@ export default function CheckoutForm({
               </div>
             </div>
           )}
+
+          {/* Gift Card Redemption */}
+          <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <Gift className="w-4 h-4 text-brand" />
+              <p className="text-sm font-semibold text-brand-deep">Have a gift card?</p>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="TG-XXXXXXXX"
+                value={giftCardCode}
+                onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())}
+                onBlur={() => lookupGiftCard(giftCardCode)}
+                className={`${INPUT} flex-1 font-mono text-xs`}
+              />
+              <button
+                type="button"
+                onClick={() => lookupGiftCard(giftCardCode)}
+                disabled={giftCardChecking || !giftCardCode}
+                className="px-4 py-2 bg-brand/10 text-brand rounded-xl text-xs font-semibold hover:bg-brand/20 transition-colors disabled:opacity-50"
+              >
+                {giftCardChecking ? "Checking..." : "Apply"}
+              </button>
+            </div>
+            {giftCardDiscount > 0 && (
+              <p className="text-xs text-emerald-600 font-medium">
+                Gift card applied: -{formatKsh(giftCardDiscount)}
+              </p>
+            )}
+            {giftCardError && (
+              <p className="text-xs text-red-500">{giftCardError}</p>
+            )}
+          </div>
 
           {/* Trust badges */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">

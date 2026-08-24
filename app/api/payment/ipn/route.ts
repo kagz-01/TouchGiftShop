@@ -4,11 +4,6 @@ import { getTransactionStatus } from "@/lib/payment";
 
 // POST /api/payment/ipn — PesaPal sends IPN (Instant Payment Notification)
 // when a transaction status changes.
-//
-// PesaPal IPN payload:
-// { order_tracking_id, order_merchant_reference, status }
-//
-// We query PesaPal for full details, then update our order or pool contribution.
 
 export async function POST(req: Request) {
   const payload = await req.json();
@@ -19,24 +14,27 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   }
 
-  // Query PesaPal for full transaction details
   let status;
   try {
     status = await getTransactionStatus(orderTrackingId);
   } catch (err) {
     console.error("Failed to query PesaPal status:", err);
-    // Still return 200 so PesaPal doesn't retry aggressively
     return NextResponse.json({ success: true });
   }
 
   const merchantReference = payload.order_merchant_reference || "";
 
   if (status.status === "completed") {
-    // Check if this is a gift card purchase
     if (merchantReference.startsWith("giftcard-")) {
       await handleGiftCardPayment(merchantReference, status.receiptNumber);
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolPayment(merchantReference, status.receiptNumber);
+    } else if (merchantReference.startsWith("multi-")) {
+      // Multi-item cart order
+      const orderIds = merchantReference.replace("multi-", "").split(",");
+      for (const oid of orderIds) {
+        await handleOrderPayment(oid.trim(), status.receiptNumber);
+      }
     } else {
       await handleOrderPayment(merchantReference, status.receiptNumber);
     }
@@ -45,6 +43,11 @@ export async function POST(req: Request) {
       await handleGiftCardFailure(merchantReference);
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolFailure(merchantReference);
+    } else if (merchantReference.startsWith("multi-")) {
+      const orderIds = merchantReference.replace("multi-", "").split(",");
+      for (const oid of orderIds) {
+        await handleOrderFailure(oid.trim());
+      }
     } else {
       await handleOrderFailure(merchantReference);
     }
@@ -59,7 +62,6 @@ async function handleGiftCardPayment(
 ) {
   const cardId = reference.replace("giftcard-", "");
 
-  // Get the card to find the initial_amount
   const { data: card } = await supabaseAdmin
     .from("gift_cards")
     .select("initial_amount")
@@ -71,13 +73,9 @@ async function handleGiftCardPayment(
     return;
   }
 
-  // Activate the card — set balance to initial_amount and status to active
   const { error } = await supabaseAdmin
     .from("gift_cards")
-    .update({
-      status: "active",
-      balance: card.initial_amount,
-    })
+    .update({ status: "active", balance: card.initial_amount })
     .eq("id", cardId)
     .eq("status", "pending_payment");
 
@@ -110,6 +108,66 @@ async function handleOrderPayment(
 
   if (error) {
     console.error("Failed to update order from IPN:", error);
+    return;
+  }
+
+  // Fetch order details for loyalty + referral processing
+  const { data: order } = await supabaseAdmin
+    .from("orders")
+    .select("user_id, total_amount")
+    .eq("id", orderId)
+    .single();
+
+  if (!order?.user_id) return;
+
+  // ── Loyalty points: earn 1 point per KSh 10 spent ──
+  const points = Math.floor(Number(order.total_amount) / 10);
+  if (points > 0) {
+    await supabaseAdmin.from("loyalty_points").insert({
+      user_id: order.user_id,
+      points,
+      source: "order_earned",
+      order_id: orderId,
+    });
+  }
+
+  // ── Referral conversion: credit referrer on referred user's first order ──
+  const { data: referral } = await supabaseAdmin
+    .from("referrals")
+    .select("id, referrer_id")
+    .eq("referred_user_id", order.user_id)
+    .eq("status", "pending")
+    .maybeSingle();
+
+  if (referral) {
+    // Mark referral as converted
+    await supabaseAdmin
+      .from("referrals")
+      .update({
+        status: "converted",
+        converted_at: new Date().toISOString(),
+        first_order_id: orderId,
+        referrer_bonus_credited: true,
+      })
+      .eq("id", referral.id);
+
+    // Credit referrer with KSh 500
+    await supabaseAdmin.from("referral_credits").insert({
+      user_id: referral.referrer_id,
+      amount: 500.00,
+      source: "referral_conversion",
+      referral_id: referral.id,
+      expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    });
+
+    // Also credit the referred user with KSh 500 (their signup bonus was already given, this is their first-order bonus)
+    await supabaseAdmin.from("referral_credits").insert({
+      user_id: order.user_id,
+      amount: 500.00,
+      source: "referral_first_order",
+      referral_id: referral.id,
+      expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+    });
   }
 }
 
@@ -125,7 +183,6 @@ async function handlePoolPayment(
   reference: string,
   receiptNumber: string | undefined
 ) {
-  // reference format: "pool-{contributionId}"
   const contributionId = reference.replace("pool-", "");
 
   const { data: contribution } = await supabaseAdmin
@@ -139,9 +196,6 @@ async function handlePoolPayment(
     .single();
 
   if (contribution) {
-    // Re-compute the pool balance from ALL verified contributions rather than
-    // incrementing by contribution.amount. This makes IPN handling idempotent:
-    // if PesaPal fires the same event twice, the balance is the same both times.
     const { data: verifiedContribs } = await supabaseAdmin
       .from("pool_contributions")
       .select("amount")

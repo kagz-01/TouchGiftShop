@@ -11,9 +11,10 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ tier: LOYALTY_TIERS.bronze, discountPercent: 0 });
+    return NextResponse.json({ tier: LOYALTY_TIERS.bronze, discountPercent: 0, totalPoints: 0 });
   }
 
+  // Count completed orders for tier calculation
   const { data: orders } = await supabaseAdmin
     .from("orders")
     .select("id, total_amount")
@@ -24,13 +25,32 @@ export async function GET() {
   const totalSpend = orders?.reduce((sum, o) => sum + Number(o.total_amount), 0) ?? 0;
   const tier = getLoyaltyTier(totalOrders, totalSpend);
 
-  const multipliers: Record<LoyaltyTierName, number> = {
-    bronze: 1, silver: 1.5, gold: 2, platinum: 3,
-  };
-  const tierName = (Object.keys(LOYALTY_TIERS) as LoyaltyTierName[]).find(
-    (t) => LOYALTY_TIERS[t].name === tier.name
-  ) ?? "bronze";
-  const totalPoints = Math.floor(totalSpend / 10) * multipliers[tierName];
+  // Get actual points from ledger
+  const { data: pointsRows } = await supabaseAdmin
+    .from("loyalty_points")
+    .select("points, source")
+    .eq("user_id", user.id);
+
+  let totalPointsEarned = 0;
+  let totalPointsRedeemed = 0;
+  pointsRows?.forEach((row) => {
+    if (row.source === "redeemed") {
+      totalPointsRedeemed += row.points;
+    } else {
+      totalPointsEarned += row.points;
+    }
+  });
+  const totalPoints = totalPointsEarned - totalPointsRedeemed;
+
+  // Get available referral credits
+  const { data: credits } = await supabaseAdmin
+    .from("referral_credits")
+    .select("amount, is_used")
+    .eq("user_id", user.id);
+
+  const availableCredits = credits
+    ?.filter((c) => !c.is_used)
+    .reduce((sum, c) => sum + Number(c.amount), 0) ?? 0;
 
   const nextTier = getNextTier(totalOrders, totalSpend);
 
@@ -40,6 +60,8 @@ export async function GET() {
     totalOrders,
     totalSpend,
     totalPoints,
+    totalPointsEarned,
+    availableCredits,
     discountPercent: tier.discount,
     nextTier: nextTier ? nextTier.name.toLowerCase() : null,
     ordersToNext: nextTier ? Math.max(0, nextTier.minOrders - totalOrders) : 0,

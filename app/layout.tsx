@@ -9,6 +9,9 @@ import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
 import { CartProvider } from "@/lib/cart";
+import dynamic from "next/dynamic";
+
+const ReferralCapture = dynamic(() => import("@/components/referrals/ReferralCapture"), { ssr: false });
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -66,6 +69,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col font-sans overflow-x-hidden">
         <ThemeProvider>
           <CartProvider>
+            <ReferralCapture />
             <AmbientBackground />
             <Analytics />
             <SpeedInsights />

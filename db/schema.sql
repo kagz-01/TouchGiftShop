@@ -1220,3 +1220,16 @@ CREATE TABLE vendor_reviews (
 );
 
 CREATE INDEX idx_vendor_reviews_vendor ON vendor_reviews(vendor_id);
+
+-- Loyalty points ledger
+CREATE TABLE loyalty_points (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    points INTEGER NOT NULL,
+    source VARCHAR(50) NOT NULL,
+    order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    referral_id UUID REFERENCES referrals(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_loyalty_points_user ON loyalty_points(user_id);
