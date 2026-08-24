@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
@@ -8,6 +8,12 @@ import { getProductBadges } from "@/lib/product-badges";
 import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
 import { Loader2 } from "lucide-react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
   const badges = getProductBadges(product, index, categorySlug);
@@ -104,6 +110,32 @@ export default function ProductGridClient({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Real-time: listen for product changes from admin
+  useEffect(() => {
+    const channel = supabase
+      .channel("shop-products")
+      .on(
+        "broadcast",
+        { event: "product-created" },
+        () => { window.location.reload(); }
+      )
+      .on(
+        "broadcast",
+        { event: "product-updated" },
+        () => { window.location.reload(); }
+      )
+      .on(
+        "broadcast",
+        { event: "product-deleted" },
+        () => { window.location.reload(); }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const loadMore = async () => {
     if (isLoading || !hasMore) return;

@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const STATUS_STEPS = [
   { key: "pending_payment", label: "Order placed", icon: "📋" },
@@ -58,6 +64,27 @@ export default function TrackOrderClient({
         setError("Something went wrong. Please try the link again.");
         setLoading(false);
       });
+
+    // Real-time: listen for order status changes from admin
+    const channel = supabase
+      .channel(`track-order-${orderId}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
+        (payload) => {
+          const updated = payload.new as Record<string, unknown>;
+          setOrder((prev) => prev ? {
+            ...prev,
+            status: updated.status as string,
+            preDispatchPhotoUrl: (updated.pre_dispatch_photo_url as string) || prev.preDispatchPhotoUrl,
+          } : prev);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [orderId, token]);
 
   if (loading) {

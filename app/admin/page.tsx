@@ -2,10 +2,16 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import {
   Package, ShoppingCart, Truck, CheckCircle, Clock,
   AlertCircle, MapPin, TrendingUp, Users, ArrowRight,
 } from "lucide-react";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface Stats {
   totalOrders: number;
@@ -38,6 +44,26 @@ export default function AdminDashboardPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    // Real-time: listen for order changes and refresh stats
+    const channel = supabase
+      .channel("admin-dashboard")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "orders" },
+        () => {
+          // Re-fetch stats when any order changes
+          fetch("/api/admin/stats")
+            .then((r) => r.json())
+            .then((data) => setStats(data))
+            .catch(() => {});
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return (
@@ -56,11 +82,23 @@ export default function AdminDashboardPage() {
               <Link href="/admin/orders" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Orders
               </Link>
+              <Link href="/admin/products" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                Products
+              </Link>
               <Link href="/admin/reviews" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Reviews
               </Link>
             </nav>
           </div>
+          <button
+            onClick={async () => {
+              await fetch("/api/admin/auth", { method: "DELETE" });
+              window.location.href = "/admin/login";
+            }}
+            className="text-sm text-gray-500 hover:text-gray-700"
+          >
+            Logout
+          </button>
         </div>
       </div>
 
