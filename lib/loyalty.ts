@@ -1,5 +1,3 @@
-import { supabaseAdmin } from "@/lib/supabase";
-
 export type LoyaltyTierName = "bronze" | "silver" | "gold" | "platinum";
 
 export interface LoyaltyTierInfo {
@@ -74,37 +72,4 @@ export function getNextTier(totalOrders: number, totalSpend: number): LoyaltyTie
 
 export function calculateLoyaltyDiscount(subtotal: number, tier: LoyaltyTierInfo): number {
   return Math.round(subtotal * (tier.discount / 100));
-}
-
-export async function getUserLoyaltyInfo(userId: string) {
-  const { data: orders } = await supabaseAdmin
-    .from("orders")
-    .select("id, total_amount")
-    .eq("user_id", userId)
-    .in("status", ["processing", "wrapped", "dispatched", "delivered"]);
-
-  const totalOrders = orders?.length ?? 0;
-  const totalSpend = orders?.reduce((sum, o) => sum + Number(o.total_amount), 0) ?? 0;
-  const tier = getLoyaltyTier(totalOrders, totalSpend);
-
-  const multipliers: Record<LoyaltyTierName, number> = {
-    bronze: 1, silver: 1.5, gold: 2, platinum: 3,
-  };
-  const tierName = TIER_ORDER.find((t) => LOYALTY_TIERS[t].name === tier.name) ?? "bronze";
-  const totalPoints = Math.floor(totalSpend / 10) * multipliers[tierName];
-
-  const nextTier = getNextTier(totalOrders, totalSpend);
-
-  return {
-    tier: tier.name.toLowerCase() as LoyaltyTierName,
-    tierConfig: tier,
-    totalOrders,
-    totalSpend,
-    totalPoints,
-    discountPercent: tier.discount,
-    nextTier: nextTier ? nextTier.name.toLowerCase() as LoyaltyTierName : null,
-    nextTierConfig: nextTier,
-    ordersToNext: nextTier ? Math.max(0, nextTier.minOrders - totalOrders) : 0,
-    spendToNext: nextTier ? Math.max(0, nextTier.minSpend - totalSpend) : 0,
-  };
 }
