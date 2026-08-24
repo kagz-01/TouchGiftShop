@@ -2,64 +2,71 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 import { SHOP_LOCATION } from "@/lib/delivery";
 
 export default function VisitUs() {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
+  const mapInstanceRef = useRef<import("leaflet").Map | null>(null);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    const map = L.map(mapRef.current, {
-      center: [SHOP_LOCATION.lat, SHOP_LOCATION.lng],
-      zoom: 16,
-      zoomControl: false,
-      attributionControl: true,
-      scrollWheelZoom: false,
-    });
+    let cancelled = false;
 
-    L.control.zoom({ position: "topright" }).addTo(map);
+    (async () => {
+      const L = (await import("leaflet")).default;
+      if (cancelled || !mapRef.current || mapInstanceRef.current) return;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
+      const map = L.map(mapRef.current, {
+        center: [SHOP_LOCATION.lat, SHOP_LOCATION.lng],
+        zoom: 16,
+        zoomControl: false,
+        attributionControl: true,
+        scrollWheelZoom: false,
+      });
 
-    // Custom pin icon
-    const pinIcon = L.divIcon({
-      className: "shop-pin",
-      html: `<div style="
-        width: 40px; height: 40px;
-        background: #9B1B5A;
-        border-radius: 50% 50% 50% 0;
-        transform: rotate(-45deg);
-        border: 3px solid white;
-        box-shadow: 0 4px 16px rgba(155,27,90,0.4);
-        display: flex; align-items: center; justify-content: center;
-      "><span style="transform: rotate(45deg); color: white; font-size: 16px; font-weight: bold;">🎁</span></div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+      L.control.zoom({ position: "topright" }).addTo(map);
 
-    L.marker([SHOP_LOCATION.lat, SHOP_LOCATION.lng], { icon: pinIcon })
-      .addTo(map)
-      .bindPopup(
-        `<div style="text-align:center; padding:4px;">
-          <strong style="font-size:14px;">TouchGift</strong><br/>
-          <span style="font-size:12px; color:#666;">${SHOP_LOCATION.name}</span>
-        </div>`
-      )
-      .openPopup();
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-    mapInstanceRef.current = map;
+      // Custom pin icon
+      const pinIcon = L.divIcon({
+        className: "shop-pin",
+        html: `<div style="
+          width: 40px; height: 40px;
+          background: #9B1B5A;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 3px solid white;
+          box-shadow: 0 4px 16px rgba(155,27,90,0.4);
+          display: flex; align-items: center; justify-content: center;
+        "><span style="transform: rotate(45deg); color: white; font-size: 16px; font-weight: bold;">🎁</span></div>`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+
+      L.marker([SHOP_LOCATION.lat, SHOP_LOCATION.lng], { icon: pinIcon })
+        .addTo(map)
+        .bindPopup(
+          `<div style="text-align:center; padding:4px;">
+            <strong style="font-size:14px;">TouchGift</strong><br/>
+            <span style="font-size:12px; color:#666;">${SHOP_LOCATION.name}</span>
+          </div>`
+        )
+        .openPopup();
+
+      mapInstanceRef.current = map;
+    })();
 
     return () => {
-      map.remove();
+      cancelled = true;
+      mapInstanceRef.current?.remove();
       mapInstanceRef.current = null;
     };
   }, []);

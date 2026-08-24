@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { MapPin, Navigation, Clock, RefreshCw } from "lucide-react";
 import { SHOP_LOCATION } from "@/lib/delivery";
+
+type Leaflet = typeof import("leaflet");
+type LMap = import("leaflet").Map;
+type LMarker = import("leaflet").Marker;
+type LPolyline = import("leaflet").Polyline;
+type LDivIcon = import("leaflet").DivIcon;
 
 interface RiderLocation {
   lat: number;
@@ -35,9 +40,14 @@ export default function LiveTrackingClient({
   token: string;
 }) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
-  const riderMarkerRef = useRef<L.Marker | null>(null);
-  const riderTrailRef = useRef<L.Polyline | null>(null);
+  const mapInstanceRef = useRef<LMap | null>(null);
+  const riderMarkerRef = useRef<LMarker | null>(null);
+  const riderTrailRef = useRef<LPolyline | null>(null);
+  const leafletRef = useRef<Leaflet | null>(null);
+  const iconsRef = useRef<{
+    rider: LDivIcon;
+    delivery: LDivIcon;
+  } | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -45,87 +55,97 @@ export default function LiveTrackingClient({
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [riderStale, setRiderStale] = useState(false);
 
-  // Custom icons
-  const riderIcon = L.divIcon({
-    className: "rider-pin",
-    html: `<div style="
-      width: 36px; height: 36px;
-      background: #2563eb;
-      border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 2px 12px rgba(37,99,235,0.5);
-      display: flex; align-items: center; justify-content: center;
-      animation: pulse 2s infinite;
-    "><span style="color: white; font-size: 16px;">🛵</span></div>
-    <style>@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }</style>`,
-    iconSize: [36, 36],
-    iconAnchor: [18, 18],
-  });
-
-  const deliveryIcon = L.divIcon({
-    className: "delivery-pin",
-    html: `<div style="
-      width: 32px; height: 32px;
-      background: #e11d48;
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      border: 3px solid white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      display: flex; align-items: center; justify-content: center;
-    "><span style="transform: rotate(45deg); color: white; font-size: 14px;">📍</span></div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-  });
-
-  const shopIcon = L.divIcon({
-    className: "shop-pin",
-    html: `<div style="
-      width: 30px; height: 30px;
-      background: #9B1B5A;
-      border-radius: 50% 50% 50% 0;
-      transform: rotate(-45deg);
-      border: 2px solid white;
-      box-shadow: 0 2px 8px rgba(155,27,90,0.4);
-      display: flex; align-items: center; justify-content: center;
-    "><span style="transform: rotate(45deg); color: white; font-size: 12px;">🎁</span></div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 30],
-  });
-
-  // Initialize map
+  // Initialize map (client-only — Leaflet touches window at import)
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    const map = L.map(mapRef.current, {
-      center: [SHOP_LOCATION.lat, SHOP_LOCATION.lng],
-      zoom: 13,
-      zoomControl: false,
-      attributionControl: false,
-    });
+    let cancelled = false;
 
-    L.control.zoom({ position: "topright" }).addTo(map);
+    (async () => {
+      const L = (await import("leaflet")).default;
+      if (cancelled || !mapRef.current || mapInstanceRef.current) return;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-    }).addTo(map);
+      const riderIcon = L.divIcon({
+        className: "rider-pin",
+        html: `<div style="
+          width: 36px; height: 36px;
+          background: #2563eb;
+          border-radius: 50%;
+          border: 3px solid white;
+          box-shadow: 0 2px 12px rgba(37,99,235,0.5);
+          display: flex; align-items: center; justify-content: center;
+          animation: pulse 2s infinite;
+        "><span style="color: white; font-size: 16px;">🛵</span></div>
+        <style>@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }</style>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
 
-    // Add shop marker
-    L.marker([SHOP_LOCATION.lat, SHOP_LOCATION.lng], { icon: shopIcon })
-      .addTo(map)
-      .bindPopup("TouchGift HQ");
+      const deliveryIcon = L.divIcon({
+        className: "delivery-pin",
+        html: `<div style="
+          width: 32px; height: 32px;
+          background: #e11d48;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 3px solid white;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          display: flex; align-items: center; justify-content: center;
+        "><span style="transform: rotate(45deg); color: white; font-size: 14px;">📍</span></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+      });
 
-    // Add rider trail line
-    riderTrailRef.current = L.polyline([], {
-      color: "#2563eb",
-      weight: 3,
-      opacity: 0.6,
-      dashArray: "8,8",
-    }).addTo(map);
+      const shopIcon = L.divIcon({
+        className: "shop-pin",
+        html: `<div style="
+          width: 30px; height: 30px;
+          background: #9B1B5A;
+          border-radius: 50% 50% 50% 0;
+          transform: rotate(-45deg);
+          border: 2px solid white;
+          box-shadow: 0 2px 8px rgba(155,27,90,0.4);
+          display: flex; align-items: center; justify-content: center;
+        "><span style="transform: rotate(45deg); color: white; font-size: 12px;">🎁</span></div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+      });
 
-    mapInstanceRef.current = map;
+      leafletRef.current = L;
+      iconsRef.current = { rider: riderIcon, delivery: deliveryIcon };
+
+      const map = L.map(mapRef.current, {
+        center: [SHOP_LOCATION.lat, SHOP_LOCATION.lng],
+        zoom: 13,
+        zoomControl: false,
+        attributionControl: false,
+      });
+
+      L.control.zoom({ position: "topright" }).addTo(map);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+      }).addTo(map);
+
+      // Add shop marker
+      L.marker([SHOP_LOCATION.lat, SHOP_LOCATION.lng], { icon: shopIcon })
+        .addTo(map)
+        .bindPopup("TouchGift HQ");
+
+      // Add rider trail line
+      riderTrailRef.current = L.polyline([], {
+        color: "#2563eb",
+        weight: 3,
+        opacity: 0.6,
+        dashArray: "8,8",
+      }).addTo(map);
+
+      mapInstanceRef.current = map;
+    })();
 
     return () => {
-      map.remove();
+      cancelled = true;
+      mapInstanceRef.current?.remove();
       mapInstanceRef.current = null;
     };
   }, []);
@@ -154,12 +174,14 @@ export default function LiveTrackingClient({
 
       // Update map markers
       const map = mapInstanceRef.current;
-      if (!map) return;
+      const L = leafletRef.current;
+      const icons = iconsRef.current;
+      if (!map || !L || !icons) return;
 
       // Delivery pin
       if (json.deliveryPin) {
         const { lat, lng, landmark } = json.deliveryPin;
-        L.marker([lat, lng], { icon: deliveryIcon })
+        L.marker([lat, lng], { icon: icons.delivery })
           .addTo(map)
           .bindPopup(landmark || "Delivery location");
       }
@@ -172,7 +194,7 @@ export default function LiveTrackingClient({
           riderMarkerRef.current.setLatLng([lat, lng]);
         } else {
           riderMarkerRef.current = L.marker([lat, lng], {
-            icon: riderIcon,
+            icon: icons.rider,
           })
             .addTo(map)
             .bindPopup("Rider location");
