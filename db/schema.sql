@@ -1127,3 +1127,96 @@ INSERT INTO delivery_slots (slot_name, slot_key, description, start_hour, end_ho
     ('Evening Delivery', 'evening', 'Next-day evening delivery (5 PM - 9 PM)', 17, 21, 100.00),
     ('Weekend Delivery', 'weekend', 'Saturday/Sunday delivery (10 AM - 4 PM)', 10, 16, 200.00)
 ON CONFLICT (slot_key) DO NOTHING;
+
+-- ---------------------------------------------------------------------
+-- Consumer Platform Phase C: Subscriptions, Social Moments, Marketplace
+-- ---------------------------------------------------------------------
+
+-- AI Gift Subscriptions (SaaS)
+CREATE TABLE gift_subscriptions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    plan VARCHAR(20) NOT NULL DEFAULT 'basic',
+    status VARCHAR(20) DEFAULT 'active',
+    monthly_price DECIMAL(10,2) NOT NULL,
+    recipient_count INTEGER DEFAULT 1,
+    max_recipients INTEGER DEFAULT 5,
+    next_billing_date DATE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_gift_subscriptions_user ON gift_subscriptions(user_id);
+
+-- Subscription recipients (who the AI auto-gifts for)
+CREATE TABLE subscription_recipients (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    subscription_id UUID REFERENCES gift_subscriptions(id) ON DELETE CASCADE,
+    recipient_name VARCHAR(100) NOT NULL,
+    recipient_phone VARCHAR(20),
+    relationship VARCHAR(50),
+    occasion VARCHAR(50),
+    occasion_month INTEGER,
+    occasion_day INTEGER,
+    budget_range VARCHAR(20) DEFAULT '2000-5000',
+    preferences TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    last_gifted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_subscription_recipients_sub ON subscription_recipients(subscription_id);
+
+-- Social delivery moments
+CREATE TABLE delivery_moments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    photo_url TEXT,
+    video_url TEXT,
+    caption TEXT,
+    is_public BOOLEAN DEFAULT FALSE,
+    likes_count INTEGER DEFAULT 0,
+    shares_count INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_delivery_moments_order ON delivery_moments(order_id);
+CREATE INDEX idx_delivery_moments_public ON delivery_moments(is_public) WHERE is_public = TRUE;
+
+-- Social moment likes
+CREATE TABLE moment_likes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    moment_id UUID REFERENCES delivery_moments(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(moment_id, user_id)
+);
+
+-- Corporate crossover tracking
+CREATE TABLE corporate_crossover_funnels (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    source_page VARCHAR(100) NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    email VARCHAR(255),
+    phone VARCHAR(20),
+    company_name VARCHAR(200),
+    converted_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_crossover_user ON corporate_crossover_funnels(user_id);
+
+-- Marketplace vendor reviews
+CREATE TABLE vendor_reviews (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    vendor_id UUID REFERENCES marketplace_vendors(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_vendor_reviews_vendor ON vendor_reviews(vendor_id);
