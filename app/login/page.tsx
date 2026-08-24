@@ -16,7 +16,6 @@ export default function LoginPage() {
   const [otp, setOtp] = useState("");
   const [activeChannel, setActiveChannel] = useState<"sms" | "whatsapp">("sms");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const searchParams = useSearchParams()!;
   const router = useRouter();
   const supabase = createClient();
@@ -24,6 +23,11 @@ export default function LoginPage() {
   const next = searchParams.get("next") ?? "/account";
   const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
   const [authMode, setAuthMode] = useState<"login" | "signup">(initialMode);
+  const [error, setError] = useState<string>(
+    searchParams.get("error") === "auth_failed"
+      ? "Sign-in was cancelled or failed. Please try again."
+      : ""
+  );
 
   // If already signed in, redirect
   useEffect(() => {
