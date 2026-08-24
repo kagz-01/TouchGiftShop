@@ -14,6 +14,7 @@ import FeaturedRow from "@/components/home/FeaturedRow";
 import VerticalProductColumns from "@/components/home/VerticalProductColumns";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
+import VisitUs from "@/components/home/VisitUs";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { createClient } from "@supabase/supabase-js";
@@ -223,6 +224,9 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
       <StoryHowItWorks />
       <FinalCTA />
+
+      {/* Visit us — shop location map */}
+      <VisitUs />
     </div>
   );
 }
