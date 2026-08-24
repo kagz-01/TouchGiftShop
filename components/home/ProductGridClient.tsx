@@ -155,6 +155,7 @@ export default function ProductGridClient({
   totalCount,
   category,
   budget,
+  search,
   heading,
 }: {
   initialProducts: Product[];
@@ -162,6 +163,7 @@ export default function ProductGridClient({
   totalCount: number;
   category?: string;
   budget?: string;
+  search?: string;
   heading?: string;
 }) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -191,6 +193,7 @@ export default function ProductGridClient({
       const params = new URLSearchParams({ page: String(page + 1), limit: "24" });
       if (category) params.set("category", category);
       if (budget) params.set("budget", budget);
+      if (search) params.set("q", search);
       const res = await fetch(`/api/products?${params}`);
       const data = await res.json();
       setProducts((prev) => [...prev, ...(data.products ?? [])]);

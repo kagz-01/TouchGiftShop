@@ -156,6 +156,35 @@ export const CATEGORY_MAP: Record<string, string[]> = {
   christmas: ["christmas-gifts", "hampers-gift-sets", "candle-holders-lanterns"],
   valentines: ["valentines-gifts", "flowers-aromatics", "chocolates-sweets-gifts"],
   easter: ["easter-gifts", "chocolates-sweets-gifts", "kids-baby-gifts"],
+
+  // Collections (MegaMenu)
+  wellness: ["wellness-self-care-hampers", "spa-experience-vouchers", "candle-holders-lanterns"],
+  tech: ["home-lifestyle", "gaming-accessories", "luxury-kitchen-accessories"],
+  experiences: ["spa-experience-vouchers", "dining-experience-vouchers"],
+  housewarming: ["home-lifestyle", "wall-art-decor", "candle-holders-lanterns", "plants-succulents"],
+
+  // Audience (MegaMenu — By Recipient)
+  parents: ["home-lifestyle", "wellness-self-care-hampers", "luxury-kitchen-accessories", "personalized-gifts"],
+  friend: ["just-because", "chocolates-sweets-gifts", "plush-toys-dolls", "board-games-puzzles"],
+  colleague: ["corporate-business-gifts", "office-desk-essentials", "personalized-desk-accessories"],
+
+  // Holidays (MegaMenu — Kenyan + International)
+  "mothers-day": ["mothers-day-fathers-day", "flowers-aromatics", "fresh-flower-bouquets", "wellness-self-care-hampers"],
+  "fathers-day": ["mothers-day-fathers-day", "mens-premium-accessories", "watches-timepieces"],
+  eid: ["hampers-gift-sets", "chocolates-sweets-gifts", "personalized-gifts"],
+  madaraka: ["hampers-gift-sets", "handmade-african-art", "handmade-crafts-fairs"],
+  mashujaa: ["hampers-gift-sets", "handmade-african-art", "collectible-award-sculpture"],
+  jamhuri: ["hampers-gift-sets", "handmade-african-art", "handmade-crafts-fairs"],
+  utamaduni: ["handmade-african-art", "handmade-crafts-fairs", "art-craft-gifts"],
+  "labour-day": ["office-desk-essentials", "corporate-business-gifts"],
+  "womens-day": ["womens-luxury-accessories", "flowers-aromatics", "fresh-flower-bouquets"],
+
+  // Cultural life moments (MegaMenu — Gift Lab + Occasions)
+  ruracio: ["wedding-registry-items", "personalized-gifts", "jewelry-fine-pieces"],
+  dowry: ["home-lifestyle", "hampers-gift-sets", "luxury-gifts"],
+  circumcision: ["mens-premium-accessories", "personalized-gifts", "watches-timepieces"],
+  christening: ["baby-shower-gifts", "kids-baby-gifts", "greeting-cards-note-cards"],
+  funeral: ["greeting-cards-note-cards", "fresh-flower-bouquets", "flowers-aromatics"],
 };
 
 /**

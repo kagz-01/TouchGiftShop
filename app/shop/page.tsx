@@ -17,9 +17,20 @@ export const metadata: Metadata = {
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; budget?: string }>;
+  searchParams: Promise<{
+    category?: string;
+    audience?: string;
+    holiday?: string;
+    cultural?: string;
+    community?: string;
+    budget?: string;
+    q?: string;
+    delivery?: string;
+  }>;
 }) {
   const params = await searchParams;
+  const effectiveLabel =
+    params.category || params.audience || params.holiday || params.cultural || params.community;
 
   return (
     <div className="min-h-screen section-theme-f">
@@ -70,8 +81,10 @@ export default async function ShopPage({
               className="font-display text-2xl md:text-3xl font-bold"
               style={{ color: "var(--text-primary)" }}
             >
-              {params.category
-                ? params.category.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+              {params.q
+                ? `Results for “${params.q}”`
+                : effectiveLabel
+                ? effectiveLabel.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
                 : "All Gifts"}
             </h1>
             <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>

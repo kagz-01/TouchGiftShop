@@ -4,23 +4,31 @@ import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
 import { getDefaultSort } from "@/lib/smart-sort";
 
-// GET /api/products?category=birthdays&budget=under-5k&page=1&limit=24
+// GET /api/products?category=birthdays&budget=under-5k&q=coffee&page=1&limit=24
+// Filter-type params (category/audience/holiday/cultural/community) are
+// alternative slices of the same catalog — the first one provided wins.
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const category = searchParams.get("category");
+  const category =
+    searchParams.get("category") ||
+    searchParams.get("audience") ||
+    searchParams.get("holiday") ||
+    searchParams.get("cultural") ||
+    searchParams.get("community") ||
+    undefined;
   const budget = searchParams.get("budget");
+  const q = searchParams.get("q");
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "24", 10);
 
   let query = supabaseAdmin.from("products").select(
     category
-      ? "*, product_categories!inner(categories!inner(slug))"
-      : "*"
+      ? "*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)"
+      : "*, product_specs(spec_key, spec_value, icon, sort_order)"
   );
 
   if (category) {
     const dbSlugs = getDbSlugs(category);
-    // Validate that the category has a mapping (or falls back to direct lookup)
     query = query.in("product_categories.categories.slug", dbSlugs);
   }
 
@@ -35,8 +43,16 @@ export async function GET(req: Request) {
     }
   }
 
+  // Search — matches name and description
+  if (q) {
+    const term = q.trim().replace(/[%,()]/g, "");
+    if (term) {
+      query = query.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+  }
+
   // Smart sorting by category context
-  const sort = getDefaultSort(category);
+  const sort = getDefaultSort(category ?? null);
   if (sort) {
     query = query.order(sort.field, { ascending: sort.ascending });
   } else {
@@ -53,7 +69,7 @@ export async function GET(req: Request) {
   const from = (page - 1) * limit;
   const fetchLimit = limit + 1;
   const fetchTo = from + fetchLimit - 1;
-  
+
   const { data, error } = await query.range(from, fetchTo);
 
   if (error) {

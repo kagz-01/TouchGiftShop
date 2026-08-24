@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Mountain, Waves, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2 } from "lucide-react";
+import { Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2 } from "lucide-react";
 
 
 type MegaMenuSection = {
@@ -142,9 +142,9 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Smart Features",
         links: [
-          { href: "/shop?feature=taste-profile", label: "Taste Profiles", icon: <Target className="w-4 h-4" /> },
-          { href: "/shop?feature=smart-reorder", label: "Smart Reorder", icon: <RefreshCw className="w-4 h-4" /> },
-          { href: "/shop?feature=gift-history", label: "Gift History", icon: <ScrollText className="w-4 h-4" /> },
+          { href: "/gift-quiz", label: "Taste Profiles", icon: <Target className="w-4 h-4" /> },
+          { href: "/orders", label: "Smart Reorder", icon: <RefreshCw className="w-4 h-4" /> },
+          { href: "/orders", label: "Gift History", icon: <ScrollText className="w-4 h-4" /> },
         ],
       },
       {
@@ -207,21 +207,8 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "By Community",
         links: [
-          { href: "/shop?community=kikuyu", label: "Kikuyu", icon: <Mountain className="w-4 h-4" /> },
-          { href: "/shop?community=luo", label: "Luo", icon: <Waves className="w-4 h-4" /> },
-          { href: "/shop?community=kalenjin", label: "Kalenjin", icon: <Zap className="w-4 h-4" /> },
-          { href: "/shop?community=maasai", label: "Maasai", icon: <Shield className="w-4 h-4" /> },
-          { href: "/shop?community=coastal", label: "Coastal / Swahili", icon: <Waves className="w-4 h-4" /> },
-          { href: "/shop?community=luhya", label: "Luhya", icon: <Leaf className="w-4 h-4" /> },
-          { href: "/shop?community=meru", label: "Meru", icon: <Mountain className="w-4 h-4" /> },
-        ],
-      },
-      {
-        title: "Life Moments",
-        links: [
           { href: "/shop?cultural=ruracio", label: "Ruracio (Engagement)", icon: <Gem className="w-4 h-4" /> },
           { href: "/shop?cultural=dowry", label: "Dowry (Mahari)", icon: <Gift className="w-4 h-4" /> },
-          { href: "/shop?cultural=circumcision", label: "Circumcision", icon: <Sword className="w-4 h-4" /> },
           { href: "/shop?cultural=christening", label: "Christening", icon: <Church className="w-4 h-4" /> },
           { href: "/shop?cultural=funeral", label: "Funeral / Condolence", icon: <Feather className="w-4 h-4" /> },
           { href: "/shop?cultural=graduation", label: "Graduation", icon: <GraduationCap className="w-4 h-4" /> },
@@ -273,19 +260,19 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         title: "Corporate Gifting",
         links: [
           { href: "/corporate", label: "Overview", icon: <Building2 className="w-4 h-4" /> },
-          { href: "/corporate?tab=bulk", label: "Bulk Orders", icon: <Package className="w-4 h-4" /> },
-          { href: "/corporate?tab=branded", label: "Branded Gifts", icon: <Tag className="w-4 h-4" /> },
-          { href: "/corporate?tab=clients", label: "Client Gifts", icon: <Users className="w-4 h-4" /> },
-          { href: "/corporate?tab=employees", label: "Employee Rewards", icon: <Trophy className="w-4 h-4" /> },
+          { href: "/corporate/build", label: "Bulk Orders", icon: <Package className="w-4 h-4" /> },
+          { href: "/corporate/whitelabel", label: "Branded Gifts", icon: <Tag className="w-4 h-4" /> },
+          { href: "/corporate/clients", label: "Client Gifts", icon: <Users className="w-4 h-4" /> },
+          { href: "/corporate/milestones", label: "Employee Rewards", icon: <Trophy className="w-4 h-4" /> },
         ],
       },
       {
         title: "By Occasion",
         links: [
-          { href: "/corporate?occasion=end-year", label: "End of Year", icon: <Sparkles className="w-4 h-4" /> },
-          { href: "/corporate?occasion=team-building", label: "Team Building", icon: <Users className="w-4 h-4" /> },
-          { href: "/corporate?occasion=milestones", label: "Work Anniversaries", icon: <Trophy className="w-4 h-4" /> },
-          { href: "/corporate?occasion=onboarding", label: "New Hire Welcome", icon: <Heart className="w-4 h-4" /> },
+          { href: "/corporate/build", label: "End of Year", icon: <Sparkles className="w-4 h-4" /> },
+          { href: "/corporate/pools", label: "Team Building", icon: <Users className="w-4 h-4" /> },
+          { href: "/corporate/milestones", label: "Work Anniversaries", icon: <Trophy className="w-4 h-4" /> },
+          { href: "/corporate/build", label: "New Hire Welcome", icon: <Heart className="w-4 h-4" /> },
         ],
       },
     ],
