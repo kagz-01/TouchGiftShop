@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase-server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { pointsToKsh, REFERRAL_BONUS_POINTS, CONVERSION_MIN_ORDER_KSH } from "@/lib/points";
 
 // GET /api/referrals — get user's referral info
 export async function GET() {
@@ -41,7 +42,16 @@ export async function GET() {
   const totalReferrals = referrals?.length ?? 0;
   const successfulReferrals = referrals?.filter((r) => r.status === "converted").length ?? 0;
 
-  // Get total bonus earned
+  // Points earned from referrals (new model — loyalty ledger)
+  const { data: referralPoints } = await supabaseAdmin
+    .from("loyalty_points")
+    .select("points")
+    .eq("user_id", user.id)
+    .in("source", ["referral_bonus", "referral_first_order"]);
+
+  const pointsEarned = referralPoints?.reduce((sum, r) => sum + Number(r.points), 0) ?? 0;
+
+  // Legacy KSh credits (deprecated — kept for historical display)
   const { data: credits } = await supabaseAdmin
     .from("referral_credits")
     .select("amount, is_used")
@@ -63,6 +73,10 @@ export async function GET() {
     referralCode,
     totalReferrals,
     successfulReferrals,
+    pointsEarned,
+    pointsValueKsh: pointsToKsh(pointsEarned),
+    referralBonusPoints: REFERRAL_BONUS_POINTS,
+    conversionMinOrderKsh: CONVERSION_MIN_ORDER_KSH,
     totalEarned,
     availableBalance,
     recentReferrals,

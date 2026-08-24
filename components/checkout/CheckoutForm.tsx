@@ -5,6 +5,7 @@ import MapPinPicker from "./MapPinPicker";
 import SurpriseToggle from "./SurpriseToggle";
 import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
+import { maxRedeemablePoints, pointsDiscountKsh, pointsToKsh, MIN_REDEEM_POINTS, POINTS_PER_KSH_REDEEM } from "@/lib/points";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
 import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown } from "lucide-react";
 import type { CartItem } from "@/lib/cart";
@@ -24,6 +25,7 @@ interface LoyaltyInfo {
   discountPercent: number;
   totalOrders: number;
   totalSpend: number;
+  totalPoints?: number;
   nextTier: string | null;
   ordersToNext: number;
 }
@@ -76,6 +78,10 @@ export default function CheckoutForm({
 
   // Loyalty
   const [loyaltyInfo, setLoyaltyInfo] = useState<LoyaltyInfo | null>(null);
+
+  // Points redemption
+  const [pointsToRedeem, setPointsToRedeem] = useState(0);
+  const [pointsError, setPointsError] = useState<string | null>(null);
 
   // Gift card redemption
   const [giftCardCode, setGiftCardCode] = useState("");
@@ -249,8 +255,15 @@ export default function CheckoutForm({
   const loyaltyDiscount = loyaltyInfo && loyaltyInfo.discountPercent > 0
     ? Math.round(itemsTotal * (loyaltyInfo.discountPercent / 100))
     : 0;
+
+  // Points redemption — mirrors server-side validation in /api/orders
+  const pointsBalance = loyaltyInfo?.totalPoints ?? 0;
+  const maxPoints = maxRedeemablePoints(pointsBalance, itemsTotal);
+  const effectivePoints = Math.min(Math.max(0, Math.floor(pointsToRedeem || 0)), maxPoints);
+  const pointsDiscount = pointsDiscountKsh(effectivePoints);
+
   const subtotal = itemsTotal + deliveryFee + wrappingCost - loyaltyDiscount + slotExtraFee;
-  const total = Math.max(0, subtotal - giftCardDiscount);
+  const total = Math.max(0, subtotal - giftCardDiscount - pointsDiscount);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -286,10 +299,12 @@ export default function CheckoutForm({
             deliveryLandmark: usePinDrop ? "" : landmark,
             giftNote: (item as CartItem).giftNote || form.get("giftNote") || giftNote,
             engraving: (item as CartItem).personalization || engraving || undefined,
-            customizationImageUrl: (item as CartItem).customizationImageUrl || customizationImageUrl || undefined,
+            customizationImageUrl: (item as CartItem).customizationImageUrl || undefined,
             quantity: item.quantity,
             shippingFee: deliveryFee,
             recipientPinRequested: usePinDrop,
+            // Points redemption applies to the first order only
+            pointsToRedeem: orderIds.length === 0 && effectivePoints > 0 ? effectivePoints : undefined,
           }),
         });
 
@@ -800,6 +815,46 @@ export default function CheckoutForm({
               <p className="text-xs text-red-500">{giftCardError}</p>
             )}
           </div>
+
+          {/* Points redemption */}
+          {pointsBalance >= MIN_REDEEM_POINTS && (
+            <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-brand-deep">Redeem Points</p>
+                <span className="text-xs font-bold text-brand">{pointsBalance.toLocaleString()} pts</span>
+              </div>
+              <p className="text-[11px] text-brand-muted">
+                {POINTS_PER_KSH_REDEEM} pts = KSh 1 · min {MIN_REDEEM_POINTS} pts · max {maxPoints.toLocaleString()} pts this order
+              </p>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  step={POINTS_PER_KSH_REDEEM * 50}
+                  value={pointsToRedeem || ""}
+                  onChange={(e) => {
+                    const v = Math.floor(Number(e.target.value) || 0);
+                    if (v > maxPoints) {
+                      setPointsError(`Max ${maxPoints.toLocaleString()} pts for this order`);
+                      setPointsToRedeem(maxPoints);
+                    } else if (v > 0 && v < MIN_REDEEM_POINTS) {
+                      setPointsError(`Minimum ${MIN_REDEEM_POINTS} pts`);
+                      setPointsToRedeem(v);
+                    } else {
+                      setPointsError(null);
+                      setPointsToRedeem(v);
+                    }
+                  }}
+                  placeholder="Points to redeem"
+                  className={`${INPUT} flex-1`}
+                />
+                <div className="px-4 py-2 bg-emerald-50 border border-emerald-100 rounded-xl text-xs font-bold text-emerald-700 whitespace-nowrap">
+                  -{formatKsh(pointsDiscount)}
+                </div>
+              </div>
+              {pointsError && <p className="text-xs text-red-500">{pointsError}</p>}
+            </div>
+          )}
 
           {/* Trust badges */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">

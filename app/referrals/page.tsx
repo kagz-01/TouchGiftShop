@@ -9,6 +9,10 @@ interface ReferralData {
   referralCode: string;
   totalReferrals: number;
   successfulReferrals: number;
+  pointsEarned: number;
+  pointsValueKsh: number;
+  referralBonusPoints: number;
+  conversionMinOrderKsh: number;
   totalEarned: number;
   availableBalance: number;
   recentReferrals: Array<{
@@ -39,7 +43,7 @@ export default function ReferralsPage() {
         }
         setData(d);
         setShareText(
-          `Join TouchGift using my referral code ${d.referralCode} and we both get KSh 500 off our next gift! 🎁 https://touchgiftshop.ac.ke/ref/${d.referralCode}`
+          `Join TouchGift using my referral code ${d.referralCode} and we both get 1,000 pts (≈KSh 500) to spend on gifts! 🎁 https://touchgiftshop.ac.ke/ref/${d.referralCode}`
         );
         setLoading(false);
       })
@@ -127,7 +131,7 @@ export default function ReferralsPage() {
           <Gift className="w-10 h-10 mx-auto mb-3 opacity-80" />
           <h1 className="font-display text-2xl md:text-3xl font-bold mb-2">Refer & Earn</h1>
           <p className="text-white/70 text-sm mb-6">
-            Share TouchGift with friends. You both get KSh 500 off when they make their first order.
+            Share TouchGift with friends. You both earn 1,000 pts (≈KSh 500) when their first order is KSh 1,000+.
           </p>
 
           {/* Referral code */}
@@ -167,7 +171,7 @@ export default function ReferralsPage() {
           {[
             { label: "Total Referrals", value: data.totalReferrals, icon: Users },
             { label: "Successful", value: data.successfulReferrals, icon: Check },
-            { label: "Available Balance", value: formatKsh(data.availableBalance), icon: TrendingUp },
+            { label: "Points Earned", value: `${data.pointsEarned.toLocaleString()} pts`, icon: TrendingUp },
           ].map((stat) => (
             <div key={stat.label} className="bg-white rounded-2xl border border-black/6 shadow-sm p-4 text-center">
               <stat.icon className="w-5 h-5 text-brand mx-auto mb-2" />
@@ -177,6 +181,18 @@ export default function ReferralsPage() {
           ))}
         </div>
 
+        {/* Points explainer */}
+        <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4 space-y-1.5">
+          <p className="text-sm font-semibold text-brand-deep">
+            🎉 Both sides earn {data.referralBonusPoints.toLocaleString()} pts
+            <span className="text-brand-muted font-normal"> (≈ KSh {Math.round(data.referralBonusPoints / 2).toLocaleString()})</span>
+          </p>
+          <p className="text-xs text-brand-muted">
+            Points land when your friend&apos;s <strong>first order of KSh {data.conversionMinOrderKsh.toLocaleString()}+</strong> is paid.
+            Redeem points at checkout: 2 pts = KSh 1, up to half your order.
+          </p>
+        </div>
+
         {/* How it works */}
         <div className="bg-white rounded-2xl border border-black/6 shadow-sm p-5 space-y-4">
           <h2 className="font-display font-bold text-brand-deep">How it works</h2>
@@ -184,7 +200,7 @@ export default function ReferralsPage() {
             {[
               { step: "1", title: "Share your code", desc: "Send your unique referral code to friends" },
               { step: "2", title: "They sign up", desc: "Your friend creates an account using your code" },
-              { step: "3", title: "They order", desc: "When they complete their first order, you both get KSh 500" },
+              { step: "3", title: "They order", desc: "When they complete their first order, you both earn 1,000 pts (≈KSh 500)" },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-3">
                 <div className="w-7 h-7 bg-brand/10 text-brand rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0">
@@ -214,7 +230,7 @@ export default function ReferralsPage() {
                     ? "bg-emerald-100 text-emerald-700"
                     : "bg-yellow-100 text-yellow-700"
                 }`}>
-                  {ref.bonusCredited ? "KSh 500 earned" : ref.status === "converted" ? "Converted" : "Pending"}
+                  {ref.bonusCredited ? "1,000 pts earned" : ref.status === "converted" ? "Converted" : "Pending"}
                 </span>
               </div>
             ))}

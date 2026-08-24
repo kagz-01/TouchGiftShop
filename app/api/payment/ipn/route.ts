@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getTransactionStatus } from "@/lib/payment";
+import {
+  REFERRAL_BONUS_POINTS,
+  CONVERSION_MIN_ORDER_KSH,
+  MONTHLY_CONVERSION_CAP,
+} from "@/lib/points";
 
 // POST /api/payment/ipn — PesaPal sends IPN (Instant Payment Notification)
 // when a transaction status changes.
@@ -114,7 +119,7 @@ async function handleOrderPayment(
   // Fetch order details for loyalty + referral processing
   const { data: order } = await supabaseAdmin
     .from("orders")
-    .select("user_id, total_amount")
+    .select("user_id, total_amount, points_redeemed")
     .eq("id", orderId)
     .single();
 
@@ -131,7 +136,19 @@ async function handleOrderPayment(
     });
   }
 
-  // ── Referral conversion: credit referrer on referred user's first order ──
+  // ── Deduct redeemed points from the ledger once payment completes ──
+  const redeemed = Number((order as { points_redeemed?: number }).points_redeemed ?? 0);
+  if (redeemed > 0) {
+    await supabaseAdmin.from("loyalty_points").insert({
+      user_id: order.user_id,
+      points: redeemed,
+      source: "redeemed",
+      order_id: orderId,
+    });
+  }
+
+  // ── Referral conversion: award points on referred user's first order ──
+  // Guards: order >= CONVERSION_MIN_ORDER_KSH, referrer under monthly cap.
   const { data: referral } = await supabaseAdmin
     .from("referrals")
     .select("id, referrer_id")
@@ -140,34 +157,52 @@ async function handleOrderPayment(
     .maybeSingle();
 
   if (referral) {
-    // Mark referral as converted
-    await supabaseAdmin
-      .from("referrals")
-      .update({
-        status: "converted",
-        converted_at: new Date().toISOString(),
-        first_order_id: orderId,
-        referrer_bonus_credited: true,
-      })
-      .eq("id", referral.id);
+    if (Number(order.total_amount) < CONVERSION_MIN_ORDER_KSH) {
+      // Order too small to count — referral stays pending for a future order.
+      console.log(`[Referral] Conversion blocked: order ${orderId} below ${CONVERSION_MIN_ORDER_KSH}`);
+    } else {
+      // Monthly fraud cap: count this referrer's conversions this calendar month
+      const monthStart = new Date();
+      monthStart.setDate(1);
+      monthStart.setHours(0, 0, 0, 0);
+      const { count: monthConversions } = await supabaseAdmin
+        .from("referrals")
+        .select("id", { count: "exact", head: true })
+        .eq("referrer_id", referral.referrer_id)
+        .eq("status", "converted")
+        .gte("converted_at", monthStart.toISOString());
 
-    // Credit referrer with KSh 500
-    await supabaseAdmin.from("referral_credits").insert({
-      user_id: referral.referrer_id,
-      amount: 500.00,
-      source: "referral_conversion",
-      referral_id: referral.id,
-      expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-    });
+      if ((monthConversions ?? 0) >= MONTHLY_CONVERSION_CAP) {
+        console.log(`[Referral] Monthly cap hit for referrer ${referral.referrer_id} — conversion blocked`);
+      } else {
+        // Mark referral as converted
+        await supabaseAdmin
+          .from("referrals")
+          .update({
+            status: "converted",
+            converted_at: new Date().toISOString(),
+            first_order_id: orderId,
+            referrer_bonus_credited: true,
+          })
+          .eq("id", referral.id);
 
-    // Also credit the referred user with KSh 500 (their signup bonus was already given, this is their first-order bonus)
-    await supabaseAdmin.from("referral_credits").insert({
-      user_id: order.user_id,
-      amount: 500.00,
-      source: "referral_first_order",
-      referral_id: referral.id,
-      expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-    });
+        // Award points to BOTH sides via the loyalty ledger
+        await supabaseAdmin.from("loyalty_points").insert([
+          {
+            user_id: referral.referrer_id,
+            points: REFERRAL_BONUS_POINTS,
+            source: "referral_bonus",
+            order_id: orderId,
+          },
+          {
+            user_id: order.user_id,
+            points: REFERRAL_BONUS_POINTS,
+            source: "referral_first_order",
+            order_id: orderId,
+          },
+        ]);
+      }
+    }
   }
 }
 

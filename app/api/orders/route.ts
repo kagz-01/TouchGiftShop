@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
+import { maxRedeemablePoints, pointsDiscountKsh } from "@/lib/points";
 
 function normalizePhoneServer(phone: unknown, countryCode?: string): string | null {
   if (!phone || typeof phone !== "string") return null;
@@ -58,6 +59,7 @@ const OrderInput = z.object({
   shippingFee: z.number().default(0),
   senderCountry: z.string().optional(),
   recipientCountry: z.string().optional(),
+  pointsToRedeem: z.number().int().nonnegative().optional(),
 });
 
 // GET /api/orders — fetch orders for the currently authenticated user only.
@@ -113,6 +115,40 @@ export async function POST(req: Request) {
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // ── Points redemption (signed-in users only) ──
+  let pointsRedeemed = 0;
+  let pointsDiscount = 0;
+  if (user && input.pointsToRedeem && input.pointsToRedeem > 0) {
+    const requested = Math.floor(input.pointsToRedeem);
+
+    // Balance check
+    const { data: ledger } = await supabaseAdmin
+      .from("loyalty_points")
+      .select("points, source")
+      .eq("user_id", user.id);
+    let balance = 0;
+    (ledger ?? []).forEach((r: { points: number; source: string }) => {
+      balance += r.source === "redeemed" ? 0 : Number(r.points);
+    });
+    // subtract prior redemptions
+    let redeemedBefore = 0;
+    (ledger ?? []).forEach((r: { points: number; source: string }) => {
+      if (r.source === "redeemed") redeemedBefore += Number(r.points);
+    });
+    balance -= redeemedBefore;
+
+    const maxAllowed = maxRedeemablePoints(balance, input.totalAmount);
+    if (requested > maxAllowed) {
+      return NextResponse.json(
+        { error: `Cannot redeem ${requested} pts. Available: ${Math.max(0, balance)} pts (max ${maxAllowed} for this order).` },
+        { status: 400 }
+      );
+    }
+
+    pointsRedeemed = requested;
+    pointsDiscount = pointsDiscountKsh(requested);
+  }
+
   const { data: order, error: insertError } = await supabaseAdmin
     .from("orders")
     .insert({
@@ -135,6 +171,8 @@ export async function POST(req: Request) {
       customization_image_url: input.customizationImageUrl ?? null,
       quantity: input.quantity,
       shipping_fee: input.shippingFee,
+      points_redeemed: pointsRedeemed,
+      points_discount: pointsDiscount,
     })
     .select()
     .single();
@@ -184,5 +222,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 
-  return NextResponse.json({ order });
+  return NextResponse.json({ order, pointsDiscount });
 }

@@ -40,6 +40,8 @@ CREATE TABLE orders (
     engraving TEXT,
     customization_image_url TEXT,
     quantity INTEGER DEFAULT 1,
+    points_redeemed INTEGER DEFAULT 0,
+    points_discount DECIMAL(10,2) DEFAULT 0,
     mpesa_checkout_request_id VARCHAR(50) UNIQUE,
     mpesa_receipt_number VARCHAR(50),
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
