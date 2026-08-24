@@ -1,136 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
-import { getProductBadges } from "@/lib/product-badges";
-import type { Product } from "@/lib/types";
-import CategorySuggestions from "./CategorySuggestions";
-import { Loader2 } from "lucide-react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
-  const badges = getProductBadges(product, index, categorySlug);
-  const hasSale = product.sale_price && product.sale_price < product.price;
-  const hasColors = product.color_variants && product.color_variants.length > 0;
-
-  return (
-    <Link
-      href={`/product/${product.id}`}
-      className="group block animate-fade-in-up"
-      style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
-    >
-      <div className="bg-white/95 rounded-3xl border border-black/6 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300">
-        {/* Image */}
-        <div className="relative aspect-[4/5] bg-blush overflow-hidden">
-          {product.image_url ? (
-            <Image
-              src={product.image_url}
-              alt={product.name}
-              fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-108"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-4xl">
-              🎁
-            </div>
-          )}
-
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* Quick view */}
-          <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 text-center text-xs font-bold text-brand shadow-sm">
-              View Gift →
-            </div>
-          </div>
-
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {hasSale && (
-              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
-                SALE
-              </span>
-            )}
-            {badges.map((badge) => (
-              <span
-                key={badge.label}
-                className={`${badge.color} text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1`}
-              >
-                <span>{badge.emoji}</span>
-                {badge.label}
-              </span>
-            ))}
-          </div>
-
-          {/* Out of stock */}
-          {!product.in_stock && (
-            <div className="absolute top-3 right-3 bg-brand-deep/80 text-white text-xs px-2 py-1 rounded-lg font-medium">
-              Sold out
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-brand-deep group-hover:text-brand transition-colors leading-snug">
-            {product.name}
-          </h3>
-
-          {/* Price */}
-          <div className="flex items-center gap-2 mb-1.5">
-            {hasSale ? (
-              <>
-                <p className="text-red-500 font-bold text-base">{formatKsh(product.sale_price!)}</p>
-                <p className="text-gray-400 text-sm line-through">{formatKsh(product.price)}</p>
-              </>
-            ) : (
-              <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
-            )}
-          </div>
-
-          {/* Color dots */}
-          {hasColors && (
-            <div className="flex items-center gap-1 mb-1.5">
-              {product.color_variants!.slice(0, 5).map((cv, i) => (
-                <span
-                  key={i}
-                  className="w-3.5 h-3.5 rounded-full border border-gray-200"
-                  style={{ backgroundColor: cv.name.toLowerCase() }}
-                  title={cv.name}
-                />
-              ))}
-              {product.color_variants!.length > 5 && (
-                <span className="text-[10px] text-gray-400 ml-0.5">+{product.color_variants!.length - 5}</span>
-              )}
-            </div>
-          )}
-
-          <div className="flex items-center justify-between gap-2">
-            {product.is_personalizable && (
-              <span className="text-[9px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
-                ✏️ Custom
-              </span>
-            )}
-            {product.size_variants && product.size_variants.length > 0 && (
-              <span className="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full flex-shrink-0">
-                {product.size_variants.length} sizes
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
+import { X, Minus, Plus, Sparkles, Check } from "lucide-react";
 
 export default function ProductGridClient({
   initialProducts,
@@ -138,117 +12,61 @@ export default function ProductGridClient({
   totalCount,
   category,
   budget,
-  heading
+  heading,
 }: {
-  initialProducts: Product[];
+  initialProducts: any[];
   initialHasMore: boolean;
   totalCount: number;
   category?: string;
   budget?: string;
-  heading: string;
+  heading?: string;
 }) {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState(initialProducts);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Real-time: listen for product changes from admin
-  useEffect(() => {
-    const channel = supabase
-      .channel("shop-products")
-      .on(
-        "broadcast",
-        { event: "product-created" },
-        () => { window.location.reload(); }
-      )
-      .on(
-        "broadcast",
-        { event: "product-updated" },
-        () => { window.location.reload(); }
-      )
-      .on(
-        "broadcast",
-        { event: "product-deleted" },
-        () => { window.location.reload(); }
-      )
-      .subscribe();
+  const fetchProducts = useCallback(async () => {
+    // Simplified - just reload initial products
+    setProducts(initialProducts);
+    setHasMore(false);
+  }, [initialProducts]);
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const loadMore = async () => {
-    if (isLoading || !hasMore) return;
-    setIsLoading(true);
-    try {
-      const nextPage = page + 1;
-      const params = new URLSearchParams();
-      if (category) params.set("category", category);
-      if (budget) params.set("budget", budget);
-      params.set("page", nextPage.toString());
-      params.set("limit", "24");
-      
-      const res = await fetch(`/api/products?${params.toString()}`);
-      if (res.ok) {
-        const data = await res.json();
-        setProducts((prev) => [...prev, ...(data.products || [])]);
-        setHasMore(data.hasMore);
-        setPage(nextPage);
-      }
-    } catch (error) {
-      console.error("Failed to load more products:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (products.length === 0) {
-    return (
-      <div className="text-center py-16 animate-fade-in">
-        <span className="text-6xl mb-4 block">🔍</span>
-        <p className="font-display text-lg font-semibold mb-2">No products found</p>
-        <p className="text-sm text-brand-muted">
-          Try a different category or browse all gifts.
-        </p>
-      </div>
-    );
-  }
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="font-display text-lg font-semibold">{heading}</h2>
-        <span className="text-sm text-brand-muted">{totalCount} items</span>
-      </div>
-
-      {/* Cross-category suggestions */}
-      {category && <CategorySuggestions category={category} />}
-
-      {/* Masonry-style Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
-        {products.map((product, i) => (
-          <ProductCard key={`${product.id}-${i}`} product={product} index={i} categorySlug={category} />
-        ))}
-      </div>
-
-      {/* Load More Button */}
-      {hasMore && (
-        <div className="flex justify-center pt-8 pb-12">
-          <button
-            onClick={loadMore}
-            disabled={isLoading}
-            className="group px-8 py-3 bg-white border-2 border-surface-border text-brand-deep font-semibold rounded-full hover:border-brand hover:text-brand hover:shadow-soft transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin text-brand" />
-                Loading...
-              </>
-            ) : (
-              "Load More Gifts"
-            )}
-          </button>
+    <div className="bg-white rounded-2xl p-6 shadow-sm">
+      <h3 className="font-semibold text-sm text-gray-600 uppercase tracking-wider mb-4">
+        {heading || "Products"}
+      </h3>
+      {products.length === 0 ? (
+        <p className="text-gray-500">No products found</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {products.map((product, idx) => (
+            <Link
+              key={product.id}
+              href={`/product/${product.id}`}
+              className="group block rounded-xl border border-gray-300 p-4 hover:shadow-md transition-shadow"
+            >
+              <div className="aspect-[4/5] bg-gray-100 overflow-hidden rounded-md mb-3">
+                {product.image_url ? (
+                  <Image
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-108"
+                  />
+                ) : (
+                  <div className="w-full h-24 flex items-center justify-center text-gray-300">
+                    🎁
+                  </div>
+                )}
+              </div>
+              <div>
+                <h4 className="font-semibold text-sm line-clamp-2">{product.name}</h4>
+                <p className="text-gray-500 text-xs">{formatKsh(product.price)}</p>
+              </div>
+            </Link>
+          ))}
         </div>
       )}
     </div>

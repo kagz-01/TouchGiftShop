@@ -1297,3 +1297,55 @@ CREATE TABLE hamper_builds (
 );
 
 CREATE INDEX idx_hamper_builds_ref ON hamper_builds(ref_code);
+
+-- ---------------------------------------------------------------------
+-- Product Specs — attributes like volume, ABV, age, origin (PDF-style)
+-- ---------------------------------------------------------------------
+
+CREATE TABLE product_specs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    product_id UUID REFERENCES products(id) ON DELETE CASCADE,
+    spec_key VARCHAR(50) NOT NULL,
+    spec_value VARCHAR(100) NOT NULL,
+    icon VARCHAR(10),
+    sort_order INTEGER DEFAULT 0,
+    UNIQUE(product_id, spec_key)
+);
+
+CREATE INDEX idx_product_specs_product ON product_specs(product_id);
+
+-- ---------------------------------------------------------------------
+-- Hamper Bundles — pre-made gift hampers (e.g. "Whisky Lovers Hamper")
+-- ---------------------------------------------------------------------
+
+CREATE TABLE hamper_bundles (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(200) NOT NULL,
+    slug VARCHAR(200) UNIQUE NOT NULL,
+    description TEXT,
+    image_url TEXT,
+    regular_price DECIMAL(10,2) NOT NULL,
+    bundle_price DECIMAL(10,2) NOT NULL,
+    category VARCHAR(50),
+    occasions TEXT[] DEFAULT '{}',
+    item_count INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_hamper_bundles_category ON hamper_bundles(category);
+CREATE INDEX idx_hamper_bundles_active ON hamper_bundles(is_active, is_featured);
+
+CREATE TABLE hamper_bundle_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    bundle_id UUID REFERENCES hamper_bundles(id) ON DELETE CASCADE,
+    product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+    product_name VARCHAR(200) NOT NULL,
+    quantity INTEGER DEFAULT 1,
+    sort_order INTEGER DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_hamper_bundle_items_bundle ON hamper_bundle_items(bundle_id);

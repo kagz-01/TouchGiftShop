@@ -186,3 +186,48 @@ export interface ReviewStats {
   totalReviews: number;
   distribution: { rating: number; count: number; percentage: number }[];
 }
+
+// ---------------------------------------------------------------------
+// Product Specs — attributes like volume, ABV, age, origin
+// ---------------------------------------------------------------------
+
+export interface ProductSpec {
+  id: string;
+  product_id: string;
+  spec_key: string;
+  spec_value: string;
+  icon: string | null;
+  sort_order: number;
+}
+
+// ---------------------------------------------------------------------
+// Hamper Bundles — pre-made gift hampers
+// ---------------------------------------------------------------------
+
+export interface HamperBundle {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image_url: string | null;
+  regular_price: number;
+  bundle_price: number;
+  category: string | null;
+  occasions: string[];
+  item_count: number;
+  is_active: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  created_at: string;
+  items?: HamperBundleItem[];
+}
+
+export interface HamperBundleItem {
+  id: string;
+  bundle_id: string;
+  product_id: string | null;
+  product_name: string;
+  quantity: number;
+  sort_order: number;
+  product?: Product;
+}
