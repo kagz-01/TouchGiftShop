@@ -69,50 +69,98 @@ export default function DeliveryPolicyPage() {
 
             <section>
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">2. Delivery Fees</h2>
-              <p>Delivery fees are calculated based on location and shown at checkout before payment:</p>
+              <p>
+                Our delivery fees are calculated <strong>based on distance from our shop</strong> at
+                Park Towers, Utalii Street, Nairobi. Closer = cheaper. No flat fees for short
+                distances.
+              </p>
 
               <div className="mt-4 overflow-hidden rounded-xl border border-surface-border">
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Zone</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Areas</th>
+                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Distance</th>
+                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Examples</th>
                       <th className="text-right px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-border">
                     <tr>
-                      <td className="px-4 py-2.5">CBD / City Centre</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Nairobi CBD, Westlands, Karen</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 200–350</td>
+                      <td className="px-4 py-2.5">Under 500m</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Same building, next door</td>
+                      <td className="px-4 py-2.5 text-right font-medium text-brand-forest">Free</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Greater Nairobi</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Kasarani, Langata, Kilimani, Kileleshwa</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 350–500</td>
+                      <td className="px-4 py-2.5">500m – 1km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Walking distance</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 50</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Suburbs</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Runda, Kitengela, Syokimau, Juja</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 500–700</td>
+                      <td className="px-4 py-2.5">1 – 2km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Parklands, Ngara, CBD</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 100</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Major Towns</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Mombasa, Kisumu, Nakuru, Eldoret</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 400–600</td>
+                      <td className="px-4 py-2.5">2 – 5km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Westlands, Kilimani, Upper Hill</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 150</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Remote Areas</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Other counties and rural areas</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 600–1,000</td>
+                      <td className="px-4 py-2.5">5 – 10km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Langata, South B/C, Kasarani</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 250</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5">10 – 15km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Runda, Karen, Kiambu</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 350</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5">15 – 25km</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Kitengela, Syokimau, Juja</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 450</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-xl border border-surface-border">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Upcountry</th>
+                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Timeline</th>
+                      <th className="text-right px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-surface-border">
+                    <tr>
+                      <td className="px-4 py-2.5">Thika, Machakos</td>
+                      <td className="px-4 py-2.5 text-brand-muted">Next business day</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 400</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5">Nakuru, Nyeri, Meru</td>
+                      <td className="px-4 py-2.5 text-brand-muted">1–2 business days</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 500–550</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5">Mombasa, Kisumu, Eldoret</td>
+                      <td className="px-4 py-2.5 text-brand-muted">2–3 business days</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 600</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2.5">Remote (Lodwar, Wajir, Lamu)</td>
+                      <td className="px-4 py-2.5 text-brand-muted">4–5 business days</td>
+                      <td className="px-4 py-2.5 text-right font-medium">KSh 850–900</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
               <p className="mt-3 text-xs">
-                Fees are estimates. Exact fees are calculated at checkout based on your delivery
-                landmark or pin drop location.
+                Exact fees are calculated at checkout using your pin-drop coordinates or delivery
+                landmark. Drop a pin on the map for the most accurate pricing.
               </p>
             </section>
 

@@ -15,6 +15,7 @@ interface DeliveryZone {
   name: string;
   fee: number;
   timeframe: string;
+  distanceKm?: number;
 }
 
 interface LoyaltyInfo {
@@ -94,7 +95,7 @@ export default function CheckoutForm({
   // Saved addresses
   const [savedAddresses, setSavedAddresses] = useState<Array<{
     id: string; label: string; address_line1: string; city: string;
-    landmark: string | null;
+    landmark: string | null; latitude: number | null; longitude: number | null;
   }>>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
@@ -196,11 +197,13 @@ export default function CheckoutForm({
     setGiftCardChecking(false);
   }
 
-  const lookupDelivery = useCallback(async (value: string) => {
+  const lookupDelivery = useCallback(async (value: string, lat?: number | null, lng?: number | null) => {
     setLandmark(value);
     if (value.length < 3) { setDeliveryZone(null); return; }
     try {
-      const res = await fetch(`/api/delivery?landmark=${encodeURIComponent(value)}`);
+      let url = `/api/delivery?landmark=${encodeURIComponent(value)}`;
+      if (lat != null && lng != null) url += `&lat=${lat}&lng=${lng}`;
+      const res = await fetch(url);
       const data = await res.json();
       setDeliveryZone(data.zone);
     } catch { setDeliveryZone(null); }
@@ -502,7 +505,7 @@ export default function CheckoutForm({
                       onClick={() => {
                         setSelectedAddressId(addr.id);
                         setLandmark(addr.landmark || addr.address_line1);
-                        lookupDelivery(addr.landmark || addr.address_line1);
+                        lookupDelivery(addr.landmark || addr.address_line1, addr.latitude, addr.longitude);
                       }}
                       className={`p-3 rounded-xl border-2 text-left transition-all ${
                         selectedAddressId === addr.id
@@ -534,6 +537,9 @@ export default function CheckoutForm({
                   <p className="text-xs text-brand-muted mt-1.5 flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
                     {deliveryZone.name} — {formatKsh(deliveryZone.fee)} · {deliveryZone.timeframe}
+                    {deliveryZone.distanceKm != null && (
+                      <span className="text-brand-muted/60">({deliveryZone.distanceKm}km)</span>
+                    )}
                   </p>
                 )}
               </div>
