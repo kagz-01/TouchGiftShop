@@ -869,8 +869,8 @@ export function FinalCTA() {
               <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
                 <Heart className="w-6 h-6 text-emerald-500" />
               </div>
-              <p className="font-display font-bold text-theme-heading text-sm mb-1">Refer & Earn</p>
-              <p className="text-theme-body text-xs">Give KSh 500, get KSh 500. Share with friends.</p>
+              <p className="font-display font-bold text-theme-heading text-sm mb-1">Refer &amp; Earn</p>
+              <p className="text-theme-body text-xs">Earn 1,000 pts (≈KSh 500) when friends order. Share your code.</p>
             </Link>
             <Link
               href="/subscriptions"

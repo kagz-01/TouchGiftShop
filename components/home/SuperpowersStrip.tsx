@@ -100,8 +100,8 @@ export default function SuperpowersStrip() {
               <Heart className="w-5 h-5 text-emerald-500" />
             </div>
             <div>
-              <p className="font-semibold text-sm text-theme-heading">Refer & Earn</p>
-              <p className="text-[11px] text-theme-body">Give KSh 500, get KSh 500</p>
+              <p className="font-semibold text-sm text-theme-heading">Refer &amp; Earn</p>
+              <p className="text-[11px] text-theme-body">Earn 1,000 pts (≈KSh 500) per friend</p>
             </div>
           </Link>
           <Link href="/subscriptions" className="group flex items-center gap-3 card-theme rounded-2xl p-4 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">

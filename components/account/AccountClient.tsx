@@ -491,8 +491,8 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                       <Gift className="w-6 h-6 text-brand" />
                     </div>
                     <div>
-                      <h3 className="font-display font-bold text-xl text-brand-deep">Refer & Earn</h3>
-                      <p className="text-sm text-brand-muted mt-1">Share your code — both of you get a discount on your next order.</p>
+                      <h3 className="font-display font-bold text-xl text-brand-deep">Refer &amp; Earn</h3>
+                      <p className="text-sm text-brand-muted mt-1">Share your code — you both earn 1,000 pts (≈KSh 500) when their first order is KSh 1,000+.</p>
                     </div>
                   </div>
 
@@ -507,7 +507,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
 
                   <div className="grid grid-cols-2 gap-3">
                     <a
-                      href={`https://wa.me/?text=${encodeURIComponent(`Hey! I've been gifting via TouchGift — use my code ${referralCode} for a discount. ${typeof window !== "undefined" ? window.location.origin : ""}?ref=${referralCode}`)}`}
+                      href={`https://wa.me/?text=${encodeURIComponent(`Hey! I've been gifting via TouchGift — use my code ${referralCode} and we both earn 1,000 pts (≈KSh 500) on your first order. ${typeof window !== "undefined" ? window.location.origin : ""}?ref=${referralCode}`)}`}
                       target="_blank" rel="noreferrer"
                       className="flex items-center justify-center gap-2 bg-green-50 text-green-700 font-bold text-sm py-3 rounded-xl border border-green-200 hover:bg-green-100 transition-colors"
                     >
