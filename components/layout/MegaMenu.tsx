@@ -260,6 +260,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
         title: "Corporate Gifting",
         links: [
           { href: "/corporate", label: "Overview", icon: <Building2 className="w-4 h-4" /> },
+          { href: "/corporate/catalog", label: "Gift Catalog", icon: <ShoppingBasket className="w-4 h-4" /> },
           { href: "/corporate/build", label: "Bulk Orders", icon: <Package className="w-4 h-4" /> },
           { href: "/corporate/whitelabel", label: "Branded Gifts", icon: <Tag className="w-4 h-4" /> },
           { href: "/corporate/clients", label: "Client Gifts", icon: <Users className="w-4 h-4" /> },

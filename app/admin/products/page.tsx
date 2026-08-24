@@ -42,7 +42,14 @@ interface Category {
   slug: string;
 }
 
-type Tab = "basic" | "pricing" | "media" | "inventory" | "variants" | "seo";
+type Tab = "basic" | "pricing" | "media" | "inventory" | "variants" | "seo" | "specs";
+
+interface SpecRow {
+  id?: string;
+  spec_key: string;
+  spec_value: string;
+  icon: string;
+}
 
 const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "basic", label: "Basic", icon: <Package className="w-4 h-4" /> },
@@ -50,6 +57,7 @@ const TABS: { key: Tab; label: string; icon: React.ReactNode }[] = [
   { key: "media", label: "Media", icon: <ImagePlus className="w-4 h-4" /> },
   { key: "inventory", label: "Inventory", icon: <Tag className="w-4 h-4" /> },
   { key: "variants", label: "Variants", icon: <Palette className="w-4 h-4" /> },
+  { key: "specs", label: "Specs", icon: <Ruler className="w-4 h-4" /> },
   { key: "seo", label: "SEO", icon: <Globe className="w-4 h-4" /> },
 ];
 
@@ -90,6 +98,10 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("basic");
   const [tagInput, setTagInput] = useState("");
+  const [specs, setSpecs] = useState<SpecRow[]>([]);
+  const [removedSpecIds, setRemovedSpecIds] = useState<string[]>([]);
+  const [specsSaving, setSpecsSaving] = useState(false);
+  const [specsSavedAt, setSpecsSavedAt] = useState<string | null>(null);
 
   const [form, setForm] = useState(getDefaultForm());
 
@@ -136,7 +148,7 @@ export default function AdminProductsPage() {
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
   useEffect(() => { fetchCategories(); }, [fetchCategories]);
 
-  const openEdit = (product: Product) => {
+  const openEdit = async (product: Product) => {
     setEditingProduct(product);
     setForm({
       name: product.name,
@@ -162,6 +174,24 @@ export default function AdminProductsPage() {
     });
     setActiveTab("basic");
     setShowCreate(false);
+    setSpecsSavedAt(null);
+    setRemovedSpecIds([]);
+
+    // Load existing specs for this product
+    try {
+      const res = await fetch(`/api/admin/products/specs?product_id=${product.id}`);
+      const data = await res.json();
+      setSpecs(
+        (data.specs ?? []).map((s: { id: string; spec_key: string; spec_value: string; icon: string | null }) => ({
+          id: s.id,
+          spec_key: s.spec_key,
+          spec_value: s.spec_value,
+          icon: s.icon || "",
+        }))
+      );
+    } catch {
+      setSpecs([]);
+    }
   };
 
   const openCreate = () => {
@@ -169,6 +199,53 @@ export default function AdminProductsPage() {
     setForm(getDefaultForm());
     setActiveTab("basic");
     setShowCreate(true);
+    setSpecs([]);
+    setRemovedSpecIds([]);
+    setSpecsSavedAt(null);
+  };
+
+  const saveSpecs = async () => {
+    if (!editingProduct) return;
+    setSpecsSaving(true);
+    try {
+      // Delete removed rows
+      for (const id of removedSpecIds) {
+        await fetch(`/api/admin/products/specs?id=${id}&product_id=${editingProduct.id}`, { method: "DELETE" });
+      }
+      // Upsert current rows
+      for (let i = 0; i < specs.length; i++) {
+        const s = specs[i];
+        if (!s.spec_key.trim() || !s.spec_value.trim()) continue;
+        await fetch("/api/admin/products/specs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            product_id: editingProduct.id,
+            spec_key: s.spec_key.trim().toLowerCase().replace(/\s+/g, "_"),
+            spec_value: s.spec_value.trim(),
+            icon: s.icon.trim() || null,
+            sort_order: i,
+          }),
+        });
+      }
+      setRemovedSpecIds([]);
+      setSpecsSavedAt(new Date().toLocaleTimeString());
+      fetchProducts();
+    } finally {
+      setSpecsSaving(false);
+    }
+  };
+
+  const updateSpec = (idx: number, field: keyof SpecRow, value: string) => {
+    const updated = [...specs];
+    updated[idx] = { ...updated[idx], [field]: value };
+    setSpecs(updated);
+  };
+
+  const removeSpec = (idx: number) => {
+    const row = specs[idx];
+    if (row.id) setRemovedSpecIds((prev) => [...prev, row.id!]);
+    setSpecs(specs.filter((_, i) => i !== idx));
   };
 
   const handleSave = async () => {
@@ -723,6 +800,56 @@ export default function AdminProductsPage() {
                       </div>
                     )}
                   </div>
+                </>
+              )}
+
+              {/* SPECS TAB */}
+              {activeTab === "specs" && (
+                <>
+                  {!editingProduct ? (
+                    <p className="text-sm text-gray-500 bg-gray-50 p-4 rounded-xl">
+                      Save the product first, then add specs (volume, ABV, material…).
+                    </p>
+                  ) : (
+                    <>
+                      <p className="text-xs text-gray-400">
+                        Attribute chips shown on product cards — e.g. 🍾 750ml, 💪 40% ABV, ⏳ 12 Years
+                      </p>
+                      {specs.length === 0 && (
+                        <p className="text-xs text-gray-400 bg-gray-50 p-3 rounded-xl">No specs yet.</p>
+                      )}
+                      <div className="space-y-2">
+                        {specs.map((spec, idx) => (
+                          <div key={idx} className="flex gap-2 items-center bg-gray-50 p-2.5 rounded-xl">
+                            <input type="text" value={spec.icon} onChange={(e) => updateSpec(idx, "icon", e.target.value)} placeholder="🍾" maxLength={2}
+                              className="w-12 px-2 py-2 bg-white border border-gray-200 rounded-lg text-sm text-center focus:outline-none focus:border-brand" />
+                            <input type="text" value={spec.spec_key} onChange={(e) => updateSpec(idx, "spec_key", e.target.value)} placeholder="key (volume)"
+                              className="w-28 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand" />
+                            <input type="text" value={spec.spec_value} onChange={(e) => updateSpec(idx, "spec_value", e.target.value)} placeholder="value (750ml)"
+                              className="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-brand" />
+                            <button onClick={() => removeSpec(idx)} className="p-2 text-red-400 hover:text-red-600"><X className="w-4 h-4" /></button>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setSpecs([...specs, { spec_key: "", spec_value: "", icon: "" }])}
+                        className="flex items-center gap-1 text-xs text-brand font-medium hover:underline"
+                      >
+                        <Plus className="w-3 h-3" /> Add Spec
+                      </button>
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-xs text-green-600">{specsSavedAt && `Saved at ${specsSavedAt}`}</span>
+                        <button
+                          onClick={saveSpecs}
+                          disabled={specsSaving}
+                          className="flex items-center gap-2 px-5 py-2.5 bg-brand text-white rounded-xl text-sm font-semibold hover:bg-brand-deep disabled:opacity-50"
+                        >
+                          {specsSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                          Save Specs
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
 
