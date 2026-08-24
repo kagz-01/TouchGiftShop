@@ -812,10 +812,6 @@ CREATE TABLE vendor_payouts (
 -- ---------------------------------------------------------------------
 
 -- Existing tables (original)
-CREATE INDEX idx_orders_recipient_phone ON orders(recipient_phone);
-CREATE INDEX idx_group_pools_slug ON group_gifting_pools(slug);
-CREATE INDEX idx_orders_status ON orders(status);
-CREATE INDEX idx_wishlists_slug ON wishlists(slug);
 CREATE INDEX idx_products_slug ON products(slug);
 CREATE INDEX idx_products_woocommerce_id ON products(woocommerce_id);
 CREATE INDEX idx_reminders_user_date ON reminders(user_id, occasion_date);
@@ -1233,3 +1229,23 @@ CREATE TABLE loyalty_points (
 );
 
 CREATE INDEX idx_loyalty_points_user ON loyalty_points(user_id);
+
+-- Gift card redemptions log
+CREATE TABLE gift_card_redemptions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    gift_card_id UUID REFERENCES gift_cards(id) ON DELETE CASCADE,
+    order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_gift_card_redemptions_card ON gift_card_redemptions(gift_card_id);
+
+-- Referral codes lookup (faster than listing all auth users)
+CREATE TABLE referral_codes (
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_referral_codes_code ON referral_codes(code);

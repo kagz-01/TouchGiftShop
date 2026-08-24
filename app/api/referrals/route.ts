@@ -13,19 +13,28 @@ export async function GET() {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // Get referral code from user metadata
-  const { data: profile } = await supabase.auth.getUser();
-  const referralCode = profile.user?.user_metadata?.referral_code || `TG-${user.id.slice(0, 8).toUpperCase()}`;
+  // Ensure user has a referral code
+  let { data: codeRow } = await supabaseAdmin
+    .from("referral_codes")
+    .select("code")
+    .eq("user_id", user.id)
+    .maybeSingle();
 
-  // Ensure referral code is set
-  if (!profile.user?.user_metadata?.referral_code) {
-    await supabase.auth.updateUser({ data: { referral_code: referralCode } });
+  if (!codeRow) {
+    const code = `TG-${user.id.slice(0, 8).toUpperCase()}`;
+    await supabaseAdmin.from("referral_codes").insert({
+      user_id: user.id,
+      code,
+    });
+    codeRow = { code };
   }
+
+  const referralCode = codeRow.code;
 
   // Count referrals
   const { data: referrals } = await supabaseAdmin
     .from("referrals")
-    .select("id, status, referrer_bonus_credited, referred_bonus_credited, created_at, converted_at")
+    .select("id, status, referrer_bonus_credited, created_at, converted_at")
     .eq("referrer_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -42,7 +51,6 @@ export async function GET() {
   const totalUsed = credits?.filter((c) => c.is_used).reduce((sum, c) => sum + Number(c.amount), 0) ?? 0;
   const availableBalance = totalEarned - totalUsed;
 
-  // Get recent referrals
   const recentReferrals = referrals?.slice(0, 10).map((r) => ({
     id: r.id,
     status: r.status,
@@ -77,17 +85,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Referral code required" }, { status: 400 });
   }
 
-  // Find the referrer by their code
-  const { data: referrerUsers } = await supabaseAdmin.auth.admin.listUsers();
-  const referrer = referrerUsers?.users?.find(
-    (u) => u.user_metadata?.referral_code === referralCode.toUpperCase()
-  );
+  // Look up referrer via referral_codes table (fast indexed lookup)
+  const { data: referrerCode } = await supabaseAdmin
+    .from("referral_codes")
+    .select("user_id")
+    .eq("code", referralCode.toUpperCase())
+    .maybeSingle();
 
-  if (!referrer) {
+  if (!referrerCode) {
     return NextResponse.json({ error: "Invalid referral code" }, { status: 404 });
   }
 
-  if (referrer.id === user.id) {
+  if (referrerCode.user_id === user.id) {
     return NextResponse.json({ error: "You cannot refer yourself" }, { status: 400 });
   }
 
@@ -106,7 +115,7 @@ export async function POST(req: Request) {
   const { data: referral, error } = await supabaseAdmin
     .from("referrals")
     .insert({
-      referrer_id: referrer.id,
+      referrer_id: referrerCode.user_id,
       referred_user_id: user.id,
       referral_code: referralCode.toUpperCase(),
       status: "pending",
@@ -124,7 +133,7 @@ export async function POST(req: Request) {
     amount: 500.00,
     source: "referral_signup",
     referral_id: referral.id,
-    expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days
+    expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
   });
 
   return NextResponse.json({ success: true, referral });
