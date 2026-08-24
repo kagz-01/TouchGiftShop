@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-browser";
+import { setGuest, clearGuest } from "@/lib/guest";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Smartphone, Mail, ArrowLeft, Loader2, CheckCircle2, MessageCircle } from "lucide-react";
+import { Smartphone, Mail, ArrowLeft, Loader2, CheckCircle2, MessageCircle, UserRound } from "lucide-react";
 
 type Method = "choose" | "phone" | "phone-otp" | "email" | "email-sent";
 
@@ -23,16 +24,20 @@ export default function LoginPage() {
   const next = searchParams.get("next") ?? "/account";
   const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
   const [authMode, setAuthMode] = useState<"login" | "signup">(initialMode);
+  const [noAccount, setNoAccount] = useState(false);
   const [error, setError] = useState<string>(
     searchParams.get("error") === "auth_failed"
       ? "Sign-in was cancelled or failed. Please try again."
       : ""
   );
 
-  // If already signed in, redirect
+  // If already signed in, redirect (guest flag is meaningless once signed in)
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) router.replace(next);
+      if (data.user) {
+        clearGuest();
+        router.replace(next);
+      }
     });
   }, []);
 
@@ -69,13 +74,16 @@ export default function LoginPage() {
     });
     
     setLoading(false);
-    if (error) { 
+    if (error) {
       let msg = error.message;
-      if (msg.toLowerCase().includes("signups not allowed") || msg.toLowerCase().includes("user not found") || msg.toLowerCase().includes("not allowed to sign up")) {
-        msg = "No account found for this phone number. Please create an account instead.";
+      let missing = false;
+      if (msg.toLowerCase().includes("signups not allowed") || msg.toLowerCase().includes("user not found") || msg.toLowerCase().includes("not allowed to sign up") || msg.toLowerCase().includes("user already")) {
+        msg = "No account found for this phone number yet.";
+        missing = true;
       }
-      setError(msg); 
-      return; 
+      setError(msg);
+      setNoAccount(missing);
+      return;
     }
     setPhone(e164);
     setMethod("phone-otp");
@@ -92,7 +100,26 @@ export default function LoginPage() {
     });
     setLoading(false);
     if (error) { setError(error.message); return; }
+    clearGuest();
     router.replace(next);
+  }
+
+  // "No account found" recovery — flip to signup and resend with the same contact
+  async function handleCreateWithThisContact() {
+    setAuthMode("signup");
+    setNoAccount(false);
+    setError("");
+    const m = method as Method;
+    if (m === "phone") {
+      await handleSendOtp({ preventDefault: () => {} } as React.FormEvent, activeChannel);
+    } else if (m === "email") {
+      await handleEmailLink({ preventDefault: () => {} } as React.FormEvent);
+    }
+  }
+
+  function handleGuest() {
+    setGuest();
+    router.replace(next === "/account" ? "/" : next);
   }
 
   // ─── Email magic link ──────────────────────────────────────────
@@ -108,13 +135,16 @@ export default function LoginPage() {
       },
     });
     setLoading(false);
-    if (error) { 
+    if (error) {
       let msg = error.message;
-      if (msg.toLowerCase().includes("signups not allowed") || msg.toLowerCase().includes("user not found") || msg.toLowerCase().includes("not allowed to sign up")) {
-        msg = "No account found for this email. Please create an account instead.";
+      let missing = false;
+      if (msg.toLowerCase().includes("signups not allowed") || msg.toLowerCase().includes("user not found") || msg.toLowerCase().includes("not allowed to sign up") || msg.toLowerCase().includes("user already")) {
+        msg = "No account found for this email yet.";
+        missing = true;
       }
-      setError(msg); 
-      return; 
+      setError(msg);
+      setNoAccount(missing);
+      return;
     }
     setMethod("email-sent");
   }
@@ -235,6 +265,18 @@ export default function LoginPage() {
                   </button>
                 </p>
               </div>
+
+              {/* Guest */}
+              <button
+                onClick={handleGuest}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors border border-dashed border-surface-border"
+              >
+                <UserRound className="w-4 h-4" />
+                Continue as guest
+              </button>
+              <p className="text-[11px] text-brand-muted text-center -mt-2">
+                Browse &amp; order without an account — no points or saved history.
+              </p>
             </div>
           )}
 
@@ -242,7 +284,9 @@ export default function LoginPage() {
           {method === "phone" && (
             <form onSubmit={(e) => handleSendOtp(e, "whatsapp")} className="space-y-4">
               <BackButton onClick={() => { reset(); setMethod("choose"); }} />
-              {error && <ErrorBox message={error} />}
+              {error && <ErrorBox message={error} 
+                actionLabel={noAccount ? "Create account with this number" : undefined}
+                onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
                 <label className="text-sm font-medium text-brand-deep block mb-1.5">
                   Phone number
@@ -290,7 +334,9 @@ export default function LoginPage() {
           {method === "phone-otp" && (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               <BackButton onClick={() => { reset(); setMethod("phone"); }} />
-              {error && <ErrorBox message={error} />}
+              {error && <ErrorBox message={error} 
+                actionLabel={noAccount ? "Create account with this number" : undefined}
+                onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
                 <label className="text-sm font-medium text-brand-deep block mb-1.5">
                   6-digit code
@@ -326,7 +372,9 @@ export default function LoginPage() {
           {method === "email" && (
             <form onSubmit={handleEmailLink} className="space-y-4">
               <BackButton onClick={() => { reset(); setMethod("choose"); }} />
-              {error && <ErrorBox message={error} />}
+              {error && <ErrorBox message={error} 
+                actionLabel={noAccount ? "Create account with this email" : undefined}
+                onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
                 <label className="text-sm font-medium text-brand-deep block mb-1.5">
                   Email address
@@ -399,10 +447,27 @@ function BackButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function ErrorBox({ message }: { message: string }) {
+function ErrorBox({
+  message,
+  actionLabel,
+  onAction,
+}: {
+  message: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}) {
   return (
-    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-      {message}
+    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 space-y-2">
+      <p>{message}</p>
+      {actionLabel && onAction && (
+        <button
+          type="button"
+          onClick={onAction}
+          className="w-full py-2 bg-brand text-white rounded-lg text-xs font-semibold hover:bg-brand-deep transition-colors"
+        >
+          {actionLabel}
+        </button>
+      )}
     </div>
   );
 }

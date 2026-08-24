@@ -64,6 +64,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
   const [nameSaved, setNameSaved] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
+  const [duplicates, setDuplicates] = useState<{ method: string; masked: string }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const displayName = nameInput || name || phone || email || "Gift Sender";
@@ -90,6 +91,14 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
         setOrdersLoading(false);
       })
       .catch(() => setOrdersLoading(false));
+  }, []);
+
+  // Duplicate-account detection (e.g. signed up with phone, later with Google)
+  useEffect(() => {
+    fetch("/api/auth/check-duplicates")
+      .then((r) => r.json())
+      .then((data) => setDuplicates(data.duplicates ?? []))
+      .catch(() => {});
   }, []);
 
   const orderCount = orders.length;
@@ -152,6 +161,25 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
 
   return (
     <div className="min-h-screen pb-24">
+      {/* ─── DUPLICATE ACCOUNT WARNING ─── */}
+      {duplicates.length > 0 && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3">
+          <div className="max-w-5xl mx-auto flex items-start gap-3">
+            <span className="text-lg flex-shrink-0">⚠️</span>
+            <div className="text-xs text-amber-800">
+              <p className="font-semibold">You may have another account</p>
+              <p className="mt-0.5">
+                We found {duplicates.length > 1 ? "accounts" : "an account"} sharing your{" "}
+                {duplicates.map((d) => `${d.method} (${d.masked})`).join(" and ")}. Orders and points are
+                separate per account — email{" "}
+                <a href="mailto:info@touchgiftshop.co.ke" className="underline font-medium">info@touchgiftshop.co.ke</a>{" "}
+                to merge them.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ─── HERO HEADER ─── */}
       <div className="card-theme bg-gradient-to-br from-brand-dark via-brand to-brand/80 px-4 pt-10 pb-24">
         <div className="max-w-5xl mx-auto">

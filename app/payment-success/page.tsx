@@ -1,6 +1,7 @@
 import Link from "next/link";
 import PaymentSuccessPinDrop from "@/components/pin-drop/PaymentSuccessPinDrop";
 import BackToHome from "@/components/ui/BackToHome";
+import GuestClaimNudge from "@/components/auth/GuestClaimNudge";
 import dynamic from "next/dynamic";
 
 const PaymentStatusPoller = dynamic(
@@ -85,6 +86,9 @@ export default async function PaymentSuccessPage({
         )}
         <BackToHome label="Back to Home" />
       </div>
+
+      {/* Guest nudge — claim the order by creating an account */}
+      {!isGiftCard && !isPool && <GuestClaimNudge />}
 
       {!isGiftCard && isPinDrop && ref && (
         <PaymentSuccessPinDrop orderId={ref} />

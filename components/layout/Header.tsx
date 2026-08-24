@@ -7,7 +7,8 @@ import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
 import { createClient } from "@/lib/supabase-browser";
-import { ShoppingBag, Bell, Search, X } from "lucide-react";
+import { isGuest } from "@/lib/guest";
+import { ShoppingBag, Bell, Search, X, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import CartBadge from "@/components/layout/CartBadge";
@@ -16,6 +17,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [logoPressed, setLogoPressed] = useState(false);
   const [user, setUser] = useState<{ email?: string | null; phone?: string | null } | null>(null);
+  const [guest, setGuestFlag] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
@@ -31,9 +33,11 @@ export default function Header() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       setUser(data.user ?? null);
+      if (!data.user) setGuestFlag(isGuest());
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (!session?.user) setGuestFlag(isGuest());
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -178,6 +182,16 @@ export default function Header() {
                 aria-label="My account"
               >
                 {(user.email?.[0] ?? user.phone?.[3] ?? "G").toUpperCase()}
+              </Link>
+            ) : guest ? (
+              /* Guest badge */
+              <Link
+                href="/login?next=/account"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 shape-premium-button text-xs font-semibold text-theme-body border border-dashed border-surface-border hover:text-brand hover:border-brand/40 transition-colors flex-shrink-0"
+                aria-label="Guest — sign in for points and saved orders"
+              >
+                <UserRound className="w-3.5 h-3.5" />
+                Guest · Sign in
               </Link>
             ) : (
               <>
