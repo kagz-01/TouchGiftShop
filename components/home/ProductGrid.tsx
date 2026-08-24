@@ -7,7 +7,9 @@ import ProductGridClient from "./ProductGridClient";
 
 async function getProducts(category?: string, budget?: string): Promise<{ products: Product[], hasMore: boolean, count: number }> {
   let query = supabaseAdmin.from("products").select(
-    category ? "*, product_categories!inner(categories!inner(slug))" : "*",
+    category
+      ? "*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)"
+      : "*, product_specs(spec_key, spec_value, icon, sort_order)",
     { count: "exact" }
   );
 

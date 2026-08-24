@@ -63,10 +63,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  try {
+    const channel = supabaseAdmin.channel("catalog-updates");
+    await channel.send({ type: "broadcast", event: "specs-changed", payload: { productId: product_id } });
+  } catch {}
+
   return NextResponse.json({ spec: data }, { status: 201 });
 }
 
-// DELETE /api/admin/products/specs?id=...
+// DELETE /api/admin/products/specs?id=...&product_id=...
 export async function DELETE(req: Request) {
   if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -74,6 +79,7 @@ export async function DELETE(req: Request) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
+  const productId = searchParams.get("product_id");
 
   if (!id) {
     return NextResponse.json({ error: "Spec ID required" }, { status: 400 });
@@ -87,6 +93,11 @@ export async function DELETE(req: Request) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+
+  try {
+    const channel = supabaseAdmin.channel("catalog-updates");
+    await channel.send({ type: "broadcast", event: "specs-changed", payload: { productId } });
+  } catch {}
 
   return NextResponse.json({ success: true });
 }

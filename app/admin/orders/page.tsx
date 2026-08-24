@@ -87,6 +87,9 @@ export default function AdminOrdersPage() {
               <Link href="/admin/orders" className="px-3 py-1.5 rounded-lg text-sm font-medium bg-brand/10 text-brand">
                 Orders
               </Link>
+              <Link href="/admin/bundles" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                Bundles
+              </Link>
               <Link href="/admin/reviews" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Reviews
               </Link>

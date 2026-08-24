@@ -125,6 +125,7 @@ export interface Product {
   seo_description: string | null;
   color_variants: ColorVariant[] | null;
   size_variants: SizeVariant[] | null;
+  product_specs?: { spec_key: string; spec_value: string; icon: string | null; sort_order?: number }[];
 }
 
 export interface WishlistItem {

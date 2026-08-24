@@ -85,6 +85,9 @@ export default function AdminDashboardPage() {
               <Link href="/admin/products" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Products
               </Link>
+              <Link href="/admin/bundles" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                Bundles
+              </Link>
               <Link href="/admin/reviews" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Reviews
               </Link>
