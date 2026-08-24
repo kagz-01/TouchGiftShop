@@ -15,7 +15,7 @@ interface Product {
 
 const FREQUENCIES = ["Weekly", "Bi-weekly", "Monthly", "Quarterly", "Annually"];
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const WHATSAPP_NUMBER = "254700000000"; // TODO: replace with real WhatsApp number
+const WHATSAPP_NUMBER = "254142677898";
 
 export default function BuildSubscriptionPage() {
   const router = useRouter();
@@ -376,7 +376,7 @@ export default function BuildSubscriptionPage() {
                   </a>
 
                   <a
-                    href="tel:+254700000000"
+                    href="tel:+254142677898"
                     className="flex items-center gap-3 bg-surface border border-surface-border rounded-xl p-3.5 hover:border-brand/40 transition-all group"
                   >
                     <div className="w-9 h-9 bg-brand/10 rounded-lg flex items-center justify-center flex-shrink-0">

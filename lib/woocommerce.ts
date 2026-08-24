@@ -39,6 +39,7 @@ export interface WcProduct {
   images: { src: string }[];
   stock_status: "instock" | "outofstock" | "onbackorder";
   categories: WcCategory[];
+  tags: { id: number; name: string }[];
 }
 
 /** Fetches all products, paginating through WooCommerce's 100-per-page cap. */

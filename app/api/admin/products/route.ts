@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import { cookies } from "next/headers";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
+
+function requireAdmin() {
+  const cookieStore = cookies();
+  const session = cookieStore.get("tg_admin_session")?.value;
+  if (!session || session !== process.env.ADMIN_API_KEY) {
+    return false;
+  }
+  return true;
+}
 
 const ProductSchema = z.object({
   name: z.string().min(1).max(200),
@@ -17,11 +27,13 @@ const ProductSchema = z.object({
   is_personalizable: z.boolean().optional(),
   in_stock: z.boolean().optional(),
   categoryIds: z.array(z.string().uuid()).optional(),
-  adminKey: z.string().min(1),
 });
 
 // GET /api/admin/products?search=...&category=...&in_stock=true&limit=50&offset=0
 export async function GET(req: Request) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const { searchParams } = new URL(req.url);
   const search = searchParams.get("search") || "";
   const category = searchParams.get("category");
@@ -61,6 +73,10 @@ export async function GET(req: Request) {
 
 // POST /api/admin/products — create product
 export async function POST(req: Request) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await req.json();
   const parsed = ProductSchema.safeParse(body);
 
@@ -71,11 +87,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { adminKey, categoryIds, ...productData } = parsed.data;
-
-  if (adminKey !== process.env.ADMIN_API_KEY) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { categoryIds, ...productData } = parsed.data;
 
   // Create product
   const { data: product, error } = await supabase
@@ -119,12 +131,12 @@ export async function POST(req: Request) {
 
 // PATCH /api/admin/products — update product (pass id in body)
 export async function PATCH(req: Request) {
-  const body = await req.json();
-  const { id, adminKey, categoryIds, ...updates } = body;
-
-  if (adminKey !== process.env.ADMIN_API_KEY) {
+  if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const body = await req.json();
+  const { id, categoryIds, ...updates } = body;
 
   if (!id) {
     return NextResponse.json({ error: "Product ID required" }, { status: 400 });
@@ -177,15 +189,14 @@ export async function PATCH(req: Request) {
   return NextResponse.json({ success: true });
 }
 
-// DELETE /api/admin/products?id=...&adminKey=...
+// DELETE /api/admin/products?id=...
 export async function DELETE(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
-  const adminKey = searchParams.get("adminKey");
-
-  if (adminKey !== process.env.ADMIN_API_KEY) {
+  if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
 
   if (!id) {
     return NextResponse.json({ error: "Product ID required" }, { status: 400 });

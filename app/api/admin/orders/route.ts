@@ -1,13 +1,26 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+function requireAdmin() {
+  const cookieStore = cookies();
+  const session = cookieStore.get("tg_admin_session")?.value;
+  if (!session || session !== process.env.ADMIN_API_KEY) {
+    return false;
+  }
+  return true;
+}
+
 // GET /api/admin/orders?status=...&limit=50&offset=0
 export async function GET(req: Request) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const limit = Number(searchParams.get("limit")) || 50;

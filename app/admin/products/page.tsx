@@ -133,7 +133,7 @@ export default function AdminProductsPage() {
         const res = await fetch("/api/admin/products", {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingProduct.id, ...form, adminKey: "" }),
+          body: JSON.stringify({ id: editingProduct.id, ...form }),
         });
         if (!res.ok) throw new Error("Failed to update");
       } else {
@@ -158,7 +158,7 @@ export default function AdminProductsPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this product permanently?")) return;
     try {
-      await fetch(`/api/admin/products?id=${id}&adminKey=`, { method: "DELETE" });
+      await fetch(`/api/admin/products?id=${id}`, { method: "DELETE" });
       fetchProducts();
     } catch {
       alert("Failed to delete");
@@ -173,7 +173,6 @@ export default function AdminProductsPage() {
         body: JSON.stringify({
           id: product.id,
           in_stock: !product.in_stock,
-          adminKey: "",
         }),
       });
       fetchProducts();

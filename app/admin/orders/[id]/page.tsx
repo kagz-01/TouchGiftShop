@@ -81,7 +81,7 @@ export default function AdminOrderDetailPage() {
       const res = await fetch(`/api/admin/orders/${orderId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus, adminKey: "" }),
+        body: JSON.stringify({ status: newStatus }),
       });
       if (!res.ok) {
         const data = await res.json();
@@ -103,7 +103,7 @@ export default function AdminOrderDetailPage() {
       const res = await fetch(`/api/orders/${orderId}/dispatch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adminKey: "" }),
+        body: JSON.stringify({}),
       });
       const data = await res.json();
       if (!res.ok) {

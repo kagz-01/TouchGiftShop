@@ -154,3 +154,51 @@ export async function getTransactionStatus(
     amount: data.amount,
   };
 }
+
+/**
+ * Requests a refund via PesaPal API 3.0.
+ *
+ * Limitations:
+ * - Only one refund per payment allowed
+ * - Only COMPLETED mobile payments can be refunded (full amount only)
+ * - PesaPal must approve the refund before funds are returned
+ *
+ * @param confirmationCode - The PesaPal tracking ID (pesapal_tracking_id) from the original payment
+ * @param amount - Amount to refund (must match original for mobile payments)
+ * @param username - Identity of who initiated the refund (admin name)
+ * @param remarks - Reason for the refund
+ */
+export async function refundPayment(
+  confirmationCode: string,
+  amount: number,
+  username: string,
+  remarks: string
+): Promise<{ success: boolean; message: string }> {
+  const token = await getAccessToken();
+
+  const res = await fetch(`${PESAPAL_BASE}/api/Transactions/RefundRequest`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      confirmation_code: confirmationCode,
+      amount,
+      username,
+      remarks,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (data.error === 200) {
+    return { success: true, message: data.message || "Refund submitted" };
+  }
+
+  return {
+    success: false,
+    message: data.message || `Refund failed (error: ${data.error})`,
+  };
+}

@@ -1,21 +1,31 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+function requireAdmin() {
+  const cookieStore = cookies();
+  const session = cookieStore.get("tg_admin_session")?.value;
+  if (!session || session !== process.env.ADMIN_API_KEY) {
+    return false;
+  }
+  return true;
+}
+
 // PATCH /api/admin/orders/[id] — update order status
 export async function PATCH(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { status, adminKey } = await req.json();
-
-  if (adminKey !== process.env.ADMIN_API_KEY) {
+  if (!requireAdmin()) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const { status } = await req.json();
 
   const validStatuses = [
     "pending_payment",

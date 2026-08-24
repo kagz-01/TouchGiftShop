@@ -8,9 +8,8 @@ import sharp from "sharp";
  * app/api/sync/woocommerce/webhook/route.ts (live updates from wp-admin).
  *
  * Notes on the mapping:
- * - `is_personalizable` has no WooCommerce equivalent — defaults to false.
- *   TODO: map from a WooCommerce product tag (e.g. "personalizable") once
- *   staff start using one, or add a custom field via ACF.
+ * - `is_personalizable` is mapped from WooCommerce tag "personalizable".
+ *   If the product has this tag, it's marked as personalizable.
  * - Narrative categories (Apology, Milestone, Just Because) don't need to
  *   exist in WooCommerce — they can stay as TouchGift-only categories,
  *   assigned manually in Supabase or layered on top of the synced ones.
@@ -29,6 +28,11 @@ export async function syncProductToSupabase(wcProduct: WcProduct) {
     }
   }
 
+  // Check if product has "personalizable" tag in WooCommerce
+  const isPersonalizable = wcProduct.tags?.some(
+    (t) => t.name.toLowerCase() === "personalizable"
+  ) ?? false;
+
   const { data: product, error: productError } = await supabaseAdmin
     .from("products")
     .upsert(
@@ -40,6 +44,7 @@ export async function syncProductToSupabase(wcProduct: WcProduct) {
         price: parseFloat(wcProduct.price || "0"),
         image_url: imageUrl,
         in_stock: wcProduct.stock_status === "instock",
+        is_personalizable: isPersonalizable,
         synced_at: new Date().toISOString(),
       },
       { onConflict: "woocommerce_id" }

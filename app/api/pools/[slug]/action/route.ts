@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
+import { refundPayment } from "@/lib/payment";
 
 const CloseSchema = z.object({
   action: z.enum(["refund", "extend", "downgrade", "place_order"]),
@@ -42,7 +43,15 @@ export async function POST(
 
   switch (action) {
     case "refund": {
-      // Mark all contributions for refund and cancel pool
+      // Fetch all contributions with PesaPal tracking IDs
+      const { data: contributions } = await supabaseAdmin
+        .from("pool_contributions")
+        .select("id, amount, pesapal_tracking_id, contributor_name")
+        .eq("pool_id", pool.id)
+        .eq("is_verified", true)
+        .not("pesapal_tracking_id", "is", null);
+
+      // Mark pool as refunded
       await supabaseAdmin
         .from("group_gifting_pools")
         .update({ status: "refunded", closed_at: new Date().toISOString() })
@@ -56,8 +65,34 @@ export async function POST(
         await supabaseAdmin.from("user_metrics").insert({ user_id: user.id, trust_score: 90 });
       }
 
-      // TODO: trigger PesaPal refund API per contribution
-      return NextResponse.json({ success: true, message: "Pool cancelled. Refunds will be processed within 3-5 business days." });
+      // Process refunds via PesaPal
+      const refundResults: { id: string; success: boolean; message: string }[] = [];
+      for (const c of contributions ?? []) {
+        const result = await refundPayment(
+          c.pesapal_tracking_id!,
+          Number(c.amount),
+          user.email || user.id,
+          `Refund for pool: ${pool.title}`
+        );
+        refundResults.push({ id: c.id, ...result });
+
+        // Update contribution status
+        await supabaseAdmin
+          .from("pool_contributions")
+          .update({ payment_method: result.success ? "refunded" : "refund_failed" })
+          .eq("id", c.id);
+      }
+
+      const succeeded = refundResults.filter(r => r.success).length;
+      const failed = refundResults.filter(r => !r.success).length;
+
+      return NextResponse.json({
+        success: true,
+        message: failed > 0
+          ? `${succeeded} of ${refundResults.length} refunds submitted. ${failed} failed — check contribution details.`
+          : `${succeeded} refunds submitted. Processing takes 3-5 business days.`,
+        refundResults,
+      });
     }
 
     case "extend": {
