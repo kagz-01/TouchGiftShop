@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-browser";
 import { cn, formatKsh } from "@/lib/utils";
+import { clearGuest } from "@/lib/guest";
 import { getLoyaltyTier, getNextTier, LOYALTY_TIERS, TIER_LIST } from "@/lib/loyalty";
 import {
   User, ShoppingBag, Gift, Settings, ChevronRight,
@@ -59,18 +60,37 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
   const [orders, setOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
-  const [editingName, setEditingName] = useState(false);
-  const [nameInput, setNameInput] = useState(name ?? "");
-  const [nameSaved, setNameSaved] = useState(false);
+  // Account page is server-protected: only signed-in users reach this component,
+  // so profile is never in guest mode here. Any lingering flag is cleared below.
+  const isUserGuest = false;
+
+  // ── DB-backed profile (profiles table via /api/profile) ──
+  type ProfileField = "full_name" | "username" | "phone" | "email";
+  type ProfileData = Record<ProfileField, string>;
+  const [profile, setProfile] = useState<ProfileData>({
+    full_name: name ?? "",
+    username: "",
+    phone: phone ?? "",
+    email: email ?? "",
+  });
+  const [editingField, setEditingField] = useState<ProfileField | null>(null);
+  const [fieldInput, setFieldInput] = useState("");
+  const [fieldError, setFieldError] = useState("");
+  const [fieldSaving, setFieldSaving] = useState(false);
+  const [savedField, setSavedField] = useState<ProfileField | null>(null);
+
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(avatarUrl);
   const [duplicates, setDuplicates] = useState<{ method: string; masked: string }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const displayName = nameInput || name || phone || email || "Gift Sender";
+  const displayName = profile.full_name || profile.username || profile.phone || profile.email || "Gift Sender";
   const initials = displayName.slice(0, 2).toUpperCase();
 
   useEffect(() => {
+    // This component only renders for authenticated users — the guest flag
+    // is stale if present (e.g. set before a Google/magic-link sign-in).
+    clearGuest();
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       const meta = data.user?.user_metadata ?? {};
@@ -81,6 +101,25 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
         supabase.auth.updateUser({ data: { referral_code: code } });
       }
     });
+  }, [userId]);
+
+  // Load DB profile (auto-creates the row on first visit)
+  useEffect(() => {
+    fetch("/api/profile")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.profile) {
+          const p = data.profile;
+          setProfile({
+            full_name: p.full_name ?? name ?? "",
+            username: p.username ?? "",
+            phone: p.phone ?? phone ?? "",
+            email: p.email ?? email ?? "",
+          });
+        }
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   useEffect(() => {
@@ -111,12 +150,50 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
     ? Math.min(100, Math.round((orderCount / nextTier.minOrders) * 100))
     : 100;
 
-  async function saveName() {
-    const supabase = createClient();
-    await supabase.auth.updateUser({ data: { full_name: nameInput } });
-    setNameSaved(true);
-    setEditingName(false);
-    setTimeout(() => setNameSaved(false), 2000);
+  function startEdit(field: ProfileField) {
+    setEditingField(field);
+    setFieldInput(profile[field]);
+    setFieldError("");
+  }
+
+  function cancelEdit() {
+    setEditingField(null);
+    setFieldInput("");
+    setFieldError("");
+  }
+
+  async function saveField() {
+    if (!editingField) return;
+    const field = editingField;
+    setFieldSaving(true);
+    setFieldError("");
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: fieldInput }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setFieldError(data.error ?? "Could not save. Please try again.");
+        return;
+      }
+      if (data.profile) {
+        setProfile({
+          full_name: data.profile.full_name ?? "",
+          username: data.profile.username ?? "",
+          phone: data.profile.phone ?? "",
+          email: data.profile.email ?? "",
+        });
+      }
+      setEditingField(null);
+      setSavedField(field);
+      setTimeout(() => setSavedField(null), 2000);
+    } catch {
+      setFieldError("Network error. Please try again.");
+    } finally {
+      setFieldSaving(false);
+    }
   }
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -184,12 +261,20 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
       <div className="card-theme bg-gradient-to-br from-brand-dark via-brand to-brand/80 px-4 pt-10 pb-24">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Shop
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-2 transition-all">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Home
+              </Link>
+              <Link href="/shop" className="inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 rounded-full px-4 py-2 transition-all">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                Back to Shop
+              </Link>
+            </div>
           </div>
 
           <div className="flex items-center gap-5">
@@ -269,53 +354,70 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
             {/* ═══════════ PROFILE TAB ═══════════ */}
             {activeSection === "profile" && (
               <div className="space-y-5 animate-fade-in">
-                {/* Name editing */}
+                {/* Profile fields — all DB-backed via /api/profile */}
                 <div className="card-theme rounded-2xl border border-surface-border shadow-card p-6">
                   <h2 className="font-display font-bold text-brand-deep text-lg mb-5">Your Profile</h2>
                   <div className="space-y-4">
-                    {/* Display name */}
-                    <div>
-                      <label className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-2 block">Display Name</label>
-                      {editingName ? (
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            value={nameInput}
-                            onChange={(e) => setNameInput(e.target.value)}
-                            autoFocus
-                            className="flex-1 border border-surface-border rounded-xl px-4 py-2.5 text-sm font-semibold text-brand-deep focus:outline-none focus:border-brand"
-                          />
-                          <button onClick={saveName} className="px-4 py-2.5 bg-brand text-white rounded-xl text-sm font-bold hover:bg-brand-dark transition-colors">
-                            Save
-                          </button>
-                          <button onClick={() => { setEditingName(false); setNameInput(name ?? ""); }} className="px-4 py-2.5 bg-surface text-brand-muted rounded-xl text-sm font-bold">
-                            Cancel
-                          </button>
+                    {([
+                      { field: "full_name", label: "Display Name", type: "text", placeholder: "e.g. Jane Wanjiru", hint: "Shown to recipients (unless Anonymous Mode is on)", prefix: "" },
+                      { field: "username", label: "Username", type: "text", placeholder: "e.g. jane_w", hint: "3-30 characters — letters, numbers, underscores", prefix: "@" },
+                      { field: "phone", label: "Phone Number", type: "tel", placeholder: "07XX XXX XXX", hint: "Used for delivery coordination", prefix: "" },
+                      { field: "email", label: "Email", type: "email", placeholder: "you@example.com", hint: "Changing it sends a confirmation link to your new inbox", prefix: "" },
+                    ]).map(({ field, label, type, placeholder, hint, prefix }) => {
+                      const isEditing = editingField === field;
+                      const value = profile[field as ProfileField];
+                      return (
+                        <div key={field}>
+                          <label className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-2 block">{label}</label>
+                          {isEditing ? (
+                            <div className="space-y-2">
+                              <div className="flex gap-2">
+                                <div className="flex-1 flex items-center border-2 border-brand/40 rounded-xl overflow-hidden bg-white">
+                                  {prefix && <span className="pl-4 text-sm font-semibold text-brand-muted">{prefix}</span>}
+                                  <input
+                                    type={type}
+                                    value={fieldInput}
+                                    onChange={(e) => setFieldInput(e.target.value)}
+                                    onKeyDown={(e) => { if (e.key === "Enter") saveField(); if (e.key === "Escape") cancelEdit(); }}
+                                    autoFocus
+                                    placeholder={placeholder}
+                                    disabled={fieldSaving}
+                                    className="flex-1 px-4 py-2.5 text-sm font-semibold text-brand-deep focus:outline-none disabled:opacity-60"
+                                  />
+                                </div>
+                                <button
+                                  onClick={saveField}
+                                  disabled={fieldSaving || !fieldInput.trim()}
+                                  className="px-4 py-2.5 bg-brand text-white rounded-xl text-sm font-bold hover:bg-brand-dark transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                                >
+                                  {fieldSaving && <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+                                  Save
+                                </button>
+                                <button onClick={cancelEdit} disabled={fieldSaving} className="px-4 py-2.5 bg-surface text-brand-muted rounded-xl text-sm font-bold hover:text-brand-deep transition-colors">
+                                  Cancel
+                                </button>
+                              </div>
+                              {fieldError && <p className="text-xs text-red-600 font-medium flex items-center gap-1">⚠ {fieldError}</p>}
+                              <p className="text-[11px] text-brand-muted">{hint}</p>
+                            </div>
+                          ) : (
+                            <div className="flex items-center justify-between bg-surface rounded-xl px-4 py-3">
+                              <span className={cn("text-sm font-semibold text-brand-deep", !value && "text-brand-muted font-normal")}>
+                                {prefix}{value || "Not set"}
+                              </span>
+                              <button onClick={() => startEdit(field as ProfileField)} className="text-xs text-brand hover:text-brand-dark font-bold">
+                                {value ? "Edit" : "Add"}
+                              </button>
+                            </div>
+                          )}
+                          {savedField === field && (
+                            <p className="text-xs text-green-600 font-medium mt-1 flex items-center gap-1">
+                              <Check className="w-3 h-3" /> {field === "email" ? "Check your new inbox to confirm" : "Saved!"}
+                            </p>
+                          )}
                         </div>
-                      ) : (
-                        <div className="flex items-center justify-between bg-surface rounded-xl px-4 py-3">
-                          <span className="text-sm font-semibold text-brand-deep">{nameInput || "Not set"}</span>
-                          <button onClick={() => setEditingName(true)} className="text-xs text-brand hover:text-brand-dark font-bold">Edit</button>
-                        </div>
-                      )}
-                      {nameSaved && <p className="text-xs text-green-600 font-medium mt-1 flex items-center gap-1"><Check className="w-3 h-3" /> Name saved!</p>}
-                    </div>
-
-                    {/* Phone */}
-                    <div>
-                      <label className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-2 block">Phone</label>
-                      <div className="flex items-center justify-between bg-surface rounded-xl px-4 py-3">
-                        <span className="text-sm font-semibold text-brand-deep">{phone ?? "Not set"}</span>
-                      </div>
-                    </div>
-
-                    {/* Email */}
-                    <div>
-                      <label className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-2 block">Email</label>
-                      <div className="flex items-center justify-between bg-surface rounded-xl px-4 py-3">
-                        <span className="text-sm font-semibold text-brand-deep">{email ?? "Not set"}</span>
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -472,19 +574,10 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                     )}
                   </div>
 
-                  {/* Benefits */}
-                  <div className="px-6 pb-6">
-                    <p className="text-xs font-bold text-brand-muted uppercase tracking-wider mb-3">Your {tier.name} benefits</p>
-                    <div className="space-y-2">
-                      {tier.perks.map((b: string) => (
-                        <div key={b} className="flex items-center gap-2 text-sm">
-                          <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: tier.color + "22" }}>
-                            <Check className="w-3 h-3" style={{ color: tier.color }} />
-                          </div>
-                          <span className="text-brand-deep">{b}</span>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="p-6 bg-surface border-t border-surface-border">
+                    <Link href="/loyalty" className="w-full flex items-center justify-center gap-2 py-3 bg-brand text-white font-bold rounded-xl shadow-button hover:bg-brand-dark transition-colors">
+                      <Star className="w-5 h-5" /> View Points Dashboard
+                    </Link>
                   </div>
                 </div>
 

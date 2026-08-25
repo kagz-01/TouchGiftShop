@@ -1352,3 +1352,64 @@ CREATE TABLE hamper_bundle_items (
 );
 
 CREATE INDEX idx_hamper_bundle_items_bundle ON hamper_bundle_items(bundle_id);
+
+-- ---------------------------------------------------------------------
+-- User Profiles — editable account details (name, username, phone, email)
+-- ---------------------------------------------------------------------
+
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    username VARCHAR(30) UNIQUE,
+    full_name VARCHAR(120),
+    phone VARCHAR(20) UNIQUE,
+    email VARCHAR(255),
+    avatar_url TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT username_format CHECK (username IS NULL OR username ~ '^[a-zA-Z0-9_]{3,30}$'),
+    CONSTRAINT phone_format CHECK (phone IS NULL OR phone ~ '^\+?[0-9]{7,15}$')
+);
+
+CREATE INDEX idx_profiles_username ON profiles(username);
+CREATE INDEX idx_profiles_phone ON profiles(phone);
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "profiles_select_own" ON profiles
+    FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "profiles_insert_own" ON profiles
+    FOR INSERT WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "profiles_update_own" ON profiles
+    FOR UPDATE USING (auth.uid() = id);
+
+CREATE POLICY "profiles_delete_own" ON profiles
+    FOR DELETE USING (auth.uid() = id);
+
+-- Auto-create a profile whenever a new auth user signs up,
+-- seeding from their auth metadata/identity data.
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, username, full_name, phone, email, avatar_url)
+  VALUES (
+    NEW.id,
+    NEW.raw_user_meta_data->>'username',
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name'),
+    NEW.phone,
+    NEW.email,
+    NEW.raw_user_meta_data->>'avatar_url'
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+CREATE TRIGGER update_profiles_updated_at
+    BEFORE UPDATE ON profiles
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
