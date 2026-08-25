@@ -167,17 +167,25 @@ export function HeroCinematic() {
   useEffect(() => { setLoaded(true); }, []);
 
   const PRODUCTS = [
-    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1577212017184-80cc0da11082?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1554522851-140b2b801a61?q=80&w=600&auto=format&fit=crop",
+    "/Hero/3-luxury-gifts-in-1-box.webp",
+    "/Hero/chocolates.webp",
+    "/Hero/flowers-chocolate.webp",
+    "/Hero/perfume-bouquet.webp",
+    "/Hero/perfume-hamper.webp",
+    "/Hero/couple-jewelry.webp",
+    "/Hero/glow-in-the-dark-necklace-and-bracelet-set-color-black-silver-size-os.webp",
+    "/Hero/Luxury-Packaging_3.webp",
   ];
 
   const LIFESTYLE = [
-    "https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1525026198548-4baa0d203f19?q=80&w=600&auto=format&fit=crop",
+    "/Hero/jearsy.webp",
+    "/Hero/caps.webp",
+    "/Hero/shades.webp",
+    "/Hero/bags.webp",
+    "/Hero/runners-gifts.webp",
+    "/Hero/gymn-hamper.webp",
+    "/Hero/women-set.webp",
+    "/Hero/saudades-pai.webp",
   ];
 
   return (
@@ -286,10 +294,7 @@ export function HeroCinematic() {
           </div>
 
           {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-brand-deep/5 dark:bg-white/5 backdrop-blur-md border border-brand-deep/10 dark:border-white/10 shadow-2xl transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            {/* Soft gradient masks to fade top and bottom edges smoothly */}
-            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#FFF9F0] dark:from-[#1A1A2E]/80 to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#FFF9F0] dark:from-[#1A1A2E]/80 to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
+          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             
             {/* Column 1: Premium Products (Scrolling Up) */}
             <div className="flex-1 relative">

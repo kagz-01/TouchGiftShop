@@ -4,25 +4,30 @@ import Link from "next/link";
 
 export default function HeroSection() {
   const PRODUCTS = [
-    "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1577212017184-80cc0da11082?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1554522851-140b2b801a61?q=80&w=600&auto=format&fit=crop",
+    "/Hero/3-luxury-gifts-in-1-box.webp",
+    "/Hero/chocolates.webp",
+    "/Hero/flowers-chocolate.webp",
+    "/Hero/perfume-bouquet.webp",
+    "/Hero/perfume-hamper.webp",
+    "/Hero/couple-jewelry.webp",
+    "/Hero/glow-in-the-dark-necklace-and-bracelet-set-color-black-silver-size-os.webp",
+    "/Hero/Luxury-Packaging_3.webp",
   ];
 
   const LIFESTYLE = [
-    "https://images.unsplash.com/photo-1530103043960-ef38714abb15?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1511895426328-dc8714191300?q=80&w=600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1525026198548-4baa0d203f19?q=80&w=600&auto=format&fit=crop",
+    "/Hero/jearsy.webp",
+    "/Hero/caps.webp",
+    "/Hero/shades.webp",
+    "/Hero/bags.webp",
+    "/Hero/runners-gifts.webp",
+    "/Hero/gymn-hamper.webp",
+    "/Hero/women-set.webp",
+    "/Hero/saudades-pai.webp",
   ];
 
   return (
     <section className="relative overflow-hidden bg-gradient-warm">
-      {/* Decorative Elements */}
-      <div className="absolute top-10 left-10 w-20 h-20 bg-gold/20 rounded-full blur-2xl animate-float" />
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-brand/10 rounded-full blur-3xl animate-float" style={{ animationDelay: "2s" }} />
-      <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-coral/10 rounded-full blur-xl animate-float" style={{ animationDelay: "4s" }} />
+      {/* Decorative Elements — kept subtle, no blur on image area */}
 
       <div className="w-full page-container-capped py-12 md:py-20">
         <div className="grid md:grid-cols-2 gap-8 xl:gap-12 items-center">
@@ -95,10 +100,8 @@ export default function HeroSection() {
           </div>
 
           {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className="relative h-[550px] hidden lg:flex gap-4 overflow-hidden rounded-[2.5rem] p-4 bg-white/40 backdrop-blur-sm border border-white/50 shadow-sm animate-fade-in-up animate-delay-300">
-            {/* Soft gradient masks to fade top and bottom edges smoothly */}
-            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-surface-warm to-transparent z-10 pointer-events-none rounded-t-[2.5rem]" />
-            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-surface-warm to-transparent z-10 pointer-events-none rounded-b-[2.5rem]" />
+          <div className="relative h-[550px] hidden lg:flex gap-4 overflow-hidden rounded-[2.5rem] animate-fade-in-up animate-delay-300">
+            {/* Columns wrapper */}
             
             {/* Column 1: Premium Products (Scrolling Up) */}
             <div className="flex-1 relative">
