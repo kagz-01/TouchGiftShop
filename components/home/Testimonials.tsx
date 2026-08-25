@@ -162,10 +162,17 @@ export default function Testimonials() {
 
         {/* Carousel */}
         <div className="relative group">
+          {/* Left fade mask - light */}
+          <div className="absolute left-0 top-0 bottom-0 w-28 z-20 pointer-events-none rounded-l-xl"
+            style={{ background: "linear-gradient(to right, #FDF8F0 30%, transparent 100%)" }} />
+          {/* Right fade mask - light */}
+          <div className="absolute right-0 top-0 bottom-0 w-28 z-20 pointer-events-none rounded-r-xl"
+            style={{ background: "linear-gradient(to left, #FDF8F0 30%, transparent 100%)" }} />
+
           {canScrollLeft && (
             <button
               onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-10 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-30 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -176,7 +183,7 @@ export default function Testimonials() {
           {canScrollRight && (
             <button
               onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-10 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-30 w-10 h-10 rounded-full card-theme flex items-center justify-center text-theme-body hover:text-brand transition-all opacity-0 group-hover:opacity-100"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

@@ -141,14 +141,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Credit the referred user with KSh 500 bonus
-  await supabaseAdmin.from("referral_credits").insert({
-    user_id: user.id,
-    amount: 500.00,
-    source: "referral_signup",
-    referral_id: referral.id,
-    expires_at: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
-  });
+  // NOTE: We no longer credit KSh 500 immediately. Both users are awarded
+  // points (via loyalty_points) only when the referred user makes their first
+  // qualifying order (handled in /api/payment/ipn/route.ts).
 
   return NextResponse.json({ success: true, referral });
 }

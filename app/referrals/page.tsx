@@ -50,26 +50,26 @@ export default function ReferralsPage() {
       .catch(() => setLoading(false));
   }, []);
 
-  function handleCopy() {
+  function handleCopyCode() {
     if (!data) return;
     navigator.clipboard?.writeText(data.referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
-  async function handleShare() {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Join TouchGift",
-          text: shareText,
-        });
-      } catch {}
-    } else {
-      navigator.clipboard?.writeText(shareText);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+  const [linkCopied, setLinkCopied] = useState(false);
+  function handleCopyLink() {
+    if (!data) return;
+    const link = `${window.location.origin}/ref/${data.referralCode}`;
+    navigator.clipboard?.writeText(link);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  }
+
+  function handleShare() {
+    const text = encodeURIComponent(shareText);
+    // Directly open WhatsApp
+    window.open(`https://wa.me/?text=${text}`, "_blank");
   }
 
   if (loading) {
@@ -120,10 +120,14 @@ export default function ReferralsPage() {
     <div className="min-h-screen section-theme-e">
       <div className="page-container-capped py-6 md:py-10 max-w-2xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <Link href="/account" className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors">
             <ArrowLeft className="w-4 h-4" /> Account
           </Link>
+          <div className="flex items-center gap-4 text-sm font-semibold">
+            <Link href="/" className="text-theme-muted hover:text-brand transition-colors">Home</Link>
+            <Link href="/shop" className="text-brand hover:text-brand-dark transition-colors">Go to Shop</Link>
+          </div>
         </div>
 
         {/* Hero */}
@@ -140,7 +144,7 @@ export default function ReferralsPage() {
             <div className="flex items-center justify-center gap-3">
               <span className="font-mono text-2xl font-bold tracking-wider">{data.referralCode}</span>
               <button
-                onClick={handleCopy}
+                onClick={handleCopyCode}
                 className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -158,10 +162,11 @@ export default function ReferralsPage() {
               Share via WhatsApp
             </button>
             <button
-              onClick={handleCopy}
-              className="px-4 py-3 bg-white/10 rounded-xl font-semibold text-sm hover:bg-white/20 transition-colors"
+              onClick={handleCopyLink}
+              className="px-4 py-3 bg-white/10 rounded-xl font-semibold text-sm hover:bg-white/20 transition-colors w-32 flex items-center justify-center gap-2"
             >
-              Copy Link
+              {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {linkCopied ? "Copied" : "Copy Link"}
             </button>
           </div>
         </div>

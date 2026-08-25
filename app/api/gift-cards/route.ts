@@ -13,7 +13,7 @@ function generateCode(): string {
 }
 
 const PurchaseInput = z.object({
-  amount: z.number().positive(),
+  amount: z.number().min(500, "Minimum amount is KSh 500"),
   senderName: z.string().min(1),
   recipientName: z.string().min(1),
   recipientPhone: z.string().optional(),
