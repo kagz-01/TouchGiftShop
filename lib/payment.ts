@@ -74,7 +74,7 @@ export async function createPaymentOrder(params: {
   name?: string;
 }): Promise<{ orderTrackingId: string; redirectUrl: string }> {
   const token = await getAccessToken();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.ac.ke";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 
   const res = await fetch(`${PESAPAL_BASE}/api/Transactions/SubmitOrderRequest`, {
     method: "POST",
