@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Users, Settings, Eye, Share2, CheckCircle2,
   ChevronRight, ChevronLeft, Upload, Calendar, Lock,
-  Globe, Sparkles, Target, ArrowRight
+  Globe, Sparkles, Target, ArrowRight, UserRound
 } from "lucide-react";
 
 // ─── Step config ────────────────────────────────────────────────────────────
@@ -424,6 +425,15 @@ export default function CreatePoolPage() {
   const [poolSlug, setPoolSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [authState, setAuthState] = useState<"loading" | "signed_in" | "anonymous">("loading");
+
+  // Pool creation is an account feature — guests can contribute but not organise
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setAuthState(data.user ? "signed_in" : "anonymous");
+    });
+  }, []);
 
   const set = useCallback((key: keyof WizardData, value: unknown) => {
     setData(prev => ({ ...prev, [key]: value }));
@@ -482,6 +492,51 @@ export default function CreatePoolPage() {
   };
 
   const currentStep = STEPS[step - 1];
+
+  // ─── Sign-in gate: organising a pool requires an account ───
+  if (authState === "loading") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (authState === "anonymous") {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4] flex items-center justify-center px-4">
+        <div className="max-w-md w-full bg-white rounded-3xl border border-black/6 shadow-sm p-8 text-center space-y-5">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-brand/10 flex items-center justify-center">
+            <UserRound className="w-7 h-7 text-brand" />
+          </div>
+          <div>
+            <h1 className="font-display text-xl font-bold text-brand-deep">An account is needed to organise a pool</h1>
+            <p className="text-sm text-brand-muted mt-2">
+              You&apos;ll be the organiser — you pick the gift, invite contributors and track progress. Anyone can contribute to a pool without an account.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            <a
+              href="/login?mode=signup&next=/pool/create"
+              className="w-full bg-brand text-white font-bold text-sm py-3 rounded-xl hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5 transition-all"
+            >
+              Create account
+            </a>
+            <a
+              href="/login?next=/pool/create"
+              className="w-full bg-white text-brand-deep border border-surface-border font-bold text-sm py-3 rounded-xl hover:border-brand/40 transition-colors"
+            >
+              Sign in
+            </a>
+          </div>
+          <p className="text-xs text-brand-muted">
+            Want to contribute to someone&apos;s pool instead?{" "}
+            <button onClick={() => router.push("/pool")} className="text-brand underline font-semibold">Browse pools</button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4]">

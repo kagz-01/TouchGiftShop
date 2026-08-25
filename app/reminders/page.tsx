@@ -41,6 +41,7 @@ function daysUntil(date: string | null): number {
 export default function RemindersDashboard() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(true);
+  const [needsAuth, setNeedsAuth] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams()!;
@@ -62,6 +63,11 @@ export default function RemindersDashboard() {
     fetch("/api/reminders")
       .then((r) => r.json())
       .then((data) => {
+        if (data.error === "Not authenticated") {
+          setNeedsAuth(true);
+          setLoading(false);
+          return;
+        }
         setReminders(data.reminders ?? []);
         setLoading(false);
       })
@@ -99,6 +105,26 @@ export default function RemindersDashboard() {
 
   const upcomingOccasions = occasions.filter((r) => daysUntil(r.occasion_date) >= 0).sort((a, b) => daysUntil(a.occasion_date) - daysUntil(b.occasion_date));
   const pastOccasions = occasions.filter((r) => daysUntil(r.occasion_date) < 0);
+
+  if (needsAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
+        <div className="text-center max-w-sm card-theme rounded-3xl p-10 border border-surface-border shadow-soft">
+          <div className="w-16 h-16 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg className="w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <h1 className="font-display text-xl font-bold text-brand-deep mb-2">Sign in to see your reminders</h1>
+          <p className="text-sm text-brand-muted mb-6">Never miss a birthday or anniversary — reminders are saved to your account.</p>
+          <div className="flex gap-3 justify-center">
+            <Link href="/login?next=/reminders" className="px-6 py-3 bg-brand text-white rounded-2xl font-semibold text-sm hover:bg-brand-dark transition-colors">Sign in</Link>
+            <Link href="/login?mode=signup&next=/reminders" className="px-6 py-3 border border-surface-border text-brand-deep rounded-2xl font-semibold text-sm hover:border-brand/40 transition-colors">Create account</Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-warm pb-20">

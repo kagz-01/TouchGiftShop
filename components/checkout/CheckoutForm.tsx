@@ -7,8 +7,10 @@ import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { maxRedeemablePoints, pointsDiscountKsh, pointsToKsh, MIN_REDEEM_POINTS, POINTS_PER_KSH_REDEEM } from "@/lib/points";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
-import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown } from "lucide-react";
+import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound } from "lucide-react";
 import type { CartItem } from "@/lib/cart";
+import { createClient } from "@/lib/supabase-browser";
+import { isGuest, setGuest } from "@/lib/guest";
 
 type Step = "form" | "redirecting" | "error";
 
@@ -105,6 +107,11 @@ export default function CheckoutForm({
   }>>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 
+  // Auth prompt — account vs guest split at checkout
+  const [authState, setAuthState] = useState<"loading" | "signed_in" | "anonymous">("loading");
+  const [guestMode, setGuestMode] = useState(false);
+  const [promptDismissed, setPromptDismissed] = useState(false);
+
   // Load cart items from localStorage
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -176,6 +183,29 @@ export default function CheckoutForm({
       .then((data) => setSavedAddresses(data.addresses ?? []))
       .catch(() => {});
   }, []);
+
+  // Detect auth state for the checkout prompt
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) setAuthState("signed_in");
+      else {
+        setAuthState("anonymous");
+        setGuestMode(isGuest());
+      }
+    });
+  }, []);
+
+  const loginNext =
+    typeof window !== "undefined"
+      ? encodeURIComponent(window.location.pathname + window.location.search)
+      : "/checkout";
+
+  function chooseGuest() {
+    setGuest();
+    setGuestMode(true);
+    setPromptDismissed(true);
+  }
 
   // Gift card lookup
   async function lookupGiftCard(code: string) {
@@ -431,6 +461,61 @@ export default function CheckoutForm({
             <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-600 flex items-start gap-3">
               <span className="text-lg flex-shrink-0">⚠️</span>
               <p>{errorMessage}</p>
+            </div>
+          )}
+
+          {/* SECTION: Account prompt — create account, sign in, or continue as guest */}
+          {authState === "anonymous" && !promptDismissed && !guestMode && (
+            <div className="bg-gradient-to-br from-brand/[0.06] to-gold/[0.08] rounded-3xl border border-brand/15 shadow-sm p-6 space-y-4">
+              <div className="flex items-start gap-3">
+                <span className="w-10 h-10 rounded-2xl bg-brand/10 flex items-center justify-center flex-shrink-0">
+                  <UserRound className="w-5 h-5 text-brand" />
+                </span>
+                <div>
+                  <h2 className="font-display font-bold text-brand-deep">Checkout with an account?</h2>
+                  <p className="text-sm text-brand-muted mt-0.5">You can order without one — but accounts unlock the full experience.</p>
+                </div>
+              </div>
+              <ul className="space-y-1.5 text-sm text-brand-deep">
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" /> Earn loyalty points &amp; tier discounts on every order</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" /> Full order history &amp; delivery tracking</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600 flex-shrink-0" /> Saved addresses, reminders &amp; referral earnings</li>
+              </ul>
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
+                <a
+                  href={`/login?mode=signup&next=${loginNext}`}
+                  className="flex-1 text-center bg-brand text-white font-bold text-sm py-3 rounded-xl hover:bg-brand-dark hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                >
+                  Create account
+                </a>
+                <a
+                  href={`/login?next=${loginNext}`}
+                  className="flex-1 text-center bg-white text-brand-deep border border-surface-border font-bold text-sm py-3 rounded-xl hover:border-brand/40 transition-colors"
+                >
+                  Sign in
+                </a>
+              </div>
+              <button
+                type="button"
+                onClick={chooseGuest}
+                className="w-full text-center text-sm font-semibold text-brand-muted hover:text-brand py-1 transition-colors"
+              >
+                Continue as guest → <span className="font-normal text-brand-muted/70">order without an account (no points or history)</span>
+              </button>
+            </div>
+          )}
+
+          {/* Guest mode banner — minimum functionality notice */}
+          {authState === "anonymous" && guestMode && (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 text-xs text-amber-800 flex items-start justify-between gap-3">
+              <p>
+                <span className="font-bold">Guest checkout.</span> Your order will be delivered, but it won&apos;t earn points or appear in order history.{" "}
+                <a href={`/login?next=${loginNext}`} className="underline font-semibold">Sign in</a> or{" "}
+                <a href={`/login?mode=signup&next=${loginNext}`} className="underline font-semibold">create an account</a> for the full experience.
+              </p>
+              <button type="button" onClick={() => setPromptDismissed(true)} className="text-amber-500 hover:text-amber-700 flex-shrink-0" aria-label="Dismiss">
+                ✕
+              </button>
             </div>
           )}
 

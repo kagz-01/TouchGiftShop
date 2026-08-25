@@ -45,8 +45,12 @@ const CreatePoolSchema = z.object({
 export async function POST(req: Request) {
   const supabase = createServerSupabase();
 
-  // Organiser must be logged in
+  // Organiser must be logged in — pool creation is an account feature
+  // (guests/anonymous users can still contribute to any pool).
   const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
 
   const body = await req.json();
   const parsed = CreatePoolSchema.safeParse(body);
@@ -72,8 +76,8 @@ export async function POST(req: Request) {
   const { data: pool, error } = await supabase
     .from("group_gifting_pools")
     .insert({
-      organiser_user_id: user?.id ?? null,
-      creator_id: user?.id ?? null,
+      organiser_user_id: user.id,
+      creator_id: user.id,
       recipient_name: d.recipientName,
       recipient_photo_url: d.recipientPhotoUrl ?? null,
       occasion: d.occasion ?? null,
