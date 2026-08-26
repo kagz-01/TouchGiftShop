@@ -81,7 +81,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Not sure what to send?",
         description: "Tell T-Gifter who it's for and your budget. AI finds the perfect gift in seconds.",
-        image: "/logo.webp",
+        image: "/logo/logo.webp",
         href: "/gift-finder",
       },
     ],
@@ -121,7 +121,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Build the Perfect Hamper",
         description: "Mix and match items, add a gift note, and we'll wrap it all together.",
-        image: "/logo.webp",
+        image: "/logo/logo.webp",
         href: "/gift-lab",
       },
     ],
@@ -281,7 +281,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Corporate Gifting Made Easy",
         description: "Bulk orders, custom branding, and dedicated account manager. From KSh 500/gift.",
-        image: "/logo.webp",
+        image: "/logo/logo.webp",
         href: "/corporate",
       },
     ],

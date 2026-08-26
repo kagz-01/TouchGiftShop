@@ -168,7 +168,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center mb-8">
           <Link href="/">
             <Image
-              src="/logo.webp"
+              src="/logo/logo.webp"
               alt="TouchGift"
               width={64}
               height={64}

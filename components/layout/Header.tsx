@@ -94,7 +94,7 @@ export default function Header() {
               <span className="absolute inset-0 shape-premium-button bg-brand/20 animate-ping" />
             )}
             <Image
-              src="/logo.webp"
+              src="/logo/logo.webp"
               alt="TouchGift"
               width={52}
               height={52}

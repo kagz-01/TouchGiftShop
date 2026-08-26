@@ -106,7 +106,7 @@ export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
           >
             <div className="absolute inset-0 bg-brand/20 blur-2xl rounded-full animate-pulse" />
             <Image
-              src="/logo.webp"
+              src="/logo/logo.webp"
               alt="TouchGift Logo"
               fill
               className="object-contain drop-shadow-2xl animate-float"

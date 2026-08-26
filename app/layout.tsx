@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     images: [
       {
-        url: "/logo.webp",
+        url: "/logo/logo.webp",
         width: 1200,
         height: 630,
         alt: "TouchGift — Send a gift in Kenya",
@@ -62,14 +62,15 @@ export const metadata: Metadata = {
     title: "TouchGift — Send a gift in Kenya",
     description:
       "Same-day gift delivery in Nairobi, next-day nationwide. Group gifting, recipient-led delivery, and wishlists.",
-    images: ["/logo.webp"],
+    images: ["/logo/logo.webp"],
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/logo/favicon.svg", type: "image/svg+xml" },
+      { url: "/logo/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/logo/favicon.ico", sizes: "any" },
     ],
-    apple: "/logo.webp",
+    apple: "/logo/apple-touch-icon.png",
   },
   alternates: {
     canonical: SITE_URL,
