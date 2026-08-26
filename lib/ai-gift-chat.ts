@@ -1,12 +1,12 @@
 /* ══════════════════════════════════════════════════════════
    AI Gift Chat Service — Multi-provider, Multi-language
-   Routes to OpenAI / Gemini / Grok based on strength
+   Chain: OpenRouter → OpenAI → Grok → Gemini → Ollama (local)
    Supports 15+ languages via LibreTranslate
    ══════════════════════════════════════════════════════════ */
 
 import { translateForChat, translateFromChat } from "@/lib/translate";
 
-export type AIProvider = "openai" | "gemini" | "grok";
+export type AIProvider = "openrouter" | "openai" | "grok" | "gemini" | "ollama";
 
 export type ChatMessage = {
   role: "system" | "user" | "assistant";
@@ -80,6 +80,11 @@ Be natural — don't always force recommendations. Sometimes the user just wants
 
 /* ─── Provider configs ─── */
 const PROVIDERS: Record<AIProvider, { model: string; maxTokens: number; strengths: string[] }> = {
+  openrouter: {
+    model: "google/gemma-3-27b-it:free", // Free tier model on OpenRouter
+    maxTokens: 500,
+    strengths: ["general", "fast", "free-tier"],
+  },
   openai: {
     model: "gpt-4o-mini",
     maxTokens: 500,
@@ -95,23 +100,17 @@ const PROVIDERS: Record<AIProvider, { model: string; maxTokens: number; strength
     maxTokens: 500,
     strengths: ["creative", "casual", "cultural"],
   },
+  ollama: {
+    model: process.env.OLLAMA_MODEL || "llama3.2:1b",
+    maxTokens: 500,
+    strengths: ["offline", "free", "local"],
+  },
 };
 
 /* ─── Smart routing — pick best provider for request ─── */
 function selectProvider(message: string, history: ChatMessage[]): AIProvider {
-  const msgLower = message.toLowerCase();
-  const isCreative = msgLower.includes("note") || msgLower.includes("write") || msgLower.includes("message") || msgLower.includes("suggest");
-  const isSheng = msgLower.includes("mi") || msgLower.includes("wewe") || msgLower.includes("niko") || msgLower.includes("poa") || msgLower.includes("sawa");
-  const isStructured = msgLower.includes("budget") || msgLower.includes("price") || msgLower.includes("how much") || msgLower.includes("gani");
-
-  // Creative writing (notes, messages) → Grok
-  if (isCreative) return "grok";
-  // Structured queries → OpenAI
-  if (isStructured || history.length < 2) return "openai";
-  // Swahili/Sheng conversation → Gemini (strong multilingual)
-  if (isSheng) return "gemini";
-  // Default
-  return "openai";
+  // OpenRouter is always the first attempt — it's free-tier and acts as a gateway
+  return "openrouter";
 }
 
 /* ─── Parse response for structured data ─── */
@@ -184,8 +183,8 @@ Remember: Only recommend products that exist in the catalog above. Use their exa
   ];
 
   try {
-    const reply = await callProvider(provider, messages);
-    const { cleanReply, recommendations, noteSuggestion } = parseResponse(reply);
+    const reply = await callProviderWithFallbacks(provider, messages);
+    const { cleanReply, recommendations, noteSuggestion } = parseResponse(reply.text);
 
     // Step 3: Translate response back to user's language
     let finalReply = cleanReply;
@@ -195,50 +194,123 @@ Remember: Only recommend products that exist in the catalog above. Use their exa
 
     return {
       reply: finalReply,
-      provider,
+      provider: reply.provider,
       recommendations,
       language: needsTranslation ? userLanguage : language,
       noteSuggestion,
       translatedFrom: needsTranslation ? userLanguage : undefined,
     };
   } catch (error) {
-    console.error(`AI Gift Chat error (${provider}):`, error);
-    // Fallback to next provider
-    const fallback = provider === "openai" ? "gemini" : provider === "gemini" ? "grok" : "openai";
+    console.error(`All AI Gift Chat providers failed:`, error);
+    // All providers failed — give helpful guidance
+    const errorMsg = language === "sw"
+      ? "Pole sana! AI ya T-Gifter haipo online sasa. Weka bidhaa kwenye cart na uendelee na malipo — unaweza pia kutumia Gift Quiz kupata mapendekezo! 🎁"
+      : language === "sheng"
+      ? "Acha! T-Gifter AI iko down saa hii. Add items to cart uendelee — au tumia Gift Quiz kupata picks bana! 🎁"
+      : "T-Gifter is temporarily offline — our AI providers need a quick top-up. In the meantime, try our Gift Quiz for personalized recommendations, or browse by category! 🎁";
+    return {
+      reply: errorMsg,
+      provider: "fallback" as any,
+      language: needsTranslation ? userLanguage : language,
+    };
+  }
+}
+
+async function callProviderWithFallbacks(initialProvider: AIProvider, messages: ChatMessage[]): Promise<{ text: string, provider: AIProvider }> {
+  // Try the preferred provider first, then the others
+  const allProviders: AIProvider[] = ["openrouter", "openai", "grok", "gemini", "ollama"];
+  const fallbackQueue = [
+    initialProvider, 
+    ...allProviders.filter(p => p !== initialProvider)
+  ];
+
+  let lastError = null;
+
+  for (const currentProvider of fallbackQueue) {
     try {
-      const reply = await callProvider(fallback, messages);
-      const { cleanReply, recommendations, noteSuggestion } = parseResponse(reply);
-      let finalReply = cleanReply;
-      if (needsTranslation) {
-        finalReply = await translateFromChat(cleanReply, userLanguage);
-      }
-      return { reply: finalReply, provider: fallback, recommendations, language: needsTranslation ? userLanguage : language, noteSuggestion, translatedFrom: needsTranslation ? userLanguage : undefined };
-    } catch {
-      // All providers failed — give helpful guidance
-      const errorMsg = language === "sw"
-        ? "Pole sana! AI ya T-Gifter haipo online sasa. Weka bidhaa kwenye cart na uendelee na malipo — unaweza pia kutumia Gift Quiz kupata mapendekezo! 🎁"
-        : language === "sheng"
-        ? "Acha! T-Gifter AI iko down saa hii. Add items to cart uendelee — au tumia Gift Quiz kupata picks bana! 🎁"
-        : "T-Gifter is temporarily offline — our AI providers need a quick top-up. In the meantime, try our Gift Quiz for personalized recommendations, or browse by category! 🎁";
-      return {
-        reply: errorMsg,
-        provider: fallback,
-        language: needsTranslation ? userLanguage : language,
-      };
+      const text = await callProvider(currentProvider, messages);
+      return { text, provider: currentProvider };
+    } catch (e) {
+      console.warn(`Provider ${currentProvider} failed, falling back...`);
+      lastError = e;
     }
   }
+
+  throw lastError;
 }
 
 /* ─── Call specific AI provider ─── */
 async function callProvider(provider: AIProvider, messages: ChatMessage[]): Promise<string> {
   switch (provider) {
+    case "openrouter":
+      return callOpenRouter(messages);
     case "openai":
       return callOpenAI(messages);
     case "gemini":
       return callGemini(messages);
     case "grok":
       return callGrok(messages);
+    case "ollama":
+      return callOllama(messages);
   }
+}
+
+async function callOpenRouter(messages: ChatMessage[]): Promise<string> {
+  if (!process.env.OPENROUTER_API_KEY) throw new Error("No OpenRouter key");
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app",
+      "X-Title": "TouchGift T-Gifter",
+    },
+    body: JSON.stringify({
+      model: PROVIDERS.openrouter.model,
+      messages,
+      max_tokens: 500,
+      temperature: 0.7,
+    }),
+  });
+
+  if (!res.ok) throw new Error(`OpenRouter error: ${res.status}`);
+  const data = await res.json();
+  return data.choices[0].message.content;
+}
+
+async function callOllama(messages: ChatMessage[]): Promise<string> {
+  const baseUrl = process.env.OLLAMA_URL || "http://localhost:11434";
+  const primaryModel = process.env.OLLAMA_MODEL || "llama3.2:1b";
+  const fallbackModels = (process.env.OLLAMA_FALLBACK_MODELS || "").split(",").filter(Boolean);
+  const modelsToTry = [primaryModel, ...fallbackModels];
+
+  // Convert system messages to a system field (Ollama format)
+  const systemMsg = messages.find(m => m.role === "system");
+  const chatMessages = messages.filter(m => m.role !== "system");
+
+  for (const model of modelsToTry) {
+    try {
+      const res = await fetch(`${baseUrl}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model,
+          messages: chatMessages,
+          system: systemMsg?.content,
+          stream: false,
+          options: { num_predict: 500, temperature: 0.7 },
+        }),
+      });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const text = data.message?.content;
+      if (text) return text;
+    } catch {
+      console.warn(`Ollama model ${model} failed, trying next...`);
+    }
+  }
+
+  throw new Error("All Ollama models failed");
 }
 
 async function callOpenAI(messages: ChatMessage[]): Promise<string> {
@@ -336,25 +408,41 @@ export async function sendGiftChatStream(
     { role: "user", content: message },
   ];
 
-  try {
-    if (provider === "openai") {
-      await streamOpenAI(messages, onChunk);
-    } else if (provider === "gemini") {
-      await streamGemini(messages, onChunk);
-    } else {
-      await streamGrok(messages, onChunk);
+  // Build fallback queue starting with preferred provider
+  const allProviders: AIProvider[] = ["openrouter", "openai", "grok", "gemini", "ollama"];
+  const fallbackQueue = [
+    provider,
+    ...allProviders.filter(p => p !== provider)
+  ];
+
+  let lastError = null;
+
+  for (const currentProvider of fallbackQueue) {
+    try {
+      if (currentProvider === "openai") {
+        await streamOpenAI(messages, onChunk);
+      } else if (currentProvider === "gemini") {
+        await streamGemini(messages, onChunk);
+      } else if (currentProvider === "grok") {
+        await streamGrok(messages, onChunk);
+      } else {
+        // OpenRouter and Ollama: simulate streaming via full response
+        const text = await callProvider(currentProvider, messages);
+        const words = text.split(" ");
+        for (const word of words) {
+          await new Promise(r => setTimeout(r, 15));
+          onChunk(word + " ");
+        }
+      }
+      return { provider: currentProvider, language };
+    } catch (e) {
+      console.warn(`Stream Provider ${currentProvider} failed, falling back...`);
+      lastError = e;
     }
-    return { provider, language };
-  } catch {
-    // Fallback
-    const fallback = provider === "openai" ? "gemini" : "openai";
-    if (fallback === "openai") {
-      await streamOpenAI(messages, onChunk);
-    } else {
-      await streamGemini(messages, onChunk);
-    }
-    return { provider: fallback, language };
   }
+
+  // If we reach here, all providers failed
+  throw lastError;
 }
 
 async function streamOpenAI(messages: ChatMessage[], onChunk: (chunk: string) => void): Promise<void> {
