@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 const WISHLIST_SLUG_KEY = "touchgift_wishlist_slug";
 const WISHLIST_NAME_KEY = "touchgift_wishlist_name";
 

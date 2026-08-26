@@ -47,7 +47,7 @@ async function callOpenRouter(messages: AIMessage[]): Promise<string> {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${key}`,
-          "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app",
+          "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke",
           "X-Title": "TouchGift T-Gifter",
         },
         body: JSON.stringify({

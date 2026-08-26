@@ -43,7 +43,7 @@ export default function ReferralsPage() {
         }
         setData(d);
         setShareText(
-          `Join TouchGift using my referral code ${d.referralCode} and we both get 1,000 pts (≈KSh 500) to spend on gifts! 🎁 https://touchgiftshop.ac.ke/ref/${d.referralCode}`
+          `Join TouchGift using my referral code ${d.referralCode} and we both get 1,000 pts (≈KSh 500) to spend on gifts! 🎁 ${window.location.origin}/ref/${d.referralCode}`
         );
         setLoading(false);
       })
