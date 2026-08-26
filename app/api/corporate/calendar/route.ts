@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/admin-auth";
 import { z } from "zod";
 
 const createEventSchema = z.object({
@@ -23,6 +24,10 @@ const createEventSchema = z.object({
 });
 
 export async function GET(req: NextRequest) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(req.url);
     const accountId = searchParams.get("accountId");
@@ -60,8 +65,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const body = await req.json();
+    let body: unknown;
+    try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
     const parsed = createEventSchema.safeParse(body);
 
     if (!parsed.success) {

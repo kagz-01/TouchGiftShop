@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/reviews?status=pending&limit=50
 export async function GET(req: Request) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status");
   const limit = Math.min(100, parseInt(searchParams.get("limit") || "50", 10));
@@ -20,7 +25,7 @@ export async function GET(req: Request) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch reviews" }, { status: 500 });
   }
 
   return NextResponse.json({ reviews: data || [] });

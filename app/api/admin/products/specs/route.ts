@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
-import { cookies } from "next/headers";
-
-function requireAdmin() {
-  const cookieStore = cookies();
-  const session = cookieStore.get("tg_admin_session")?.value;
-  if (!session || session !== process.env.ADMIN_API_KEY) {
-    return false;
-  }
-  return true;
-}
+import { requireAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/products/specs?product_id=...
 export async function GET(_req: Request) {
-  const url = new URL(_req.url);
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(_req.url);
   const product_id = searchParams.get("product_id");
 
@@ -28,7 +22,7 @@ export async function GET(_req: Request) {
   const { data, error } = await query;
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch specs" }, { status: 500 });
   }
 
   return NextResponse.json({ specs: data ?? [] });
@@ -40,7 +34,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
   const { product_id, spec_key, spec_value, icon, sort_order } = body;
 
   if (!product_id || !spec_key) {
@@ -52,15 +52,15 @@ export async function POST(req: Request) {
     .upsert({
       product_id,
       spec_key,
-      spec_value: spec_value || "",
-      icon: icon || null,
-      sort_order: sort_order ?? 0,
+      spec_value: (spec_value as string) || "",
+      icon: (icon as string) || null,
+      sort_order: (sort_order as number) ?? 0,
     })
     .select()
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save spec" }, { status: 500 });
   }
 
   try {
@@ -91,7 +91,7 @@ export async function DELETE(req: Request) {
     .eq("id", id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to delete spec" }, { status: 500 });
   }
 
   try {
