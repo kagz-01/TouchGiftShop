@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
 import Header from "@/components/layout/Header";
@@ -15,6 +16,21 @@ const ReferralCapture = dynamic(() => import("@/components/referrals/ReferralCap
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
+
 export const metadata: Metadata = {
   title: {
     template: "%s | TouchGift",
@@ -23,6 +39,7 @@ export const metadata: Metadata = {
   description:
     "Same-day gift delivery in Nairobi, next-day nationwide. Group gifting, recipient-led delivery, and wishlists — no guessing what to send.",
   manifest: "/manifest.json",
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     title: "TouchGift — Send a gift in Kenya",
     description:
@@ -30,18 +47,33 @@ export const metadata: Metadata = {
     siteName: "TouchGift",
     type: "website",
     locale: "en_KE",
+    url: SITE_URL,
+    images: [
+      {
+        url: "/logo.webp",
+        width: 1200,
+        height: 630,
+        alt: "TouchGift — Send a gift in Kenya",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "TouchGift — Send a gift in Kenya",
     description:
       "Same-day gift delivery in Nairobi, next-day nationwide. Group gifting, recipient-led delivery, and wishlists.",
+    images: ["/logo.webp"],
   },
   icons: {
-    icon: "/favicon.png",
-    apple: "/icons/icon-192.png",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/logo.webp",
   },
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app"),
+  alternates: {
+    canonical: SITE_URL,
+  },
 };
 
 export const viewport: Viewport = {
@@ -57,15 +89,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-sans overflow-x-hidden">
         <ThemeProvider>
           <CartProvider>

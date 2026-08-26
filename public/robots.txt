@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-access-2026
+Disallow: /api/
+Disallow: /_next/
+Disallow: /payment-success
+
+Sitemap: https://touchgiftshop.co.ke/sitemap.xml
