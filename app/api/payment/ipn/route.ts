@@ -9,25 +9,30 @@ import {
 
 // POST /api/payment/ipn — PesaPal sends IPN (Instant Payment Notification)
 // when a transaction status changes.
+// We verify by querying PesaPal directly — no trust on the POST body alone.
 
 export async function POST(req: Request) {
-  const payload = await req.json();
-
-  const orderTrackingId = payload.order_tracking_id;
-  if (!orderTrackingId) {
-    console.error("Malformed PesaPal IPN payload", payload);
+  let payload: Record<string, unknown>;
+  try {
+    payload = await req.json();
+  } catch {
     return NextResponse.json({ success: true });
   }
 
+  const orderTrackingId = payload.order_tracking_id as string | undefined;
+  if (!orderTrackingId) {
+    return NextResponse.json({ success: true });
+  }
+
+  // Always verify status directly with PesaPal — never trust the IPN body alone
   let status;
   try {
     status = await getTransactionStatus(orderTrackingId);
-  } catch (err) {
-    console.error("Failed to query PesaPal status:", err);
+  } catch {
     return NextResponse.json({ success: true });
   }
 
-  const merchantReference = payload.order_merchant_reference || "";
+  const merchantReference = (payload.order_merchant_reference as string) || "";
 
   if (status.status === "completed") {
     if (merchantReference.startsWith("giftcard-")) {
@@ -35,7 +40,6 @@ export async function POST(req: Request) {
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolPayment(merchantReference, status.receiptNumber);
     } else if (merchantReference.startsWith("multi-")) {
-      // Multi-item cart order
       const orderIds = merchantReference.replace("multi-", "").split(",");
       for (const oid of orderIds) {
         await handleOrderPayment(oid.trim(), status.receiptNumber);
@@ -73,20 +77,13 @@ async function handleGiftCardPayment(
     .eq("id", cardId)
     .single();
 
-  if (!card) {
-    console.error("Gift card not found for IPN:", cardId);
-    return;
-  }
+  if (!card) return;
 
-  const { error } = await supabaseAdmin
+  await supabaseAdmin
     .from("gift_cards")
     .update({ status: "active", balance: card.initial_amount })
     .eq("id", cardId)
     .eq("status", "pending_payment");
-
-  if (error) {
-    console.error("Failed to activate gift card from IPN:", error);
-  }
 }
 
 async function handleGiftCardFailure(reference: string) {
@@ -111,12 +108,8 @@ async function handleOrderPayment(
     .eq("id", orderId)
     .in("status", ["pending_payment", "pending"]);
 
-  if (error) {
-    console.error("Failed to update order from IPN:", error);
-    return;
-  }
+  if (error) return;
 
-  // Fetch order details for loyalty + referral processing
   const { data: order } = await supabaseAdmin
     .from("orders")
     .select("user_id, total_amount, points_redeemed")
@@ -125,7 +118,6 @@ async function handleOrderPayment(
 
   if (!order?.user_id) return;
 
-  // ── Loyalty points: earn 1 point per KSh 10 spent ──
   const points = Math.floor(Number(order.total_amount) / 10);
   if (points > 0) {
     await supabaseAdmin.from("loyalty_points").insert({
@@ -136,7 +128,6 @@ async function handleOrderPayment(
     });
   }
 
-  // ── Deduct redeemed points from the ledger once payment completes ──
   const redeemed = Number((order as { points_redeemed?: number }).points_redeemed ?? 0);
   if (redeemed > 0) {
     await supabaseAdmin.from("loyalty_points").insert({
@@ -147,8 +138,6 @@ async function handleOrderPayment(
     });
   }
 
-  // ── Referral conversion: award points on referred user's first order ──
-  // Guards: order >= CONVERSION_MIN_ORDER_KSH, referrer under monthly cap.
   const { data: referral } = await supabaseAdmin
     .from("referrals")
     .select("id, referrer_id")
@@ -158,51 +147,45 @@ async function handleOrderPayment(
 
   if (referral) {
     if (Number(order.total_amount) < CONVERSION_MIN_ORDER_KSH) {
-      // Order too small to count — referral stays pending for a future order.
-      console.log(`[Referral] Conversion blocked: order ${orderId} below ${CONVERSION_MIN_ORDER_KSH}`);
-    } else {
-      // Monthly fraud cap: count this referrer's conversions this calendar month
-      const monthStart = new Date();
-      monthStart.setDate(1);
-      monthStart.setHours(0, 0, 0, 0);
-      const { count: monthConversions } = await supabaseAdmin
-        .from("referrals")
-        .select("id", { count: "exact", head: true })
-        .eq("referrer_id", referral.referrer_id)
-        .eq("status", "converted")
-        .gte("converted_at", monthStart.toISOString());
-
-      if ((monthConversions ?? 0) >= MONTHLY_CONVERSION_CAP) {
-        console.log(`[Referral] Monthly cap hit for referrer ${referral.referrer_id} — conversion blocked`);
-      } else {
-        // Mark referral as converted
-        await supabaseAdmin
-          .from("referrals")
-          .update({
-            status: "converted",
-            converted_at: new Date().toISOString(),
-            first_order_id: orderId,
-            referrer_bonus_credited: true,
-          })
-          .eq("id", referral.id);
-
-        // Award points to BOTH sides via the loyalty ledger
-        await supabaseAdmin.from("loyalty_points").insert([
-          {
-            user_id: referral.referrer_id,
-            points: REFERRAL_BONUS_POINTS,
-            source: "referral_bonus",
-            order_id: orderId,
-          },
-          {
-            user_id: order.user_id,
-            points: REFERRAL_BONUS_POINTS,
-            source: "referral_first_order",
-            order_id: orderId,
-          },
-        ]);
-      }
+      return;
     }
+
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+    const { count: monthConversions } = await supabaseAdmin
+      .from("referrals")
+      .select("id", { count: "exact", head: true })
+      .eq("referrer_id", referral.referrer_id)
+      .eq("status", "converted")
+      .gte("converted_at", monthStart.toISOString());
+
+    if ((monthConversions ?? 0) >= MONTHLY_CONVERSION_CAP) return;
+
+    await supabaseAdmin
+      .from("referrals")
+      .update({
+        status: "converted",
+        converted_at: new Date().toISOString(),
+        first_order_id: orderId,
+        referrer_bonus_credited: true,
+      })
+      .eq("id", referral.id);
+
+    await supabaseAdmin.from("loyalty_points").insert([
+      {
+        user_id: referral.referrer_id,
+        points: REFERRAL_BONUS_POINTS,
+        source: "referral_bonus",
+        order_id: orderId,
+      },
+      {
+        user_id: order.user_id,
+        points: REFERRAL_BONUS_POINTS,
+        source: "referral_first_order",
+        order_id: orderId,
+      },
+    ]);
   }
 }
 
