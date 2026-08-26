@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { getRecommendation, type QuizAnswer } from "@/lib/gift-quiz";
-import ProductGrid from "@/components/home/ProductGrid";
 import SmartQuizResults from "@/components/gift-quiz/SmartQuizResults";
+import { supabaseAdmin } from "@/lib/supabase";
+import { getDbSlugs } from "@/lib/category-map";
+import { getBudgetRange } from "@/lib/budget-tiers";
+import type { Product } from "@/lib/types";
 
 export const metadata = {
   title: "Your Gift Recommendations | TouchGift",
@@ -22,6 +25,38 @@ export default async function QuizResults({
   };
 
   const recommendation = getRecommendation(answers);
+
+  // Fetch products matching ALL recommended categories
+  // Flatten all dbSlugs for the matched categories
+  const allDbSlugs = Array.from(new Set(
+    recommendation.categories.flatMap(cat => getDbSlugs(cat))
+  ));
+
+  let query = supabaseAdmin
+    .from("products")
+    .select("*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)")
+    .in("product_categories.categories.slug", allDbSlugs);
+
+  // Apply budget filter if any
+  if (answers.budget && answers.budget !== "any") {
+    const tier = getBudgetRange(answers.budget);
+    if (tier) {
+      query = query.gte("price", tier.min);
+      if (tier.max !== null) {
+        query = query.lte("price", tier.max);
+      }
+    }
+  }
+
+  // Get up to 24 products
+  const { data: productsData } = await query.limit(24);
+  
+  // Deduplicate products in case they matched multiple categories
+  const uniqueProductsMap = new Map();
+  if (productsData) {
+    productsData.forEach(p => uniqueProductsMap.set(p.id, p));
+  }
+  const products = Array.from(uniqueProductsMap.values()) as Product[];
 
   return (
     <div className="min-h-screen bg-gradient-warm">
@@ -68,14 +103,7 @@ export default async function QuizResults({
         </div>
 
         {/* AI-powered results with smart follow-ups */}
-        <SmartQuizResults answers={answers}>
-          <ProductGrid
-            searchParams={Promise.resolve({
-              category: recommendation.categories[0],
-              budget: answers.budget !== "any" ? answers.budget : undefined,
-            })}
-          />
-        </SmartQuizResults>
+        <SmartQuizResults answers={answers} preFetchedProducts={products} />
       </div>
     </div>
   );
