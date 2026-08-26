@@ -41,7 +41,7 @@ You MUST return a JSON object with exactly this schema:
     { name: "openrouter", url: "https://openrouter.ai/api/v1/chat/completions", key: process.env.OPENROUTER_API_KEY },
     { name: "openai", url: "https://api.openai.com/v1/chat/completions", key: process.env.OPENAI_API_KEY },
     { name: "grok", url: "https://api.x.ai/v1/chat/completions", key: process.env.GROK_API_KEY },
-    { name: "gemini", url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, key: process.env.GEMINI_API_KEY },
+    { name: "gemini", url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", key: process.env.GEMINI_API_KEY },
   ];
 
   for (const provider of providers) {
@@ -57,7 +57,7 @@ You MUST return a JSON object with exactly this schema:
             "Content-Type": "application/json",
             Authorization: `Bearer ${provider.key}`,
             ...(provider.name === "openrouter" ? {
-              "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app",
+              "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke",
               "X-Title": "TouchGift T-Gifter",
             } : {}),
           },
@@ -76,7 +76,10 @@ You MUST return a JSON object with exactly this schema:
         // Gemini
         const res = await fetch(provider.url, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": provider.key,
+          },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
             generationConfig: { maxOutputTokens: 500, temperature: 0.7, responseMimeType: "application/json" },

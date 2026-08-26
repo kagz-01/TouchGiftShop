@@ -103,10 +103,13 @@ async function callGemini(messages: AIMessage[]): Promise<string> {
     }));
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${key}`,
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent",
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": key,
+      },
       body: JSON.stringify({
         contents,
         systemInstruction: systemMsg ? { parts: [{ text: systemMsg.content }] } : undefined,
