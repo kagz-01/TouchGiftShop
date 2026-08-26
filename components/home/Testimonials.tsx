@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import type { ReviewWithMedia } from "@/lib/types";
 
-const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=TouchGiftShop+Kenya+reviews";
+const GOOGLE_REVIEW_URL = "https://www.google.com/search?q=TouchGift+Shop+Nairobi+reviews";
 
 function StarRating({ rating }: { rating: number }) {
   return (

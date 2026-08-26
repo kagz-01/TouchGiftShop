@@ -16,7 +16,7 @@ const QUICK_LINKS = [
 ];
 
 const SUPPORT_LINKS = [
-  { href: "https://wa.me/254142677898", label: "WhatsApp Us", external: true },
+  { href: "https://wa.me/254142677898", label: "WhatsApp Us — we reply in minutes", external: true },
   { href: "/login", label: "Sign In / Create Account" },
   { href: "mailto:info@touchgiftshop.co.ke", label: "Email Support" },
 ];
@@ -231,8 +231,32 @@ export default function Footer() {
             </div>
           </div>
 
+          {/* Trust & Payments Strip */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-x-6 gap-y-2 py-4 border-t border-gray-700/30 text-xs text-on-theme">
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Secure payments via PesaPal
+            </span>
+            <span className="hidden sm:inline text-gold">•</span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold bg-gold/20 text-gold rounded px-1.5 py-0.5">M-PESA</span>
+              <span className="text-[10px] font-bold bg-brand/30 text-on-theme rounded px-1.5 py-0.5">VISA</span>
+              <span className="text-[10px] font-bold bg-gray-500/30 text-on-theme rounded px-1.5 py-0.5">Mastercard</span>
+              accepted
+            </span>
+            <span className="hidden sm:inline text-gold">•</span>
+            <span className="flex items-center gap-1.5">
+              <svg className="w-3.5 h-3.5 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              Registered Kenyan business
+            </span>
+          </div>
+
           {/* Bottom Bar */}
-          <div className="mt-8 pt-5 border-t border-gray-700/30 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div className="mt-4 pt-5 border-t border-gray-700/30 flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="text-xs text-on-theme">
               © {new Date().getFullYear()} TouchGift — Just Say It 🎁
             </p>
