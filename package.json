@@ -13,13 +13,11 @@
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.45.0",
-    "@types/leaflet": "^1.9.22",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
     "country-telephone-data": "^0.6.3",
     "date-fns": "^3.6.0",
-    "dotenv": "^17.4.2",
     "duckduckgo-images-api": "^1.0.5",
     "framer-motion": "^13.0.0",
     "googlethis": "^1.8.0",
@@ -38,6 +36,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.44.0",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "^20.14.0",
     "@types/pg": "^8.23.1",
     "@types/react": "^18.3.0",

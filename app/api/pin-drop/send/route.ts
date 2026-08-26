@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     const expires = new Date(order.pin_drop_token_expires_at);
     if (now < expires) {
       // Token still valid — reuse it
-      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
       const pinDropUrl = `${baseUrl}/pin-drop/${orderId}?token=${token}`;
       const whatsappMessage = encodeURIComponent(
         `Hey! 🎁\n\nSomeone sent you a gift on TouchGift! To receive it, please tap the link below and drop your delivery pin (your exact location) and pick a time window that works for you.\n\n📍 Drop your pin here:\n${pinDropUrl}\n\n⏰ If you don't complete this within 24 hours, we'll send you a gentle reminder.\n\nThank you! 🎁`
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   const pinDropUrl = `${baseUrl}/pin-drop/${orderId}?token=${token}`;
 
   const whatsappMessage = encodeURIComponent(

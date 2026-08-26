@@ -11,7 +11,7 @@ import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag } from "lucide
 import type { Metadata } from "next";
 
 async function getProduct(id: string): Promise<Product | null> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   const res = await fetch(`${base}/api/products/${id}`, { cache: "no-store" });
   if (!res.ok) return null;
   const { product } = await res.json();

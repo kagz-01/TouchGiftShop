@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
 
     // Create a single PesaPal payment for the entire corporate order
     const merchantReference = `CORP-${Date.now()}-${orderIds[0].slice(0, 8)}`;
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 
     const payment = await createPaymentOrder({
       amount: totalAmount,

@@ -76,7 +76,7 @@ export async function POST(req: Request) {
   }
 
   // Create PesaPal payment order
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.ac.ke";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   try {
     const payment = await createPaymentOrder({
       amount,

@@ -10,7 +10,7 @@ import PinDropNotification from "@/components/pin-drop/PinDropNotification";
 import { ArrowLeft, CheckCircle, EyeOff, Camera, PhoneOff, Gift, SearchX, CreditCard } from "lucide-react";
 
 async function getOrder(id: string) {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   const res = await fetch(`${base}/api/orders/${id}`, { cache: "no-store" });
   if (!res.ok) return null;
   const { order } = await res.json();

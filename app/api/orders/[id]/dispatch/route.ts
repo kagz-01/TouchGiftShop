@@ -57,7 +57,7 @@ export async function POST(
     return NextResponse.json({ error: updateError.message }, { status: 500 });
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touch-gift-shop.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   const riderUrl = `${siteUrl}/rider?orderId=${params.id}&token=${riderToken}`;
 
   return NextResponse.json({

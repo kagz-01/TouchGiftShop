@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 async function getOrders() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   const cookieStore = cookies();
   const cookieHeader = cookieStore
     .getAll()

@@ -74,7 +74,7 @@ export async function POST(
   }
 
   // 3. Create PesaPal payment order
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://touchgiftshop.ac.ke";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://touchgiftshop.co.ke";
   try {
     const { orderTrackingId, redirectUrl } = await createPaymentOrder({
       amount: d.amount,

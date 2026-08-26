@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.ac.ke";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 
   // Use custom callback URL if provided, otherwise default to /payment-success
   const finalCallbackUrl = callbackUrl || `${siteUrl}/payment-success?ref=${merchantReference}`;
