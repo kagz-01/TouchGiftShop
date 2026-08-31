@@ -104,14 +104,14 @@ export default function GiftCardPreview({
                 </div>
               )}
               <div className="flex items-center justify-between">
-                <div className={cn("transition-opacity duration-300", hasSender ? "opacity-100" : "opacity-30")}>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">
-                    From
-                  </p>
-                  <p className="text-white/80 text-sm font-semibold">
-                    {senderName || "Your Name"}
-                  </p>
-                </div>
+              <div className={cn("transition-opacity duration-300", hasSender ? "opacity-100" : "opacity-30")}>
+                <p className="text-white/40 text-[10px] uppercase tracking-widest mb-0.5">
+                  From
+                </p>
+                <p className="text-white/80 text-sm font-semibold">
+                  {senderName || "A friend"}
+                </p>
+              </div>
                 <Gift className="w-5 h-5 text-gold/30" />
               </div>
             </div>

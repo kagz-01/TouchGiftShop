@@ -14,10 +14,11 @@ function generateCode(): string {
 
 const PurchaseInput = z.object({
   amount: z.number().min(500, "Minimum amount is KSh 500"),
-  senderName: z.string().min(1),
+  senderName: z.string().min(1).optional(),
   recipientName: z.string().min(1),
   recipientPhone: z.string().optional(),
   message: z.string().optional(),
+  isAnonymous: z.boolean().optional(),
 });
 
 // POST /api/gift-cards — purchase a gift card (creates pending card + PesaPal payment)
@@ -30,8 +31,11 @@ export async function POST(req: Request) {
     );
   }
 
-  const { amount, senderName, recipientName, recipientPhone, message } =
+  const { amount, senderName, recipientName, recipientPhone, message, isAnonymous } =
     parsed.data;
+
+  // Anonymous cards don't store sender name
+  const effectiveSenderName = isAnonymous ? null : senderName ?? null;
 
   // Generate a unique code
   let code = generateCode();
@@ -58,10 +62,11 @@ export async function POST(req: Request) {
       code,
       initial_amount: amount,
       balance: 0, // Will be set to amount on payment success
-      sender_name: senderName,
+      sender_name: effectiveSenderName,
       recipient_name: recipientName,
       recipient_phone: recipientPhone ?? null,
       message: message ?? null,
+      is_anonymous: isAnonymous ?? false,
       expires_at: expiresAt.toISOString(),
       status: "pending_payment",
     })
@@ -83,7 +88,7 @@ export async function POST(req: Request) {
       merchantReference: `giftcard-${card.id}`,
       description: `TouchGift Gift Card KSh ${amount.toLocaleString()} for ${recipientName}`,
       callbackUrl: `${siteUrl}/payment-success?ref=giftcard-${card.id}`,
-      name: senderName,
+      name: effectiveSenderName ?? "Anonymous",
     });
 
     return NextResponse.json({
@@ -112,7 +117,7 @@ export async function GET(req: Request) {
 
   const { data: card, error } = await supabaseAdmin
     .from("gift_cards")
-    .select("code, balance, initial_amount, expires_at, recipient_name, status")
+    .select("code, balance, initial_amount, expires_at, recipient_name, sender_name, is_anonymous, status")
     .eq("code", code.toUpperCase())
     .single();
 
@@ -125,6 +130,8 @@ export async function GET(req: Request) {
   return NextResponse.json({
     card: {
       ...card,
+      // Hide sender name for anonymous cards
+      sender_name: card.is_anonymous ? null : card.sender_name,
       is_expired: isExpired,
       is_usable: card.status === "active" && !isExpired && card.balance > 0,
     },

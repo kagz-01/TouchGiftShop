@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   CreditCard,
   Sparkles,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 
 const PRESET_AMOUNTS = [1000, 2000, 3000, 5000, 10000, 15000];
@@ -40,6 +42,7 @@ export default function GiftCardsPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [copied, setCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAnonymous, setIsAnonymous] = useState(false);
 
   const finalAmount = customAmount ? Number(customAmount) : amount;
 
@@ -60,10 +63,11 @@ export default function GiftCardsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           amount: finalAmount,
-          senderName: form.senderName,
+          senderName: isAnonymous ? undefined : form.senderName,
           recipientName: form.recipientName,
           recipientPhone: form.recipientPhone || undefined,
           message: form.message || undefined,
+          isAnonymous,
         }),
       });
 
@@ -154,7 +158,7 @@ export default function GiftCardsPage() {
           <GiftCardPreview
             amount={finalAmount}
             recipientName={form.recipientName}
-            senderName={form.senderName}
+            senderName={isAnonymous ? "" : form.senderName}
             message={form.message}
             code={cardCode}
             flipped
@@ -219,6 +223,7 @@ export default function GiftCardsPage() {
               setAmount(2000);
               setCustomAmount("");
               setForm({ senderName: "", recipientName: "", recipientPhone: "", message: "" });
+              setIsAnonymous(false);
             }}
             className="flex-1 py-3 rounded-xl border border-surface-border text-sm font-semibold text-theme-heading hover:bg-theme-surface transition-colors"
           >
@@ -392,16 +397,17 @@ export default function GiftCardsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="col-span-2 sm:col-span-1">
+                  <div className={`col-span-2 sm:col-span-1 ${isAnonymous ? "opacity-40 pointer-events-none" : ""}`}>
                     <label className="text-[11px] font-bold uppercase tracking-wider text-theme-muted block mb-1.5">
-                      Your name *
+                      Your name {isAnonymous ? "" : "*"}
                     </label>
                     <input
-                      required
+                      required={!isAnonymous}
                       value={form.senderName}
                       onChange={(e) => setForm({ ...form, senderName: e.target.value })}
                       placeholder="e.g. Jane"
-                      className="w-full border border-surface-border bg-theme-bg text-theme-heading rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand/30 focus:border-brand/30 focus:outline-none transition-all"
+                      disabled={isAnonymous}
+                      className="w-full border border-surface-border bg-theme-bg text-theme-heading rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand/30 focus:border-brand/30 focus:outline-none transition-all disabled:cursor-not-allowed"
                     />
                   </div>
                   <div className="col-span-2 sm:col-span-1">
@@ -417,6 +423,40 @@ export default function GiftCardsPage() {
                     />
                   </div>
                 </div>
+
+                {/* Anonymous toggle */}
+                <button
+                  type="button"
+                  onClick={() => setIsAnonymous(!isAnonymous)}
+                  className={`w-full flex items-center gap-3 p-3.5 rounded-xl border-2 transition-all duration-200 ${
+                    isAnonymous
+                      ? "border-brand bg-brand/5"
+                      : "border-surface-border hover:border-brand/20"
+                  }`}
+                >
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
+                    isAnonymous ? "bg-brand/10" : "bg-theme-surface"
+                  }`}>
+                    {isAnonymous ? (
+                      <EyeOff className="w-4 h-4 text-brand" />
+                    ) : (
+                      <Eye className="w-4 h-4 text-theme-muted" />
+                    )}
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className={`text-sm font-semibold ${isAnonymous ? "text-brand" : "text-theme-heading"}`}>
+                      Send anonymously
+                    </p>
+                    <p className="text-[11px] text-theme-muted">
+                      The recipient won&apos;t see your name
+                    </p>
+                  </div>
+                  <div className={`w-10 h-6 rounded-full transition-colors duration-200 flex items-center ${
+                    isAnonymous ? "bg-brand justify-end" : "bg-gray-300 justify-start"
+                  }`}>
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm mx-0.5 transition-transform" />
+                  </div>
+                </button>
 
                 <div>
                   <label className="text-[11px] font-bold uppercase tracking-wider text-theme-muted block mb-1.5">
@@ -472,7 +512,7 @@ export default function GiftCardsPage() {
             <GiftCardPreview
               amount={finalAmount}
               recipientName={form.recipientName}
-              senderName={form.senderName}
+              senderName={isAnonymous ? "" : form.senderName}
               message={form.message}
             />
 
