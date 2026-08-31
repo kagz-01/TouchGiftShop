@@ -27,14 +27,29 @@ export async function POST(
 
   const d = parsed.data;
 
-  // 1. Fetch pool and validate it's still active
-  const { data: pool, error: poolErr } = await supabaseAdmin
+  // 1. Fetch pool and validate it's still active — check both consumer and corporate tables
+  let pool: { id: string; status: string; target_amount: number; current_balance: number; min_contribution: number; title: string; expires_at: string; slug: string } | null = null;
+
+  const { data: consumerPool } = await supabaseAdmin
     .from("group_gifting_pools")
     .select("id, status, target_amount, current_balance, min_contribution, title, expires_at, slug")
     .eq("slug", params.slug)
     .single();
 
-  if (poolErr || !pool) {
+  if (consumerPool) {
+    pool = consumerPool;
+  } else {
+    const { data: corpPoolRaw } = await supabaseAdmin
+      .from("corporate_gift_pools")
+      .select("id, status, target_amount, current_balance, min_contribution, title, deadline, slug")
+      .eq("slug", params.slug)
+      .single();
+    if (corpPoolRaw) {
+      pool = { ...corpPoolRaw, expires_at: corpPoolRaw.deadline };
+    }
+  }
+
+  if (!pool) {
     return NextResponse.json({ error: "Pool not found" }, { status: 404 });
   }
   if (pool.status !== "active") {
@@ -55,7 +70,7 @@ export async function POST(
     .from("pool_contributions")
     .insert({
       pool_id: pool.id,
-      contributor_name: d.isGhost ? null : (d.contributorName ?? "Anonymous"),
+      contributor_name: d.isGhost ? "Anonymous" : (d.contributorName ?? "Anonymous"),
       contributor_phone: d.contributorPhone,
       amount: d.amount,
       message: d.message ?? null,
@@ -78,7 +93,7 @@ export async function POST(
   try {
     const { orderTrackingId, redirectUrl } = await createPaymentOrder({
       amount: d.amount,
-      merchantReference: `POOL-${contribution.id}`,
+      merchantReference: `pool-${contribution.id}`,
       description: `Contribution to "${pool.title}" gift pool`,
       callbackUrl: `${siteUrl}/pool/${params.slug}/thanks?contribution=${contribution.id}`,
       phoneNumber: d.contributorPhone,

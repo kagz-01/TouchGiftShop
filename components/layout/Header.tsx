@@ -12,14 +12,15 @@ import { ShoppingBag, Bell, Search, X, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import CartBadge from "@/components/layout/CartBadge";
+import SplashReveal from "@/components/ui/SplashReveal";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [logoPressed, setLogoPressed] = useState(false);
   const [user, setUser] = useState<{ email?: string | null; phone?: string | null } | null>(null);
   const [guest, setGuestFlag] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [splashActive, setSplashActive] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -42,11 +43,14 @@ export default function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Logo press animation — 3-step: press → burst → settle
+  // Logo press animation — splash on homepage, simple navigate elsewhere
   const handleLogoPress = useCallback(() => {
-    setLogoPressed(true);
-    setTimeout(() => setLogoPressed(false), 700);
-    router.push("/");
+    const isHome = window.location.pathname === "/";
+    if (isHome) {
+      setSplashActive(true);
+    } else {
+      router.push("/");
+    }
   }, [router]);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -81,47 +85,20 @@ export default function Header() {
             className="flex-shrink-0 relative group focus:outline-none"
           >
             {/* Glow ring on hover */}
-            <span
-              className={cn(
-                "absolute inset-0 shape-premium-button transition-all duration-500",
-                logoPressed
-                  ? "scale-150 opacity-0 bg-brand/30"
-                  : "scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10"
-              )}
-            />
-            {/* Secondary ripple on press */}
-            {logoPressed && (
-              <span className="absolute inset-0 shape-premium-button bg-brand/20 animate-ping" />
-            )}
+            <span className="absolute inset-0 rounded-full transition-all duration-500 scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10" />
             <Image
               src="/logo/logo.webp"
               alt="TouchGift"
               width={52}
               height={52}
               priority
-              className={cn(
-                "relative shape-premium-button object-cover transition-all duration-500 ring-2 ring-transparent",
-                logoPressed
-                  ? "scale-90 rotate-[15deg] ring-brand/50 brightness-110"
-                  : "scale-100 rotate-0 group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]"
-              )}
+              className="relative rounded-full object-cover transition-all duration-500 ring-2 ring-transparent scale-100 rotate-0 group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]"
             />
             {/* Wordmark — shows on wider screens */}
             <span className="sr-only">TouchGift</span>
           </button>
 
-          {/* Brand wordmark next to logo */}
-          <Link
-            href="/"
-            className="hidden lg:flex flex-col leading-none group flex-shrink-0"
-          >
-            <span className="font-display text-lg font-bold text-theme-heading tracking-tight group-hover:text-brand transition-colors duration-200">
-              Touch<span className="text-brand">Gift</span>
-            </span>
-            <span className="text-[10px] text-theme-body font-medium tracking-widest uppercase">
-              Kenya&apos;s gift platform
-            </span>
-          </Link>
+
 
           {/* ── Mega Menu — takes remaining space ── */}
           <div className="flex-1 flex justify-center">
@@ -267,6 +244,7 @@ export default function Header() {
           </div>
         </div>
       )}
+      <SplashReveal active={splashActive} onDone={() => setSplashActive(false)} />
     </>
   );
 }

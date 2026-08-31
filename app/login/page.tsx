@@ -393,6 +393,11 @@ export default function LoginPage() {
               <p className="text-xs text-brand-muted text-center">
                 We&apos;ll email you a link — no password needed.
               </p>
+              <div className="text-center">
+                <Link href="/forgot-password" className="text-xs text-brand hover:text-brand-dark font-semibold underline">
+                  Forgot password?
+                </Link>
+              </div>
             </form>
           )}
 

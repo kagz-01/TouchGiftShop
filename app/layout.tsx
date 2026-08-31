@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import AmbientBackground from "@/components/ui/AmbientBackground";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
+import ParallaxProvider from "@/components/ui/ParallaxProvider";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
 import { CartProvider } from "@/lib/cart";
@@ -95,6 +96,7 @@ export default function RootLayout({
         <ThemeProvider>
           <CartProvider>
             <ReferralCapture />
+            <ParallaxProvider />
             <AmbientBackground />
             <Analytics />
             <SpeedInsights />

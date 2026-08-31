@@ -20,17 +20,6 @@ type CalendarEvent = {
   autoOrder: boolean;
 };
 
-const MOCK_EVENTS: CalendarEvent[] = [
-  { id: "1", title: "Sarah's Birthday", recipientName: "Sarah Wanjiku", date: "2026-09-01", type: "birthday", status: "pending_pool", giftBudget: 5000, department: "Design", autoOrder: true },
-  { id: "2", title: "James's Work Anniversary", recipientName: "James Ochieng", date: "2026-09-05", type: "anniversary", status: "scheduled", giftBudget: 3000, department: "Engineering", autoOrder: true },
-  { id: "3", title: "Team Building Friday", recipientName: "All Staff", date: "2026-09-12", type: "custom", status: "scheduled", giftBudget: 1500, department: "All", autoOrder: false },
-  { id: "4", title: "Amina's Birthday", recipientName: "Amina Hassan", date: "2026-09-15", type: "birthday", status: "scheduled", giftBudget: 4000, department: "Marketing", autoOrder: true },
-  { id: "5", title: "Team Celebration", recipientName: "Engineering Team", date: "2026-09-20", type: "holiday", status: "scheduled", giftBudget: 2000, department: "Engineering", autoOrder: false },
-  { id: "6", title: "David's Work Anniversary", recipientName: "David Mutua", date: "2026-09-25", type: "anniversary", status: "scheduled", giftBudget: 3000, department: "Sales", autoOrder: true },
-  { id: "7", title: "Company Anniversary", recipientName: "Everyone", date: "2026-10-01", type: "holiday", status: "scheduled", giftBudget: 2500, department: "All", autoOrder: false },
-  { id: "8", title: "Grace's Birthday", recipientName: "Grace Njeri", date: "2026-10-08", type: "birthday", status: "scheduled", giftBudget: 3500, department: "HR", autoOrder: true },
-];
-
 const TYPE_CONFIG = {
   birthday: { icon: <Cake className="w-4 h-4" />, color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-500/10" },
   anniversary: { icon: <Trophy className="w-4 h-4" />, color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-500/10" },

@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
-// Helper to generate a secure random code for the gift card
+// Admin-only gift card creation (no payment required).
+// For customer purchases, use POST /api/gift-cards which integrates with PesaPal.
+// This endpoint is for admin/manual gift card issuance.
+
 function generateGiftCardCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed similar looking chars (I, 1, O, 0)
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "TG-";
   for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
   code += "-";
@@ -37,7 +40,7 @@ export async function POST(req: Request) {
       .insert({
         code,
         initial_amount: amount,
-        balance: amount, // Technically balance will be updated on IPN, but we store it here too.
+        balance: 0, // Balance set to 0 — activated via IPN or admin action
         sender_name: senderName,
         recipient_name: recipientName,
         recipient_email: recipientEmail || null,
@@ -48,7 +51,6 @@ export async function POST(req: Request) {
       .single();
 
     if (error) {
-      console.error("Error creating gift card in DB:", error);
       return NextResponse.json(
         { error: "Failed to create gift card record" },
         { status: 500 }
@@ -56,8 +58,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ success: true, id: giftCard.id });
-  } catch (error) {
-    console.error("API error creating gift card:", error);
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

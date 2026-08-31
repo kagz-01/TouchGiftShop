@@ -149,9 +149,8 @@ export default function GiftChatWidget() {
         ) : (
           <div className="relative">
             <span className="absolute inset-0 rounded-full bg-brand animate-ping opacity-20" />
-            <div className="relative flex items-center gap-2 bg-brand hover:bg-brand-dark text-white rounded-full px-4 py-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+            <div className="relative w-14 h-14 bg-brand hover:bg-brand-dark text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
               <span className="text-xl">✨</span>
-              <span className="text-sm font-semibold hidden sm:inline">AI Gift Finder</span>
             </div>
             {/* Notification badge */}
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-gold rounded-full flex items-center justify-center">

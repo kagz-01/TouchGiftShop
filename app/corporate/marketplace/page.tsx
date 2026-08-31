@@ -1,147 +1,76 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Store, Search, Filter, Star, MapPin, Truck, Shield,
-  Package, Heart, ArrowRight, Grid, List, SlidersHorizontal,
-  Award, Clock, Check, Phone, Globe, TrendingUp
+  Store, Search, Star, MapPin, Truck, Package, ArrowRight,
+  Grid, List, RefreshCw, ExternalLink, Shield
 } from "lucide-react";
+import { formatKsh } from "@/lib/utils";
 
 type Vendor = {
   id: string;
-  name: string;
+  business_name: string;
   description: string;
   location: string;
-  rating: number;
-  reviews: number;
-  products: number;
-  verified: boolean;
   specialty: string;
-  deliveryTime: string;
-  minOrder: string;
-  emoji: string;
-  gradient: string;
+  rating: number;
+  product_count: number;
+  delivery_time: string;
+  min_order: number;
+  free_delivery_threshold: number;
+  status: string;
 };
 
-type MarketplaceProduct = {
+type MarketProduct = {
   id: string;
   name: string;
   price: number;
-  vendor: string;
-  vendorId: string;
+  bulk_price?: number;
+  bulk_min?: number;
   category: string;
+  image_url: string;
+  vendor_id: string;
+  vendor_name: string;
   rating: number;
-  reviews: number;
-  emoji: string;
-  gradient: string;
-  bulkPrice?: number;
-  bulkMin?: number;
-  verified: boolean;
-  freeDelivery: boolean;
+  delivery_time: string;
+  free_delivery: boolean;
 };
 
-const VENDORS: Vendor[] = [
-  {
-    id: "1",
-    name: "Nairobi Artisan Co.",
-    description: "Handcrafted chocolates, coffee, and gourmet food gifts from local artisans.",
-    location: "Westlands, Nairobi",
-    rating: 4.9,
-    reviews: 234,
-    products: 45,
-    verified: true,
-    specialty: "Artisan Food & Drink",
-    deliveryTime: "1-2 days",
-    minOrder: "KSh 2,000",
-    emoji: "🍫",
-    gradient: "from-amber-500 to-orange-500",
-  },
-  {
-    id: "2",
-    name: "GiftBox Kenya",
-    description: "Premium gift boxes, hampers, and corporate packaging solutions.",
-    location: "Karen, Nairobi",
-    rating: 4.8,
-    reviews: 189,
-    products: 62,
-    verified: true,
-    specialty: "Gift Boxes & Hampers",
-    deliveryTime: "Same day",
-    minOrder: "KSh 1,500",
-    emoji: "📦",
-    gradient: "from-violet-500 to-purple-500",
-  },
-  {
-    id: "3",
-    name: "GreenGift Eco",
-    description: "Sustainable, eco-friendly corporate gifts and packaging.",
-    location: "Lavington, Nairobi",
-    rating: 4.7,
-    reviews: 156,
-    products: 38,
-    verified: true,
-    specialty: "Eco-Friendly Gifts",
-    deliveryTime: "2-3 days",
-    minOrder: "KSh 3,000",
-    emoji: "🌿",
-    gradient: "from-emerald-400 to-teal-500",
-  },
-  {
-    id: "4",
-    name: "Swahili Luxury",
-    description: "Premium Kenyan crafts, leather goods, and cultural artifacts.",
-    location: "Nyali, Mombasa",
-    rating: 4.9,
-    reviews: 98,
-    products: 28,
-    verified: true,
-    specialty: "Luxury & Cultural",
-    deliveryTime: "3-5 days",
-    minOrder: "KSh 5,000",
-    emoji: "🏛️",
-    gradient: "from-brand to-brand-deep",
-  },
-  {
-    id: "5",
-    name: "TechGift Africa",
-    description: "Corporate tech accessories, gadgets, and branded merchandise.",
-    location: "Kilimani, Nairobi",
-    rating: 4.6,
-    reviews: 124,
-    products: 52,
-    verified: true,
-    specialty: "Tech & Merchandise",
-    deliveryTime: "1-2 days",
-    minOrder: "KSh 1,000",
-    emoji: "📱",
-    gradient: "from-blue-500 to-indigo-500",
-  },
-];
-
-const PRODUCTS: MarketplaceProduct[] = [
-  { id: "1", name: "Artisan Chocolate Box", price: 1200, vendor: "Nairobi Artisan Co.", vendorId: "1", category: "Food", rating: 4.9, reviews: 89, emoji: "🍫", gradient: "from-amber-400 to-orange-400", bulkPrice: 950, bulkMin: 20, verified: true, freeDelivery: true },
-  { id: "2", name: "Premium Gift Hamper", price: 5500, vendor: "GiftBox Kenya", vendorId: "2", category: "Hampers", rating: 4.8, reviews: 124, emoji: "🎁", gradient: "from-violet-400 to-purple-400", bulkPrice: 4200, bulkMin: 10, verified: true, freeDelivery: true },
-  { id: "3", name: "Bamboo Desk Set", price: 2800, vendor: "GreenGift Eco", vendorId: "3", category: "Office", rating: 4.7, reviews: 67, emoji: "🎋", gradient: "from-emerald-400 to-teal-400", verified: true, freeDelivery: false },
-  { id: "4", name: "Leather Card Holder", price: 1800, vendor: "Swahili Luxury", vendorId: "4", category: "Accessories", rating: 4.9, reviews: 45, emoji: "👛", gradient: "from-brand to-brand-deep", verified: true, freeDelivery: false },
-  { id: "5", name: "Wireless Charger Pad", price: 1500, vendor: "TechGift Africa", vendorId: "5", category: "Tech", rating: 4.6, reviews: 78, emoji: "🔋", gradient: "from-blue-400 to-indigo-400", bulkPrice: 1100, bulkMin: 50, verified: true, freeDelivery: true },
-  { id: "6", name: "Scented Soy Candle", price: 850, vendor: "Nairobi Artisan Co.", vendorId: "1", category: "Lifestyle", rating: 4.8, reviews: 156, emoji: "🕯️", gradient: "from-amber-400 to-yellow-400", verified: true, freeDelivery: false },
-  { id: "7", name: "Branded Tote Bag", price: 650, vendor: "GiftBox Kenya", vendorId: "2", category: "Merchandise", rating: 4.7, reviews: 203, emoji: "👜", gradient: "from-pink-400 to-rose-400", bulkPrice: 450, bulkMin: 100, verified: true, freeDelivery: true },
-  { id: "8", name: "Recycled Notebook Set", price: 450, vendor: "GreenGift Eco", vendorId: "3", category: "Stationery", rating: 4.6, reviews: 98, emoji: "📓", gradient: "from-emerald-400 to-green-400", bulkPrice: 350, bulkMin: 50, verified: true, freeDelivery: false },
-];
-
-const CATEGORIES = ["All", "Food", "Hampers", "Office", "Accessories", "Tech", "Lifestyle", "Merchandise", "Stationery"];
-
 export default function B2B2CMarketplace() {
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [products, setProducts] = useState<MarketProduct[]>([]);
+  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"grid" | "list">("grid");
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [showVendors, setShowVendors] = useState(false);
+  const [sortBy, setSortBy] = useState<"popular" | "price" | "rating" | "newest">("popular");
 
-  const filteredProducts = PRODUCTS.filter((p) => {
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/corporate/marketplace/vendors").then(r => r.json()),
+      fetch("/api/corporate/marketplace/products").then(r => r.json()),
+    ]).then(([v, p]) => {
+      setVendors(v.vendors || []);
+      setProducts(p.products || []);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, []);
+
+  const categories = ["All", ...new Set(products.map(p => p.category).filter(Boolean))];
+
+  const filteredProducts = products.filter((p) => {
     const matchesCategory = category === "All" || p.category === category;
-    const matchesSearch = search === "" || p.name.toLowerCase().includes(search.toLowerCase()) || p.vendor.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = search === "" ||
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      (p.vendor_name || "").toLowerCase().includes(search.toLowerCase());
     return matchesCategory && matchesSearch;
+  }).sort((a, b) => {
+    if (sortBy === "price") return a.price - b.price;
+    if (sortBy === "rating") return b.rating - a.rating;
+    return 0;
   });
 
   return (
@@ -154,21 +83,17 @@ export default function B2B2CMarketplace() {
               <h1 className="font-display italic text-2xl font-bold">Corporate Gift Marketplace</h1>
               <p className="text-theme-muted text-sm">Discover curated gifts from verified vendors across Kenya.</p>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowVendors(!showVendors)}
-                className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
-                  showVendors
-                    ? "bg-brand text-white"
-                    : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
-                }`}
-              >
-                <Store className="w-4 h-4" /> Vendors
-              </button>
-            </div>
+            <button
+              onClick={() => setShowVendors(!showVendors)}
+              className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
+                showVendors ? "bg-brand text-white" : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
+              }`}
+            >
+              <Store className="w-4 h-4" /> Vendors ({vendors.length})
+            </button>
           </div>
 
-          {/* Search */}
+          {/* Search & filters */}
           <div className="flex gap-3 mb-6">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-muted" />
@@ -177,32 +102,28 @@ export default function B2B2CMarketplace() {
                 placeholder="Search gifts, vendors, categories..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-white/50 border border-surface-border shape-premium-card pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                className="w-full pl-10 pr-4 py-3 bg-white/80 border border-surface-border shape-premium-card text-sm text-theme-heading placeholder:text-theme-muted/50 focus:outline-none focus:border-brand/30"
               />
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setView("grid")}
-                className={`p-2.5 shape-premium-card transition-all ${view === "grid" ? "bg-brand text-white" : "bg-white/80 border border-surface-border text-theme-muted"}`}
-              >
-                <Grid className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setView("list")}
-                className={`p-2.5 shape-premium-card transition-all ${view === "list" ? "bg-brand text-white" : "bg-white/80 border border-surface-border text-theme-muted"}`}
-              >
-                <List className="w-4 h-4" />
-              </button>
-            </div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+              className="px-4 py-3 bg-white/80 border border-surface-border shape-premium-card text-sm text-theme-heading"
+            >
+              <option value="popular">Most Popular</option>
+              <option value="price">Price: Low to High</option>
+              <option value="rating">Highest Rated</option>
+              <option value="newest">Newest</option>
+            </select>
           </div>
 
           {/* Categories */}
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
+                className={`px-4 py-2 shape-premium-button text-xs font-semibold whitespace-nowrap transition-all ${
                   category === cat
                     ? "bg-brand text-white"
                     : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
@@ -219,133 +140,139 @@ export default function B2B2CMarketplace() {
         {/* Vendors section */}
         {showVendors && (
           <div className="mb-8">
-            <h2 className="font-display italic text-lg font-bold text-theme-heading mb-4">Featured Vendors</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {VENDORS.map((vendor) => (
-                <div
-                  key={vendor.id}
-                  className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm hover:shadow-card-hover transition-all"
-                >
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className={`w-12 h-12 bg-gradient-to-br ${vendor.gradient} shape-premium-card flex items-center justify-center text-2xl`}>
-                      {vendor.emoji}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-sm font-bold text-theme-heading truncate">{vendor.name}</h3>
-                        {vendor.verified && <Shield className="w-3 h-3 text-success flex-shrink-0" />}
+            <h2 className="text-lg font-display font-bold italic text-theme-heading mb-4">Verified Vendors</h2>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-white/80 shape-premium-card p-5 border border-surface-border animate-pulse h-40" />
+                ))}
+              </div>
+            ) : vendors.length === 0 ? (
+              <div className="bg-white/80 shape-premium-card p-8 border border-surface-border text-center">
+                <Store className="w-10 h-10 text-brand/30 mx-auto mb-3" />
+                <p className="text-theme-muted text-sm">No vendors yet. Vendors can apply to join the marketplace.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {vendors.map((vendor) => (
+                  <div key={vendor.id} className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm hover:shadow-card transition-all group">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-semibold text-theme-heading group-hover:text-gold transition-colors">{vendor.business_name}</h3>
+                        <p className="text-xs text-theme-muted flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" /> {vendor.location}
+                        </p>
                       </div>
-                      <p className="text-xs text-theme-muted flex items-center gap-1">
-                        <MapPin className="w-3 h-3" /> {vendor.location}
-                      </p>
+                      <div className="flex items-center gap-1 text-gold">
+                        <Star className="w-3 h-3 fill-current" />
+                        <span className="text-xs font-semibold">{vendor.rating?.toFixed(1) || "New"}</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-theme-muted mb-3 line-clamp-2">{vendor.description}</p>
+                    <div className="flex items-center gap-3 text-[10px] text-theme-muted">
+                      <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {vendor.product_count} products</span>
+                      <span className="flex items-center gap-1"><Truck className="w-3 h-3" /> {vendor.delivery_time}</span>
+                      <span className="flex items-center gap-1"><Shield className="w-3 h-3 text-success" /> Verified</span>
                     </div>
                   </div>
-
-                  <p className="text-xs text-theme-body mb-3 line-clamp-2">{vendor.description}</p>
-
-                  <div className="flex items-center gap-4 text-xs text-theme-muted mb-3">
-                    <span className="flex items-center gap-1"><Star className="w-3 h-3 text-gold" /> {vendor.rating} ({vendor.reviews})</span>
-                    <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {vendor.products} items</span>
-                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {vendor.deliveryTime}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-theme-muted">Min order: {vendor.minOrder}</span>
-                    <button className="px-3 py-1.5 bg-brand/10 text-brand shape-premium-button text-xs font-semibold hover:bg-brand/20 transition-colors">
-                      View Products
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Products */}
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display italic text-lg font-bold text-theme-heading">
-            {showVendors ? "All Products" : "Browse Gifts"}
-          </h2>
-          <span className="text-sm text-theme-muted">{filteredProducts.length} products</span>
-        </div>
+        <h2 className="text-lg font-display font-bold italic text-theme-heading mb-4">
+          {showVendors ? "All Products" : "Marketplace Products"}
+          <span className="text-sm font-normal text-theme-muted ml-2">({filteredProducts.length})</span>
+        </h2>
 
-        {view === "grid" ? (
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="bg-white/80 shape-premium-card border border-surface-border animate-pulse">
+                <div className="aspect-square bg-gray-200 rounded-t-2xl" />
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="bg-white/80 shape-premium-card p-12 border border-surface-border text-center">
+            <Package className="w-12 h-12 text-brand/20 mx-auto mb-4" />
+            <p className="text-theme-heading font-semibold mb-1">No products found</p>
+            <p className="text-sm text-theme-muted">Try a different search or category.</p>
+          </div>
+        ) : view === "grid" ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm hover:shadow-card-hover transition-all group"
-              >
-                <div className={`aspect-square bg-gradient-to-br ${product.gradient} shape-premium-card flex items-center justify-center text-5xl mb-3 group-hover:scale-105 transition-transform`}>
-                  {product.emoji}
-                </div>
-
-                <div className="flex items-center gap-1 mb-1">
-                  {product.verified && <Shield className="w-3 h-3 text-success" />}
-                  <span className="text-[10px] text-theme-muted">{product.vendor}</span>
-                </div>
-
-                <h3 className="text-sm font-bold text-theme-heading mb-1 line-clamp-1">{product.name}</h3>
-
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="w-3 h-3 text-gold fill-current" />
-                  <span className="text-xs font-semibold text-theme-heading">{product.rating}</span>
-                  <span className="text-[10px] text-theme-muted">({product.reviews})</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-bold text-brand">KSh {product.price.toLocaleString()}</p>
-                    {product.bulkPrice && (
-                      <p className="text-[10px] text-success">Bulk: KSh {product.bulkPrice.toLocaleString()} ({product.bulkMin}+)</p>
-                    )}
-                  </div>
-                  {product.freeDelivery && (
-                    <span className="px-1.5 py-0.5 bg-success/10 text-success text-[9px] font-semibold shape-premium-button flex items-center gap-0.5">
-                      <Truck className="w-2.5 h-2.5" /> Free
-                    </span>
+              <div key={product.id} className="bg-white/80 backdrop-blur-sm shape-premium-card border border-surface-border shadow-sm hover:shadow-card transition-all group overflow-hidden">
+                <div className="relative aspect-square bg-gray-50 dark:bg-white/5 overflow-hidden">
+                  {product.image_url ? (
+                    <Image src={product.image_url} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 25vw" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-brand/5">
+                      <Package className="w-10 h-10 text-brand/20" />
+                    </div>
+                  )}
+                  {product.free_delivery && (
+                    <div className="absolute top-2 left-2 bg-success text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Truck className="w-3 h-3" /> Free Delivery
+                    </div>
                   )}
                 </div>
-
-                <button className="w-full mt-3 py-2 bg-brand/10 text-brand shape-premium-button text-xs font-semibold hover:bg-brand hover:text-white transition-all">
-                  Add to Hamper
-                </button>
+                <div className="p-4">
+                  <p className="text-[10px] text-theme-muted mb-1">{product.vendor_name}</p>
+                  <h3 className="text-sm font-semibold text-theme-heading line-clamp-1 group-hover:text-gold transition-colors">{product.name}</h3>
+                  <div className="flex items-center gap-1 text-gold mt-1">
+                    <Star className="w-3 h-3 fill-current" />
+                    <span className="text-[10px] font-semibold">{product.rating?.toFixed(1) || "New"}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-3">
+                    <div>
+                      <p className="text-sm font-bold text-brand">{formatKsh(product.price)}</p>
+                      {product.bulk_price && (
+                        <p className="text-[10px] text-success">Bulk: {formatKsh(product.bulk_price)} ({product.bulk_min}+)</p>
+                      )}
+                    </div>
+                    <Link href="/corporate/build" className="p-2 bg-brand/10 shape-premium-button hover:bg-brand hover:text-white text-brand transition-all">
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="space-y-3">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm flex items-center gap-4 hover:shadow-card-hover transition-all"
-              >
-                <div className={`w-16 h-16 bg-gradient-to-br ${product.gradient} shape-premium-card flex items-center justify-center text-2xl flex-shrink-0`}>
-                  {product.emoji}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    {product.verified && <Shield className="w-3 h-3 text-success" />}
-                    <span className="text-xs text-theme-muted">{product.vendor}</span>
-                    <span className="text-[10px] text-theme-muted">·</span>
-                    <span className="text-[10px] text-theme-muted">{product.category}</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-theme-heading">{product.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="flex items-center gap-0.5"><Star className="w-3 h-3 text-gold fill-current" /><span className="text-xs">{product.rating}</span></span>
-                    {product.freeDelivery && <span className="text-[10px] text-success flex items-center gap-0.5"><Truck className="w-2.5 h-2.5" /> Free delivery</span>}
-                  </div>
-                </div>
-
-                <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-brand">KSh {product.price.toLocaleString()}</p>
-                  {product.bulkPrice && (
-                    <p className="text-[10px] text-success">Bulk: KSh {product.bulkPrice.toLocaleString()}</p>
+              <div key={product.id} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm flex gap-4 hover:shadow-card transition-all">
+                <div className="w-20 h-20 flex-shrink-0 relative rounded-xl overflow-hidden bg-gray-50">
+                  {product.image_url ? (
+                    <Image src={product.image_url} alt={product.name} fill className="object-cover" sizes="80px" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-brand/5">
+                      <Package className="w-6 h-6 text-brand/20" />
+                    </div>
                   )}
-                  <button className="mt-2 px-4 py-1.5 bg-brand text-white shape-premium-button text-xs font-semibold hover:bg-brand-dark transition-colors">
-                    Add
-                  </button>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[10px] text-theme-muted">{product.vendor_name}</p>
+                  <h3 className="text-sm font-semibold text-theme-heading">{product.name}</h3>
+                  <div className="flex items-center gap-3 mt-1 text-[10px] text-theme-muted">
+                    <span className="flex items-center gap-1"><Star className="w-3 h-3 text-gold fill-current" /> {product.rating?.toFixed(1)}</span>
+                    <span>{product.category}</span>
+                    {product.free_delivery && <span className="flex items-center gap-1 text-success"><Truck className="w-3 h-3" /> Free</span>}
+                  </div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-sm font-bold text-brand">{formatKsh(product.price)}</p>
+                  {product.bulk_price && <p className="text-[10px] text-success">Bulk: {formatKsh(product.bulk_price)}</p>}
+                  <Link href="/corporate/build" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-gold transition-colors">
+                    Order <ArrowRight className="w-3 h-3" />
+                  </Link>
                 </div>
               </div>
             ))}

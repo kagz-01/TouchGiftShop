@@ -747,42 +747,49 @@ export function SocialProof() {
 
         {/* Testimonials Marquee */}
         <Reveal>
-          <div className="relative flex overflow-x-hidden group w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 px-4 md:px-8 py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            {[0, 1].map((track) => (
-              <div
-                key={track}
-                aria-hidden={track === 1}
-                className="animate-marquee flex gap-5 min-w-full shrink-0 items-stretch group-hover:[animation-play-state:paused]"
-              >
-                {displayReviews.map((t, i) => (
-                  <div
-                    key={i}
-                    className="flex-shrink-0 w-[300px] md:w-[360px] card-theme rounded-[1.5rem] p-6 flex flex-col gap-4 whitespace-normal"
-                  >
-                    {/* Stars */}
-                    <StarRow count={t.stars} />
+          <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
+            {/* Left fade overlay */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to right, #FDF8F0 0%, transparent 100%)" }} />
+            {/* Right fade overlay */}
+            <div className="absolute right-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to left, #FDEEE0 0%, transparent 100%)" }} />
 
-                    {/* Quote */}
-                    <p className="text-sm md:text-base leading-relaxed text-theme-heading flex-1">
-                      &ldquo;{t.text}&rdquo;
-                    </p>
+            <div className="relative flex overflow-x-hidden group px-4 md:px-8">
+              {[0, 1].map((track) => (
+                <div
+                  key={track}
+                  aria-hidden={track === 1}
+                  className="animate-marquee flex gap-5 min-w-full shrink-0 items-stretch group-hover:[animation-play-state:paused]"
+                >
+                  {displayReviews.map((t, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 w-[300px] md:w-[360px] card-theme rounded-[1.5rem] p-6 flex flex-col gap-4 whitespace-normal"
+                    >
+                      {/* Stars */}
+                      <StarRow count={t.stars} />
 
-                    {/* Author row */}
-                    <div className="flex items-center justify-between pt-2 border-t border-surface-border">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
-                          <span className="text-white text-[10px] font-bold">{t.initials}</span>
+                      {/* Quote */}
+                      <p className="text-sm md:text-base leading-relaxed text-theme-heading flex-1">
+                        &ldquo;{t.text}&rdquo;
+                      </p>
+
+                      {/* Author row */}
+                      <div className="flex items-center justify-between pt-2 border-t border-surface-border">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
+                            <span className="text-white text-[10px] font-bold">{t.initials}</span>
+                          </div>
+                          <span className="font-semibold text-sm tracking-wide text-theme-heading">{t.name}</span>
                         </div>
-                        <span className="font-semibold text-sm tracking-wide text-theme-heading">{t.name}</span>
+                        <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-gold px-3 py-1.5 rounded-full">
+                          {t.occasion}
+                        </span>
                       </div>
-                      <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-gold px-3 py-1.5 rounded-full">
-                        {t.occasion}
-                      </span>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ))}
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </Reveal>
 

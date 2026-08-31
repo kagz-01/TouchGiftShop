@@ -89,10 +89,6 @@ export interface PoolContribution {
   createdAt: string;
 }
 
-// Note: matches Supabase's raw snake_case column names, since /api/products
-// currently passes the query result straight through without remapping.
-// TODO: decide whether to remap to camelCase in the API layer as the app
-// grows — fine to leave as-is for now.
 export interface ColorVariant {
   name: string;
   image?: string;

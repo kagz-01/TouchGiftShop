@@ -335,6 +335,9 @@ export default function CheckoutForm({
             recipientPinRequested: usePinDrop,
             // Points redemption applies to the first order only
             pointsToRedeem: orderIds.length === 0 && effectivePoints > 0 ? effectivePoints : undefined,
+            // Gift card info stored on order for server-side redemption after payment
+            giftCardCode: giftCardCode || undefined,
+            giftCardDiscount: giftCardDiscount > 0 ? Math.round(giftCardDiscount / itemsToOrder.length) : 0,
           }),
         });
 
@@ -371,16 +374,8 @@ export default function CheckoutForm({
         }
       }
 
-      // Redeem gift card if applied
-      if (giftCardCode && giftCardDiscount > 0) {
-        for (const oid of orderIds) {
-          await fetch("/api/gift-cards/redeem", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code: giftCardCode, orderId: oid, amount: giftCardDiscount / orderIds.length }),
-          }).catch(() => {});
-        }
-      }
+      // NOTE: Gift card redemption is handled server-side after payment confirmation (IPN)
+      // to prevent balance loss if user abandons checkout.
 
       // Clear cart if cart checkout
       if (isCartCheckout) {

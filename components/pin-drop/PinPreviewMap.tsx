@@ -31,10 +31,9 @@ export default function PinPreviewMap({ lat, lng }: PinPreviewMapProps) {
         zoom: 15,
         zoomControl: false,
         attributionControl: false,
-        dragging: false,
-        scrollWheelZoom: false,
-        doubleClickZoom: false,
-        touchZoom: false,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        touchZoom: true,
       });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Candy, Coffee, Flame, Cake as CakeIcon, Package, Gift, Zap, Banknote,
   Palette, FileSpreadsheet, Trophy, HeartHandshake, Tent, TreePine, Hand,
@@ -91,12 +92,22 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 }
 
+const ORBIT_FALLBACK_ITEMS = [
+  { emoji: "🎁", label: "Birthday Box", color: "from-pink-500 to-rose-400" },
+  { emoji: "🛍️", label: "Welcome Kit", color: "from-violet-500 to-purple-400" },
+  { emoji: "🎀", label: "Event Hamper", color: "from-amber-500 to-orange-400" },
+  { emoji: "🧧", label: "Client Gift", color: "from-emerald-500 to-teal-400" },
+  { emoji: "🎄", label: "Holiday Bundle", color: "from-red-500 to-rose-400" },
+  { emoji: "💐", label: "Appreciation Set", color: "from-fuchsia-500 to-pink-400" },
+];
+
 /* ══════════════════════════════════════════════════════════
    SECTION 1: HERO — Cinematic corporate intro
    ══════════════════════════════════════════════════════════ */
 function CorporateHero() {
   const [loaded, setLoaded] = useState(false);
   const [msgIdx, setMsgIdx] = useState(0);
+  const [orbitProducts, setOrbitProducts] = useState<{ name: string; image_url: string; price: number; slug: string }[]>([]);
   const messages = [
     "500+ companies trust us with their gifting.",
     "Same-day delivery across Nairobi.",
@@ -109,13 +120,84 @@ function CorporateHero() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    fetch("/api/products?limit=6")
+      .then(r => r.json())
+      .then(d => {
+        const products = (d.products || []).slice(0, 6).map((p: any) => ({
+          name: p.name,
+          image_url: p.image_url || "",
+          price: p.price,
+          slug: p.slug,
+        }));
+        setOrbitProducts(products);
+      })
+      .catch(() => {});
+  }, []);
+
+  /* ── Conveyor: items enter → travel anticlockwise → exit ── */
+  type ConveyorItem = {
+    id: number;
+    angle: number;
+    product: { name: string; image_url: string; price: number; slug: string } | null;
+    fallback: { emoji: string; color: string };
+  };
+
+  const CONVEYOR_TOTAL = 8;
+  const CONVEYOR_SPEED = 0.5;
+  const ENTRANCE_ANGLE = 30;
+  const EXIT_ANGLE = 330;
+  const FADE_ZONE = 30;
+  const [conveyorItems, setConveyorItems] = useState<ConveyorItem[]>([]);
+  const conveyorRef = useRef<{ items: ConveyorItem[]; nextId: number; spawnAccum: number }>({
+    items: [],
+    nextId: 0,
+    spawnAccum: 0,
+  });
+
+  useEffect(() => {
+    const fallbackPool = ORBIT_FALLBACK_ITEMS;
+    let raf: number;
+    let lastTime = performance.now();
+
+    const tick = (now: number) => {
+      const dt = Math.min(now - lastTime, 50);
+      lastTime = now;
+      const ctx = conveyorRef.current;
+
+      ctx.spawnAccum += dt;
+      if (ctx.spawnAccum > 1500 && ctx.items.length < CONVEYOR_TOTAL) {
+        ctx.spawnAccum = 0;
+        const prods = orbitProducts;
+        const pool = prods.length > 0 ? prods : null;
+        const fb = fallbackPool[ctx.nextId % fallbackPool.length];
+        ctx.items.push({
+          id: ctx.nextId++,
+          angle: ENTRANCE_ANGLE,
+          product: pool ? pool[ctx.nextId % pool.length] : null,
+          fallback: fb,
+        });
+      }
+
+      ctx.items = ctx.items.filter((item) => {
+        item.angle += CONVEYOR_SPEED * dt;
+        return item.angle <= EXIT_ANGLE + 30;
+      });
+
+      setConveyorItems([...ctx.items]);
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [orbitProducts]);
+
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
       {/* Ambient orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[120px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
       {/* Grid pattern */}
@@ -153,19 +235,8 @@ function CorporateHero() {
               <span className="relative inline-block py-1">
                 Impress your team.
                 <br />
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
-                    Delight your clients.
-                  </span>
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
-                    <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#corp-gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
-                    <defs>
-                      <linearGradient id="corp-gold-gradient" x1="0" y1="0" x2="200" y2="0">
-                        <stop offset="0%" stopColor="#D4A853" />
-                        <stop offset="100%" stopColor="#E8C97A" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
+                <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                  Delight your clients.
                 </span>
               </span>
             </h1>
@@ -232,29 +303,68 @@ function CorporateHero() {
             </div>
           </div>
 
-          {/* Right: Stats showcase */}
-          <div className={`hidden lg:block transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { value: 500, suffix: "+", label: "Corporate orders", icon: <Building2 className="w-5 h-5" /> },
-                { value: 24, suffix: "hrs", label: "Turnaround time", icon: <Clock className="w-5 h-5" /> },
-                { value: 98, suffix: "%", label: "Client satisfaction", icon: <Star className="w-5 h-5" /> },
-                { value: 10, suffix: "+", label: "Cities served", icon: <MapPin className="w-5 h-5" /> },
-              ].map((s, i) => (
-                <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all duration-500 group">
-                  <div className="flex items-center justify-center gap-2 text-gold mb-2 group-hover:scale-110 transition-transform">
-                    {s.icon}
+          {/* Right: Conveyor orbit */}
+          <div className={`hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
+            <div className="relative w-[420px] h-[420px]">
+              {/* Orbit ring */}
+              <div className="absolute inset-[40px] rounded-full border border-white/[0.08]" />
+
+              {/* Conveyor items */}
+              {conveyorItems.map((item) => {
+                const rad = (item.angle * Math.PI) / 180;
+                const radius = 170;
+                const cx = 210 + Math.cos(rad) * radius;
+                const cy = 210 + Math.sin(rad) * radius;
+
+                let opacity = 1;
+                const distFromEntrance = item.angle - ENTRANCE_ANGLE;
+                const distToExit = EXIT_ANGLE - item.angle;
+                if (distFromEntrance < FADE_ZONE) opacity = distFromEntrance / FADE_ZONE;
+                else if (distToExit < FADE_ZONE) opacity = distToExit / FADE_ZONE;
+
+                const scale = 0.6 + 0.4 * Math.min(opacity, 1);
+
+                return (
+                  <div
+                    key={item.id}
+                    className="absolute z-10"
+                    style={{
+                      left: cx - 45,
+                      top: cy - 45,
+                      opacity,
+                      transform: `scale(${scale})`,
+                    }}
+                  >
+                    {item.product && item.product.image_url ? (
+                      <div className="w-[90px] h-[90px] rounded-full overflow-hidden shadow-[0_6px_30px_rgba(0,0,0,0.5)] border-2 border-white/25 bg-white/10 relative">
+                        <Image
+                          src={item.product.image_url}
+                          alt={item.product.name}
+                          fill
+                          className="object-cover"
+                          sizes="90px"
+                        />
+                      </div>
+                    ) : (
+                      <div className={`w-[90px] h-[90px] rounded-full bg-gradient-to-br ${item.fallback.color} flex items-center justify-center text-3xl shadow-[0_6px_30px_rgba(0,0,0,0.5)] border-2 border-white/25`}>
+                        {item.fallback.emoji}
+                      </div>
+                    )}
                   </div>
-                  <p className="font-display text-3xl md:text-4xl font-black text-white mb-1">
-                    <Counter target={s.value} suffix={s.suffix} />
-                  </p>
-                  <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">{s.label}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Inline keyframes */}
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
     </section>
   );
 }
@@ -341,60 +451,70 @@ function CorporateSolution() {
       title: "Bespoke Curation",
       desc: "Every hamper is hand-picked to match your brand, budget, and occasion. No generic bundles.",
       span: "md:col-span-2",
+      href: "/corporate/build",
     },
     {
       icon: <Zap className="w-6 h-6 text-coral" />,
       title: "Same-Day Delivery",
       desc: "Order by noon, delivered by evening across Nairobi. Perfect for last-minute events.",
       span: "md:col-span-1",
+      href: "/corporate/build",
     },
     {
       icon: <Upload className="w-6 h-6 text-brand-light" />,
       title: "CSV Upload",
       desc: "Upload a spreadsheet of recipients — names, phones, notes. We handle the rest.",
       span: "md:col-span-1",
+      href: "/corporate/build",
     },
     {
       icon: <Palette className="w-6 h-6 text-success" />,
       title: "Template Library",
       desc: "20+ pre-built templates for onboarding, holidays, milestones. Customize in 2 minutes.",
       span: "md:col-span-1",
+      href: "/corporate/build",
     },
     {
       icon: <MessageSquare className="w-6 h-6 text-emerald-400" />,
       title: "WhatsApp Bot",
       desc: "Recipients reply with delivery instructions via WhatsApp. No app install required.",
       span: "md:col-span-1",
+      href: "/corporate/whatsapp",
     },
     {
       icon: <Briefcase className="w-6 h-6 text-cyan-400" />,
       title: "White-Label Portal",
       desc: "Your team sends gifts from your branded portal. Fully customizable with your logo.",
       span: "md:col-span-1",
+      href: "/corporate/whitelabel",
     },
     {
       icon: <Tent className="w-6 h-6 text-orange-400" />,
       title: "Virtual Showroom",
       desc: "Browse hampers in 3D. Recipients choose their own gift. Zero returns.",
       span: "md:col-span-1",
+      href: "/corporate/showroom",
     },
     {
       icon: <Trophy className="w-6 h-6 text-gold" />,
       title: "Automated Milestones",
       desc: "Set it and forget it. Auto-send gifts on work anniversaries, birthdays, and promotions.",
       span: "md:col-span-2",
+      href: "/corporate/milestones",
     },
     {
       icon: <HeartHandshake className="w-6 h-6 text-brand-light" />,
       title: "Client Appreciation",
       desc: "VIP client tracking, CRM integration, and personalized follow-ups. Strengthen relationships.",
       span: "md:col-span-1",
+      href: "/corporate/clients",
     },
     {
       icon: <EyeOff className="w-6 h-6 text-brand-light" />,
       title: "Absolute Discretion",
       desc: "Anonymous gifting options. No branding unless you want it. Respect for every recipient.",
       span: "md:col-span-1",
+      href: "/corporate/build",
     },
   ];
 
@@ -436,7 +556,7 @@ function CorporateSolution() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {solutions.map((s, i) => (
             <Reveal key={i} delay={300 + i * 100} direction="up">
-              <div className={`h-full p-6 shape-premium-card card-theme border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden ${s.span}`}>
+              <Link href={s.href} className={`h-full p-6 shape-premium-card card-theme border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden ${s.span} block`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10">
                   <div className="w-12 h-12 bg-brand/10 dark:bg-white/10 shape-premium-button flex items-center justify-center mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
@@ -444,8 +564,11 @@ function CorporateSolution() {
                   </div>
                   <h3 className="font-display text-xl md:text-2xl font-bold italic mb-2 text-theme-heading group-hover:text-gold transition-colors duration-300">{s.title}</h3>
                   <p className="text-theme-body leading-relaxed text-sm">{s.desc}</p>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Explore <ArrowRight className="w-3 h-3" />
+                  </span>
                 </div>
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -459,12 +582,12 @@ function CorporateSolution() {
    ══════════════════════════════════════════════════════════ */
 function CorporateUseCases() {
   const cases = [
-    { icon: <Trophy className="w-6 h-6 text-white" />, title: "Employee Appreciation", desc: "Reward hard work with curated gifts for milestones, anniversaries, and top performers.", color: "from-brand to-brand-light" },
-    { icon: <HeartHandshake className="w-6 h-6 text-white" />, title: "Client Thank-Yous", desc: "Strengthen relationships after closing a deal, onboarding a client, or during holidays.", color: "from-gold to-gold-light" },
-    { icon: <Tent className="w-6 h-6 text-white" />, title: "Event Giveaways", desc: "Branded gift bags for conferences, launches, and corporate events.", color: "from-coral to-coral-light" },
-    { icon: <TreePine className="w-6 h-6 text-white" />, title: "Holiday & Seasonal", desc: "Christmas, New Year, Ramadan, Easter — seasonal gifts for your entire team.", color: "from-emerald-500 to-teal-500" },
-    { icon: <Hand className="w-6 h-6 text-white" />, title: "Welcome Kits", desc: "Make new hires feel valued from day one with a branded onboarding hamper.", color: "from-violet-500 to-purple-500" },
-    { icon: <Heart className="w-6 h-6 text-white" />, title: "Milestone Celebrations", desc: "Company anniversaries, product launches, partnerships — mark every milestone.", color: "from-blue-500 to-cyan-500" },
+    { icon: <Trophy className="w-6 h-6 text-white" />, title: "Employee Appreciation", desc: "Reward hard work with curated gifts for milestones, anniversaries, and top performers.", color: "from-brand to-brand-light", href: "/corporate/milestones" },
+    { icon: <HeartHandshake className="w-6 h-6 text-white" />, title: "Client Thank-Yous", desc: "Strengthen relationships after closing a deal, onboarding a client, or during holidays.", color: "from-gold to-gold-light", href: "/corporate/build" },
+    { icon: <Tent className="w-6 h-6 text-white" />, title: "Event Giveaways", desc: "Branded gift bags for conferences, launches, and corporate events.", color: "from-coral to-coral-light", href: "/corporate/build" },
+    { icon: <TreePine className="w-6 h-6 text-white" />, title: "Holiday & Seasonal", desc: "Christmas, New Year, Ramadan, Easter — seasonal gifts for your entire team.", color: "from-emerald-500 to-teal-500", href: "/corporate/calendar" },
+    { icon: <Hand className="w-6 h-6 text-white" />, title: "Welcome Kits", desc: "Make new hires feel valued from day one with a branded onboarding hamper.", color: "from-violet-500 to-purple-500", href: "/corporate/build" },
+    { icon: <Heart className="w-6 h-6 text-white" />, title: "Milestone Celebrations", desc: "Company anniversaries, product launches, partnerships — mark every milestone.", color: "from-blue-500 to-cyan-500", href: "/corporate/milestones" },
   ];
 
   return (
@@ -501,7 +624,7 @@ function CorporateUseCases() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cases.map((c, i) => (
             <Reveal key={i} delay={300 + i * 80}>
-              <div className="h-full card-theme shape-premium-card p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden">
+              <Link href={c.href} className="h-full card-theme shape-premium-card p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-1 relative overflow-hidden block">
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10">
                   <div className={`w-14 h-14 bg-gradient-to-br ${c.color} shape-premium-card flex items-center justify-center mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500`}>
@@ -509,8 +632,11 @@ function CorporateUseCases() {
                   </div>
                   <h3 className="font-display italic text-lg font-bold mb-2 text-theme-heading group-hover:text-gold transition-colors duration-300">{c.title}</h3>
                   <p className="text-theme-muted text-sm leading-relaxed">{c.desc}</p>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Learn more <ArrowRight className="w-3 h-3" />
+                  </span>
                 </div>
-              </div>
+              </Link>
             </Reveal>
           ))}
         </div>
@@ -524,10 +650,10 @@ function CorporateUseCases() {
    ══════════════════════════════════════════════════════════ */
 function CorporateHowItWorks() {
   const steps = [
-    { num: "01", icon: <Gift className="w-8 h-8" />, title: "Pick your gift", desc: "Choose from curated hampers or build a custom one. Browse our catalog or let us suggest based on your budget.", accent: "from-gold/20 to-gold/5" },
-    { num: "02", icon: <Upload className="w-8 h-8" />, title: "Add recipients", desc: "Upload a CSV spreadsheet or add recipients manually. Include names, phone numbers, and personal notes.", accent: "from-brand-light/20 to-brand-light/5" },
-    { num: "03", icon: <Palette className="w-8 h-8" />, title: "Customize", desc: "Add your company logo to cards, choose branded packaging, or include a custom message for all recipients.", accent: "from-coral/20 to-coral/5" },
-    { num: "04", icon: <Rocket className="w-8 h-8" />, title: "Deliver & track", desc: "One M-Pesa payment for all gifts. We handle individual delivery with photo proof for each recipient.", accent: "from-success/20 to-success/5" },
+    { num: "01", icon: <Gift className="w-8 h-8" />, title: "Pick your gift", desc: "Choose from curated hampers or build a custom one. Browse our catalog or let us suggest based on your budget.", accent: "from-gold/20 to-gold/5", href: "/corporate/build" },
+    { num: "02", icon: <Upload className="w-8 h-8" />, title: "Add recipients", desc: "Upload a CSV spreadsheet or add recipients manually. Include names, phone numbers, and personal notes.", accent: "from-brand-light/20 to-brand-light/5", href: "/corporate/build" },
+    { num: "03", icon: <Palette className="w-8 h-8" />, title: "Customize", desc: "Add your company logo to cards, choose branded packaging, or include a custom message for all recipients.", accent: "from-coral/20 to-coral/5", href: "/corporate/build" },
+    { num: "04", icon: <Rocket className="w-8 h-8" />, title: "Deliver & track", desc: "One M-Pesa payment for all gifts. We handle individual delivery with photo proof for each recipient.", accent: "from-success/20 to-success/5", href: "/corporate/dashboard" },
   ];
 
   return (
@@ -569,7 +695,7 @@ function CorporateHowItWorks() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10">
             {steps.map((step, i) => (
               <Reveal key={i} delay={200 + i * 150}>
-                <div className={`relative card-theme shape-premium-card p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 bg-gradient-to-br ${step.accent}`}>
+                <Link href={step.href} className={`relative block card-theme shape-premium-card p-6 border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 bg-gradient-to-br ${step.accent}`}>
                   <div className="absolute -top-4 -left-2 w-12 h-12 bg-gradient-to-br from-brand to-brand-light shape-premium-card flex items-center justify-center text-white font-display italic font-bold text-lg shadow-ribbon group-hover:scale-110 transition-transform">
                     {step.num}
                   </div>
@@ -580,8 +706,11 @@ function CorporateHowItWorks() {
                     <span className="text-4xl mb-3 block group-hover:animate-wiggle">{step.icon}</span>
                     <h3 className="font-display italic text-lg font-bold mb-2 text-theme-heading group-hover:text-gold transition-colors duration-300">{step.title}</h3>
                     <p className="text-theme-muted text-sm leading-relaxed">{step.desc}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Get started <ArrowRight className="w-3 h-3" />
+                    </span>
                   </div>
-                </div>
+                </Link>
               </Reveal>
             ))}
           </div>
@@ -650,8 +779,14 @@ function CorporateSocialProof() {
 
         {/* Testimonials marquee */}
         <Reveal>
-          <div className="relative flex overflow-x-hidden group w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 px-4 md:px-8 py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-            <div className="flex gap-5 animate-marquee group-hover:[animation-play-state:paused]">
+          <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
+            {/* Left fade overlay */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to right, #FDF8F0 0%, transparent 100%)" }} />
+            {/* Right fade overlay */}
+            <div className="absolute right-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to left, #FDEEE0 0%, transparent 100%)" }} />
+
+            <div className="relative flex overflow-x-hidden group px-4 md:px-8">
+              <div className="flex gap-5 animate-marquee group-hover:[animation-play-state:paused]">
               {[...testimonials, ...testimonials].map((t, i) => (
                 <div key={i} className="w-[300px] md:w-[360px] flex-shrink-0 card-theme rounded-[1.5rem] p-6 border border-surface-border">
                   <div className="flex gap-0.5 mb-3">
@@ -672,6 +807,7 @@ function CorporateSocialProof() {
                   </div>
                 </div>
               ))}
+              </div>
             </div>
           </div>
         </Reveal>

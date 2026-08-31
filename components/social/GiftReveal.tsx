@@ -60,8 +60,50 @@ export default function GiftReveal({
         ) : (
           /* Revealed state */
           <div className="animate-fade-in space-y-6">
-            {/* Confetti effect placeholder */}
-            <div className="text-6xl mb-4 animate-bounce">🎉</div>
+            {/* CSS confetti effect */}
+            <div className="relative h-16 overflow-hidden mb-4">
+              {Array.from({ length: 18 }).map((_, i) => {
+                const colors = [
+                  "#f43f5e", "#e879f9", "#facc15", "#34d399",
+                  "#60a5fa", "#fb923c", "#a78bfa", "#f472b6",
+                ];
+                const color = colors[i % colors.length];
+                const left = `${5 + (i * 5) % 90}%`;
+                const delay = `${(i * 0.15).toFixed(2)}s`;
+                const duration = `${1.8 + (i % 3) * 0.4}s`;
+                const rotate = `${(i * 37) % 360}deg`;
+                const size = 6 + (i % 3) * 2;
+                return (
+                  <span
+                    key={i}
+                    className="absolute top-0 rounded-sm"
+                    style={{
+                      left,
+                      width: size,
+                      height: size * 0.6,
+                      backgroundColor: color,
+                      animation: `confetti-fall ${duration} ease-in ${delay} forwards`,
+                      transform: `rotate(${rotate})`,
+                    }}
+                  />
+                );
+              })}
+              <style>{`
+                @keyframes confetti-fall {
+                  0% {
+                    transform: translateY(0) rotate(0deg);
+                    opacity: 1;
+                  }
+                  70% {
+                    opacity: 1;
+                  }
+                  100% {
+                    transform: translateY(80px) rotate(720deg);
+                    opacity: 0;
+                  }
+                }
+              `}</style>
+            </div>
 
             <h1 className="font-display text-2xl md:text-3xl font-bold">
               Happy Gift, {recipientName}!

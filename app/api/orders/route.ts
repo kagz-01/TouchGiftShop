@@ -60,6 +60,8 @@ const OrderInput = z.object({
   senderCountry: z.string().optional(),
   recipientCountry: z.string().optional(),
   pointsToRedeem: z.number().int().nonnegative().optional(),
+  giftCardCode: z.string().optional(),
+  giftCardDiscount: z.number().default(0),
 });
 
 // GET /api/orders — fetch orders for the currently authenticated user only.
@@ -103,6 +105,24 @@ export async function POST(req: Request) {
     );
   }
   const input = parsed.data;
+
+  // ── Server-side price verification: fetch the product price and validate ──
+  const { data: product } = await supabaseAdmin
+    .from("products")
+    .select("price")
+    .eq("id", input.productId)
+    .single();
+
+  if (product) {
+    const expectedAmount = Number(product.price) * input.quantity;
+    const tolerance = 1; // Allow KSh 1 rounding tolerance
+    if (Math.abs(input.totalAmount - expectedAmount) > tolerance) {
+      return NextResponse.json(
+        { error: "Price mismatch — please refresh and try again." },
+        { status: 400 }
+      );
+    }
+  }
 
   // Normalize and validate phone numbers on the server-side as a safety net.
   const normalizedSender = normalizePhoneServer(input.senderPhone, input.senderCountry ?? "+254");
@@ -173,6 +193,8 @@ export async function POST(req: Request) {
       shipping_fee: input.shippingFee,
       points_redeemed: pointsRedeemed,
       points_discount: pointsDiscount,
+      gift_card_code: input.giftCardCode ?? null,
+      gift_card_discount: input.giftCardDiscount || 0,
     })
     .select()
     .single();

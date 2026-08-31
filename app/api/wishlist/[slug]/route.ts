@@ -19,7 +19,7 @@ export async function GET(
 
   if (wishlistError || !wishlist) {
     return NextResponse.json(
-      { error: wishlistError?.message ?? "Wishlist not found" },
+      { error: "Wishlist not found" },
       { status: 404 }
     );
   }
@@ -33,7 +33,7 @@ export async function GET(
   return NextResponse.json({ wishlist, items: items ?? [] });
 }
 
-// POST /api/wishlist/[slug] -- add an item to the wishlist
+// POST /api/wishlist/[slug] -- add an item to the wishlist (public, that's the point)
 export async function POST(
   req: Request,
   { params }: { params: { slug: string } }
@@ -48,7 +48,13 @@ export async function POST(
     return NextResponse.json({ error: "Wishlist not found" }, { status: 404 });
   }
 
-  const body = await req.json();
+  let body: { productId?: string; note?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
   const { productId, note } = body;
 
   if (!productId) {
@@ -66,13 +72,13 @@ export async function POST(
     .single();
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to add item" }, { status: 500 });
   }
 
   return NextResponse.json({ item });
 }
 
-// DELETE /api/wishlist/[slug] -- remove an item from the wishlist
+// DELETE /api/wishlist/[slug]?itemId=... -- remove an item (verify it belongs to this wishlist)
 export async function DELETE(
   req: Request,
   { params }: { params: { slug: string } }
@@ -84,13 +90,70 @@ export async function DELETE(
     return NextResponse.json({ error: "itemId required" }, { status: 400 });
   }
 
+  // Verify the item belongs to this wishlist
+  const { data: wishlist } = await supabase
+    .from("wishlists")
+    .select("id")
+    .eq("slug", params.slug)
+    .single();
+
+  if (!wishlist) {
+    return NextResponse.json({ error: "Wishlist not found" }, { status: 404 });
+  }
+
   const { error } = await supabase
     .from("wishlist_items")
     .delete()
-    .eq("id", itemId);
+    .eq("id", itemId)
+    .eq("wishlist_id", wishlist.id);
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to remove item" }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
+}
+
+// PATCH /api/wishlist/[slug] -- mark item as fulfilled (bought by someone)
+export async function PATCH(
+  req: Request,
+  { params }: { params: { slug: string } }
+) {
+  let body: { itemId?: string; fulfilledBy?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { itemId, fulfilledBy } = body;
+
+  if (!itemId) {
+    return NextResponse.json({ error: "itemId required" }, { status: 400 });
+  }
+
+  // Verify the item belongs to this wishlist
+  const { data: wishlist } = await supabase
+    .from("wishlists")
+    .select("id")
+    .eq("slug", params.slug)
+    .single();
+
+  if (!wishlist) {
+    return NextResponse.json({ error: "Wishlist not found" }, { status: 404 });
+  }
+
+  const { error } = await supabase
+    .from("wishlist_items")
+    .update({
+      is_fulfilled: true,
+      fulfilled_by: fulfilledBy || "Someone",
+    })
+    .eq("id", itemId)
+    .eq("wishlist_id", wishlist.id);
+
+  if (error) {
+    return NextResponse.json({ error: "Failed to update item" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

@@ -10,9 +10,9 @@ export interface DeliveryZone {
 
 // ── Shop location: Park Towers, Utalii Street, Nairobi ──
 export const SHOP_LOCATION = {
-  lat: -1.2833,
-  lng: 36.8167,
-  name: "Park Towers, Utalii Street, Nairobi",
+  lat: -1.2864,
+  lng: 36.8172,
+  name: "Viewpark Towers, Utalii Street, Nairobi",
 } as const;
 
 // ── Haversine distance between two coordinates (km) ──

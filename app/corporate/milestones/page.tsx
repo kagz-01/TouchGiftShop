@@ -8,6 +8,19 @@ import {
   Cake, Briefcase, Star, ToggleLeft, ToggleRight
 } from "lucide-react";
 
+type CalendarEvent = {
+  recipient_name: string;
+  event_date: string;
+  event_type: string;
+};
+
+type UpcomingTrigger = {
+  name: string;
+  date: string;
+  type: string;
+  days: number;
+};
+
 type MilestoneRule = {
   id: string;
   name: string;
@@ -22,88 +35,11 @@ type MilestoneRule = {
   totalTriggered: number;
 };
 
-const MOCK_RULES: MilestoneRule[] = [
-  {
-    id: "1",
-    name: "Birthday Surprise",
-    trigger: "Employee birthday",
-    description: "Send a personalized gift 3 days before each employee's birthday",
-    giftBudget: 3500,
-    giftType: "Birthday Joy Box",
-    enabled: true,
-    autoOrder: true,
-    notifyHR: true,
-    lastTriggered: "2026-08-15",
-    totalTriggered: 24,
-  },
-  {
-    id: "2",
-    name: "Work Anniversary",
-    trigger: "Employment anniversary",
-    description: "Celebrate each year of service with an escalating gift",
-    giftBudget: 5000,
-    giftType: "Anniversary Hamper",
-    enabled: true,
-    autoOrder: true,
-    notifyHR: true,
-    lastTriggered: "2026-08-10",
-    totalTriggered: 18,
-  },
-  {
-    id: "3",
-    name: "Promotion Celebration",
-    trigger: "Job title change",
-    description: "Congratulate promotions with a premium gift",
-    giftBudget: 6000,
-    giftType: "Executive Luxe Hamper",
-    enabled: true,
-    autoOrder: false,
-    notifyHR: true,
-    totalTriggered: 8,
-  },
-  {
-    id: "4",
-    name: "New Hire Welcome",
-    trigger: "New employee added",
-    description: "Welcome new team members with an onboarding kit on day 1",
-    giftBudget: 2500,
-    giftType: "Welcome Aboard Kit",
-    enabled: true,
-    autoOrder: true,
-    notifyHR: false,
-    lastTriggered: "2026-08-20",
-    totalTriggered: 32,
-  },
-  {
-    id: "5",
-    name: "1-Year Client Anniversary",
-    trigger: "Client relationship anniversary",
-    description: "Thank clients on their 1-year partnership anniversary",
-    giftBudget: 8000,
-    giftType: "Client Appreciation Set",
-    enabled: false,
-    autoOrder: false,
-    notifyHR: false,
-    totalTriggered: 5,
-  },
-  {
-    id: "6",
-    name: "Team Milestone",
-    trigger: "Project completion",
-    description: "Celebrate successful project deliveries with team gifts",
-    giftBudget: 2000,
-    giftType: "Team Celebration Pack",
-    enabled: false,
-    autoOrder: false,
-    notifyHR: true,
-    totalTriggered: 12,
-  },
-];
-
 export default function AutomatedMilestones() {
   const [rules, setRules] = useState<MilestoneRule[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRule, setSelectedRule] = useState<MilestoneRule | null>(null);
+  const [upcomingTriggers, setUpcomingTriggers] = useState<UpcomingTrigger[]>([]);
 
   useEffect(() => {
     const fetchRules = async () => {
@@ -132,6 +68,35 @@ export default function AutomatedMilestones() {
       }
     };
     fetchRules();
+  }, []);
+
+  useEffect(() => {
+    const fetchUpcomingTriggers = async () => {
+      try {
+        const res = await fetch("/api/corporate/calendar");
+        const data = await res.json();
+        if (data.events) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          const upcoming = (data.events as CalendarEvent[])
+            .filter((e) => new Date(e.event_date) >= today)
+            .sort((a, b) => new Date(a.event_date).getTime() - new Date(b.event_date).getTime())
+            .slice(0, 5)
+            .map((e) => {
+              const eventDate = new Date(e.event_date);
+              const diffMs = eventDate.getTime() - today.getTime();
+              const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+              const dateStr = eventDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+              const typeLabel = e.event_type === "work_anniversary" ? "Anniversary" : e.event_type.charAt(0).toUpperCase() + e.event_type.slice(1);
+              return { name: e.recipient_name, date: dateStr, type: typeLabel, days };
+            });
+          setUpcomingTriggers(upcoming);
+        }
+      } catch {
+        // Use empty state on error
+      }
+    };
+    fetchUpcomingTriggers();
   }, []);
 
   const toggleRule = (id: string) => {
@@ -272,24 +237,24 @@ export default function AutomatedMilestones() {
                 {/* Upcoming triggers */}
                 <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
                   <h3 className="text-sm font-semibold text-theme-heading mb-3">Upcoming Triggers</h3>
-                  <div className="space-y-3">
-                    {[
-                      { name: "Sarah Wanjiku", date: "Sep 1", type: "Birthday", days: 8 },
-                      { name: "James Ochieng", date: "Sep 5", type: "Anniversary", days: 12 },
-                      { name: "Amina Hassan", date: "Sep 15", type: "Birthday", days: 22 },
-                    ].map((trigger, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-                        <div className="w-8 h-8 bg-brand/10 shape-premium-card flex items-center justify-center">
-                          {trigger.type === "Birthday" ? <Cake className="w-4 h-4 text-brand" /> : <Briefcase className="w-4 h-4 text-brand" />}
+                  {upcomingTriggers.length === 0 ? (
+                    <p className="text-xs text-theme-muted text-center py-4">No upcoming triggers</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {upcomingTriggers.map((trigger, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+                          <div className="w-8 h-8 bg-brand/10 shape-premium-card flex items-center justify-center">
+                            {trigger.type === "Birthday" ? <Cake className="w-4 h-4 text-brand" /> : <Briefcase className="w-4 h-4 text-brand" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-theme-heading">{trigger.name}</p>
+                            <p className="text-[10px] text-theme-muted">{trigger.type} · {trigger.date}</p>
+                          </div>
+                          <span className="text-[10px] text-theme-muted">in {trigger.days}d</span>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold text-theme-heading">{trigger.name}</p>
-                          <p className="text-[10px] text-theme-muted">{trigger.type} · {trigger.date}</p>
-                        </div>
-                        <span className="text-[10px] text-theme-muted">in {trigger.days}d</span>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Actions */}

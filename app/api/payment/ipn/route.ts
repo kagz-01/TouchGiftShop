@@ -112,11 +112,38 @@ async function handleOrderPayment(
 
   const { data: order } = await supabaseAdmin
     .from("orders")
-    .select("user_id, total_amount, points_redeemed")
+    .select("user_id, total_amount, points_redeemed, gift_card_code, gift_card_discount")
     .eq("id", orderId)
     .single();
 
   if (!order?.user_id) return;
+
+  // Redeem gift card AFTER payment is confirmed (prevents balance loss on abandoned checkouts)
+  if (order.gift_card_code && order.gift_card_discount && Number(order.gift_card_discount) > 0) {
+    try {
+      const { data: card } = await supabaseAdmin
+        .from("gift_cards")
+        .select("id, balance")
+        .eq("code", (order.gift_card_code as string).toUpperCase())
+        .eq("status", "active")
+        .single();
+
+      if (card && Number(card.balance) >= Number(order.gift_card_discount)) {
+        const redeemAmount = Math.min(Number(order.gift_card_discount), Number(card.balance));
+        await supabaseAdmin
+          .from("gift_cards")
+          .update({ balance: Number(card.balance) - redeemAmount })
+          .eq("id", card.id)
+          .gte("balance", redeemAmount);
+
+        await supabaseAdmin.from("gift_card_redemptions").insert({
+          gift_card_id: card.id,
+          order_id: orderId,
+          amount: redeemAmount,
+        });
+      }
+    } catch { /* gift card redemption best-effort */ }
+  }
 
   const points = Math.floor(Number(order.total_amount) / 10);
   if (points > 0) {

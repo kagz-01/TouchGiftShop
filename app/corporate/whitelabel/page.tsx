@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
-  Palette, Globe, CreditCard, BarChart3, Settings, Users,
-  Upload, Eye, Check, ArrowRight, Shield, Zap, DollarSign,
-  Package, TrendingUp, Crown, Star, Lock, Code
+  Palette, Globe, CreditCard, Eye, Check, Upload, Crown,
+  Package, TrendingUp, Lock, Code, Save, RefreshCw
 } from "lucide-react";
+import { createClient } from "@/lib/supabase-browser";
 
 type AgencyPlan = {
   id: string;
@@ -76,7 +77,81 @@ export default function WhiteLabelPortal() {
   const [activeTab, setActiveTab] = useState<"preview" | "settings" | "plans">("preview");
   const [brandName, setBrandName] = useState("MyGift Agency");
   const [brandColor, setBrandColor] = useState("#9B1B5A");
+  const [brandLogo, setBrandLogo] = useState("");
   const [domain, setDomain] = useState("gifts.myagency.com");
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saveMsg, setSaveMsg] = useState("");
+  const [monthlyRevenue, setMonthlyRevenue] = useState(0);
+  const [commissionEarned, setCommissionEarned] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/corporate/brand-config")
+      .then(r => r.json())
+      .then(d => {
+        if (d.config) {
+          setBrandName(d.config.company_name || "MyGift Agency");
+          setBrandColor(d.config.brand_color || "#9B1B5A");
+          setBrandLogo(d.config.logo_url || "");
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/corporate/stats")
+      .then(r => r.json())
+      .then(d => {
+        const revenue = d.totalRevenue ?? 0;
+        setMonthlyRevenue(revenue);
+        setCommissionEarned(Math.round(revenue * 0.05));
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSaveMsg("");
+    try {
+      const res = await fetch("/api/corporate/brand-config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyName: brandName,
+          brandColor: brandColor,
+          logoUrl: brandLogo || null,
+        }),
+      });
+      if (res.ok) {
+        setSaveMsg("Brand settings saved!");
+        setTimeout(() => setSaveMsg(""), 3000);
+      }
+    } catch { /* noop */ }
+    setSaving(false);
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const supabase = createClient();
+    const ext = file.name.split(".").pop();
+    const path = `brand-logos/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("avatars").upload(path, file);
+    if (!error) {
+      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+      setBrandLogo(data.publicUrl);
+    }
+  };
+
+  const previewProducts = [
+    { name: "Executive Hamper", price: "KSh 8,500", emoji: "🎁" },
+    { name: "Welcome Kit", price: "KSh 3,200", emoji: "📦" },
+    { name: "Birthday Surprise", price: "KSh 4,500", emoji: "🎂" },
+    { name: "Thank You Box", price: "KSh 2,800", emoji: "💝" },
+    { name: "Holiday Collection", price: "KSh 5,500", emoji: "🎄" },
+    { name: "Team Gift Set", price: "KSh 6,000", emoji: "👥" },
+  ];
 
   return (
     <div className="min-h-screen section-theme-a">
@@ -88,13 +163,23 @@ export default function WhiteLabelPortal() {
               <h1 className="font-display italic text-2xl font-bold">White-Label Portal</h1>
               <p className="text-theme-muted text-sm">Offer TouchGift under your own brand. Your clients never see our logo.</p>
             </div>
-            <Link
-              href="/corporate/whitelabel/plans"
-              className="px-5 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors flex items-center gap-2"
-            >
-              <Crown className="w-4 h-4" /> Upgrade Plan
-            </Link>
+            {activeTab === "settings" && (
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="px-5 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors flex items-center gap-2"
+              >
+                {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+            )}
           </div>
+
+          {saveMsg && (
+            <div className="mb-4 p-3 bg-success/10 border border-success/20 shape-premium-card text-sm text-success font-semibold">
+              {saveMsg}
+            </div>
+          )}
 
           {/* Tabs */}
           <div className="flex gap-2">
@@ -107,9 +192,7 @@ export default function WhiteLabelPortal() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 shape-premium-button text-sm font-medium transition-all flex items-center gap-2 ${
-                  activeTab === tab.id
-                    ? "bg-brand text-white"
-                    : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
+                  activeTab === tab.id ? "bg-brand text-white" : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
                 }`}
               >
                 {tab.icon} {tab.label}
@@ -123,60 +206,45 @@ export default function WhiteLabelPortal() {
         {/* ═══ STOREFRONT PREVIEW ═══ */}
         {activeTab === "preview" && (
           <div className="space-y-6">
-            {/* Branded storefront mockup */}
             <div className="bg-white/80 backdrop-blur-sm shape-premium-card border border-surface-border shadow-sm overflow-hidden">
-              {/* Browser chrome */}
               <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 flex items-center gap-3 border-b border-surface-border">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 bg-red-400 rounded-full" />
                   <div className="w-3 h-3 bg-yellow-400 rounded-full" />
                   <div className="w-3 h-3 bg-green-400 rounded-full" />
                 </div>
-                <div className="flex-1 bg-white dark:bg-gray-700 rounded-lg px-3 py-1 text-xs text-theme-muted font-mono">
-                  {domain}
-                </div>
+                <div className="flex-1 bg-white dark:bg-gray-700 rounded-lg px-3 py-1 text-xs text-theme-muted font-mono">{domain}</div>
               </div>
 
-              {/* Storefront header */}
               <div className="p-6 text-center" style={{ backgroundColor: `${brandColor}10` }}>
-                <div className="w-16 h-16 mx-auto shape-premium-card flex items-center justify-center text-white text-xl font-bold mb-3" style={{ backgroundColor: brandColor }}>
-                  {brandName.charAt(0)}
-                </div>
+                {brandLogo ? (
+                  <div className="w-16 h-16 mx-auto shape-premium-card overflow-hidden mb-3 relative">
+                    <Image src={brandLogo} alt={brandName} fill className="object-cover" sizes="64px" />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 mx-auto shape-premium-card flex items-center justify-center text-white text-xl font-bold mb-3" style={{ backgroundColor: brandColor }}>
+                    {brandName.charAt(0)}
+                  </div>
+                )}
                 <h2 className="font-display italic text-2xl font-bold text-theme-heading">{brandName}</h2>
                 <p className="text-theme-muted text-sm mt-1">Premium corporate gifting, curated with care</p>
               </div>
 
-              {/* Storefront grid */}
               <div className="p-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {[
-                    { name: "Executive Hamper", price: "KSh 8,500", image: "🎁" },
-                    { name: "Welcome Kit", price: "KSh 3,200", image: "📦" },
-                    { name: "Birthday Surprise", price: "KSh 4,500", image: "🎂" },
-                    { name: "Thank You Box", price: "KSh 2,800", image: "💝" },
-                    { name: "Holiday Collection", price: "KSh 5,500", image: "🎄" },
-                    { name: "Team Gift Set", price: "KSh 6,000", image: "👥" },
-                  ].map((item, i) => (
+                  {previewProducts.map((item, i) => (
                     <div key={i} className="bg-gray-50 dark:bg-white/5 shape-premium-card p-4 text-center hover:shadow-card-hover transition-all cursor-pointer">
-                      <div className="text-3xl mb-2">{item.image}</div>
+                      <div className="text-3xl mb-2">{item.emoji}</div>
                       <p className="text-sm font-semibold text-theme-heading">{item.name}</p>
                       <p className="text-xs font-bold mt-1" style={{ color: brandColor }}>{item.price}</p>
-                      <button
-                        className="mt-3 w-full py-2 text-white text-xs font-semibold shape-premium-button"
-                        style={{ backgroundColor: brandColor }}
-                      >
-                        Order Now
-                      </button>
+                      <button className="mt-3 w-full py-2 text-white text-xs font-semibold shape-premium-button" style={{ backgroundColor: brandColor }}>Order Now</button>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Footer */}
               <div className="bg-gray-50 dark:bg-white/5 px-6 py-4 text-center border-t border-surface-border">
-                <p className="text-xs text-theme-muted">
-                  Powered by <span className="font-semibold text-brand">TouchGift</span> · Your brand, your storefront
-                </p>
+                <p className="text-xs text-theme-muted">Powered by <span className="font-semibold text-brand">TouchGift</span> · Your brand, your storefront</p>
               </div>
             </div>
           </div>
@@ -190,47 +258,38 @@ export default function WhiteLabelPortal() {
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-theme-heading">Agency Name</label>
-                <input
-                  type="text"
-                  value={brandName}
-                  onChange={(e) => setBrandName(e.target.value)}
-                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                />
+                <input type="text" value={brandName} onChange={(e) => setBrandName(e.target.value)} className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand" />
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-theme-heading">Brand Color</label>
-                <div className="flex gap-3">
+                <div className="flex gap-3 items-center">
                   {["#9B1B5A", "#D4A853", "#FF6B6B", "#10B981", "#3B82F6", "#475569"].map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setBrandColor(c)}
-                      className={`w-10 h-10 rounded-full border-2 transition-all ${
-                        brandColor === c ? "border-theme-heading scale-110" : "border-transparent"
-                      }`}
-                      style={{ backgroundColor: c }}
-                    />
+                    <button key={c} onClick={() => setBrandColor(c)} className={`w-10 h-10 rounded-full border-2 transition-all ${brandColor === c ? "border-theme-heading scale-110" : "border-transparent"}`} style={{ backgroundColor: c }} />
                   ))}
+                  <input type="color" value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-10 h-10 rounded-full cursor-pointer" />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-theme-heading">Logo</label>
-                <div className="border-2 border-dashed border-surface-border rounded-xl p-8 text-center hover:border-brand/30 transition-all cursor-pointer">
-                  <Upload className="w-8 h-8 text-theme-muted mx-auto mb-2" />
-                  <p className="text-sm font-semibold text-theme-heading">Upload your logo</p>
+                <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" id="brand-logo" />
+                <label htmlFor="brand-logo" className="block border-2 border-dashed border-surface-border rounded-xl p-8 text-center hover:border-brand/30 transition-all cursor-pointer">
+                  {brandLogo ? (
+                    <div className="relative w-20 h-20 mx-auto rounded-xl overflow-hidden mb-2">
+                      <Image src={brandLogo} alt="Logo" fill className="object-cover" sizes="80px" />
+                    </div>
+                  ) : (
+                    <Upload className="w-8 h-8 text-theme-muted mx-auto mb-2" />
+                  )}
+                  <p className="text-sm font-semibold text-theme-heading">{brandLogo ? "Change logo" : "Upload your logo"}</p>
                   <p className="text-xs text-theme-muted">PNG, SVG. Max 2MB.</p>
-                </div>
+                </label>
               </div>
 
               <div>
                 <label className="block text-sm font-semibold mb-2 text-theme-heading">Custom Domain</label>
-                <input
-                  type="text"
-                  value={domain}
-                  onChange={(e) => setDomain(e.target.value)}
-                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-                />
+                <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand" />
                 <p className="text-xs text-theme-muted mt-1">Point your CNAME to <span className="font-mono">proxy.touchgift.co.ke</span></p>
               </div>
             </div>
@@ -251,11 +310,11 @@ export default function WhiteLabelPortal() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-gray-50 dark:bg-white/5 shape-premium-card text-center">
-                  <p className="text-2xl font-bold text-theme-heading">KSh 47,500</p>
+                  <p className="text-2xl font-bold text-theme-heading">KSh {monthlyRevenue.toLocaleString()}</p>
                   <p className="text-xs text-theme-muted">This month&apos;s revenue</p>
                 </div>
                 <div className="p-4 bg-gray-50 dark:bg-white/5 shape-premium-card text-center">
-                  <p className="text-2xl font-bold text-success">KSh 2,375</p>
+                  <p className="text-2xl font-bold text-success">KSh {commissionEarned.toLocaleString()}</p>
                   <p className="text-xs text-theme-muted">Your commission earned</p>
                 </div>
               </div>
@@ -273,18 +332,9 @@ export default function WhiteLabelPortal() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {PLANS.map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`bg-white/80 backdrop-blur-sm shape-premium-card p-6 border-2 transition-all ${
-                    plan.popular
-                      ? "border-brand shadow-ribbon"
-                      : "border-surface-border hover:border-brand/30"
-                  }`}
-                >
+                <div key={plan.id} className={`bg-white/80 backdrop-blur-sm shape-premium-card p-6 border-2 transition-all ${plan.popular ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"}`}>
                   {plan.popular && (
-                    <div className="bg-brand text-white text-xs font-bold px-3 py-1 shape-premium-button inline-block mb-4">
-                      Most Popular
-                    </div>
+                    <div className="bg-brand text-white text-xs font-bold px-3 py-1 shape-premium-button inline-block mb-4">Most Popular</div>
                   )}
                   <h3 className="font-display italic text-xl font-bold text-theme-heading">{plan.name}</h3>
                   <div className="mt-2 mb-4">
@@ -303,13 +353,7 @@ export default function WhiteLabelPortal() {
                       </li>
                     ))}
                   </ul>
-                  <button
-                    className={`w-full py-3 shape-premium-card font-semibold text-sm transition-all ${
-                      plan.popular
-                        ? "bg-brand text-white hover:bg-brand-dark"
-                        : "bg-brand/10 text-brand hover:bg-brand/20"
-                    }`}
-                  >
+                  <button className={`w-full py-3 shape-premium-card font-semibold text-sm transition-all ${plan.popular ? "bg-brand text-white hover:bg-brand-dark" : "bg-brand/10 text-brand hover:bg-brand/20"}`}>
                     {plan.price === "Custom" ? "Contact Sales" : plan.price === "Free" ? "Get Started" : "Upgrade"}
                   </button>
                 </div>

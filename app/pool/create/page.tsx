@@ -23,6 +23,7 @@ const OCCASIONS = [
   "🎂 Birthday", "💍 Wedding", "🎊 Anniversary", "👶 Baby Shower",
   "🎓 Graduation", "💼 Promotion", "🏠 Housewarming", "💝 Just Because",
   "🎄 Christmas", "🌸 Mother's Day", "👨 Father's Day", "💑 Valentine's",
+  "+ Other",
 ];
 
 type WizardData = {
@@ -30,6 +31,7 @@ type WizardData = {
   recipientName: string;
   recipientPhoto: string;
   occasion: string;
+  customOccasion: string;
   surpriseMode: boolean;
   // Step 2
   giftName: string;
@@ -50,7 +52,7 @@ type WizardData = {
 };
 
 const defaultData: WizardData = {
-  recipientName: "", recipientPhoto: "", occasion: "", surpriseMode: true,
+  recipientName: "", recipientPhoto: "", occasion: "", customOccasion: "", surpriseMode: true,
   giftName: "", giftPrice: 0, giftImageUrl: "", giftProductId: "", aiQuery: "",
   title: "", description: "", targetAmount: 0, minContribution: 200,
   deadline: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().split("T")[0]; })(),
@@ -61,6 +63,28 @@ const defaultData: WizardData = {
 // ─── Step components ──────────────────────────────────────────────────────
 
 function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardData, v: unknown) => void }) {
+  const [photoLoading, setPhotoLoading] = useState(false);
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { alert("File too large. Max 5MB."); return; }
+    setPhotoLoading(true);
+    try {
+      const supabase = createClient();
+      const ext = file.name.split(".").pop();
+      const path = `pool-photos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const { error } = await supabase.storage.from("avatars").upload(path, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+      set("recipientPhoto", urlData.publicUrl);
+    } catch (err) {
+      alert("Upload failed: " + (err as Error).message);
+    } finally {
+      setPhotoLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -79,7 +103,7 @@ function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardD
           {OCCASIONS.map(occ => (
             <button
               key={occ}
-              onClick={() => set("occasion", occ)}
+              onClick={() => { set("occasion", occ); if (occ !== "✨ Other") set("customOccasion", ""); }}
               className={`py-2 px-3 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
                 data.occasion === occ
                   ? "bg-brand text-white shadow-md scale-[1.02]"
@@ -90,15 +114,46 @@ function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardD
             </button>
           ))}
         </div>
+        {data.occasion === "✨ Other" && (
+          <input
+            value={data.customOccasion}
+            onChange={e => set("customOccasion", e.target.value)}
+            placeholder="e.g. Retirement, Welcome Baby, New Home..."
+            className="w-full mt-3 px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none font-sans text-brand-deep bg-white transition-colors"
+            autoFocus
+          />
+        )}
       </div>
 
       <div>
         <label className="block text-sm font-semibold text-brand-deep mb-2">Recipient Photo <span className="text-brand-deep/40 font-normal">(optional — shown on pool page)</span></label>
-        <div className="border-2 border-dashed border-brand/20 rounded-2xl p-6 text-center hover:border-brand/40 transition-colors cursor-pointer group">
-          <Upload className="w-8 h-8 text-brand/30 group-hover:text-brand/60 mx-auto mb-2 transition-colors" />
-          <p className="text-sm text-brand-deep/50">Click to upload or drag &amp; drop</p>
-          <p className="text-xs text-brand-deep/30 mt-1">JPG, PNG up to 5MB</p>
-        </div>
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={handlePhotoUpload}
+          className="hidden"
+          id="recipient-photo"
+        />
+        <label htmlFor="recipient-photo" className="block">
+          {data.recipientPhoto ? (
+            <div className="relative rounded-2xl overflow-hidden border-2 border-brand/20 group">
+              <img src={data.recipientPhoto} alt="Recipient" className="w-full h-40 object-cover" />
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="text-white text-sm font-semibold">{photoLoading ? "Uploading..." : "Change Photo"}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="border-2 border-dashed border-brand/20 rounded-2xl p-6 text-center hover:border-brand/40 transition-colors cursor-pointer group">
+              {photoLoading ? (
+                <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+              ) : (
+                <Upload className="w-8 h-8 text-brand/30 group-hover:text-brand/60 mx-auto mb-2 transition-colors" />
+              )}
+              <p className="text-sm text-brand-deep/50">{photoLoading ? "Uploading..." : "Click to upload or drag & drop"}</p>
+              <p className="text-xs text-brand-deep/30 mt-1">JPG, PNG up to 5MB</p>
+            </div>
+          )}
+        </label>
       </div>
 
       <div className="flex items-center justify-between p-4 rounded-2xl bg-brand/5 border border-brand/10">
@@ -347,7 +402,7 @@ function StepPreview({ data }: { data: WizardData }) {
             {data.recipientPhoto ? <img src={data.recipientPhoto} className="w-full h-full object-cover rounded-full" alt="" /> : "🎁"}
           </div>
           <h3 className="font-display text-2xl font-bold italic">{data.title || `Gift Pool for ${data.recipientName}`}</h3>
-          <p className="text-white/70 text-sm mt-1">{data.occasion}</p>
+          <p className="text-white/70 text-sm mt-1">{data.occasion === "✨ Other" ? data.customOccasion : data.occasion}</p>
         </div>
         <div className="bg-white p-5">
           <div className="mb-4">
@@ -456,7 +511,7 @@ export default function CreatePoolPage() {
         body: JSON.stringify({
           recipientName: data.recipientName,
           recipientPhotoUrl: data.recipientPhoto || undefined,
-          occasion: data.occasion || undefined,
+          occasion: data.occasion === "✨ Other" ? data.customOccasion : (data.occasion || undefined),
           title: data.title || `Gift Pool for ${data.recipientName}`,
           description: data.description || undefined,
           giftName: data.giftName,

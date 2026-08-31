@@ -9,6 +9,7 @@ import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
+import { MotionCard } from "@/components/motion/MotionCard";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,7 +27,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
-      <div className="bg-white/95 rounded-3xl border border-black/6 overflow-hidden hover:shadow-card hover:-translate-y-1 transition-all duration-300">
+      <MotionCard className="bg-white/95 rounded-3xl border border-black/6 overflow-hidden hover:shadow-card transition-shadow duration-300">
         {/* Image */}
         <div className="relative aspect-[4/5] bg-blush overflow-hidden">
           <Image
@@ -144,7 +145,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             )}
           </div>
         </div>
-      </div>
+      </MotionCard>
     </Link>
   );
 }
@@ -173,17 +174,24 @@ export default function ProductGridClient({
 
   // Real-time: refresh when admin changes anything in the catalog
   useEffect(() => {
-    const channel = supabase
-      .channel("shop-products-live")
-      .on("broadcast", { event: "product-created" }, () => window.location.reload())
-      .on("broadcast", { event: "product-updated" }, () => window.location.reload())
-      .on("broadcast", { event: "product-deleted" }, () => window.location.reload())
-      .on("broadcast", { event: "products-imported" }, () => window.location.reload())
-      .on("broadcast", { event: "specs-changed" }, () => window.location.reload())
-      .subscribe();
+    if (typeof window === "undefined") return;
+
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel("shop-products-live")
+        .on("broadcast", { event: "product-created" }, () => window.location.reload())
+        .on("broadcast", { event: "product-updated" }, () => window.location.reload())
+        .on("broadcast", { event: "product-deleted" }, () => window.location.reload())
+        .on("broadcast", { event: "products-imported" }, () => window.location.reload())
+        .on("broadcast", { event: "specs-changed" }, () => window.location.reload())
+        .subscribe();
+    } catch {
+      // WebSocket not available — skip real-time
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, []);
 

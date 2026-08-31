@@ -260,23 +260,6 @@ export default function Footer() {
             <p className="text-xs text-on-theme">
               © {new Date().getFullYear()} TouchGift — Just Say It 🎁
             </p>
-            <div className="flex items-center gap-4 text-xs text-on-theme">
-              <Link href="/privacy" className="hover:text-on-theme transition-colors">
-                Privacy
-              </Link>
-              <Link href="/terms" className="hover:text-on-theme transition-colors">
-                Terms
-              </Link>
-              <Link href="/returns" className="hover:text-on-theme transition-colors">
-                Returns
-              </Link>
-              <Link href="/delivery" className="hover:text-on-theme transition-colors">
-                Delivery
-              </Link>
-              <a href="https://wa.me/254142677898" target="_blank" rel="noopener noreferrer" className="hover:text-on-theme transition-colors">
-                Contact
-              </a>
-            </div>
           </div>
         </div>
       </div>

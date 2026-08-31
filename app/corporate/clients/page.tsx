@@ -26,94 +26,6 @@ type Client = {
   relationship: number; // 1-100
 };
 
-const MOCK_CLIENTS: Client[] = [
-  {
-    id: "1",
-    name: "Grace Muthoni",
-    company: "Safaricom PLC",
-    role: "Head of Procurement",
-    email: "grace.m@safaricom.co.ke",
-    phone: "+254 722 100 200",
-    location: "Nairobi",
-    tier: "platinum",
-    totalGifts: 12,
-    totalSpent: 145000,
-    lastGiftDate: "2026-07-15",
-    nextOccasion: "Birthday",
-    nextOccasionDate: "2026-09-20",
-    notes: "Prefers premium wine. Celebrates birthday in September.",
-    relationship: 92,
-  },
-  {
-    id: "2",
-    name: "James Kariuki",
-    company: "KCB Group",
-    role: "CTO",
-    email: "j.kariuki@kcb.co.ke",
-    phone: "+254 711 200 300",
-    location: "Nairobi",
-    tier: "gold",
-    totalGifts: 6,
-    totalSpent: 68000,
-    lastGiftDate: "2026-06-01",
-    nextOccasion: "Work Anniversary",
-    nextOccasionDate: "2026-10-15",
-    notes: "Coffee enthusiast. Likes artisan products.",
-    relationship: 78,
-  },
-  {
-    id: "3",
-    name: "Amina Osman",
-    company: "Equity Bank",
-    role: "VP Operations",
-    email: "a.osman@equity.co.ke",
-    phone: "+254 733 300 400",
-    location: "Mombasa",
-    tier: "platinum",
-    totalGifts: 15,
-    totalSpent: 210000,
-    lastGiftDate: "2026-08-01",
-    nextOccasion: "Company Anniversary",
-    nextOccasionDate: "2026-11-01",
-    notes: "Key client since 2021. Loves personalized gifts.",
-    relationship: 95,
-  },
-  {
-    id: "4",
-    name: "Peter Odhiambo",
-    company: "KEMSA",
-    role: "Director",
-    email: "p.odhiambo@kemsa.co.ke",
-    phone: "+254 700 400 500",
-    location: "Kisumu",
-    tier: "silver",
-    totalGifts: 3,
-    totalSpent: 22000,
-    lastGiftDate: "2026-05-10",
-    nextOccasion: "Birthday",
-    nextOccasionDate: "2026-12-05",
-    notes: "New relationship. Focus on building rapport.",
-    relationship: 45,
-  },
-  {
-    id: "5",
-    name: "Fatuma Ali",
-    company: "East African Breweries",
-    role: "Marketing Director",
-    email: "f.ali@eabl.co.ke",
-    phone: "+254 721 500 600",
-    location: "Nairobi",
-    tier: "gold",
-    totalGifts: 8,
-    totalSpent: 92000,
-    lastGiftDate: "2026-07-20",
-    nextOccasion: "Christmas",
-    nextOccasionDate: "2026-12-25",
-    notes: "Enjoys curated experience gifts. Budget flexible.",
-    relationship: 82,
-  },
-];
-
 const TIER_CONFIG = {
   platinum: { label: "Platinum", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-500/10", icon: <Star className="w-3 h-3" /> },
   gold: { label: "Gold", color: "text-gold", bg: "bg-gold/10", icon: <Star className="w-3 h-3" /> },
@@ -341,20 +253,12 @@ export default function ClientAppreciationNetwork() {
                 {/* Gift history */}
                 <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
                   <h3 className="text-sm font-semibold text-theme-heading mb-3">Gift History</h3>
-                  <div className="space-y-3">
-                    {[
-                      { date: "Jul 2026", gift: "Executive Hamper", amount: 12000, status: "delivered" },
-                      { date: "Mar 2026", gift: "Birthday Wine Set", amount: 8500, status: "delivered" },
-                      { date: "Dec 2025", gift: "Holiday Collection", amount: 15000, status: "delivered" },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
-                        <div>
-                          <p className="text-xs font-semibold text-theme-heading">{item.gift}</p>
-                          <p className="text-[10px] text-theme-muted">{item.date}</p>
-                        </div>
-                        <span className="text-xs font-semibold text-brand">KSh {item.amount.toLocaleString()}</span>
-                      </div>
-                    ))}
+                  <div className="flex flex-col items-center justify-center py-6 text-center">
+                    <div className="w-10 h-10 rounded-full bg-theme-muted/10 flex items-center justify-center mb-3">
+                      <Gift className="w-5 h-5 text-theme-muted" />
+                    </div>
+                    <p className="text-sm font-medium text-theme-heading">No gift history yet</p>
+                    <p className="text-xs text-theme-muted mt-1">Gifts sent to this client will appear here</p>
                   </div>
                 </div>
 

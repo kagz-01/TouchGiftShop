@@ -24,7 +24,9 @@ export default function VisitUs() {
         zoom: 16,
         zoomControl: false,
         attributionControl: true,
-        scrollWheelZoom: false,
+        scrollWheelZoom: true,
+        touchZoom: true,
+        doubleClickZoom: true,
       });
 
       L.control.zoom({ position: "topright" }).addTo(map);

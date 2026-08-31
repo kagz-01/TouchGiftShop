@@ -44,7 +44,8 @@ export default function AmbientBackground() {
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-700 bg-[#120018]">
-      {/* ── Base Background Gradient ── */}
+      {/* ── Base Background Gradient (Layer 0 — slowest) ── */}
+      <div className="parallax-bg absolute inset-0">
       {isDark ? (
         <>
           <div style={{
@@ -61,8 +62,10 @@ export default function AmbientBackground() {
           }} />
         </>
       )}
+      </div>
 
-      {/* ── Falling Glowing Strings (Fall normally, no sway, original icons at tip) ── */}
+      {/* ── Falling Glowing Strings (Layer 1 — medium depth) ── */}
+      <div className="parallax-amb absolute inset-0">
       {fallingItems.map((item, i) => {
         const Icon = item.Icon;
         const scale = 0.5 + (item.z * 0.7); // 0.5 to 1.2
@@ -108,8 +111,10 @@ export default function AmbientBackground() {
           </div>
         );
       })}
+      </div>
 
-      {/* ── Swaying Hanging Gifts (Hang from top edge, don't fall, with filtered emojis) ── */}
+      {/* ── Swaying Hanging Gifts (Layer 1 — medium depth) ── */}
+      <div className="parallax-amb absolute inset-0">
       {hangingItems.map((item, i) => {
         const scale = 0.5 + (item.z * 0.7);
         const opacity = 0.4 + (item.z * 0.6);
@@ -158,9 +163,10 @@ export default function AmbientBackground() {
           </div>
         );
       })}
+      </div>
 
-      {/* ── Central Arching Particle Cluster (From Inspiration) ── */}
-      <div className="absolute inset-0">
+      {/* ── Central Arching Particle Cluster (Layer 1 — medium depth) ── */}
+      <div className="parallax-amb absolute inset-0">
         {particles.map((p, i) => (
           <div
             key={`particle-${i}`}

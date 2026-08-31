@@ -5,17 +5,32 @@ export async function GET(
   _req: Request,
   { params }: { params: { slug: string } }
 ) {
-  const { data: pool, error: poolError } = await supabaseAdmin
+  // Try consumer pools first, then corporate pools
+  let { data: pool, error: poolError } = await supabaseAdmin
     .from("group_gifting_pools")
     .select("*")
     .eq("slug", params.slug)
     .single();
 
+  let isCorporate = false;
+
   if (poolError || !pool) {
-    return NextResponse.json(
-      { error: poolError?.message ?? "Pool not found" },
-      { status: 404 }
-    );
+    // Try corporate pools as fallback
+    const { data: corpPool, error: corpError } = await supabaseAdmin
+      .from("corporate_gift_pools")
+      .select("*")
+      .eq("slug", params.slug)
+      .single();
+
+    if (corpError || !corpPool) {
+      return NextResponse.json(
+        { error: "Pool not found" },
+        { status: 404 }
+      );
+    }
+
+    pool = corpPool;
+    isCorporate = true;
   }
 
   // Fetch contributions — respect privacy mode
@@ -42,8 +57,8 @@ export async function GET(
     0
   );
 
-  // Auto-close check: if target hit or deadline passed
-  if (pool.status === "active") {
+  // Auto-close check: if target hit or deadline passed (consumer pools only)
+  if (!isCorporate && pool.status === "active") {
     const targetHit = liveBalance >= pool.target_amount;
     const deadlinePassed = new Date(pool.expires_at) < new Date();
 
@@ -59,7 +74,6 @@ export async function GET(
 
       pool.status = targetHit ? "completed" : "expired";
     } else {
-      // Keep balance fresh
       await supabaseAdmin
         .from("group_gifting_pools")
         .update({ current_balance: liveBalance })
@@ -68,7 +82,7 @@ export async function GET(
   }
 
   return NextResponse.json({
-    pool: { ...pool, current_balance: liveBalance },
+    pool: { ...pool, current_balance: liveBalance, is_corporate: isCorporate },
     contributions: contributions ?? [],
     progressPercent: Math.min(
       100,

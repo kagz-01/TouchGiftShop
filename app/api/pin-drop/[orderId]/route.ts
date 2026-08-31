@@ -68,13 +68,18 @@ export async function POST(
 
   const { data: order, error: fetchError } = await supabase
     .from("orders")
-    .select("id, pin_drop_token")
+    .select("id, pin_drop_token, delivery_lat")
     .eq("id", params.orderId)
     .eq("pin_drop_token", token)
     .single();
 
   if (fetchError || !order) {
     return NextResponse.json({ error: "Invalid link" }, { status: 404 });
+  }
+
+  // Check if pin was already set — don't allow overwriting
+  if (order.delivery_lat) {
+    return NextResponse.json({ error: "Delivery location already set" }, { status: 409 });
   }
 
   const { error: updateError } = await supabase
@@ -84,6 +89,8 @@ export async function POST(
       delivery_lng: lng,
       delivery_landmark: landmark || null,
       delivery_time_window: timeWindow,
+      pin_drop_token: null, // Invalidate token after use
+      pin_drop_token_expires_at: null,
     })
     .eq("id", params.orderId);
 
