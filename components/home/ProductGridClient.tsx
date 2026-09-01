@@ -7,7 +7,7 @@ import { formatKsh } from "@/lib/utils";
 import { getProductBadges } from "@/lib/product-badges";
 import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
-import { Loader2, Sparkles } from "lucide-react";
+import { Loader2, Sparkles, X } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { MotionCard } from "@/components/motion/MotionCard";
 
@@ -23,7 +23,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
   return (
     <Link
-      href={`/product/${product.id}`}
+      href={`/product/${product.slug}`}
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
@@ -99,7 +99,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             )}
           </div>
 
-          {/* Specs row — PDF-style attribute chips */}
+          {/* Specs row */}
           {product.product_specs && product.product_specs.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-1.5">
               {product.product_specs.slice(0, 3).map((spec) => (
@@ -158,6 +158,16 @@ export default function ProductGridClient({
   budget,
   search,
   heading,
+  sort,
+  newArrivals,
+  onSale,
+  personalizable,
+  color,
+  size,
+  tag,
+  minRating,
+  minPrice,
+  maxPrice,
 }: {
   initialProducts: Product[];
   initialHasMore: boolean;
@@ -166,6 +176,16 @@ export default function ProductGridClient({
   budget?: string;
   search?: string;
   heading?: string;
+  sort?: string;
+  newArrivals?: string;
+  onSale?: string;
+  personalizable?: string;
+  color?: string;
+  size?: string;
+  tag?: string;
+  minRating?: string;
+  minPrice?: string;
+  maxPrice?: string;
 }) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -202,6 +222,16 @@ export default function ProductGridClient({
       if (category) params.set("category", category);
       if (budget) params.set("budget", budget);
       if (search) params.set("q", search);
+      if (sort) params.set("sort", sort);
+      if (newArrivals) params.set("newArrivals", newArrivals);
+      if (onSale) params.set("onSale", onSale);
+      if (personalizable) params.set("personalizable", personalizable);
+      if (color) params.set("color", color);
+      if (size) params.set("size", size);
+      if (tag) params.set("tag", tag);
+      if (minRating) params.set("minRating", minRating);
+      if (minPrice) params.set("minPrice", minPrice);
+      if (maxPrice) params.set("maxPrice", maxPrice);
       const res = await fetch(`/api/products?${params}`);
       const data = await res.json();
       setProducts((prev) => [...prev, ...(data.products ?? [])]);
@@ -214,15 +244,58 @@ export default function ProductGridClient({
     }
   };
 
+  // Count active filters
+  const activeFilters: { label: string; param: string; value: string }[] = [];
+  if (category) activeFilters.push({ label: heading?.replace(" Gifts", "") || category, param: "category", value: category });
+  if (budget) activeFilters.push({ label: budget.replace(/-/g, " "), param: "budget", value: budget });
+  if (sort) activeFilters.push({ label: `Sort: ${sort}`, param: "sort", value: sort });
+  if (onSale === "1") activeFilters.push({ label: "On Sale", param: "onSale", value: "1" });
+  if (newArrivals) activeFilters.push({ label: `New (${newArrivals})`, param: "newArrivals", value: newArrivals });
+  if (personalizable === "1") activeFilters.push({ label: "Customizable", param: "personalizable", value: "1" });
+  if (color) activeFilters.push({ label: color, param: "color", value: color });
+  if (size) activeFilters.push({ label: `Size: ${size}`, param: "size", value: size });
+  if (tag) activeFilters.push({ label: tag, param: "tag", value: tag });
+  if (minRating) activeFilters.push({ label: `${minRating}+ stars`, param: "minRating", value: minRating });
+  if (minPrice) activeFilters.push({ label: `Min KSh ${minPrice}`, param: "minPrice", value: minPrice });
+  if (maxPrice) activeFilters.push({ label: `Max KSh ${maxPrice}`, param: "maxPrice", value: maxPrice });
+
+  function removeFilter(param: string) {
+    const url = new URL(window.location.href);
+    url.searchParams.delete(param);
+    window.location.href = url.toString();
+  }
+
   return (
     <section className="py-8">
       <div className="page-container-capped">
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep text-center mb-8 animate-fade-in-up">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep text-center mb-4 animate-fade-in-up">
           {heading || "All Gifts"}
           <span className="block text-sm font-normal text-brand-muted mt-1">
             Showing {products.length} of {totalCount} gifts
           </span>
         </h2>
+
+        {/* Active filter chips */}
+        {activeFilters.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+            {activeFilters.map((f) => (
+              <button
+                key={f.param}
+                onClick={() => removeFilter(f.param)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand/10 text-brand text-xs font-semibold rounded-full hover:bg-brand/20 transition-colors"
+              >
+                {f.label}
+                <X className="w-3 h-3" />
+              </button>
+            ))}
+            <button
+              onClick={() => { window.location.href = "/shop"; }}
+              className="text-xs font-semibold text-brand-muted hover:text-brand underline transition-colors"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
 
         {!category && !budget && products.length === 0 ? null : (
           <CategorySuggestions category={category ?? ""} />
