@@ -193,6 +193,9 @@ export default function CheckoutForm({
         setAuthState("anonymous");
         setGuestMode(isGuest());
       }
+    }).catch(() => {
+      setAuthState("anonymous");
+      setGuestMode(isGuest());
     });
   }, []);
 

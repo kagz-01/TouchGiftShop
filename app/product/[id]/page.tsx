@@ -9,22 +9,34 @@ import ProductReviews from "@/components/reviews/ProductReviews";
 import ProductGallery from "@/components/product/ProductGallery";
 import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag } from "lucide-react";
 import type { Metadata } from "next";
+import { supabaseAdmin } from "@/lib/supabase";
 
 async function getProduct(id: string): Promise<Product | null> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-  const res = await fetch(`${base}/api/products/${id}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  const { product } = await res.json();
-  return product;
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("*")
+      .eq("id", id)
+      .eq("status", "published")
+      .single();
+    if (error || !data) return null;
+    return data as Product;
+  } catch {
+    return null;
+  }
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await getProduct(params.id);
-  if (!product) return { title: "Product Not Found | TouchGift" };
-  return {
-    title: `${product.name} | TouchGift`,
-    description: product.description?.slice(0, 155) ?? `Send ${product.name} as a gift. Same-day delivery in Nairobi.`,
-  };
+  try {
+    const product = await getProduct(params.id);
+    if (!product) return { title: "Product Not Found | TouchGift" };
+    return {
+      title: `${product.name} | TouchGift`,
+      description: product.description?.slice(0, 155) ?? `Send ${product.name} as a gift. Same-day delivery in Nairobi.`,
+    };
+  } catch {
+    return { title: "Product | TouchGift" };
+  }
 }
 
 function StructuredDescription({ text }: { text: string }) {
