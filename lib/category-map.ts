@@ -45,6 +45,21 @@ export const CATEGORY_MAP: Record<string, string[]> = {
     "personalized-gifts",
     "name-printed-mugs-drinkware",
   ],
+  "for-her": [
+    "womens-luxury-accessories",
+    "handbags-clutches-purses",
+    "scarves-wraps-shawls",
+    "sunglasses-fashion-essentials",
+    "fashion-accessories",
+    "jewelry-fine-pieces",
+    "handmade-jewelry",
+    "flowers-aromatics",
+    "fresh-flower-bouquets",
+    "plush-toys-dolls",
+    "luxury-perfumes-fragrance-collection",
+    "personalized-gifts",
+    "name-printed-mugs-drinkware",
+  ],
   flowers: ["flowers-aromatics", "fresh-flower-bouquets"],
   jewellery: ["jewelry-fine-pieces", "handmade-jewelry", "watches-timepieces"],
   personalised: ["personalized-gifts", "personalized-desk-accessories", "personalized-journals-notebooks", "name-printed-mugs-drinkware"],
@@ -52,6 +67,16 @@ export const CATEGORY_MAP: Record<string, string[]> = {
 
   // For Him
   him: [
+    "mens-premium-accessories",
+    "watches-timepieces",
+    "wallets-cardholders",
+    "monogrammed-wallets-accessories",
+    "sunglasses-fashion-essentials",
+    "personalized-gifts",
+    "name-printed-mugs-drinkware",
+    "art-craft-gifts",
+  ],
+  "for-him": [
     "mens-premium-accessories",
     "watches-timepieces",
     "wallets-cardholders",

@@ -7,7 +7,7 @@ import { formatKsh } from "@/lib/utils";
 import { getProductBadges } from "@/lib/product-badges";
 import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { MotionCard } from "@/components/motion/MotionCard";
 
@@ -23,7 +23,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
   return (
     <Link
-      href={`/product/${product.slug}`}
+      href={`/product/${product.id}`}
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
@@ -229,10 +229,19 @@ export default function ProductGridClient({
         )}
 
         {products.length === 0 ? (
-          <div className="text-center py-16">
-            <span className="text-5xl block mb-4">🎁</span>
-            <p className="font-display text-lg font-semibold text-brand-deep">No gifts found</p>
-            <p className="text-sm text-brand-muted mt-1">Try a different category or budget</p>
+          <div className="text-center py-16 max-w-md mx-auto">
+            <span className="text-6xl block mb-4">🫣</span>
+            <p className="font-display text-xl font-bold text-brand-deep mb-2">Nothing here yet!</p>
+            <p className="text-sm text-brand-muted leading-relaxed mb-6">
+              We&apos;re working on getting more gifts for this category. In the meantime, our gifting squad is out there hunting for the perfect items. Check back soon — or browse something else while you wait!
+            </p>
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-semibold rounded-2xl hover:bg-brand-dark transition-colors text-sm"
+            >
+              <Sparkles className="w-4 h-4" />
+              Browse All Gifts
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-5">

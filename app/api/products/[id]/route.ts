@@ -5,12 +5,17 @@ export async function GET(
   _req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { data: product, error } = await supabaseAdmin
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id);
+  let query = supabaseAdmin
     .from("products")
     .select("*")
-    .eq("id", params.id)
-    .eq("status", "published")
-    .single();
+    .eq("status", "published");
+  if (isUuid) {
+    query = query.eq("id", params.id);
+  } else {
+    query = query.eq("slug", params.id);
+  }
+  const { data: product, error } = await query.single();
 
   if (error || !product) {
     return NextResponse.json(

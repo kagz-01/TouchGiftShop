@@ -13,12 +13,14 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
-    const { data, error } = await supabaseAdmin
-      .from("products")
-      .select("*")
-      .eq("id", id)
-      .eq("status", "published")
-      .single();
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    let query = supabaseAdmin.from("products").select("*").eq("status", "published");
+    if (isUuid) {
+      query = query.eq("id", id);
+    } else {
+      query = query.eq("slug", id);
+    }
+    const { data, error } = await query.single();
     if (error || !data) return null;
     return data as Product;
   } catch {
