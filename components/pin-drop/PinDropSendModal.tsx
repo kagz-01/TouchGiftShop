@@ -62,7 +62,7 @@ export default function PinDropSendModal({
     if (!data) return;
 
     try {
-      await navigator.clipboard.writeText(data.pinDropUrl);
+      await navigator.clipboard?.writeText(data.pinDropUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       setSent(true);

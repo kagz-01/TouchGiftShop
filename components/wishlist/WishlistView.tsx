@@ -49,7 +49,7 @@ export default function WishlistView({ slug }: { slug: string }) {
   const copyLink = async () => {
     const url = `${window.location.origin}/wishlist/${slug}`;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard?.writeText(url);
     } catch {
       const input = document.createElement("input");
       input.value = url;

@@ -165,7 +165,7 @@ export default function ManagePoolPage() {
                   <div className="flex-1 flex flex-col justify-center space-y-2">
                     <div className="flex gap-2">
                       <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
-                      <button onClick={() => navigator.clipboard.writeText(shareUrl)} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">Copy</button>
+                      <button onClick={() => navigator.clipboard?.writeText(shareUrl)} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">Copy</button>
                     </div>
                   </div>
                 </div>

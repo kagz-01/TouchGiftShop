@@ -76,7 +76,7 @@ export default function GroupGiftBuilder({ product, onClose }: GroupGiftBuilderP
   function handleCopyLink() {
     if (!groupGift) return;
     const msg = generateShareMessage(groupGift);
-    navigator.clipboard.writeText(msg);
+    navigator.clipboard?.writeText(msg);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

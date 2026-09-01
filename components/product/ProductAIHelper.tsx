@@ -74,7 +74,7 @@ export default function ProductAIHelper({ productName, productId }: Props) {
               <p className="text-sm italic text-brand-deep">&ldquo;{noteText}&rdquo;</p>
               <div className="flex gap-2 mt-2">
                 <button
-                  onClick={() => navigator.clipboard.writeText(noteText)}
+                  onClick={() => navigator.clipboard?.writeText(noteText)}
                   className="text-[10px] text-brand hover:underline"
                 >
                   Copy

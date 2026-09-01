@@ -121,7 +121,7 @@ export default function AdminOrderDetailPage() {
 
   const copyRiderLink = async () => {
     try {
-      await navigator.clipboard.writeText(riderUrl);
+      await navigator.clipboard?.writeText(riderUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

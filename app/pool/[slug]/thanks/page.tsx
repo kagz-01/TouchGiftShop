@@ -22,8 +22,8 @@ export default function ThanksPage() {
     return () => clearTimeout(t);
   }, []);
 
-  const copyShare = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
-  const copySplit = () => { navigator.clipboard.writeText(splitUrl); setSplitCopied(true); setTimeout(() => setSplitCopied(false), 2000); };
+  const copyShare = () => { navigator.clipboard?.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const copySplit = () => { navigator.clipboard?.writeText(splitUrl); setSplitCopied(true); setTimeout(() => setSplitCopied(false), 2000); };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-white flex items-center justify-center px-4 relative overflow-hidden">

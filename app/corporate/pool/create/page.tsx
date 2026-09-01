@@ -527,7 +527,7 @@ export default function CorporatePoolCreate() {
 
               <div className="flex gap-3">
                 <button
-                  onClick={() => navigator.clipboard.writeText(poolLink)}
+                  onClick={() => navigator.clipboard?.writeText(poolLink)}
                   className="flex-1 px-4 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors"
                 >
                   Copy Link

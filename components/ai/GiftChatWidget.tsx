@@ -238,7 +238,7 @@ export default function GiftChatWidget() {
                         <p className="text-sm italic text-brand-deep">&ldquo;{msg.noteSuggestion}&rdquo;</p>
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(msg.noteSuggestion!);
+                            navigator.clipboard?.writeText(msg.noteSuggestion!);
                           }}
                           className="text-xs text-brand mt-2 hover:underline"
                         >

@@ -172,7 +172,7 @@ export default function PoolLandingPage() {
   }, [pool?.id, pool?.status, fetchPool]);
 
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}` : `/pool/${slug}`;
-  const copyLink = () => { navigator.clipboard.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+  const copyLink = () => { navigator.clipboard?.writeText(shareUrl); setCopied(true); setTimeout(() => setCopied(false), 2000); };
 
   if (loading) {
     return (

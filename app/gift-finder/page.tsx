@@ -279,7 +279,7 @@ export default function GiftChatPage() {
                     </p>
                     <div className="flex gap-2 mt-3">
                       <button
-                        onClick={() => navigator.clipboard.writeText(msg.noteSuggestion!)}
+                        onClick={() => navigator.clipboard?.writeText(msg.noteSuggestion!)}
                         className="flex items-center gap-1 text-[11px] bg-white text-brand-muted border border-black/10 px-3 py-1.5 rounded-lg hover:border-brand/30 hover:text-brand transition-all"
                       >
                         <Copy className="w-3 h-3" />

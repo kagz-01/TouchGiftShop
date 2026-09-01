@@ -445,7 +445,7 @@ function StepLaunch({ data, poolSlug }: { data: WizardData; poolSlug: string }) 
         <div className="flex items-center gap-2">
           <code className="flex-1 text-sm text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
           <button
-            onClick={() => navigator.clipboard.writeText(shareUrl)}
+            onClick={() => navigator.clipboard?.writeText(shareUrl)}
             className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold hover:bg-brand/90 transition-colors"
           >
             Copy

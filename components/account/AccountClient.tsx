@@ -231,7 +231,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
 
   async function copyReferral() {
     const url = `${window.location.origin}?ref=${referralCode}`;
-    try { await navigator.clipboard.writeText(url); } catch { /* fallback */ }
+    try { await navigator.clipboard?.writeText(url); } catch { /* fallback */ }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

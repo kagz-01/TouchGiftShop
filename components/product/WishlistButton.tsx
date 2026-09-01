@@ -123,7 +123,7 @@ export default function WishlistButton({
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard?.writeText(shareUrl);
     } catch {
       const el = document.createElement("input");
       el.value = shareUrl;

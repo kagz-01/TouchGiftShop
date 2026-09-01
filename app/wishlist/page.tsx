@@ -75,7 +75,7 @@ export default function WishlistPage() {
     if (!wishlist) return;
     const url = `${SITE_URL}/wishlist/${wishlist.slug}`;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard?.writeText(url);
     } catch {
       const el = document.createElement("input");
       el.value = url;
