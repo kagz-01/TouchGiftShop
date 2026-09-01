@@ -31,7 +31,7 @@ export default function DeliveryPolicyPage() {
                   <ul className="space-y-2 text-sm">
                     <li className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-brand-forest" />
-                      Same-day delivery for orders before <strong>2:00 PM EAT</strong>
+                      Same-day delivery for all Nairobi orders
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-brand-forest" />
@@ -214,12 +214,12 @@ export default function DeliveryPolicyPage() {
                   <p className="font-bold text-brand-deep">On-time or it&apos;s free</p>
                 </div>
                 <p className="text-sm">
-                  If your same-day Nairobi order (placed before 2:00 PM EAT) arrives after the
+                  If your same-day Nairobi order arrives after the
                   guaranteed delivery window, <strong>the delivery fee is refunded in full</strong>.
                 </p>
                 <p className="text-xs mt-2 text-brand-muted">
-                  This guarantee does not apply to orders placed after the cutoff, orders with
-                  incomplete delivery information, or delays caused by force majeure events.
+                  This guarantee does not apply to orders with
+                  incomplete delivery information or delays caused by force majeure events.
                 </p>
               </div>
             </section>
@@ -269,7 +269,7 @@ export default function DeliveryPolicyPage() {
                 whenever possible. We recommend:
               </p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>Ordering before 12:00 PM for guaranteed same-day delivery</li>
+                <li>Same-day delivery for all Nairobi orders</li>
                 <li>Ensuring the recipient will be available to receive the item</li>
                 <li>Providing a backup contact in case of delivery issues</li>
               </ul>

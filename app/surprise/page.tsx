@@ -170,7 +170,7 @@ export default function SurpriseFeaturePage() {
           {[
             { icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />, title: "Price hidden", desc: "The recipient never sees what you paid" },
             { icon: <Package className="w-5 h-5 text-brand" />, title: "Beautifully wrapped", desc: "Every gift is boxed and ribboned before delivery" },
-            { icon: <Clock className="w-5 h-5 text-gold-dark" />, title: "Same-day Nairobi", desc: "Order before 2 PM for same-day delivery" },
+            { icon: <Clock className="w-5 h-5 text-gold-dark" />, title: "Same-day Nairobi", desc: "Same-day delivery across Nairobi" },
           ].map((item, i) => (
             <div key={i} className="flex items-start gap-3">
               <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center flex-shrink-0 border border-black/5">

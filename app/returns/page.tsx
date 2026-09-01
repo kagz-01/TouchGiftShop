@@ -145,7 +145,7 @@ export default function ReturnsPage() {
               <p>
                 If your gift arrives <strong>after the guaranteed delivery window</strong>,
                 the delivery fee is refunded in full. This guarantee applies to same-day
-                Nairobi orders placed before 2:00 PM EAT. The gift itself is not refunded
+                Nairobi orders. The gift itself is not refunded
                 unless it also meets the refund criteria in Section 2.
               </p>
             </section>

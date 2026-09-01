@@ -102,7 +102,7 @@ export default function TermsPage() {
             <section>
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">5. Delivery</h2>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>Nairobi:</strong> Same-day delivery for orders placed before 2:00 PM EAT</li>
+                <li><strong>Nairobi:</strong> Same-day delivery for all Nairobi orders</li>
                 <li><strong>Nationwide:</strong> Next-day delivery for orders placed before 4:00 PM EAT</li>
                 <li>Delivery times are estimates and not guaranteed unless the on-time guarantee applies</li>
                 <li>Recipients may be contacted via the delivery landmark or pin drop location</li>

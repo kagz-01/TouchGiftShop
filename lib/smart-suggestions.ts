@@ -130,7 +130,7 @@ export function getTimeContext(): { timeOfDay: "morning" | "afternoon" | "evenin
   } else if (hour < 17) {
     return {
       timeOfDay: "afternoon",
-      suggestion: "Afternoon! Still time for same-day delivery in Nairobi.",
+      suggestion: "Afternoon! Same-day delivery available in Nairobi.",
     };
   } else {
     return {

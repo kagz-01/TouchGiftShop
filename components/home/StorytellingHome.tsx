@@ -116,7 +116,7 @@ function useTypewriter(messages: string[], typingSpeed = 260, pauseMs = 1700) {
 }
 
 function highlightDeliveryCopy(text: string) {
-  const highlights = ["3 PM", "same-day delivery", "tomorrow", "next day", "today", "today’s"];
+  const highlights = ["same-day delivery", "tomorrow", "next day", "today", "today’s"];
   const parts: React.ReactNode[] = [];
   let cursor = 0;
 
@@ -687,10 +687,10 @@ export function SocialProof() {
       ];
 
   const stats = [
-    { target: 500, suffix: "+", label: "Gifts delivered", icon: "🎁" },
-    { target: 96, suffix: "%", label: "On-time delivery", icon: "⚡" },
+    { target: 100, suffix: "+", label: "Gifts delivered", icon: "🎁" },
+    { target: 95, suffix: "%", label: "On-time delivery", icon: "⚡" },
     { target: 749, suffix: "+", label: "Products", icon: "🛍️" },
-    { target: 4, suffix: ".8★", label: "Average rating", icon: "⭐" },
+    { target: 4, suffix: ".6★", label: "Average rating", icon: "⭐" },
   ];
 
   const StarRow = ({ count }: { count: number }) => (

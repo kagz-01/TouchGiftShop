@@ -274,8 +274,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
               <div className="flex items-center gap-3 bg-white border border-black/6 rounded-2xl p-3.5 shadow-sm">
                 <Zap className="w-4 h-4 text-gold-dark flex-shrink-0" />
                 <p className="text-xs text-brand-muted">
-                  Order before <span className="font-semibold text-brand-deep">2 PM</span> for same-day Nairobi delivery.
-                  Next-day available nationwide.
+                  Same-day Nairobi delivery available. Next-day available nationwide.
                 </p>
               </div>
             </div>
