@@ -7,7 +7,7 @@ import {
   Sparkles, Cake, Gem, Heart, Baby, Building2, Feather,
   GraduationCap, Flower2, HeartPulse, Gift, Dumbbell,
   Gamepad2, Home, ChefHat, Filter, ArrowUpDown, Tag,
-  Percent, Clock, Palette, Ruler, Star, ChevronDown, X, SlidersHorizontal,
+  Percent, Clock, Star, ChevronDown, X, SlidersHorizontal,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -44,15 +44,127 @@ const QUICK_FILTERS = [
   { label: "Customizable", icon: <Tag className="w-3.5 h-3.5" />, param: "personalizable", value: "1" },
 ];
 
-// Color name → hex mapping for dot display
-const COLOR_HEX: Record<string, string> = {
-  red: "#ef4444", blue: "#3b82f6", green: "#22c55e", black: "#171717",
-  white: "#f5f5f5", gold: "#eab308", pink: "#ec4899", purple: "#a855f7",
-  orange: "#f97316", yellow: "#eab308", brown: "#92400e", grey: "#9ca3af",
-  gray: "#9ca3af", silver: "#c0c0c0", rose: "#f43f5e", navy: "#1e3a5f",
-  beige: "#d4c5a9", coral: "#ff7f50", teal: "#14b8a6", maroon: "#7f1d1d",
-};
+const PRICE_MIN = 0;
+const PRICE_MAX = 100000;
+const PRICE_STEP = 500;
 
+function formatPrice(v: number) {
+  if (v >= 1000) return `${Math.round(v / 1000)}K`;
+  return String(v);
+}
+
+// ── Dual Range Slider ─────────────────────────────────────────────────────────
+function DualRangeSlider({
+  min,
+  max,
+  step,
+  valueMin,
+  valueMax,
+  onChange,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  valueMin: number;
+  valueMax: number;
+  onChange: (min: number, max: number) => void;
+}) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState<"min" | "max" | null>(null);
+
+  const pct = (v: number) => ((v - min) / (max - min)) * 100;
+
+  const getValFromX = useCallback(
+    (clientX: number) => {
+      const track = trackRef.current;
+      if (!track) return valueMin;
+      const rect = track.getBoundingClientRect();
+      const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const raw = min + ratio * (max - min);
+      return Math.round(raw / step) * step;
+    },
+    [min, max, step, valueMin]
+  );
+
+  useEffect(() => {
+    if (!dragging) return;
+
+    function onMove(e: MouseEvent | TouchEvent) {
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const val = getValFromX(clientX);
+      if (dragging === "min") {
+        onChange(Math.min(val, valueMax - step), valueMax);
+      } else {
+        onChange(valueMin, Math.max(val, valueMin + step));
+      }
+    }
+
+    function onEnd() {
+      setDragging(null);
+    }
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onEnd);
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onEnd);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onEnd);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, [dragging, valueMin, valueMax, getValFromX, onChange, step]);
+
+  const leftPct = pct(valueMin);
+  const rightPct = pct(valueMax);
+
+  return (
+    <div className="relative w-full h-8 select-none" ref={trackRef}>
+      {/* Track background */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 rounded-full"
+        style={{ background: "var(--surface-border, #e5e7eb)" }}
+      />
+      {/* Active range */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-brand"
+        style={{ left: `${leftPct}%`, right: `${100 - rightPct}%` }}
+      />
+
+      {/* Min thumb */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-brand shadow-md cursor-grab active:cursor-grabbing z-10 touch-none"
+        style={{ left: `${leftPct}%` }}
+        onMouseDown={(e) => { e.preventDefault(); setDragging("min"); }}
+        onTouchStart={(e) => { setDragging("min"); }}
+      />
+      {/* Max thumb */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-brand shadow-md cursor-grab active:cursor-grabbing z-10 touch-none"
+        style={{ left: `${rightPct}%` }}
+        onMouseDown={(e) => { e.preventDefault(); setDragging("max"); }}
+        onTouchStart={(e) => { setDragging("max"); }}
+      />
+
+      {/* Min value label */}
+      <div
+        className="absolute -top-6 -translate-x-1/2 text-[10px] font-bold text-brand-deep whitespace-nowrap"
+        style={{ left: `${leftPct}%` }}
+      >
+        KSh {formatPrice(valueMin)}
+      </div>
+      {/* Max value label */}
+      <div
+        className="absolute -top-6 -translate-x-1/2 text-[10px] font-bold text-brand-deep whitespace-nowrap"
+        style={{ left: `${rightPct}%` }}
+      >
+        KSh {formatPrice(valueMax)}
+      </div>
+    </div>
+  );
+}
+
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function ShopFilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams()!;
@@ -73,13 +185,14 @@ export default function ShopFilterBar() {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
 
-  // Price range state (local, applied on change/end)
-  const [minPriceInput, setMinPriceInput] = useState(activeMinPrice);
-  const [maxPriceInput, setMaxPriceInput] = useState(activeMaxPrice);
+  // Slider local state
+  const [sliderMin, setSliderMin] = useState(activeMinPrice ? Number(activeMinPrice) : PRICE_MIN);
+  const [sliderMax, setSliderMax] = useState(activeMaxPrice ? Number(activeMaxPrice) : PRICE_MAX);
+  const [sliderDragging, setSliderDragging] = useState(false);
 
   useEffect(() => {
-    setMinPriceInput(activeMinPrice);
-    setMaxPriceInput(activeMaxPrice);
+    setSliderMin(activeMinPrice ? Number(activeMinPrice) : PRICE_MIN);
+    setSliderMax(activeMaxPrice ? Number(activeMaxPrice) : PRICE_MAX);
   }, [activeMinPrice, activeMaxPrice]);
 
   const checkScroll = useCallback(() => {
@@ -97,58 +210,74 @@ export default function ShopFilterBar() {
     return () => el.removeEventListener("scroll", checkScroll);
   }, [checkScroll]);
 
-  function pushParam(key: string, value: string) {
+  function pushParams(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
-    if (value) {
-      params.set(key, value);
-    } else {
-      params.delete(key);
+    for (const [k, v] of Object.entries(updates)) {
+      if (v === null || v === "") params.delete(k);
+      else params.set(k, v);
     }
     const qs = params.toString();
     router.push(qs ? `/shop?${qs}` : "/shop");
   }
 
   function toggleParam(key: string, value: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (params.get(key) === value) {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    const qs = params.toString();
-    router.push(qs ? `/shop?${qs}` : "/shop");
+    const current = searchParams.get(key);
+    pushParams({ [key]: current === value ? null : value });
   }
 
   function setCategory(slug: string) {
-    pushParam("category", slug);
+    pushParams({ category: slug || null });
   }
 
   function setSort(value: string) {
-    pushParam("sort", value);
+    pushParams({ sort: value });
     setSortOpen(false);
   }
 
-  function applyPriceRange() {
-    const params = new URLSearchParams(searchParams.toString());
-    if (minPriceInput) params.set("minPrice", minPriceInput);
-    else params.delete("minPrice");
-    if (maxPriceInput) params.set("maxPrice", maxPriceInput);
-    else params.delete("maxPrice");
-    // Also clear budget tier when custom range is used
-    if (minPriceInput || maxPriceInput) params.delete("budget");
-    const qs = params.toString();
-    router.push(qs ? `/shop?${qs}` : "/shop");
+  function applySlider() {
+    const updates: Record<string, string | null> = { budget: null };
+    if (sliderMin > PRICE_MIN) updates.minPrice = String(sliderMin);
+    else updates.minPrice = null;
+    if (sliderMax < PRICE_MAX) updates.maxPrice = String(sliderMax);
+    else updates.maxPrice = null;
+    pushParams(updates);
   }
 
-  function setColor(c: string) {
-    toggleParam("color", c);
+  function selectBudgetTier(slug: string) {
+    const updates: Record<string, string | null> = {
+      minPrice: null,
+      maxPrice: null,
+      budget: slug || null,
+    };
+    if (slug) {
+      // Also set slider to match the tier
+      const tierMap: Record<string, [number, number]> = {
+        "under-5k": [0, 5000],
+        "under-10k": [0, 10000],
+        "under-20k": [0, 20000],
+        "under-50k": [0, 50000],
+        "premium": [50000, PRICE_MAX],
+      };
+      const range = tierMap[slug];
+      if (range) {
+        setSliderMin(range[0]);
+        setSliderMax(range[1]);
+      }
+    } else {
+      setSliderMin(PRICE_MIN);
+      setSliderMax(PRICE_MAX);
+    }
+    pushParams(updates);
   }
 
-  function setSize(s: string) {
-    toggleParam("size", s);
-  }
+  const activeFilterCount = [
+    activeOnSale, activeNewArrivals, activePersonalizable,
+    activeColor, activeSize, activeSort,
+    activeMinPrice ? "1" : "",
+    activeMaxPrice ? "1" : "",
+  ].filter(Boolean).length;
 
-  const activeFilterCount = [activeOnSale, activeNewArrivals, activePersonalizable, activeColor, activeSize, activeMinPrice, activeMaxPrice, activeSort].filter(Boolean).length;
+  const hasPriceFilter = activeMinPrice || activeMaxPrice;
 
   return (
     <div
@@ -199,40 +328,120 @@ export default function ShopFilterBar() {
         </div>
       </div>
 
-      {/* ── Budget + Sort Row ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-1 mb-3">
-        <div className="flex items-center gap-2 shrink-0">
-          <Filter className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-          <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Budget:</h3>
+      {/* ── Price Range Slider + Sort ── */}
+      <div className="px-1 mb-3">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
+            <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Price Range</h3>
+            {hasPriceFilter && (
+              <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
+                KSh {sliderMin > 0 ? formatPrice(sliderMin) : "0"} — {sliderMax < PRICE_MAX ? formatPrice(sliderMax) : "Any"}
+              </span>
+            )}
+          </div>
+
+          {/* Sort dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setSortOpen(!sortOpen)}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                activeSort ? "bg-brand text-white shadow-sm" : ""
+              )}
+              style={!activeSort ? {
+                background: "var(--surface)",
+                color: "var(--text-muted)",
+                border: "1px solid var(--card-border)",
+              } : undefined}
+            >
+              <ArrowUpDown className="w-3.5 h-3.5" />
+              {activeSort ? SORT_OPTIONS.find(o => o.value === activeSort)?.label : "Sort"}
+              <ChevronDown className={cn("w-3 h-3 transition-transform", sortOpen && "rotate-180")} />
+            </button>
+            {sortOpen && (
+              <>
+                <div className="fixed inset-0 z-30" onClick={() => setSortOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-black/10 py-1 z-40 min-w-[180px]">
+                  <button
+                    onClick={() => { pushParams({ sort: null }); setSortOpen(false); }}
+                    className={cn(
+                      "w-full text-left px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors",
+                      !activeSort ? "text-brand" : "text-gray-700"
+                    )}
+                  >
+                    Default
+                  </button>
+                  {SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setSort(opt.value)}
+                      className={cn(
+                        "w-full text-left px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors",
+                        activeSort === opt.value ? "text-brand" : "text-gray-700"
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 flex-1">
+        {/* Dual range slider */}
+        <div className="px-2 pt-4 pb-1">
+          <DualRangeSlider
+            min={PRICE_MIN}
+            max={PRICE_MAX}
+            step={PRICE_STEP}
+            valueMin={sliderMin}
+            valueMax={sliderMax}
+            onChange={(min, max) => {
+              setSliderMin(min);
+              setSliderMax(max);
+              setSliderDragging(true);
+            }}
+          />
+        </div>
+
+        {/* Apply button — only show when slider has changed from URL */}
+        {(sliderMin !== (activeMinPrice ? Number(activeMinPrice) : PRICE_MIN) ||
+          sliderMax !== (activeMaxPrice ? Number(activeMaxPrice) : PRICE_MAX)) && (
+          <div className="flex items-center justify-center gap-2 mt-1">
+            <button
+              onClick={applySlider}
+              className="px-4 py-1.5 bg-brand text-white text-xs font-bold rounded-lg hover:bg-brand-dark transition-colors"
+            >
+              Apply Range
+            </button>
+            <button
+              onClick={() => {
+                setSliderMin(PRICE_MIN);
+                setSliderMax(PRICE_MAX);
+                pushParams({ minPrice: null, maxPrice: null });
+              }}
+              className="text-xs text-brand-muted hover:text-brand underline"
+            >
+              Reset
+            </button>
+          </div>
+        )}
+
+        {/* Quick budget tiers */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3 -mx-1 px-1">
           {[
-            { label: "All", slug: "" },
+            { label: "All Prices", slug: "" },
             { label: "Under 5K", slug: "under-5k" },
             { label: "Under 10K", slug: "under-10k" },
             { label: "Under 20K", slug: "under-20k" },
             { label: "Under 50K", slug: "under-50k" },
-            { label: "Premium", slug: "premium" },
+            { label: "Premium 50K+", slug: "premium" },
           ].map((tier) => (
             <button
               key={tier.slug}
-              onClick={() => {
-                const params = new URLSearchParams(searchParams.toString());
-                if (tier.slug) {
-                  if (activeBudget === tier.slug) {
-                    params.delete("budget");
-                  } else {
-                    params.set("budget", tier.slug);
-                  }
-                } else {
-                  params.delete("budget");
-                }
-                params.delete("minPrice");
-                params.delete("maxPrice");
-                const qs = params.toString();
-                router.push(qs ? `/shop?${qs}` : "/shop");
-              }}
+              onClick={() => selectBudgetTier(tier.slug)}
               className={cn(
                 "flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
                 activeBudget === tier.slug ? "bg-brand text-white shadow-sm" : ""
@@ -247,64 +456,10 @@ export default function ShopFilterBar() {
             </button>
           ))}
         </div>
-
-        {/* Sort dropdown */}
-        <div className="relative shrink-0">
-          <button
-            onClick={() => setSortOpen(!sortOpen)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
-              activeSort ? "bg-brand text-white shadow-sm" : ""
-            )}
-            style={!activeSort ? {
-              background: "var(--surface)",
-              color: "var(--text-muted)",
-              border: "1px solid var(--card-border)",
-            } : undefined}
-          >
-            <ArrowUpDown className="w-3.5 h-3.5" />
-            {activeSort ? SORT_OPTIONS.find(o => o.value === activeSort)?.label : "Sort"}
-            <ChevronDown className={cn("w-3 h-3 transition-transform", sortOpen && "rotate-180")} />
-          </button>
-          {sortOpen && (
-            <>
-              <div className="fixed inset-0 z-30" onClick={() => setSortOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 bg-white rounded-xl shadow-lg border border-black/10 py-1 z-40 min-w-[180px]">
-                <button
-                  onClick={() => {
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.delete("sort");
-                    const qs = params.toString();
-                    router.push(qs ? `/shop?${qs}` : "/shop");
-                    setSortOpen(false);
-                  }}
-                  className={cn(
-                    "w-full text-left px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors",
-                    !activeSort ? "text-brand" : "text-gray-700"
-                  )}
-                >
-                  Default
-                </button>
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setSort(opt.value)}
-                    className={cn(
-                      "w-full text-left px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors",
-                      activeSort === opt.value ? "text-brand" : "text-gray-700"
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
       </div>
 
       {/* ── Quick Filters Row ── */}
-      <div className="flex flex-wrap items-center gap-2 px-1 mb-3">
+      <div className="flex flex-wrap items-center gap-2 px-1 mb-3" style={{ borderTop: "1px solid var(--surface-border)", paddingTop: "0.75rem" }}>
         <div className="flex items-center gap-2 shrink-0">
           <SlidersHorizontal className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
           <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Filters:</h3>
@@ -332,7 +487,6 @@ export default function ShopFilterBar() {
           );
         })}
 
-        {/* Advanced toggle */}
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className={cn(
@@ -351,59 +505,14 @@ export default function ShopFilterBar() {
         </button>
       </div>
 
-      {/* ── Advanced Filters (collapsible) ── */}
+      {/* ── Advanced Filters ── */}
       {showAdvanced && (
         <div className="px-1 pt-3 space-y-3" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          {/* Price Range */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-            <div className="flex items-center gap-2 shrink-0">
-              <Filter className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-              <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Price Range (KSh):</h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                placeholder="Min"
-                value={minPriceInput}
-                onChange={(e) => setMinPriceInput(e.target.value)}
-                className="w-24 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-black/10 focus:outline-none focus:border-brand"
-              />
-              <span className="text-xs text-gray-400">—</span>
-              <input
-                type="number"
-                placeholder="Max"
-                value={maxPriceInput}
-                onChange={(e) => setMaxPriceInput(e.target.value)}
-                className="w-24 px-3 py-1.5 rounded-lg text-xs font-medium bg-white border border-black/10 focus:outline-none focus:border-brand"
-              />
-              <button
-                onClick={applyPriceRange}
-                className="px-3 py-1.5 bg-brand text-white text-xs font-bold rounded-lg hover:bg-brand-dark transition-colors"
-              >
-                Apply
-              </button>
-              {(activeMinPrice || activeMaxPrice) && (
-                <button
-                  onClick={() => {
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.delete("minPrice");
-                    params.delete("maxPrice");
-                    const qs = params.toString();
-                    router.push(qs ? `/shop?${qs}` : "/shop");
-                  }}
-                  className="text-xs text-brand-muted hover:text-brand underline"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Rating filter */}
+          {/* Rating */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-2 shrink-0">
               <Star className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-              <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Rating:</h3>
+              <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Min Rating:</h3>
             </div>
             <div className="flex gap-2">
               {[4, 3, 2].map((r) => {
@@ -431,7 +540,7 @@ export default function ShopFilterBar() {
         </div>
       )}
 
-      {/* ── Active filter count indicator ── */}
+      {/* ── Active filter count ── */}
       {activeFilterCount > 0 && !showAdvanced && (
         <div className="px-1 pt-2">
           <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
