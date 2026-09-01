@@ -89,8 +89,8 @@ export default function Header() {
             <Image
               src="/logo/logo.webp"
               alt="TouchGift"
-              width={52}
-              height={52}
+              width={100}
+              height={100}
               priority
               className="relative rounded-full object-cover transition-all duration-500 ring-2 ring-transparent scale-100 rotate-0 group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]"
             />
