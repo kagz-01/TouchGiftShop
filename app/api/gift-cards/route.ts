@@ -3,22 +3,32 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createPaymentOrder } from "@/lib/payment";
 
+/** Generates a cryptographically secure TG-XXXX-XXXX code */
 function generateCode(): string {
-  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let code = "TG-";
-  for (let i = 0; i < 8; i++) {
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return code;
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0,O,I,1 for clarity
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  const part1 = Array.from(bytes.slice(0, 4)).map((b) => chars[b % chars.length]).join("");
+  const part2 = Array.from(bytes.slice(4)).map((b) => chars[b % chars.length]).join("");
+  return `TG-${part1}-${part2}`;
 }
 
 const PurchaseInput = z.object({
   amount: z.number().min(500, "Minimum amount is KSh 500"),
   senderName: z.string().min(1).optional(),
-  recipientName: z.string().min(1),
-  recipientPhone: z.string().optional(),
-  message: z.string().optional(),
+  recipientName: z.string().min(1, "Recipient name is required"),
+  recipientPhone: z
+    .string()
+    .regex(/^(\+?254|0)(7|1)\d{8}$/, "Invalid Kenyan phone number")
+    .optional()
+    .or(z.literal("")),
+  message: z.string().max(160, "Message cannot exceed 160 characters").optional(),
   isAnonymous: z.boolean().optional(),
+  sendDate: z.string().optional(), // ISO date string, e.g. "2026-09-10"
+  style: z.object({
+    theme: z.string(),
+    font: z.string(),
+  }).optional(),
 });
 
 // POST /api/gift-cards — purchase a gift card (creates pending card + PesaPal payment)
@@ -31,7 +41,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { amount, senderName, recipientName, recipientPhone, message, isAnonymous } =
+  const { amount, senderName, recipientName, recipientPhone, message, isAnonymous, sendDate, style } =
     parsed.data;
 
   // Anonymous cards don't store sender name
@@ -51,24 +61,29 @@ export async function POST(req: Request) {
     attempts++;
   }
 
-  // Expires in 12 months
-  const expiresAt = new Date();
+  // Expires in 12 months from the send date (or today)
+  const baseDate = sendDate ? new Date(sendDate) : new Date();
+  const expiresAt = new Date(baseDate);
   expiresAt.setMonth(expiresAt.getMonth() + 12);
 
-  // Create gift card with pending_payment status
+  // Schedule: if sendDate is in the future, card starts as "scheduled"
+  const isScheduled = sendDate && new Date(sendDate) > new Date();
+
+  // Create gift card
   const { data: card, error } = await supabaseAdmin
     .from("gift_cards")
     .insert({
       code,
       initial_amount: amount,
-      balance: 0, // Will be set to amount on payment success
-      sender_name: effectiveSenderName,
+      balance: 0,
+      sender_name: effectiveSenderName,   // null = anonymous
       recipient_name: recipientName,
-      recipient_phone: recipientPhone ?? null,
-      message: message ?? null,
-      is_anonymous: isAnonymous ?? false,
+      recipient_phone: recipientPhone || null,
+      message: message || null,
       expires_at: expiresAt.toISOString(),
-      status: "pending_payment",
+      send_date: sendDate || null,
+      style: style || null,
+      status: isScheduled ? "scheduled" : "pending_payment",
     })
     .select()
     .single();
@@ -117,7 +132,7 @@ export async function GET(req: Request) {
 
   const { data: card, error } = await supabaseAdmin
     .from("gift_cards")
-    .select("code, balance, initial_amount, expires_at, recipient_name, sender_name, is_anonymous, status")
+    .select("code, balance, initial_amount, expires_at, recipient_name, sender_name, status, style")
     .eq("code", code.toUpperCase())
     .single();
 
@@ -130,8 +145,8 @@ export async function GET(req: Request) {
   return NextResponse.json({
     card: {
       ...card,
-      // Hide sender name for anonymous cards
-      sender_name: card.is_anonymous ? null : card.sender_name,
+      // null sender_name = anonymous
+      is_anonymous: card.sender_name === null,
       is_expired: isExpired,
       is_usable: card.status === "active" && !isExpired && card.balance > 0,
     },

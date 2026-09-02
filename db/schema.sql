@@ -216,6 +216,8 @@ CREATE TABLE gift_cards (
     recipient_phone VARCHAR(20),
     message TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
+    send_date DATE,
+    style JSONB,
     is_redeemed BOOLEAN DEFAULT FALSE,
     status VARCHAR(20) DEFAULT 'active',
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,

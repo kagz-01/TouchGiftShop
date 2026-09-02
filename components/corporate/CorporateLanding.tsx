@@ -725,10 +725,10 @@ function CorporateHowItWorks() {
    ══════════════════════════════════════════════════════════ */
 function CorporateSocialProof() {
   const stats = [
-    { target: 2400, suffix: "+", label: "Gifts delivered", emoji: "🎁" },
-    { target: 98, suffix: "%", label: "On-time delivery", emoji: "⚡" },
+    { target: 100, suffix: "+", label: "Gifts delivered", emoji: "🎁" },
+    { target: 95, suffix: "%", label: "On-time delivery", emoji: "⚡" },
     { target: 500, suffix: "+", label: "Corporate clients", emoji: "🏢" },
-    { target: 4, suffix: ".9★", label: "Average rating", emoji: "⭐" },
+    { target: 4, suffix: ".5★", label: "Average rating", emoji: "⭐" },
   ];
 
   const testimonials = [
