@@ -62,10 +62,13 @@ export default function PaymentStatusPoller({
 
       // Attempt Supabase realtime subscription as a fast fallback if env is present
       try {
-        const supabase = createSupabaseClient();
-        if (supabase) {
-          supabaseChannel = supabase
-            .channel(`orders:${trackingId}`)
+        if (typeof window === "undefined" || !("WebSocket" in window)) {
+          // WebSocket not available in this environment — skip realtime
+        } else {
+          const supabase = createSupabaseClient();
+          if (supabase) {
+            supabaseChannel = supabase
+              .channel(`orders:${trackingId}`)
             .on(
               "postgres_changes",
               {
@@ -111,7 +114,7 @@ export default function PaymentStatusPoller({
       mounted = false;
       if (intervalId) clearInterval(intervalId);
       try {
-        if (supabaseChannel) {
+        if (supabaseChannel && typeof window !== "undefined" && ("WebSocket" in window)) {
           const supabase = createSupabaseClient();
           supabase.removeChannel(supabaseChannel);
         }

@@ -189,7 +189,7 @@ export default function ProductGridClient({
 
   // Real-time: refresh when admin changes anything in the catalog
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -211,7 +211,13 @@ export default function ProductGridClient({
     }
 
     return () => {
-      if (channel) supabase.removeChannel(channel);
+      if (channel) {
+        try {
+          supabase.removeChannel(channel);
+        } catch {
+          // ignore
+        }
+      }
     };
   }, []);
 

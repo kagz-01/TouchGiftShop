@@ -11,7 +11,7 @@ export async function GET() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ tier: LOYALTY_TIERS.bronze, discountPercent: 0, totalPoints: 0 });
+    return NextResponse.json({ tier: "bronze", tierConfig: LOYALTY_TIERS.bronze, discountPercent: 0, totalPoints: 0 });
   }
 
   // Count completed orders for tier calculation

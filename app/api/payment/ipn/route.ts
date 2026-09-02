@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getTransactionStatus } from "@/lib/payment";
+import { deliverGiftCard } from "@/lib/notifications";
 import {
   REFERRAL_BONUS_POINTS,
   CONVERSION_MIN_ORDER_KSH,
@@ -73,18 +74,87 @@ async function handleGiftCardPayment(
 
   const { data: card } = await supabaseAdmin
     .from("gift_cards")
-    .select("initial_amount")
+    .select("id, code, initial_amount, recipient_email, recipient_phone, recipient_name, sender_name, message, is_anonymous, style, status")
     .eq("id", cardId)
     .single();
 
   if (!card) return;
 
-  await supabaseAdmin
+  const { error: updateError } = await supabaseAdmin
     .from("gift_cards")
     .update({ status: "active", balance: card.initial_amount })
     .eq("id", cardId)
     .eq("status", "pending_payment");
+
+  if (updateError) return;
+
+  // Dispatch delivery via requested channels if record contains recipient contact
+  try {
+    const methods: string[] = [];
+    // Look up desired delivery methods from a delivery_requests table if present,
+    // otherwise default to email then sms when available.
+    if (card.recipient_email) methods.push("email");
+    if (card.recipient_phone) methods.push("sms", "whatsapp");
+
+    if (methods.length > 0) {
+      await deliverGiftCard({
+        code: card.code,
+        recipientEmail: card.recipient_email,
+        recipientPhone: card.recipient_phone,
+        recipientName: card.recipient_name,
+        senderName: card.sender_name,
+        alias: card.is_anonymous ? card.sender_name : null,
+        message: card.message,
+        methods,
+      });
+    }
+  } catch (e) {
+    console.error("Failed to deliver gift card after activation:", e);
+  }
 }
+  // If gift card has a send_date in the past or null, deliver now
+  try {
+    const { data: gc } = await supabaseAdmin
+      .from("gift_cards")
+      .select("id, code, send_date, recipient_email, recipient_phone, delivery_methods, recipient_name, sender_name, message, is_anonymous")
+      .eq("merchant_ref", reference)
+      .single();
+
+    if (gc) {
+      const sendDate = gc.send_date ? new Date(gc.send_date) : null;
+      const now = new Date();
+      const shouldDeliverNow = !sendDate || sendDate <= now;
+
+      if (shouldDeliverNow) {
+        const methods = Array.isArray(gc.delivery_methods) && gc.delivery_methods.length ? gc.delivery_methods : [];
+
+        if (methods.length === 0) {
+          if (gc.recipient_email) methods.push("email");
+          if (gc.recipient_phone) methods.push("sms", "whatsapp");
+        }
+
+        if (methods.length > 0) {
+          await deliverGiftCard({
+            code: gc.code,
+            recipientEmail: gc.recipient_email,
+            recipientPhone: gc.recipient_phone,
+            recipientName: gc.recipient_name,
+            senderName: gc.sender_name,
+            message: gc.message,
+            alias: gc.is_anonymous ? gc.sender_name : null,
+            methods,
+          });
+          // mark sent_at
+          await supabaseAdmin
+            .from("gift_cards")
+            .update({ sent_at: new Date().toISOString() })
+            .eq("id", gc.id);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("IPN: error delivering gift card:", e);
+  }
 
 async function handleGiftCardFailure(reference: string) {
   const cardId = reference.replace("giftcard-", "");

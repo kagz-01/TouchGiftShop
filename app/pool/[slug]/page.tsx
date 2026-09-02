@@ -147,27 +147,36 @@ export default function PoolLandingPage() {
   // Realtime updates
   useEffect(() => {
     if (!pool?.id) return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
+
     const supabase = createClient();
-    const channel = supabase
-      .channel(`public:pool-${pool.id}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
-        fetchPool();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
-        fetchPool();
-      })
-      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "group_gifting_pools", filter: `id=eq.${pool.id}` }, (payload) => {
-        fetchPool();
-        // If it just completed
-        if (payload.new.status === "completed" && pool.status === "active") {
-          setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 5000);
-        }
-      })
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel(`public:pool-${pool.id}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
+          fetchPool();
+        })
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "pool_contributions", filter: `pool_id=eq.${pool.id}` }, () => {
+          fetchPool();
+        })
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "group_gifting_pools", filter: `id=eq.${pool.id}` }, (payload) => {
+          fetchPool();
+          // If it just completed
+          if (payload.new.status === "completed" && pool.status === "active") {
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 5000);
+          }
+        })
+        .subscribe();
+    } catch {
+      // skip realtime if not available
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch { /* ignore */ }
+      }
     };
   }, [pool?.id, pool?.status, fetchPool]);
 

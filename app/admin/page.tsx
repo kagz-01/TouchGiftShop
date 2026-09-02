@@ -41,30 +41,37 @@ export default function AdminDashboardPage() {
       .catch(() => setLoading(false));
 
     // Real-time: listen for order changes and refresh stats
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const channel = supabase
-      .channel("admin-dashboard")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "orders" },
-        () => {
-          // Re-fetch stats when any order changes
-          fetch("/api/admin/stats")
-            .then((r) => r.json())
-            .then((data) => setStats(data))
-            .catch(() => {});
-        }
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel("admin-dashboard")
+        .on(
+          "postgres_changes",
+          { event: "*", schema: "public", table: "orders" },
+          () => {
+            // Re-fetch stats when any order changes
+            fetch("/api/admin/stats")
+              .then((r) => r.json())
+              .then((data) => setStats(data))
+              .catch(() => {});
+          }
+        )
+        .subscribe();
+    } catch {
+      // skip realtime if not available
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch { /* ignore */ }
+      }
     };
   }, []);
 

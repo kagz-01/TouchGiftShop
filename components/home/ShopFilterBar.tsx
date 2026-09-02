@@ -61,6 +61,7 @@ function DualRangeSlider({
   valueMin,
   valueMax,
   onChange,
+  onDragEnd,
 }: {
   min: number;
   max: number;
@@ -68,6 +69,7 @@ function DualRangeSlider({
   valueMin: number;
   valueMax: number;
   onChange: (min: number, max: number) => void;
+  onDragEnd?: () => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<"min" | "max" | null>(null);
@@ -101,6 +103,7 @@ function DualRangeSlider({
 
     function onEnd() {
       setDragging(null);
+      onDragEnd?.();
     }
 
     window.addEventListener("mousemove", onMove);
@@ -113,47 +116,39 @@ function DualRangeSlider({
       window.removeEventListener("touchmove", onMove);
       window.removeEventListener("touchend", onEnd);
     };
-  }, [dragging, valueMin, valueMax, getValFromX, onChange, step]);
+  }, [dragging, valueMin, valueMax, getValFromX, onChange, onDragEnd, step]);
 
   const leftPct = pct(valueMin);
   const rightPct = pct(valueMax);
 
   return (
     <div className="relative w-full h-8 select-none" ref={trackRef}>
-      {/* Track background */}
       <div
         className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1.5 rounded-full"
         style={{ background: "var(--surface-border, #e5e7eb)" }}
       />
-      {/* Active range */}
       <div
         className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-brand"
         style={{ left: `${leftPct}%`, right: `${100 - rightPct}%` }}
       />
-
-      {/* Min thumb */}
       <div
         className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-brand shadow-md cursor-grab active:cursor-grabbing z-10 touch-none"
         style={{ left: `${leftPct}%` }}
         onMouseDown={(e) => { e.preventDefault(); setDragging("min"); }}
-        onTouchStart={(e) => { setDragging("min"); }}
+        onTouchStart={() => { setDragging("min"); }}
       />
-      {/* Max thumb */}
       <div
         className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-white border-2 border-brand shadow-md cursor-grab active:cursor-grabbing z-10 touch-none"
         style={{ left: `${rightPct}%` }}
         onMouseDown={(e) => { e.preventDefault(); setDragging("max"); }}
-        onTouchStart={(e) => { setDragging("max"); }}
+        onTouchStart={() => { setDragging("max"); }}
       />
-
-      {/* Min value label */}
       <div
         className="absolute -top-6 -translate-x-1/2 text-[10px] font-bold text-brand-deep whitespace-nowrap"
         style={{ left: `${leftPct}%` }}
       >
         KSh {formatPrice(valueMin)}
       </div>
-      {/* Max value label */}
       <div
         className="absolute -top-6 -translate-x-1/2 text-[10px] font-bold text-brand-deep whitespace-nowrap"
         style={{ left: `${rightPct}%` }}
@@ -169,7 +164,6 @@ export default function ShopFilterBar() {
   const router = useRouter();
   const searchParams = useSearchParams()!;
   const activeCategory = searchParams.get("category") ?? "";
-  const activeBudget = searchParams.get("budget") ?? "";
   const activeSort = searchParams.get("sort") ?? "";
   const activeOnSale = searchParams.get("onSale") ?? "";
   const activeNewArrivals = searchParams.get("newArrivals") ?? "";
@@ -188,7 +182,7 @@ export default function ShopFilterBar() {
   // Slider local state
   const [sliderMin, setSliderMin] = useState(activeMinPrice ? Number(activeMinPrice) : PRICE_MIN);
   const [sliderMax, setSliderMax] = useState(activeMaxPrice ? Number(activeMaxPrice) : PRICE_MAX);
-  const [sliderDragging, setSliderDragging] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setSliderMin(activeMinPrice ? Number(activeMinPrice) : PRICE_MIN);
@@ -234,41 +228,26 @@ export default function ShopFilterBar() {
     setSortOpen(false);
   }
 
-  function applySlider() {
-    const updates: Record<string, string | null> = { budget: null };
-    if (sliderMin > PRICE_MIN) updates.minPrice = String(sliderMin);
-    else updates.minPrice = null;
-    if (sliderMax < PRICE_MAX) updates.maxPrice = String(sliderMax);
-    else updates.maxPrice = null;
-    pushParams(updates);
+  // Debounced slider commit — fires 400ms after the user stops dragging
+  const commitSlider = useCallback(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      const updates: Record<string, string | null> = {};
+      if (sliderMin > PRICE_MIN) updates.minPrice = String(sliderMin);
+      else updates.minPrice = null;
+      if (sliderMax < PRICE_MAX) updates.maxPrice = String(sliderMax);
+      else updates.maxPrice = null;
+      pushParams(updates);
+    }, 400);
+  }, [sliderMin, sliderMax, searchParams, router]);
+
+  function resetPrice() {
+    setSliderMin(PRICE_MIN);
+    setSliderMax(PRICE_MAX);
+    pushParams({ minPrice: null, maxPrice: null });
   }
 
-  function selectBudgetTier(slug: string) {
-    const updates: Record<string, string | null> = {
-      minPrice: null,
-      maxPrice: null,
-      budget: slug || null,
-    };
-    if (slug) {
-      // Also set slider to match the tier
-      const tierMap: Record<string, [number, number]> = {
-        "under-5k": [0, 5000],
-        "under-10k": [0, 10000],
-        "under-20k": [0, 20000],
-        "under-50k": [0, 50000],
-        "premium": [50000, PRICE_MAX],
-      };
-      const range = tierMap[slug];
-      if (range) {
-        setSliderMin(range[0]);
-        setSliderMax(range[1]);
-      }
-    } else {
-      setSliderMin(PRICE_MIN);
-      setSliderMax(PRICE_MAX);
-    }
-    pushParams(updates);
-  }
+  const hasPriceFilter = activeMinPrice || activeMaxPrice;
 
   const activeFilterCount = [
     activeOnSale, activeNewArrivals, activePersonalizable,
@@ -276,8 +255,6 @@ export default function ShopFilterBar() {
     activeMinPrice ? "1" : "",
     activeMaxPrice ? "1" : "",
   ].filter(Boolean).length;
-
-  const hasPriceFilter = activeMinPrice || activeMaxPrice;
 
   return (
     <div
@@ -338,6 +315,11 @@ export default function ShopFilterBar() {
               <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
                 KSh {sliderMin > 0 ? formatPrice(sliderMin) : "0"} — {sliderMax < PRICE_MAX ? formatPrice(sliderMax) : "Any"}
               </span>
+            )}
+            {hasPriceFilter && (
+              <button onClick={resetPrice} className="text-[10px] text-brand-muted hover:text-brand underline font-semibold">
+                Reset
+              </button>
             )}
           </div>
 
@@ -401,60 +383,9 @@ export default function ShopFilterBar() {
             onChange={(min, max) => {
               setSliderMin(min);
               setSliderMax(max);
-              setSliderDragging(true);
             }}
+            onDragEnd={commitSlider}
           />
-        </div>
-
-        {/* Apply button — only show when slider has changed from URL */}
-        {(sliderMin !== (activeMinPrice ? Number(activeMinPrice) : PRICE_MIN) ||
-          sliderMax !== (activeMaxPrice ? Number(activeMaxPrice) : PRICE_MAX)) && (
-          <div className="flex items-center justify-center gap-2 mt-1">
-            <button
-              onClick={applySlider}
-              className="px-4 py-1.5 bg-brand text-white text-xs font-bold rounded-lg hover:bg-brand-dark transition-colors"
-            >
-              Apply Range
-            </button>
-            <button
-              onClick={() => {
-                setSliderMin(PRICE_MIN);
-                setSliderMax(PRICE_MAX);
-                pushParams({ minPrice: null, maxPrice: null });
-              }}
-              className="text-xs text-brand-muted hover:text-brand underline"
-            >
-              Reset
-            </button>
-          </div>
-        )}
-
-        {/* Quick budget tiers */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide mt-3 -mx-1 px-1">
-          {[
-            { label: "All Prices", slug: "" },
-            { label: "Under 5K", slug: "under-5k" },
-            { label: "Under 10K", slug: "under-10k" },
-            { label: "Under 20K", slug: "under-20k" },
-            { label: "Under 50K", slug: "under-50k" },
-            { label: "Premium 50K+", slug: "premium" },
-          ].map((tier) => (
-            <button
-              key={tier.slug}
-              onClick={() => selectBudgetTier(tier.slug)}
-              className={cn(
-                "flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
-                activeBudget === tier.slug ? "bg-brand text-white shadow-sm" : ""
-              )}
-              style={activeBudget !== tier.slug ? {
-                background: "var(--surface)",
-                color: "var(--text-muted)",
-                border: "1px solid var(--card-border)",
-              } : undefined}
-            >
-              {tier.label}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -508,7 +439,6 @@ export default function ShopFilterBar() {
       {/* ── Advanced Filters ── */}
       {showAdvanced && (
         <div className="px-1 pt-3 space-y-3" style={{ borderTop: "1px solid var(--surface-border)" }}>
-          {/* Rating */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-2 shrink-0">
               <Star className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
@@ -540,7 +470,6 @@ export default function ShopFilterBar() {
         </div>
       )}
 
-      {/* ── Active filter count ── */}
       {activeFilterCount > 0 && !showAdvanced && (
         <div className="px-1 pt-2">
           <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">

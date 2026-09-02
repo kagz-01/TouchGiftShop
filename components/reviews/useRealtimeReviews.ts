@@ -23,26 +23,29 @@ export function useRealtimeReviews(
     setReviews(data.reviews || []);
   }, [productId]);
 
+
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient();
 
-    const channel = supabase
-      .channel(`reviews:${productId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reviews",
-          filter: `product_id=eq.${productId}`,
-        },
-        async (payload) => {
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel(`reviews:${productId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "reviews",
+            filter: `product_id=eq.${productId}`,
+          },
+          async (payload) => {
           if (
             payload.eventType === "INSERT" ||
             payload.eventType === "UPDATE"
@@ -68,14 +71,18 @@ export function useRealtimeReviews(
             );
           }
         }
-      )
-      .subscribe();
+        )
+        .subscribe();
+    } catch (err) {
+      // realtime not available or subscribe failed — skip
+      channel = null;
+    }
 
     channelRef.current = channel;
 
     return () => {
       if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
+        try { supabase.removeChannel(channelRef.current); } catch { /* ignore */ }
         channelRef.current = null;
       }
     };
@@ -108,31 +115,36 @@ export function useRealtimeReviewStats(productId: string) {
   }, [fetchStats]);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient();
 
-    const channel = supabase
-      .channel(`review-stats:${productId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reviews",
-          filter: `product_id=eq.${productId}`,
-        },
-        () => {
-          fetchStats();
-        }
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel(`review-stats:${productId}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "reviews",
+            filter: `product_id=eq.${productId}`,
+          },
+          () => {
+            fetchStats();
+          }
+        )
+        .subscribe();
+    } catch {
+      channel = null;
+    }
 
     channelRef.current = channel;
 
     return () => {
       if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
+        try { supabase.removeChannel(channelRef.current); } catch { /* ignore */ }
         channelRef.current = null;
       }
     };

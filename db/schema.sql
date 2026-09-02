@@ -211,12 +211,17 @@ CREATE TABLE gift_cards (
     code VARCHAR(20) UNIQUE NOT NULL,
     initial_amount DECIMAL(10,2) NOT NULL,
     balance DECIMAL(10,2) NOT NULL DEFAULT 0,
-    sender_name VARCHAR(100),
-    recipient_name VARCHAR(100),
-    recipient_phone VARCHAR(20),
-    message TEXT,
+  sender_name VARCHAR(100),
+  recipient_name VARCHAR(100),
+  recipient_phone VARCHAR(20),
+  recipient_email VARCHAR(200),
+  message TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
     send_date DATE,
+  pin VARCHAR(16),
+  merchant_ref VARCHAR(100),
+  delivery_methods JSONB DEFAULT '[]'::jsonb,
+  sent_at TIMESTAMPTZ,
     style JSONB,
     is_redeemed BOOLEAN DEFAULT FALSE,
     status VARCHAR(20) DEFAULT 'active',
@@ -225,6 +230,8 @@ CREATE TABLE gift_cards (
 );
 
 CREATE INDEX idx_gift_cards_code ON gift_cards(code);
+CREATE INDEX idx_gift_cards_recipient_email ON gift_cards(recipient_email);
+CREATE INDEX idx_gift_cards_merchant_ref ON gift_cards(merchant_ref);
 
 -- ---------------------------------------------------------------------
 -- Reviews system (ratings, text, photos/videos, helpful votes)

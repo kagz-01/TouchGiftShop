@@ -103,21 +103,30 @@ export default function CatalogPage() {
 
   // Realtime: refresh instantly when admin changes specs/bundles/imports products
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const channel = supabase
-      .channel("catalog-live")
-      .on("broadcast", { event: "products-imported" }, () => fetchPage(1, false))
-      .on("broadcast", { event: "specs-changed" }, () => fetchPage(1, false))
-      .on("broadcast", { event: "bundles-changed" }, () => fetchBundles())
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel("catalog-live")
+        .on("broadcast", { event: "products-imported" }, () => fetchPage(1, false))
+        .on("broadcast", { event: "specs-changed" }, () => fetchPage(1, false))
+        .on("broadcast", { event: "bundles-changed" }, () => fetchBundles())
+        .subscribe();
+    } catch {
+      // WebSocket or realtime not available — skip
+    }
 
-    return () => { supabase.removeChannel(channel); };
+    return () => {
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch { /* ignore */ }
+      }
+    };
   }, [fetchPage, fetchBundles]);
 
   return (

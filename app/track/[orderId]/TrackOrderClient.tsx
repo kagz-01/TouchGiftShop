@@ -61,31 +61,38 @@ export default function TrackOrderClient({
       });
 
     // Real-time: listen for order status changes from admin
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || !("WebSocket" in window)) return;
 
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    const channel = supabase
-      .channel(`track-order-${orderId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
-        (payload) => {
-          const updated = payload.new as Record<string, unknown>;
-          setOrder((prev) => prev ? {
-            ...prev,
-            status: updated.status as string,
-            preDispatchPhotoUrl: (updated.pre_dispatch_photo_url as string) || prev.preDispatchPhotoUrl,
-          } : prev);
-        }
-      )
-      .subscribe();
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    try {
+      channel = supabase
+        .channel(`track-order-${orderId}`)
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
+          (payload) => {
+            const updated = payload.new as Record<string, unknown>;
+            setOrder((prev) => prev ? {
+              ...prev,
+              status: updated.status as string,
+              preDispatchPhotoUrl: (updated.pre_dispatch_photo_url as string) || prev.preDispatchPhotoUrl,
+            } : prev);
+          }
+        )
+        .subscribe();
+    } catch {
+      // skip realtime if not available
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        try { supabase.removeChannel(channel); } catch { /* ignore */ }
+      }
     };
   }, [orderId, token]);
 

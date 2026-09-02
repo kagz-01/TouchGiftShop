@@ -241,7 +241,34 @@ export async function POST(req: Request) {
       }
     }
 
-    return NextResponse.json({ error: msg }, { status: 500 });
+    // Generic fallback: if insert failed because of unexpected/missing
+    // columns (e.g. gift_card_code added in newer schema), try a minimal
+    // insert with only the essential fields so the order can be created.
+    try {
+      const { data: minimalOrder, error: minimalError } = await supabaseAdmin
+        .from("orders")
+        .insert({
+          user_id: user?.id ?? null,
+          total_amount: input.totalAmount,
+          status: "pending_payment",
+          sender_name: input.senderName,
+          sender_phone: normalizedSender,
+          recipient_name: input.recipientName,
+          recipient_phone: normalizedRecipient,
+          quantity: input.quantity,
+          shipping_fee: input.shippingFee,
+        })
+        .select()
+        .single();
+
+      if (minimalError || !minimalOrder) {
+        return NextResponse.json({ error: insertError?.message ?? minimalError?.message ?? msg }, { status: 500 });
+      }
+
+      return NextResponse.json({ order: minimalOrder });
+    } catch (e: any) {
+      return NextResponse.json({ error: insertError?.message ?? e?.message ?? msg }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ order, pointsDiscount });
