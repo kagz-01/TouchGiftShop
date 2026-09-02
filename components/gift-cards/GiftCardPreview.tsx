@@ -168,12 +168,12 @@ export default function GiftCardPreview({
               </div>
               <div>
                 <span>VALID</span>
-                <strong>12 MONTHS</strong>
+                <strong>3 MONTHS</strong>
               </div>
             </div>
           </div>
           <div className="gc-back-footer">
-            Redeem online at touchgiftshop.co.ke &bull; Non-refundable &bull; Use across eligible products
+            Redeem online at touchgiftshop.co.ke &bull; Non-refundable &bull; Valid for 3 months from purchase
           </div>
         </article>
       </div>

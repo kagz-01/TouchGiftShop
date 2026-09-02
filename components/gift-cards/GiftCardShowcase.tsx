@@ -17,7 +17,7 @@ const SNAP_VIEWS = [
 const FEATURES = [
   { icon: "⚡", title: "INSTANT DELIVERY", desc: "Delivered to your email in seconds" },
   { icon: "🔒", title: "SECURE & SAFE", desc: "Encrypted & secure transactions" },
-  { icon: "📅", title: "12-MONTH VALIDITY", desc: "Use anytime within 12 months" },
+  { icon: "📅", title: "3-MONTH VALIDITY", desc: "Use anytime within 3 months" },
   { icon: "🎁", title: "FLEXIBLE REDEMPTION", desc: "Redeem across all products" },
 ];
 
