@@ -1,17 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Gift } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface CatalogProduct {
   id: string;
@@ -108,6 +103,13 @@ export default function CatalogPage() {
 
   // Realtime: refresh instantly when admin changes specs/bundles/imports products
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
     const channel = supabase
       .channel("catalog-live")
       .on("broadcast", { event: "products-imported" }, () => fetchPage(1, false))

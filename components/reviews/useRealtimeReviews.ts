@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import type { ReviewWithMedia } from "@/lib/types";
-
-const supabase = createClient();
 
 /**
  * Subscribe to real-time review changes for a product.
@@ -15,6 +13,7 @@ export function useRealtimeReviews(
   initialReviews: ReviewWithMedia[] = []
 ) {
   const [reviews, setReviews] = useState<ReviewWithMedia[]>(initialReviews);
+  const channelRef = useRef<ReturnType<ReturnType<typeof createClient>["channel"]> | null>(null);
 
   const fetchReviews = useCallback(async () => {
     const res = await fetch(
@@ -29,6 +28,10 @@ export function useRealtimeReviews(
   }, [fetchReviews]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const supabase = createClient();
+
     const channel = supabase
       .channel(`reviews:${productId}`)
       .on(
@@ -68,8 +71,13 @@ export function useRealtimeReviews(
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [productId]);
 
@@ -84,6 +92,7 @@ export function useRealtimeReviewStats(productId: string) {
     averageRating: 0,
     totalReviews: 0,
   });
+  const channelRef = useRef<ReturnType<ReturnType<typeof createClient>["channel"]> | null>(null);
 
   const fetchStats = useCallback(async () => {
     const res = await fetch(`/api/reviews/stats?productId=${productId}`);
@@ -99,6 +108,10 @@ export function useRealtimeReviewStats(productId: string) {
   }, [fetchStats]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const supabase = createClient();
+
     const channel = supabase
       .channel(`review-stats:${productId}`)
       .on(
@@ -115,8 +128,13 @@ export function useRealtimeReviewStats(productId: string) {
       )
       .subscribe();
 
+    channelRef.current = channel;
+
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [productId, fetchStats]);
 

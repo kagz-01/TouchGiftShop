@@ -1,17 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import {
   Package, ShoppingCart, Truck, CheckCircle, Clock,
   AlertCircle, MapPin, TrendingUp, Users, ArrowRight,
 } from "lucide-react";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface Stats {
   totalOrders: number;
@@ -46,6 +41,13 @@ export default function AdminDashboardPage() {
       .catch(() => setLoading(false));
 
     // Real-time: listen for order changes and refresh stats
+    if (typeof window === "undefined") return;
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
     const channel = supabase
       .channel("admin-dashboard")
       .on(

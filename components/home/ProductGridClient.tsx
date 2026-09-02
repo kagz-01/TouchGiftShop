@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
@@ -10,11 +10,6 @@ import CategorySuggestions from "./CategorySuggestions";
 import { Loader2, Sparkles, X } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { MotionCard } from "@/components/motion/MotionCard";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
   const badges = getProductBadges(product, index, categorySlug);
@@ -195,6 +190,11 @@ export default function ProductGridClient({
   // Real-time: refresh when admin changes anything in the catalog
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
     let channel: ReturnType<typeof supabase.channel> | null = null;
     try {
