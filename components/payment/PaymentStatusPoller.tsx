@@ -94,6 +94,7 @@ export default function PaymentStatusPoller({
               }
             )
             .subscribe();
+          }
         }
       } catch (e) {
         // ignore realtime setup failures — we'll rely on polling

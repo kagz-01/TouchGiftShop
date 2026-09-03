@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import GiftCardPreview from "@/components/gift-cards/GiftCardPreview";
 
 type Props = {};
 
@@ -76,7 +77,8 @@ export default function GiftCardForm({}: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
       <div>
         <label className="block text-sm font-medium">Choose amount</label>
         <div className="mt-2 flex flex-wrap gap-2">
@@ -196,10 +198,22 @@ export default function GiftCardForm({}: Props) {
       </div>
 
       <div>
+        <div className="hidden md:block">
+          <GiftCardPreview
+            amount={amount}
+            recipientName={recipientName || "Recipient Name"}
+            senderName={isAnonymous ? (alias || "Anonymous") : senderName || "A friend"}
+            isAnonymous={isAnonymous}
+            alias={alias}
+            template={template as any}
+            code={undefined}
+          />
+        </div>
         <button type="submit" disabled={loading} className="w-full bg-pink-700 text-white px-4 py-2 rounded-md">
           {loading ? "Processing…" : "Continue to payment"}
         </button>
       </div>
     </form>
+    </div>
   );
 }

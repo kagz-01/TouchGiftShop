@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 export async function sendEmail(to: string, subject: string, html: string, text?: string) {
   const apiKey = process.env.SENDGRID_API_KEY;
   const from = process.env.SENDGRID_FROM_EMAIL;

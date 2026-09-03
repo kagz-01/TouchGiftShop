@@ -1,132 +1,4 @@
 import { NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabase";
-import { createPaymentOrder, normalizeKenyanPhone } from "@/lib/payment";
-
-function makeCode() {
-  const s = Math.random().toString(36).slice(2, 10).toUpperCase();
-  return `TG${s}`;
-}
-
-function makePin() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
-
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const {
-      amount,
-      recipientName,
-      recipientPhone,
-      senderName,
-      isAnonymous,
-      alias,
-      message,
-      delivery,
-      template,
-    } = body;
-
-    if (!amount || Number(amount) < 500) {
-      return NextResponse.json({ error: "Amount must be at least KSh 500" }, { status: 400 });
-    }
-
-    if (!recipientName || !recipientPhone) {
-      return NextResponse.json({ error: "recipientName and recipientPhone required" }, { status: 400 });
-    }
-
-    let normalizedPhone = recipientPhone;
-    try {
-      normalizedPhone = normalizeKenyanPhone(recipientPhone);
-    } catch (e) {
-      // keep as-is if normalization fails
-    }
-
-    const code = makeCode();
-    const pin = makePin();
-
-    // Insert a pending gift card record
-    const { data: giftCard, error: insertError } = await supabaseAdmin
-      .from("gift_cards")
-      .insert({
-        code,
-        initial_amount: amount,
-        balance: amount,
-        sender_name: isAnonymous ? null : senderName,
-        recipient_name: recipientName,
-        recipient_phone: normalizedPhone,
-        recipient_email: body.recipientEmail || null,
-        delivery_methods: Array.isArray(body.delivery) ? body.delivery : null,
-        message: message || null,
-        is_anonymous: !!isAnonymous,
-        style: { template: template || "premium" },
-        status: "pending",
-        pin,
-      })
-      .select()
-      .single();
-
-    if (insertError || !giftCard) {
-      const msg = insertError?.message ?? "Could not create gift card";
-      console.error("Gift card insert error:", insertError);
-      // Defensive fallback: some production DBs may be missing newer columns
-      // (e.g. send_date). Try a minimal insert without optional fields.
-      if (msg.includes("send_date") || msg.includes("Could not find the 'send_date'") || msg.includes("column \"send_date\"")) {
-        try {
-          const { data: fallback, error: fallbackError } = await supabaseAdmin
-            .from("gift_cards")
-            .insert({
-              code,
-              initial_amount: amount,
-              balance: amount,
-              sender_name: isAnonymous ? null : senderName,
-              recipient_name: recipientName,
-              recipient_phone: normalizedPhone,
-              message: message || null,
-              is_anonymous: !!isAnonymous,
-              status: "pending",
-              pin,
-            })
-            .select()
-            .single();
-
-          if (fallbackError || !fallback) {
-            return NextResponse.json({ error: fallbackError?.message ?? msg }, { status: 500 });
-          }
-
-          giftCard = fallback;
-        } catch (e: any) {
-          return NextResponse.json({ error: e?.message ?? msg }, { status: 500 });
-        }
-      } else {
-        return NextResponse.json({ error: msg }, { status: 500 });
-      }
-    }
-
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-
-    // Start payment via PesaPal
-    try {
-      const merchantRef = `giftcard-${giftCard.id}`;
-      const { orderTrackingId, redirectUrl } = await createPaymentOrder({
-        amount: Number(amount),
-        merchantReference: merchantRef,
-        description: `TouchGift gift card ${code}`,
-        callbackUrl: `${siteUrl}/payment-success?ref=${giftCard.id}`,
-        phoneNumber: normalizedPhone,
-        name: isAnonymous ? alias || "TouchGift" : senderName || "TouchGift",
-      });
-
-      return NextResponse.json({ redirectUrl, orderTrackingId, giftCard });
-    } catch (e: any) {
-      console.error("Payment init failed:", e);
-      return NextResponse.json({ error: e?.message || "Payment init failed" }, { status: 502 });
-    }
-  } catch (err: any) {
-    console.error("Gift-cards route error:", err);
-    return NextResponse.json({ error: err?.message ?? "Invalid request" }, { status: 400 });
-  }
-}
-import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createPaymentOrder } from "@/lib/payment";
@@ -152,7 +24,7 @@ const PurchaseInput = z.object({
     .or(z.literal("")),
   message: z.string().max(160, "Message cannot exceed 160 characters").optional(),
   isAnonymous: z.boolean().optional(),
-  sendDate: z.string().optional(), // ISO date string, e.g. "2026-09-10"
+  sendDate: z.string().optional(),
   style: z.object({
     theme: z.string(),
     font: z.string(),
@@ -172,10 +44,8 @@ export async function POST(req: Request) {
   const { amount, senderName, recipientName, recipientPhone, message, isAnonymous, sendDate, style } =
     parsed.data;
 
-  // Anonymous cards don't store sender name
   const effectiveSenderName = isAnonymous ? null : senderName ?? null;
 
-  // Generate a unique code
   let code = generateCode();
   let attempts = 0;
   while (attempts < 5) {
@@ -189,22 +59,20 @@ export async function POST(req: Request) {
     attempts++;
   }
 
-  // Expires in 12 months from the send date (or today)
+  // Expires in 3 months from the send date (or today)
   const baseDate = sendDate ? new Date(sendDate) : new Date();
   const expiresAt = new Date(baseDate);
-  expiresAt.setMonth(expiresAt.getMonth() + 12);
+  expiresAt.setMonth(expiresAt.getMonth() + 3);
 
-  // Schedule: if sendDate is in the future, card starts as "scheduled"
   const isScheduled = sendDate && new Date(sendDate) > new Date();
 
-  // Create gift card
   let { data: card, error } = await supabaseAdmin
     .from("gift_cards")
     .insert({
       code,
       initial_amount: amount,
       balance: 0,
-      sender_name: effectiveSenderName,   // null = anonymous
+      sender_name: effectiveSenderName,
       recipient_name: recipientName,
       recipient_phone: recipientPhone || null,
       message: message || null,
@@ -218,7 +86,6 @@ export async function POST(req: Request) {
 
   if (error || !card) {
     const msg = error?.message ?? "Failed to create gift card";
-    // Defensive fallback when production DB is missing optional columns (e.g., send_date)
     if (msg.includes("send_date") || msg.includes("Could not find the 'send_date'") || msg.includes("column \"send_date\"")) {
       try {
         const { data: fallbackCard, error: fallbackErr } = await supabaseAdmin
@@ -253,7 +120,6 @@ export async function POST(req: Request) {
     }
   }
 
-  // Create PesaPal payment order
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
   try {
     const payment = await createPaymentOrder({
@@ -270,7 +136,6 @@ export async function POST(req: Request) {
       orderTrackingId: payment.orderTrackingId,
     });
   } catch (payErr: any) {
-    // Payment failed — clean up the pending card
     await supabaseAdmin.from("gift_cards").delete().eq("id", card.id);
     return NextResponse.json(
       { error: payErr?.message ?? "Failed to start payment" },
@@ -303,7 +168,6 @@ export async function GET(req: Request) {
   return NextResponse.json({
     card: {
       ...card,
-      // null sender_name = anonymous
       is_anonymous: card.sender_name === null,
       is_expired: isExpired,
       is_usable: card.status === "active" && !isExpired && card.balance > 0,

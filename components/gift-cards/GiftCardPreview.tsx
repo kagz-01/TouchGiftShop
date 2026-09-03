@@ -49,6 +49,8 @@ export type GiftCardProps = {
   amount?: number;
   recipientName?: string;
   senderName?: string;
+  isAnonymous?: boolean;
+  alias?: string | null;
   message?: string;
   code?: string;
   pin?: string;
@@ -56,12 +58,17 @@ export type GiftCardProps = {
   flipped?: boolean;
   className?: string;
   onFlip?: () => void;
+  showConfetti?: boolean;
+  confettiOnFlip?: boolean;
+  bowSvg?: string | React.ReactNode;
 };
 
 export default function GiftCardPreview({
   amount = 2000,
   recipientName = "Recipient Name",
   senderName = "A friend",
+  isAnonymous = false,
+  alias = null,
   message = "A gift, their choice.",
   code = "1234 5678 9012 3456",
   pin = "123456",
@@ -69,13 +76,21 @@ export default function GiftCardPreview({
   flipped: controlledFlip,
   className = "",
   onFlip,
+  showConfetti = false,
+  confettiOnFlip = false,
+  bowSvg,
 }: GiftCardProps) {
   const [internalFlip, setInternalFlip] = useState(false);
   const flipped = controlledFlip ?? internalFlip;
+  const [confettiActive, setConfettiActive] = useState(false);
 
   const flip = () => {
     if (onFlip) onFlip();
     else setInternalFlip((v) => !v);
+    if (confettiOnFlip) {
+      setConfettiActive(true);
+      window.setTimeout(() => setConfettiActive(false), 1400);
+    }
   };
 
   const s = { ...CARD_PRESETS.default, ...style };
@@ -96,7 +111,7 @@ export default function GiftCardPreview({
         aria-label="Gift card preview. Click to flip."
       >
         {/* FRONT */}
-        <article className="gc-face gc-front" style={{ background: s.bg }}>
+        <article className={`gc-face gc-front ${bowSvg ? 'has-bow-svg' : ''}`} style={{ background: s.bg }}>
           <div className="gc-pattern" />
           <div className="gc-arc gc-arc-1" />
           <div className="gc-arc gc-arc-2" />
@@ -123,8 +138,11 @@ export default function GiftCardPreview({
             <div className="gc-recipient-line" />
           </div>
 
-          <div className="gc-sender">
-            FROM <span>{senderName}</span>
+          <div className="gc-sender" aria-hidden={isAnonymous ? "true" : "false"}>
+            <span className="gc-sender-label">FROM</span>
+            <span className={isAnonymous ? "gc-sender-value anonymous" : "gc-sender-value"}>
+              {isAnonymous ? (alias || "Anonymous") : senderName}
+            </span>
           </div>
 
           <div className="gc-gift-icon" aria-hidden="true">
@@ -137,15 +155,31 @@ export default function GiftCardPreview({
             </svg>
           </div>
 
-          <div className="gc-bow" aria-hidden="true">
-            <span className="gc-bow-loop gc-bow-left" />
-            <span className="gc-bow-loop gc-bow-right" />
-            <span className="gc-bow-knot" />
-            <span className="gc-bow-tail gc-tail-left" />
-            <span className="gc-bow-tail gc-tail-right" />
-          </div>
+          {/* Bow: either provided SVG/image or CSS fallback */}
+          {bowSvg ? (
+            typeof bowSvg === 'string' ? (
+              <img src={bowSvg} alt="bow" className="gc-bow-svg" />
+            ) : (
+              <div className="gc-bow-svg-wrapper">{bowSvg}</div>
+            )
+          ) : (
+            <div className="gc-bow" aria-hidden="true">
+              <span className="gc-bow-loop gc-bow-left" />
+              <span className="gc-bow-loop gc-bow-right" />
+              <span className="gc-bow-knot" />
+              <span className="gc-bow-tail gc-tail-left" />
+              <span className="gc-bow-tail gc-tail-right" />
+            </div>
+          )}
 
           <div className="gc-shine" />
+          <div className={`gc-confetti ${confettiActive || showConfetti ? 'active' : ''}`} aria-hidden="true">
+            <span className="c piece p1" />
+            <span className="c piece p2" />
+            <span className="c piece p3" />
+            <span className="c piece p4" />
+            <span className="c piece p5" />
+          </div>
         </article>
 
         {/* BACK */}
@@ -273,7 +307,7 @@ export default function GiftCardPreview({
           opacity: 0.75;
         }
 
-        /* Amount */
+        /* Amount (refined gold typography) */
         .gc-amount {
           display: flex;
           flex-direction: column;
@@ -285,12 +319,18 @@ export default function GiftCardPreview({
           font: 600 clamp(8px, 1vw, 11px)/1 Arial, sans-serif;
           letter-spacing: 0.16em;
           color: #f2d37a;
+          transform: translateY(-6px);
+          opacity: 0.95;
         }
         .gc-amount strong {
-          font-size: clamp(32px, 5.2vw, 64px);
-          line-height: 0.95;
-          color: #ffe49a;
-          text-shadow: 0 3px 12px rgba(0,0,0,0.22);
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(36px, 5.2vw, 72px);
+          line-height: 0.92;
+          letter-spacing: -0.02em;
+          background: linear-gradient(90deg, #ffd66a 0%, #f0b62e 45%, #ffd66a 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 4px 18px rgba(0,0,0,0.32);
         }
 
         /* Message */
@@ -342,18 +382,33 @@ export default function GiftCardPreview({
           background: linear-gradient(90deg, #d9ad42, transparent);
         }
 
-        /* Sender */
+        /* Sender (separate label + value; anonymous state disabled) */
         .gc-sender {
           position: absolute;
           left: 7%;
           bottom: 3.5%;
-          font: 400 clamp(7px, 0.8vw, 9px)/1 Arial, sans-serif;
-          letter-spacing: 0.15em;
-          opacity: 0.6;
+          display: flex;
+          gap: 8px;
+          align-items: center;
           z-index: 4;
         }
-        .gc-sender span {
+        .gc-sender-label {
+          font: 600 clamp(7px, 0.8vw, 9px)/1 Arial, sans-serif;
+          letter-spacing: 0.15em;
+          color: #f2d37a;
+          opacity: 0.95;
+        }
+        .gc-sender-value {
+          font-family: Georgia, serif;
+          font-size: clamp(12px, 1.5vw, 18px);
           color: #f5d477;
+          font-weight: 500;
+        }
+        .gc-sender-value.anonymous {
+          opacity: 0.48;
+          font-style: italic;
+          pointer-events: none;
+          user-select: none;
         }
 
         /* Gift icon */
@@ -371,58 +426,48 @@ export default function GiftCardPreview({
           height: 100%;
         }
 
-        /* Bow */
+        /* Bow (richer metallic look) */
         .gc-bow {
           position: absolute;
-          right: 2%;
-          top: -2%;
-          width: 22%;
-          height: 32%;
+          right: 4%;
+          top: -4%;
+          width: 120px;
+          height: 120px;
           z-index: 6;
+          pointer-events: none;
         }
         .gc-bow-loop {
           position: absolute;
-          top: 4%;
-          width: 44%;
-          height: 58%;
+          top: 6%;
+          width: 46%;
+          height: 60%;
           border-radius: 60% 45% 55% 40%;
-          background: linear-gradient(135deg, #f7da84, #b77b18);
-          box-shadow: inset -6px -7px 10px rgba(90,50,0,0.2);
+          background: radial-gradient(circle at 30% 25%, #fff6d8 0%, #f7da84 20%, #b77b18 70%);
+          box-shadow: inset -6px -7px 14px rgba(90,50,0,0.28), 0 6px 18px rgba(0,0,0,0.18);
         }
-        .gc-bow-left {
-          left: 0;
-          transform: rotate(25deg);
-        }
-        .gc-bow-right {
-          right: 0;
-          transform: rotate(-25deg) scaleX(-1);
-        }
+        .gc-bow-left { left: 0; transform: rotate(22deg); }
+        .gc-bow-right { right: 0; transform: rotate(-22deg) scaleX(-1); }
         .gc-bow-knot {
           position: absolute;
-          left: 40%;
-          top: 26%;
-          width: 20%;
+          left: 42%;
+          top: 30%;
+          width: 22%;
           aspect-ratio: 1;
           border-radius: 50%;
-          background: #d39a2b;
+          background: linear-gradient(135deg,#d39a2b,#f7d36d);
+          box-shadow: 0 3px 8px rgba(0,0,0,0.25);
           z-index: 2;
         }
         .gc-bow-tail {
           position: absolute;
-          top: 47%;
-          width: 19%;
-          height: 45%;
-          background: linear-gradient(135deg, #e5b950, #9d6412);
+          top: 52%;
+          width: 20%;
+          height: 46%;
+          background: linear-gradient(180deg,#e5b950,#9d6412);
           clip-path: polygon(50% 0, 100% 100%, 0 82%);
         }
-        .gc-tail-left {
-          left: 31%;
-          transform: rotate(14deg);
-        }
-        .gc-tail-right {
-          right: 29%;
-          transform: rotate(-14deg);
-        }
+        .gc-tail-left { left: 30%; transform: rotate(18deg); }
+        .gc-tail-right { right: 28%; transform: rotate(-18deg); }
 
         /* Shine */
         .gc-shine {
@@ -438,6 +483,32 @@ export default function GiftCardPreview({
           0%, 65% { transform: translateX(-110%); }
           85%, 100% { transform: translateX(110%); }
         }
+
+        /* Confetti */
+        .gc-confetti { position: absolute; inset: 0; pointer-events: none; z-index: 8; }
+        .gc-confetti .c { position: absolute; width: 8px; height: 12px; border-radius: 2px; opacity: 0; transform: translateY(0) rotate(0); }
+        .gc-confetti .p1 { left: 20%; top: 10%; background: #f94144; }
+        .gc-confetti .p2 { left: 40%; top: 8%; background: #f9c74f; }
+        .gc-confetti .p3 { left: 60%; top: 6%; background: #90be6d; }
+        .gc-confetti .p4 { left: 75%; top: 12%; background: #577590; }
+        .gc-confetti .p5 { left: 30%; top: 4%; background: #f3722c; }
+
+        .gc-confetti.active .p1 { animation: conf1 900ms ease-out 200ms forwards; }
+        .gc-confetti.active .p2 { animation: conf2 1000ms ease-out 160ms forwards; }
+        .gc-confetti.active .p3 { animation: conf3 1100ms ease-out 120ms forwards; }
+        .gc-confetti.active .p4 { animation: conf4 950ms ease-out 220ms forwards; }
+        .gc-confetti.active .p5 { animation: conf5 1050ms ease-out 180ms forwards; }
+
+        @keyframes conf1 { to { opacity: 1; transform: translateY(-200px) rotate(360deg); } }
+        @keyframes conf2 { to { opacity: 1; transform: translateY(-190px) rotate(270deg); } }
+        @keyframes conf3 { to { opacity: 1; transform: translateY(-220px) rotate(450deg); } }
+        @keyframes conf4 { to { opacity: 1; transform: translateY(-210px) rotate(300deg); } }
+        @keyframes conf5 { to { opacity: 1; transform: translateY(-205px) rotate(330deg); } }
+
+        /* Bow SVG wrapper */
+        .gc-bow-svg { position: absolute; right: 4%; top: -6%; width: 120px; height: auto; z-index: 6; pointer-events: none; }
+        .gc-bow-svg-wrapper { position: absolute; right: 4%; top: -6%; width: 120px; height: 120px; z-index: 6; pointer-events: none; }
+        .has-bow-svg .gc-bow { display: none; }
 
         /* Back face */
         .gc-back-brand {

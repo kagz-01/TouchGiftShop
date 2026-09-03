@@ -112,49 +112,6 @@ async function handleGiftCardPayment(
     console.error("Failed to deliver gift card after activation:", e);
   }
 }
-  // If gift card has a send_date in the past or null, deliver now
-  try {
-    const { data: gc } = await supabaseAdmin
-      .from("gift_cards")
-      .select("id, code, send_date, recipient_email, recipient_phone, delivery_methods, recipient_name, sender_name, message, is_anonymous")
-      .eq("merchant_ref", reference)
-      .single();
-
-    if (gc) {
-      const sendDate = gc.send_date ? new Date(gc.send_date) : null;
-      const now = new Date();
-      const shouldDeliverNow = !sendDate || sendDate <= now;
-
-      if (shouldDeliverNow) {
-        const methods = Array.isArray(gc.delivery_methods) && gc.delivery_methods.length ? gc.delivery_methods : [];
-
-        if (methods.length === 0) {
-          if (gc.recipient_email) methods.push("email");
-          if (gc.recipient_phone) methods.push("sms", "whatsapp");
-        }
-
-        if (methods.length > 0) {
-          await deliverGiftCard({
-            code: gc.code,
-            recipientEmail: gc.recipient_email,
-            recipientPhone: gc.recipient_phone,
-            recipientName: gc.recipient_name,
-            senderName: gc.sender_name,
-            message: gc.message,
-            alias: gc.is_anonymous ? gc.sender_name : null,
-            methods,
-          });
-          // mark sent_at
-          await supabaseAdmin
-            .from("gift_cards")
-            .update({ sent_at: new Date().toISOString() })
-            .eq("id", gc.id);
-        }
-      }
-    }
-  } catch (e) {
-    console.error("IPN: error delivering gift card:", e);
-  }
 
 async function handleGiftCardFailure(reference: string) {
   const cardId = reference.replace("giftcard-", "");
