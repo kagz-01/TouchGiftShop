@@ -92,7 +92,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
-      <body className="min-h-screen flex flex-col font-sans overflow-x-hidden">
+      <body className="min-h-screen flex flex-col font-sans overflow-x-hidden" style={{ background: "var(--bg-base)", color: "var(--text-primary)", transition: "background 0.4s ease, color 0.4s ease" }}>
         <ThemeProvider>
           <CartProvider>
             <ReferralCapture />
