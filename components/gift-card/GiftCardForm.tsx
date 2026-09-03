@@ -205,7 +205,6 @@ export default function GiftCardForm({}: Props) {
             senderName={isAnonymous ? (alias || "Anonymous") : senderName || "A friend"}
             isAnonymous={isAnonymous}
             alias={alias}
-            template={template as any}
             code={undefined}
           />
         </div>
