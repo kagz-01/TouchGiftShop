@@ -51,7 +51,7 @@ const ALLOWED_FIELDS = [
 
 // GET /api/admin/products?search=...&category=...&in_stock=true&status=published&limit=50&offset=0
 export async function GET(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { searchParams } = new URL(req.url);
@@ -98,7 +98,7 @@ export async function GET(req: Request) {
 
 // POST /api/admin/products — create product
 export async function POST(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -168,7 +168,7 @@ export async function POST(req: Request) {
 
 // PATCH /api/admin/products — update product (pass id in body)
 export async function PATCH(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -225,7 +225,7 @@ export async function PATCH(req: Request) {
 
 // DELETE /api/admin/products?id=...
 export async function DELETE(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

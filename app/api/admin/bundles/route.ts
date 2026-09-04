@@ -40,7 +40,7 @@ async function replaceItems(bundleId: string, items: BundleItemInput[]) {
 
 // GET /api/admin/bundles
 export async function GET() {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -59,7 +59,7 @@ export async function GET() {
 
 // POST /api/admin/bundles — create bundle (optionally with items)
 export async function POST(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
 
 // PATCH /api/admin/bundles — update bundle (pass id in body; pass items to replace)
 export async function PATCH(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -138,7 +138,7 @@ export async function PATCH(req: Request) {
 
 // DELETE /api/admin/bundles?id=...
 export async function DELETE(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

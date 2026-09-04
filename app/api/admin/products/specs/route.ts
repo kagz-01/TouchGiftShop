@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/products/specs?product_id=...
 export async function GET(_req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -30,7 +30,7 @@ export async function GET(_req: Request) {
 
 // POST /api/admin/products/specs
 export async function POST(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
 
 // DELETE /api/admin/products/specs?id=...&product_id=...
 export async function DELETE(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

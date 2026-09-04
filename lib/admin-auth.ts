@@ -1,22 +1,27 @@
 import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 /**
- * Shared admin auth check — verifies the session token against the in-memory store.
+ * Shared admin auth check — verifies the session token against Supabase.
  * Use in any route that needs admin protection.
  */
-export function requireAdmin(): boolean {
+export async function requireAdmin(): Promise<boolean> {
   const cookieStore = cookies();
   const session = cookieStore.get("tg_admin_session")?.value;
   if (!session) return false;
 
-  if (globalThis.__adminSessions) {
-    const expiresAt = globalThis.__adminSessions.get(session);
-    if (!expiresAt || expiresAt < Date.now()) return false;
-  }
+  const { data } = await supabase
+    .from("admin_sessions")
+    .select("expires_at")
+    .eq("token", session)
+    .single();
 
-  return true;
-}
+  if (!data) return false;
 
-declare global {
-  var __adminSessions: Map<string, number> | undefined;
+  return new Date(data.expires_at).getTime() > Date.now();
 }

@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-function requireAdmin() {
-  const cookieStore = cookies();
-  const session = cookieStore.get("tg_admin_session")?.value;
-  if (!session || session !== process.env.ADMIN_API_KEY) {
-    return false;
-  }
-  return true;
-}
 
 interface TemplateItemInput {
   product_id?: string | null;
@@ -44,7 +35,7 @@ async function replaceItems(templateId: string, items: TemplateItemInput[]) {
 
 // GET /api/admin/templates
 export async function GET() {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -63,7 +54,7 @@ export async function GET() {
 
 // POST /api/admin/templates
 export async function POST(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -103,7 +94,7 @@ export async function POST(req: Request) {
 
 // PATCH /api/admin/templates — update (pass id; pass items to replace)
 export async function PATCH(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -135,7 +126,7 @@ export async function PATCH(req: Request) {
 
 // DELETE /api/admin/templates?id=...
 export async function DELETE(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

@@ -77,13 +77,22 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(loginUrl);
       }
 
-      if (globalThis.__adminSessions) {
-        const expiresAt = globalThis.__adminSessions.get(adminSession);
-        if (!expiresAt || expiresAt < Date.now()) {
-          const loginUrl = new URL(ADMIN_LOGIN, request.url);
-          loginUrl.searchParams.set("from", pathname);
-          return NextResponse.redirect(loginUrl);
-        }
+      // Verify session exists in Supabase and is not expired
+      const adminClient = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        { cookies: { get: () => adminSession } }
+      );
+      const { data } = await adminClient
+        .from("admin_sessions")
+        .select("expires_at")
+        .eq("token", adminSession)
+        .single();
+
+      if (!data || new Date(data.expires_at).getTime() < Date.now()) {
+        const loginUrl = new URL(ADMIN_LOGIN, request.url);
+        loginUrl.searchParams.set("from", pathname);
+        return NextResponse.redirect(loginUrl);
       }
     }
   }

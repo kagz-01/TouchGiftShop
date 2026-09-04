@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 // POST /api/admin/auth — verify password and set session cookie
 export async function POST(req: Request) {
@@ -26,15 +32,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
-  // Generate a random session token (don't store the raw API key in the cookie)
+  // Generate a random session token
   const sessionToken = crypto.randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  // Store the session token in a simple map (in-memory, per-serverless-instance)
-  // For production with multiple instances, use Redis or Supabase session table
-  if (!globalThis.__adminSessions) {
-    globalThis.__adminSessions = new Map<string, number>();
+  // Store session in Supabase (persists across serverless instances)
+  const { error } = await supabase
+    .from("admin_sessions")
+    .insert({ token: sessionToken, expires_at: expiresAt });
+
+  if (error) {
+    return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
   }
-  globalThis.__adminSessions.set(sessionToken, Date.now() + 24 * 60 * 60 * 1000);
 
   const cookieStore = cookies();
   cookieStore.set("tg_admin_session", sessionToken, {
@@ -53,16 +62,11 @@ export async function DELETE() {
   const cookieStore = cookies();
   const session = cookieStore.get("tg_admin_session")?.value;
 
-  if (session && globalThis.__adminSessions) {
-    globalThis.__adminSessions.delete(session);
+  if (session) {
+    await supabase.from("admin_sessions").delete().eq("token", session);
   }
 
   cookieStore.delete("tg_admin_session");
 
   return NextResponse.json({ success: true });
-}
-
-// Extend globalThis for the session store
-declare global {
-  var __adminSessions: Map<string, number> | undefined;
 }

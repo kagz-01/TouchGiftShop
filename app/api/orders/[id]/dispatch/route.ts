@@ -1,28 +1,19 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
-import { cookies } from "next/headers";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function requireAdmin() {
-  const cookieStore = cookies();
-  const session = cookieStore.get("tg_admin_session")?.value;
-  if (!session || session !== process.env.ADMIN_API_KEY) {
-    return false;
-  }
-  return true;
-}
-
 // POST /api/orders/[id]/dispatch — assign rider, generate rider_token, set status to dispatched
 export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

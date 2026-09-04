@@ -9,7 +9,7 @@ const supabase = createClient(
 
 // GET /api/admin/orders?status=...&limit=50&offset=0
 export async function GET(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { searchParams } = new URL(req.url);

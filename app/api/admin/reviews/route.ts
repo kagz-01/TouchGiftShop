@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/admin-auth";
 
 // GET /api/admin/reviews?status=pending&limit=50
 export async function GET(req: Request) {
-  if (!requireAdmin()) {
+  if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
