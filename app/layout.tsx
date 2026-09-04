@@ -1,12 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
-import BottomNav from "@/components/layout/BottomNav";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
+import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import AmbientBackground from "@/components/ui/AmbientBackground";
-import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import ParallaxProvider from "@/components/ui/ParallaxProvider";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
@@ -101,14 +97,7 @@ export default function RootLayout({
             <Analytics />
             <SpeedInsights />
             <SubscriptionProvider>
-              <Header />
-              <main className="flex-1 pb-20 md:pb-0 relative z-0">
-                {children}
-              </main>
-              <Footer />
-              <BottomNav />
-              <WhatsAppFloat />
-              <GiftChatWidget />
+              <LayoutWrapper>{children}</LayoutWrapper>
             </SubscriptionProvider>
           </CartProvider>
         </ThemeProvider>
