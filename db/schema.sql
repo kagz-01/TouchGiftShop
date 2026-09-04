@@ -1423,3 +1423,12 @@ CREATE TRIGGER on_auth_user_created
 CREATE TRIGGER update_profiles_updated_at
     BEFORE UPDATE ON profiles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- ---------------------------------------------------------------------
+-- Admin Sessions — persistent auth across serverless instances
+-- ---------------------------------------------------------------------
+
+CREATE TABLE admin_sessions (
+    token TEXT PRIMARY KEY,
+    expires_at TIMESTAMPTZ NOT NULL
+);
