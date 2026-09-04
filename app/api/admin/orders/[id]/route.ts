@@ -1,19 +1,32 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-function requireAdmin() {
-  const cookieStore = cookies();
-  const session = cookieStore.get("tg_admin_session")?.value;
-  if (!session || session !== process.env.ADMIN_API_KEY) {
-    return false;
+// GET /api/admin/orders/[id] — fetch single order
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
+  if (!requireAdmin()) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  return true;
+
+  const { data: order, error } = await supabase
+    .from("orders")
+    .select("*, products(name, image_url)")
+    .eq("id", params.id)
+    .single();
+
+  if (error || !order) {
+    return NextResponse.json({ error: "Order not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ order });
 }
 
 // PATCH /api/admin/orders/[id] — update order status

@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { cookies } from "next/headers";
+import { requireAdmin } from "@/lib/admin-auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-
-function requireAdmin() {
-  const cookieStore = cookies();
-  const session = cookieStore.get("tg_admin_session")?.value;
-  if (!session || session !== process.env.ADMIN_API_KEY) {
-    return false;
-  }
-  return true;
-}
 
 // GET /api/admin/stats
 export async function GET() {

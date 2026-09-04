@@ -383,8 +383,11 @@ export default function AdminProductsPage() {
             <Link href="/admin/products" className="px-3 py-1.5 rounded-lg text-sm font-medium bg-brand/10 text-brand">
               Products
             </Link>
-            <Link href="/admin/bundles" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+              <Link href="/admin/bundles" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
                 Bundles
+              </Link>
+              <Link href="/admin/templates" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+                Templates
               </Link>
               <Link href="/admin/reviews" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
               Reviews

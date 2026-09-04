@@ -37,7 +37,7 @@ export default function AdminReviewsPage() {
   const updateStatus = async (reviewId: string, status: string) => {
     setActionLoading(reviewId);
     try {
-      await fetch(`/api/reviews/${reviewId}`, {
+      await fetch(`/api/admin/reviews/${reviewId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -54,7 +54,7 @@ export default function AdminReviewsPage() {
     if (!confirm("Delete this review permanently?")) return;
     setActionLoading(reviewId);
     try {
-      await fetch(`/api/reviews/${reviewId}`, { method: "DELETE" });
+      await fetch(`/api/admin/reviews/${reviewId}`, { method: "DELETE" });
       setReviews((prev) => prev.filter((r) => r.id !== reviewId));
     } catch {
       // silently fail

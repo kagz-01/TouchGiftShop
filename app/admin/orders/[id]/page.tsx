@@ -60,7 +60,7 @@ export default function AdminOrderDetailPage() {
 
   const fetchOrder = useCallback(async () => {
     try {
-      const res = await fetch(`/api/orders/${orderId}`);
+      const res = await fetch(`/api/admin/orders/${orderId}`);
       const data = await res.json();
       setOrder(data.order);
     } catch {
@@ -166,6 +166,9 @@ export default function AdminOrderDetailPage() {
             </Link>
             <Link href="/admin/orders" className="px-3 py-1.5 rounded-lg text-sm font-medium bg-brand/10 text-brand">
               Orders
+            </Link>
+            <Link href="/admin/templates" className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">
+              Templates
             </Link>
           </nav>
         </div>
