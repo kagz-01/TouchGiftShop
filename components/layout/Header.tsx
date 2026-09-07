@@ -11,6 +11,7 @@ import { isGuest } from "@/lib/guest";
 import { ShoppingBag, Bell, Search, X, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import VibeSelector from "@/components/ui/VibeSelector";
 import CartBadge from "@/components/layout/CartBadge";
 import SplashReveal from "@/components/ui/SplashReveal";
 
@@ -147,6 +148,9 @@ export default function Header() {
 
             {/* Divider */}
             <div className="w-px h-5 bg-surface-border mx-1" />
+
+            {/* Vibe Selector */}
+            <VibeSelector />
 
             {/* Theme Toggle */}
             <ThemeToggle />

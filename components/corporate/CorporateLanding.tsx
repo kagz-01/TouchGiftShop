@@ -135,62 +135,6 @@ function CorporateHero() {
       .catch(() => {});
   }, []);
 
-  /* ── Conveyor: items enter → travel anticlockwise → exit ── */
-  type ConveyorItem = {
-    id: number;
-    angle: number;
-    product: { name: string; image_url: string; price: number; slug: string } | null;
-    fallback: { emoji: string; color: string };
-  };
-
-  const CONVEYOR_TOTAL = 8;
-  const CONVEYOR_SPEED = 0.5;
-  const ENTRANCE_ANGLE = 30;
-  const EXIT_ANGLE = 330;
-  const FADE_ZONE = 30;
-  const [conveyorItems, setConveyorItems] = useState<ConveyorItem[]>([]);
-  const conveyorRef = useRef<{ items: ConveyorItem[]; nextId: number; spawnAccum: number }>({
-    items: [],
-    nextId: 0,
-    spawnAccum: 0,
-  });
-
-  useEffect(() => {
-    const fallbackPool = ORBIT_FALLBACK_ITEMS;
-    let raf: number;
-    let lastTime = performance.now();
-
-    const tick = (now: number) => {
-      const dt = Math.min(now - lastTime, 50);
-      lastTime = now;
-      const ctx = conveyorRef.current;
-
-      ctx.spawnAccum += dt;
-      if (ctx.spawnAccum > 1500 && ctx.items.length < CONVEYOR_TOTAL) {
-        ctx.spawnAccum = 0;
-        const prods = orbitProducts;
-        const pool = prods.length > 0 ? prods : null;
-        const fb = fallbackPool[ctx.nextId % fallbackPool.length];
-        ctx.items.push({
-          id: ctx.nextId++,
-          angle: ENTRANCE_ANGLE,
-          product: pool ? pool[ctx.nextId % pool.length] : null,
-          fallback: fb,
-        });
-      }
-
-      ctx.items = ctx.items.filter((item) => {
-        item.angle += CONVEYOR_SPEED * dt;
-        return item.angle <= EXIT_ANGLE + 30;
-      });
-
-      setConveyorItems([...ctx.items]);
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [orbitProducts]);
 
   return (
     <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
@@ -230,23 +174,22 @@ function CorporateHero() {
 
             {/* Headline */}
             <h1 className={`font-display font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
+              style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 4.5rem)" }}
             >
               <span className="relative inline-block py-1">
-                Impress your team.
+                Turn Milestones into Moments That Build
                 <br />
                 <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                  Delight your clients.
+                  Lasting Loyalty.
                 </span>
               </span>
             </h1>
 
             {/* Subheadline */}
             <p className={`text-white/75 max-w-xl mb-8 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
+              style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.15rem)" }}
             >
-              Curated gift hampers for employee appreciation, client thank-yous,
-              and event giveaways. Bulk orders with same-day Nairobi delivery.
+              Effortlessly recognize your team and appreciate your clients with curated hampers. We handle the logistics—from single sends to bulk CSV uploads.
             </p>
 
             {/* CTAs */}
@@ -277,12 +220,16 @@ function CorporateHero() {
             {/* Quick pills */}
             <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Building2 className="w-3.5 h-3.5 text-gold" />
-                Welcome Kits
+                <Users className="w-3.5 h-3.5 text-gold" />
+                Employee Recognition
+              </Link>
+              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
+                <Hand className="w-3.5 h-3.5 text-brand-light" />
+                Client Appreciation
               </Link>
               <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
                 <PartyPopper className="w-3.5 h-3.5 text-coral" />
-                Event Gifts
+                Team Milestones
               </Link>
               <Link href="/corporate/templates" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
                 <Palette className="w-3.5 h-3.5 text-brand-light" />
@@ -303,56 +250,10 @@ function CorporateHero() {
             </div>
           </div>
 
-          {/* Right: Conveyor orbit */}
+          {/* Right: Background Auto-scroller (Placeholder for future feature) */}
           <div className={`hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
-            <div className="relative w-[420px] h-[420px]">
-              {/* Orbit ring */}
-              <div className="absolute inset-[40px] rounded-full border border-white/[0.08]" />
-
-              {/* Conveyor items */}
-              {conveyorItems.map((item) => {
-                const rad = (item.angle * Math.PI) / 180;
-                const radius = 170;
-                const cx = 210 + Math.cos(rad) * radius;
-                const cy = 210 + Math.sin(rad) * radius;
-
-                let opacity = 1;
-                const distFromEntrance = item.angle - ENTRANCE_ANGLE;
-                const distToExit = EXIT_ANGLE - item.angle;
-                if (distFromEntrance < FADE_ZONE) opacity = distFromEntrance / FADE_ZONE;
-                else if (distToExit < FADE_ZONE) opacity = distToExit / FADE_ZONE;
-
-                const scale = 0.6 + 0.4 * Math.min(opacity, 1);
-
-                return (
-                  <div
-                    key={item.id}
-                    className="absolute z-10"
-                    style={{
-                      left: cx - 45,
-                      top: cy - 45,
-                      opacity,
-                      transform: `scale(${scale})`,
-                    }}
-                  >
-                    {item.product && item.product.image_url ? (
-                      <div className="w-[90px] h-[90px] rounded-full overflow-hidden shadow-[0_6px_30px_rgba(0,0,0,0.5)] border-2 border-white/25 bg-white/10 relative">
-                        <Image
-                          src={item.product.image_url}
-                          alt={item.product.name}
-                          fill
-                          className="object-cover"
-                          sizes="90px"
-                        />
-                      </div>
-                    ) : (
-                      <div className={`w-[90px] h-[90px] rounded-full bg-gradient-to-br ${item.fallback.color} flex items-center justify-center text-3xl shadow-[0_6px_30px_rgba(0,0,0,0.5)] border-2 border-white/25`}>
-                        {item.fallback.emoji}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+            <div className="relative w-[420px] h-[420px] flex items-center justify-center border border-white/5 rounded-3xl bg-white/5 backdrop-blur-sm">
+              <span className="text-white/30 text-sm font-medium tracking-widest uppercase">Auto-scroller coming soon</span>
             </div>
           </div>
         </div>
@@ -462,8 +363,8 @@ function CorporateSolution() {
     },
     {
       icon: <Upload className="w-6 h-6 text-brand-light" />,
-      title: "CSV Upload",
-      desc: "Upload a spreadsheet of recipients — names, phones, notes. We handle the rest.",
+      title: "Frictionless Bulk Ordering",
+      desc: "Upload a CSV with 10 or 1,000 recipients. We handle the logistics, addresses, and tracking transparently.",
       span: "md:col-span-1",
       href: "/corporate/build",
     },

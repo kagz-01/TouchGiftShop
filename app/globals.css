@@ -69,6 +69,180 @@
 }
 
 /* ========================
+   MOOD PALETTES
+   Overlays that override brand accent tokens.
+   Applied via data-mood attribute on <html>.
+   Works on top of Light OR Dark mode.
+   ======================== */
+
+/* 💕 ROMANTIC — deep rose, blush, soft crimson */
+[data-mood="romantic"] {
+  --color-brand:       #C2185B;
+  --color-brand-light: #E91E63;
+  --color-brand-dark:  #880E4F;
+  --color-gold:        #E57373;
+  --color-gold-light:  #EF9A9A;
+  --card-border:       rgba(233, 30, 99, 0.18);
+  --card-hover-shadow: 0 20px 60px rgba(194, 24, 91, 0.22), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(233, 30, 99, 0.35);
+  --mood-gradient:     linear-gradient(135deg, #C2185B, #E91E63, #FF4081);
+  --mood-bg-tint:      rgba(255, 20, 100, 0.04);
+  --mood-particle:     #FF80AB;
+}
+[data-mood="romantic"] [data-theme="light"],
+[data-mood="romantic"]:not([data-theme="dark"]) {
+  --bg-base:  #FFF0F5;
+  --bg-section-alt: #FDE8F2;
+  --heading-color: #880E4F;
+  --accent-color:  #C2185B;
+}
+[data-mood="romantic"] [data-theme="dark"],
+[data-mood="romantic"][data-theme="dark"] {
+  --bg-base: #120008;
+  --card-bg: rgba(80, 5, 40, 0.08);
+}
+
+/* 🙏 APOLOGY — calming teal/ocean, reassuring */
+[data-mood="apology"] {
+  --color-brand:       #00796B;
+  --color-brand-light: #00897B;
+  --color-brand-dark:  #004D40;
+  --color-gold:        #4DB6AC;
+  --color-gold-light:  #80CBC4;
+  --card-border:       rgba(0, 121, 107, 0.18);
+  --card-hover-shadow: 0 20px 60px rgba(0, 121, 107, 0.22), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(0, 137, 123, 0.35);
+  --mood-gradient:     linear-gradient(135deg, #004D40, #00796B, #4DB6AC);
+  --mood-bg-tint:      rgba(0, 150, 136, 0.04);
+  --mood-particle:     #80CBC4;
+}
+[data-mood="apology"] [data-theme="light"],
+[data-mood="apology"]:not([data-theme="dark"]) {
+  --bg-base:  #E0F2F1;
+  --bg-section-alt: #E8F5E9;
+  --heading-color: #004D40;
+  --accent-color:  #00796B;
+}
+[data-mood="apology"][data-theme="dark"] {
+  --bg-base: #001412;
+  --card-bg: rgba(0, 60, 55, 0.08);
+}
+
+/* 🎉 CELEBRATORY — vibrant gold, electric amber, energetic */
+[data-mood="celebratory"] {
+  --color-brand:       #F57F17;
+  --color-brand-light: #FB8C00;
+  --color-brand-dark:  #E65100;
+  --color-gold:        #FFD600;
+  --color-gold-light:  #FFEA00;
+  --card-border:       rgba(245, 127, 23, 0.20);
+  --card-hover-shadow: 0 20px 60px rgba(245, 127, 23, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(255, 214, 0, 0.40);
+  --mood-gradient:     linear-gradient(135deg, #E65100, #F57F17, #FFD600);
+  --mood-bg-tint:      rgba(255, 200, 0, 0.04);
+  --mood-particle:     #FFD600;
+}
+[data-mood="celebratory"] [data-theme="light"],
+[data-mood="celebratory"]:not([data-theme="dark"]) {
+  --bg-base:  #FFFDE7;
+  --bg-section-alt: #FFF9C4;
+  --heading-color: #E65100;
+  --accent-color:  #F57F17;
+}
+[data-mood="celebratory"][data-theme="dark"] {
+  --bg-base: #0E0900;
+  --card-bg: rgba(80, 50, 0, 0.08);
+}
+
+/* 🏢 CORPORATE — navy, slate, precise and composed */
+[data-mood="corporate"] {
+  --color-brand:       #0F2027; /* Deep Slate/Midnight */
+  --color-brand-light: #203A43;
+  --color-brand-dark:  #081216;
+  --color-gold:        #D4AF37; /* True Gold for contrast */
+  --color-gold-light:  #F3E5AB;
+  --card-border:       rgba(32, 58, 67, 0.3);
+  --card-hover-shadow: 0 20px 60px rgba(32, 58, 67, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(212, 175, 55, 0.25); /* Gold glow */
+  --mood-gradient:     linear-gradient(135deg, #0F2027, #203A43, #2C5364);
+  --mood-bg-tint:      rgba(32, 58, 67, 0.05);
+  --mood-particle:     #D4AF37;
+}
+[data-mood="corporate"] [data-theme="light"],
+[data-mood="corporate"]:not([data-theme="dark"]) {
+  --bg-base:  #F8F9FA;
+  --bg-section-alt: #EDF2F7;
+  --heading-color: #0F2027;
+  --accent-color:  #D4AF37;
+}
+[data-mood="corporate"][data-theme="dark"] {
+  --bg-base: #0A0F1A; /* Deep Slate */
+  --card-bg: rgba(32, 58, 67, 0.15);
+}
+
+/* Mood-aware hover glows (overrides card-theme hover) */
+[data-mood] .card-theme:hover,
+[data-mood] .bento-card-theme:hover {
+  border-color: var(--mood-glow);
+  box-shadow:
+    0 20px 60px -10px var(--mood-glow),
+    0 0 0 1px var(--mood-glow),
+    0 8px 30px var(--mood-bg-tint, transparent);
+}
+
+/* ✏️ CUSTOM mood — inherits --mood-gradient and --mood-glow set inline by JS */
+[data-mood="custom"] {
+  /* Gradient + glow are injected directly on html element by MoodContext */
+  --card-border:       var(--mood-glow, rgba(155, 27, 90, 0.18));
+  --card-hover-shadow: 0 20px 60px var(--mood-glow, rgba(155, 27, 90, 0.22));
+}
+
+/* ── GLOBAL MOOD ACCENT LAYER ──────────────────────────────────────────────
+   When any mood is active, primary CTA buttons, focus rings, and the
+   brand text accent automatically shift to the mood palette.
+   Uses low-specificity so per-component styles can still override.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Mood-tinted text accent */
+[data-mood] .text-brand,
+[data-mood] .text-gold {
+  background: var(--mood-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mood background tint on section backgrounds */
+[data-mood] .section-hero {
+  background: radial-gradient(
+    ellipse at top,
+    color-mix(in srgb, var(--color-brand-dark, #1a0a10) 80%, transparent) 0%,
+    #121217D9 55%,
+    #0B0B0ED9 100%
+  );
+}
+
+/* Mood transitions — smooth slide between vibes */
+html {
+  transition:
+    background-color 0.5s ease,
+    color 0.5s ease;
+}
+
+/* Presence toast slide-in animation */
+@keyframes slide-in-from-bottom-4 {
+  from { transform: translateY(1rem); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.animate-in.slide-in-from-bottom-4 {
+  animation: slide-in-from-bottom-4 0.4s ease-out forwards;
+}
+.animate-in.fade-in {
+  animation: slide-in-from-bottom-4 0.4s ease-out forwards;
+}
+
+
+/* ========================
    SECTION GRADIENT SYSTEM
    8 pairs — each class auto-switches light/dark
    Use these on any <section>, <div>, <main> wrapper
@@ -169,8 +343,8 @@
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
   color: var(--text-primary);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -202,63 +376,63 @@
 [data-theme="light"] .card-theme,
 :root:not([data-theme="dark"]) .card-theme {
   --card-glow: rgba(212, 168, 83, 0.15);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(212, 168, 83, 0.12);
 }
 [data-theme="light"] .card-theme:hover,
 :root:not([data-theme="dark"]) .card-theme:hover {
-  --card-glow: rgba(212, 168, 83, 0.25);
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(212, 168, 83, 0.35);
+  --card-glow: rgba(147, 51, 234, 0.35);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(147, 51, 234, 0.5);
   box-shadow:
-    0 16px 50px rgba(212, 168, 83, 0.15),
-    0 0 0 1px rgba(212, 168, 83, 0.30),
-    0 8px 28px -4px rgba(212, 168, 83, 0.20);
+    0 20px 60px -10px rgba(147, 51, 234, 0.25),
+    0 0 0 1px rgba(147, 51, 234, 0.4),
+    0 8px 30px rgba(147, 51, 234, 0.15);
 }
 
 /* Dark mode: blush-rose glow (opposite to dark bg) */
 [data-theme="dark"] .card-theme {
   --card-glow: rgba(255, 130, 180, 0.18);
-  background: rgba(30, 10, 40, 0.15); /* Translucent glass */
+  background: rgba(30, 10, 40, 0.05); /* Translucent glass */
   border-color: rgba(255, 150, 200, 0.15);
 }
 [data-theme="dark"] .card-theme:hover {
-  --card-glow: rgba(255, 180, 220, 0.30);
-  background: rgba(45, 15, 65, 0.25);
-  border-color: rgba(255, 180, 220, 0.30);
+  --card-glow: rgba(255, 215, 0, 0.35);
+  background: rgba(45, 15, 65, 0.2);
+  border-color: rgba(255, 215, 0, 0.4);
   box-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.50),
-    0 0 0 1px rgba(255, 180, 220, 0.25),
-    0 10px 40px -4px rgba(255, 130, 180, 0.25);
+    0 24px 80px -10px rgba(255, 215, 0, 0.20),
+    0 0 0 1px rgba(255, 215, 0, 0.4),
+    0 10px 40px rgba(255, 215, 0, 0.15);
 }
 
 /* Bento card — adapts its transparent bg to whichever section it sits in */
 .bento-card-theme {
   position: relative;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
   overflow: hidden;
 }
 [data-theme="light"] .bento-card-theme,
 :root:not([data-theme="dark"]) .bento-card-theme {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.05);
   border-color: rgba(212, 168, 83, 0.12);
 }
 [data-theme="light"] .bento-card-theme:hover,
 :root:not([data-theme="dark"]) .bento-card-theme:hover {
-  background: rgba(255, 255, 255, 0.90);
-  border-color: rgba(212, 168, 83, 0.35);
-  box-shadow: 0 16px 50px rgba(212, 168, 83, 0.12), 0 0 0 1px rgba(212, 168, 83, 0.25);
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(147, 51, 234, 0.5);
+  box-shadow: 0 20px 60px -10px rgba(147, 51, 234, 0.25), 0 0 0 1px rgba(147, 51, 234, 0.4);
 }
 [data-theme="dark"] .bento-card-theme {
   background: rgba(20, 0, 30, 0.1);
   border-color: rgba(255, 150, 200, 0.22);
 }
 [data-theme="dark"] .bento-card-theme:hover {
-  background: rgba(30, 0, 45, 0.2);
-  border-color: rgba(255, 180, 220, 0.38);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 180, 220, 0.32);
+  background: rgba(30, 0, 45, 0.25);
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 24px 80px -10px rgba(255, 215, 0, 0.20), 0 0 0 1px rgba(255, 215, 0, 0.4);
 }
 
 /* ========================

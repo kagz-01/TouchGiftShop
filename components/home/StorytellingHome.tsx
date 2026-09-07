@@ -10,6 +10,7 @@ import {
   Camera
 } from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
+import { useMood } from "@/context/MoodContext";
 
 /* ─── Scroll-triggered animation hook ─── */
 function useInView(threshold = 0.2) {
@@ -158,11 +159,19 @@ function highlightDeliveryCopy(text: string) {
    ══════════════════════════════════════════════════════════ */
 export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
-  const deliveryMessage = useTypewriter([
-    "TouchGift makes gifting feel thoughtful.",
-    "Order now for fast same-day gift delivery in Nairobi.",
-    "Wrapped beautifully. Delivered with care.",
-  ]);
+  const { moodMeta } = useMood();
+
+  const moodTypewriterMessages: Record<string, string[]> = {
+    default:      ["TouchGift makes gifting feel thoughtful.", "Order now for fast same-day gift delivery in Nairobi.", "Wrapped beautifully. Delivered with care."],
+    romantic:     ["Love, wrapped and delivered today. 💕", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
+    apology:      ["Same-day delivery across Nairobi. 🙏", "The fastest path to forgiveness.", "Heartfelt, delivered in hours — not days."],
+    celebratory:  ["Let the celebrations begin! 🎉", "Pop. Confetti. Wow. Same-day delivery.", "Bold gifts that match the moment."],
+    corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
+  };
+
+  const deliveryMessage = useTypewriter(
+    moodTypewriterMessages[moodMeta.id] ?? moodTypewriterMessages.default
+  );
 
   useEffect(() => { setLoaded(true); }, []);
 
@@ -221,40 +230,65 @@ export function HeroCinematic() {
               style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
             >
               <span className="relative inline-block py-1 dark:text-shadow-glow">
-                Elevate the art
-                <br />
-                <span className="relative inline-block">
-                  <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
-                    of gifting
+                {moodMeta.id === "default" ? (
+                  <>
+                    Elevate the art
+                    <br />
+                    <span className="relative inline-block">
+                      <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
+                        of gifting
+                      </span>
+                      <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                        <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
+                        <defs>
+                          <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
+                            <stop offset="0%" stopColor="#D4A853" />
+                            <stop offset="100%" stopColor="#E8C97A" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                    </span>
+                  </>
+                ) : (
+                  <span
+                    className="bg-clip-text text-transparent"
+                    style={{ backgroundImage: "var(--mood-gradient)" }}
+                  >
+                    {moodMeta.heroTitle}
                   </span>
-                  <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
-                    <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
-                    <defs>
-                      <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
-                        <stop offset="0%" stopColor="#D4A853" />
-                        <stop offset="100%" stopColor="#E8C97A" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                </span>
+                )}
               </span>
             </h1>
 
             {/* Subheadline */}
-            <p className={` text-white/75 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <p className={`text-white/75 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
             >
-              Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment.
+              {moodMeta.id === "default"
+                ? "Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment."
+                : moodMeta.heroSub
+              }
             </p>
+
+            {/* Urgency badge (Apology mood) */}
+            {moodMeta.urgencyBadge && (
+              <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full text-xs font-bold text-white border border-white/20 backdrop-blur-sm animate-pulse-soft"
+                style={{ background: "var(--mood-gradient)", boxShadow: "0 4px 20px var(--mood-glow)" }}
+              >
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                {moodMeta.urgencyBadge}
+              </div>
+            )}
 
             {/* CTA */}
             <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
               <Link
-                href="/shop"
-                className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1 w-full sm:w-auto text-center"
+                href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
+                className="group relative px-8 py-4 font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center text-brand-deep"
+                style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", boxShadow: "0 8px 24px var(--mood-glow, rgba(212,168,83,0.3))" }}
               >
                 <span className="relative z-10 flex items-center justify-center gap-2">
-                  Shop All Gifts
+                  {moodMeta.cta}
                   <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>

@@ -5,6 +5,7 @@ import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import AmbientBackground from "@/components/ui/AmbientBackground";
 import ParallaxProvider from "@/components/ui/ParallaxProvider";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { MoodProvider } from "@/context/MoodContext";
 import { SubscriptionProvider } from "@/components/reminders/SubscriptionProvider";
 import { CartProvider } from "@/lib/cart";
 import dynamic from "next/dynamic";
@@ -90,6 +91,7 @@ export default function RootLayout({
     <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
       <body className="min-h-screen flex flex-col font-sans overflow-x-hidden" style={{ background: "var(--bg-base)", color: "var(--text-primary)", transition: "background 0.4s ease, color 0.4s ease" }}>
         <ThemeProvider>
+          <MoodProvider>
           <CartProvider>
             <ReferralCapture />
             <ParallaxProvider />
@@ -100,6 +102,7 @@ export default function RootLayout({
               <LayoutWrapper>{children}</LayoutWrapper>
             </SubscriptionProvider>
           </CartProvider>
+          </MoodProvider>
         </ThemeProvider>
       </body>
     </html>
