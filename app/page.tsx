@@ -19,6 +19,7 @@ import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
+import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
 
 async function getByCategory(categorySlug: string, limit = 10): Promise<Product[]> {
   const supabase = createClient(
@@ -82,6 +83,10 @@ export default async function HomePage() {
 
   return (
     <div className="overflow-x-hidden">
+      {/* Catch Supabase auth errors that land on the homepage (e.g. expired magic links) */}
+      <Suspense fallback={null}>
+        <AuthErrorRedirect />
+      </Suspense>
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1: The Emotional Hook

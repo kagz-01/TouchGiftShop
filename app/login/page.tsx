@@ -25,9 +25,12 @@ export default function LoginPage() {
   const initialMode = searchParams.get("mode") === "signup" ? "signup" : "login";
   const [authMode, setAuthMode] = useState<"login" | "signup">(initialMode);
   const [noAccount, setNoAccount] = useState(false);
+  const errorParam = searchParams.get("error");
   const [error, setError] = useState<string>(
-    searchParams.get("error") === "auth_failed"
+    errorParam === "auth_failed"
       ? "Sign-in was cancelled or failed. Please try again."
+      : errorParam === "magic_link_expired"
+      ? "⏱ That magic link has expired or was already used. Please request a new one below."
       : ""
   );
 
@@ -117,7 +120,8 @@ export default function LoginPage() {
     }
   }
 
-  function handleGuest() {
+  async function handleGuest() {
+    await supabase.auth.signOut();
     setGuest();
     router.replace(next === "/account" ? "/" : next);
   }
@@ -127,26 +131,38 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: authMode === "signup",
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    setLoading(false);
-    if (error) {
-      let msg = error.message;
-      let missing = false;
-      if (msg.toLowerCase().includes("signups not allowed") || msg.toLowerCase().includes("user not found") || msg.toLowerCase().includes("not allowed to sign up") || msg.toLowerCase().includes("user already")) {
-        msg = "No account found for this email yet.";
-        missing = true;
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: authMode === "signup",
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        },
+      });
+      setLoading(false);
+      if (error) {
+        let msg = error.message;
+        // Normalise common Supabase errors into friendly copy
+        const lower = msg?.toLowerCase() ?? "";
+        let missing = false;
+        if (lower.includes("signups not allowed") || lower.includes("user not found") || lower.includes("not allowed to sign up") || lower.includes("user already")) {
+          msg = "No account found for this email yet.";
+          missing = true;
+        } else if (lower.includes("email rate limit") || lower.includes("rate limit") || lower.includes("too many")) {
+          msg = "Too many requests — please wait a few minutes before trying again.";
+        } else if (lower.includes("timeout") || lower.includes("upstream") || !msg) {
+          msg = "Email sending failed. The email provider may not be configured — please contact support or try Google sign-in.";
+        }
+        setError(msg);
+        setNoAccount(missing);
+        return;
       }
-      setError(msg);
-      setNoAccount(missing);
-      return;
+      setMethod("email-sent");
+    } catch (err: unknown) {
+      setLoading(false);
+      setError("Something went wrong sending the magic link. Please try again or use Google sign-in.");
+      console.error("Magic link error:", err);
     }
-    setMethod("email-sent");
   }
 
   // ─── Google OAuth ──────────────────────────────────────────────
@@ -161,9 +177,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen [&_:not([data-theme=dark])]:bg-section-theme-a [data-theme=dark]:bg-section-theme-f flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen [&_:not([data-theme=dark])]:bg-section-theme-a [data-theme=dark]:bg-section-theme-f flex flex-col items-center justify-center px-4 py-12 relative">
+      {/* Absolute Back Button */}
+      <Link 
+        href="/"
+        className="absolute top-6 left-6 md:top-10 md:left-10 flex items-center gap-2 text-sm font-medium text-theme-body hover:text-brand transition-colors bg-surface backdrop-blur-md px-4 py-2.5 rounded-full border border-surface-border shadow-sm hover:shadow-md z-50"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back home
+      </Link>
+      
       {/* Card */}
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md z-10">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <Link href="/">
@@ -176,10 +201,10 @@ export default function LoginPage() {
               priority
             />
           </Link>
-          <h1 className="font-display text-2xl font-bold text-brand-deep mt-4">
+          <h1 className="font-display text-2xl font-bold text-theme-heading mt-4">
             {authMode === "signup" ? "Create an account" : "Welcome back"}
           </h1>
-          <p className="text-sm text-brand-muted mt-1">
+          <p className="text-sm text-theme-body mt-1">
             {method === "choose" && (authMode === "signup" ? "Sign up to start gifting" : "Sign in to your account")}
             {method === "phone" && "Enter your phone number"}
             {method === "phone-otp" && `Code sent to ${phone}`}
@@ -189,7 +214,7 @@ export default function LoginPage() {
         </div>
 
         {/* Glass card */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-card-hover border border-surface-border p-8 space-y-5">
+        <div className="card-theme backdrop-blur-sm rounded-3xl p-8 space-y-5">
 
           {/* ── Method chooser ── */}
           {method === "choose" && (
@@ -200,7 +225,7 @@ export default function LoginPage() {
                 disabled={loading}
                 className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 border-surface-border hover:border-brand/30 hover:bg-brand/[0.02] transition-all duration-200 group disabled:opacity-50"
               >
-                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-gray-50 group-hover:bg-white border border-surface-border transition-colors">
+                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-surface-border/20 group-hover:bg-white border border-surface-border transition-colors">
                   {/* Google G SVG */}
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -209,7 +234,7 @@ export default function LoginPage() {
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
                 </span>
-                <span className="text-sm font-semibold text-brand-deep group-hover:text-brand transition-colors">
+                <span className="text-sm font-semibold text-theme-heading group-hover:text-brand transition-colors">
                   Continue with Google
                 </span>
               </button>
@@ -219,10 +244,10 @@ export default function LoginPage() {
                 onClick={() => setMethod("phone")}
                 className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 border-surface-border hover:border-brand/30 hover:bg-brand/[0.02] transition-all duration-200 group"
               >
-                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-green-50 group-hover:bg-green-100 transition-colors border border-green-100">
+                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-green-500/10 group-hover:bg-green-100 transition-colors border border-green-100">
                   <Smartphone className="w-5 h-5 text-green-600" />
                 </span>
-                <span className="text-sm font-semibold text-brand-deep group-hover:text-brand transition-colors">
+                <span className="text-sm font-semibold text-theme-heading group-hover:text-brand transition-colors">
                   Continue with Phone number
                 </span>
               </button>
@@ -232,29 +257,24 @@ export default function LoginPage() {
                 onClick={() => setMethod("email")}
                 className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl border-2 border-surface-border hover:border-brand/30 hover:bg-brand/[0.02] transition-all duration-200 group"
               >
-                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-50 group-hover:bg-blue-100 transition-colors border border-blue-100">
+                <span className="w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full bg-blue-500/10 group-hover:bg-blue-100 transition-colors border border-blue-100">
                   <Mail className="w-5 h-5 text-blue-600" />
                 </span>
-                <span className="text-sm font-semibold text-brand-deep group-hover:text-brand transition-colors">
+                <span className="text-sm font-semibold text-theme-heading group-hover:text-brand transition-colors">
                   Continue with Email
                 </span>
               </button>
 
               {/* Divider */}
-              <div className="relative py-1">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-surface-border" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-3 text-xs text-brand-muted uppercase tracking-wider font-semibold">
-                    OR
-                  </span>
-                </div>
+              <div className="flex items-center gap-4 py-1">
+                <div className="flex-1 border-t border-surface-border"></div>
+                <span className="text-xs text-theme-body uppercase tracking-wider font-semibold">OR</span>
+                <div className="flex-1 border-t border-surface-border"></div>
               </div>
 
               {/* Mode Toggle */}
               <div className="text-center pt-2">
-                <p className="text-sm text-brand-muted">
+                <p className="text-sm text-theme-body">
                   {authMode === "signup" ? "Already have an account?" : "New to TouchGift?"}{" "}
                   <button
                     type="button"
@@ -269,12 +289,12 @@ export default function LoginPage() {
               {/* Guest */}
               <button
                 onClick={handleGuest}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors border border-dashed border-surface-border"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium text-theme-body hover:text-brand hover:bg-brand/5 transition-colors border border-dashed border-surface-border"
               >
                 <UserRound className="w-4 h-4" />
                 Continue as guest
               </button>
-              <p className="text-[11px] text-brand-muted text-center -mt-2">
+              <p className="text-[11px] text-theme-body text-center -mt-2">
                 Browse &amp; order without an account — no points or saved history.
               </p>
             </div>
@@ -288,11 +308,11 @@ export default function LoginPage() {
                 actionLabel={noAccount ? "Create account with this number" : undefined}
                 onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
-                <label className="text-sm font-medium text-brand-deep block mb-1.5">
+                <label className="text-sm font-medium text-theme-heading block mb-1.5">
                   Phone number
                 </label>
                 <div className="flex items-center border-2 border-surface-border focus-within:border-brand rounded-xl overflow-hidden transition-colors">
-                  <span className="px-3 py-3 bg-gray-50 border-r border-surface-border text-sm font-medium text-brand-muted flex-shrink-0">
+                  <span className="px-3 py-3 bg-surface-border/20 border-r border-surface-border text-sm font-medium text-theme-body flex-shrink-0">
                     🇰🇪 +254
                   </span>
                   <input
@@ -302,7 +322,7 @@ export default function LoginPage() {
                     placeholder="7XX XXX XXX"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="flex-1 px-4 py-3 text-sm bg-white focus:outline-none"
+                    className="flex-1 px-4 py-3 text-sm bg-transparent text-theme-heading placeholder:text-theme-body/50 focus:outline-none"
                   />
                 </div>
               </div>
@@ -321,7 +341,7 @@ export default function LoginPage() {
                   type="button"
                   disabled={loading}
                   onClick={(e) => handleSendOtp(e, "sms")}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-surface-background text-brand-deep border border-surface-border py-3 text-sm font-semibold hover:bg-gray-50 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-surface-background text-theme-heading border border-surface-border py-3 text-sm font-semibold hover:bg-surface-border/20 transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading && activeChannel === "sms" ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                   Send code via SMS
@@ -338,7 +358,7 @@ export default function LoginPage() {
                 actionLabel={noAccount ? "Create account with this number" : undefined}
                 onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
-                <label className="text-sm font-medium text-brand-deep block mb-1.5">
+                <label className="text-sm font-medium text-theme-heading block mb-1.5">
                   6-digit code
                 </label>
                 <input
@@ -351,9 +371,9 @@ export default function LoginPage() {
                   placeholder="• • • • • •"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                  className="w-full border-2 border-surface-border focus:border-brand rounded-xl px-4 py-3 text-center text-2xl tracking-[0.5em] font-mono focus:outline-none transition-colors"
+                  className="w-full border-2 border-surface-border focus:border-brand rounded-xl px-4 py-3 text-center text-2xl tracking-[0.5em] font-mono focus:outline-none transition-colors bg-transparent text-theme-heading placeholder:text-theme-body/50"
                 />
-                <p className="text-xs text-brand-muted mt-2 text-center">
+                <p className="text-xs text-theme-body mt-2 text-center">
                   Didn&apos;t get it?{" "}
                   <button
                     type="button"
@@ -376,7 +396,7 @@ export default function LoginPage() {
                 actionLabel={noAccount ? "Create account with this email" : undefined}
                 onAction={noAccount ? handleCreateWithThisContact : undefined} />}
               <div>
-                <label className="text-sm font-medium text-brand-deep block mb-1.5">
+                <label className="text-sm font-medium text-theme-heading block mb-1.5">
                   Email address
                 </label>
                 <input
@@ -386,11 +406,11 @@ export default function LoginPage() {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border-2 border-surface-border focus:border-brand rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors"
+                  className="w-full border-2 border-surface-border focus:border-brand rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors bg-transparent text-theme-heading placeholder:text-theme-body/50"
                 />
               </div>
               <SubmitButton loading={loading} label="Send magic link" />
-              <p className="text-xs text-brand-muted text-center">
+              <p className="text-xs text-theme-body text-center">
                 We&apos;ll email you a link — no password needed.
               </p>
               <div className="text-center">
@@ -408,9 +428,9 @@ export default function LoginPage() {
                 <CheckCircle2 className="w-14 h-14 text-green-500" />
               </div>
               <div>
-                <p className="font-semibold text-brand-deep">Check your inbox!</p>
-                <p className="text-sm text-brand-muted mt-1">
-                  We sent a magic link to <span className="font-medium text-brand-deep">{email}</span>.
+                <p className="font-semibold text-theme-heading">Check your inbox!</p>
+                <p className="text-sm text-theme-body mt-1">
+                  We sent a magic link to <span className="font-medium text-theme-heading">{email}</span>.
                   Click it to sign in — no password needed.
                 </p>
               </div>
@@ -425,7 +445,7 @@ export default function LoginPage() {
         </div>
 
         {/* Footer */}
-        <p className="text-xs text-center text-brand-muted mt-6 px-4">
+        <p className="text-xs text-center text-theme-body mt-6 px-4">
           By continuing you agree to our{" "}
           <Link href="/terms" className="underline hover:text-brand">Terms</Link>
           {" & "}
@@ -444,7 +464,7 @@ function BackButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center gap-1.5 text-sm text-brand-muted hover:text-brand-deep transition-colors -mt-1 mb-1"
+      className="flex items-center gap-1.5 text-sm text-theme-body hover:text-theme-heading transition-colors -mt-1 mb-1"
     >
       <ArrowLeft className="w-4 h-4" />
       Back

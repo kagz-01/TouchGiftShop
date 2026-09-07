@@ -16,7 +16,7 @@ import SplashReveal from "@/components/ui/SplashReveal";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [user, setUser] = useState<{ email?: string | null; phone?: string | null } | null>(null);
+  const [user, setUser] = useState<{ email?: string | null; phone?: string | null; is_anonymous?: boolean } | null>(null);
   const [guest, setGuestFlag] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -151,7 +151,7 @@ export default function Header() {
             {/* Theme Toggle */}
             <ThemeToggle />
 
-            {user ? (
+            {user && !user.is_anonymous ? (
               /* Logged-in avatar */
               <Link
                 href="/account"
@@ -160,15 +160,15 @@ export default function Header() {
               >
                 {(user.email?.[0] ?? user.phone?.[3] ?? "G").toUpperCase()}
               </Link>
-            ) : guest ? (
+            ) : (guest || user?.is_anonymous) ? (
               /* Guest badge */
               <Link
                 href="/login?next=/account"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-2 shape-premium-button text-xs font-semibold text-theme-body border border-dashed border-surface-border hover:text-brand hover:border-brand/40 transition-colors flex-shrink-0"
+                className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 shape-premium-button bg-brand/5 hover:bg-brand/10 transition-colors border border-brand/10 flex-shrink-0 rounded-full"
                 aria-label="Guest — sign in for points and saved orders"
               >
-                <UserRound className="w-3.5 h-3.5" />
-                Guest · Sign in
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">G</div>
+                <span className="text-xs font-semibold text-theme-heading hidden sm:block">Guest</span>
               </Link>
             ) : (
               <>
