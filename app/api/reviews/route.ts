@@ -60,6 +60,7 @@ export async function POST(req: Request) {
       reviewer_name: isAnonymous ? "Anonymous" : reviewerName,
       is_anonymous: isAnonymous || false,
       is_verified_purchase: isVerified,
+      status: "approved",
     })
     .select()
     .single();

@@ -22,7 +22,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
       className="group block animate-fade-in-up"
       style={{ animationDelay: `${Math.min((index % 24) * 50, 400)}ms` }}
     >
-      <MotionCard className="bg-white/95 rounded-3xl border border-black/6 overflow-hidden hover:shadow-card transition-shadow duration-300">
+      <MotionCard className="gift-card overflow-hidden">
         {/* Image */}
         <div className="relative aspect-[4/5] bg-blush overflow-hidden">
           <Image
@@ -78,7 +78,10 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-display font-semibold text-sm mb-1.5 line-clamp-2 text-brand-deep group-hover:text-brand transition-colors leading-snug min-h-[2.5rem]">
+          <h3 
+            className="font-display font-semibold text-sm mb-1.5 line-clamp-2 transition-colors leading-snug min-h-[2.5rem]"
+            style={{ color: "var(--text-primary)" }}
+          >
             {product.name}
           </h3>
 
@@ -87,7 +90,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             {hasSale ? (
               <>
                 <p className="text-red-500 font-bold text-base">{formatKsh(product.sale_price!)}</p>
-                <p className="text-gray-400 text-sm line-through">{formatKsh(product.price)}</p>
+                <p className="text-sm line-through opacity-60" style={{ color: "var(--text-primary)" }}>{formatKsh(product.price)}</p>
               </>
             ) : (
               <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>

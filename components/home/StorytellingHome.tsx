@@ -394,7 +394,7 @@ export function ProblemSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme backdrop-blur-sm relative overflow-hidden`}>
+              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme relative overflow-hidden`}>
                 <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 <div className="relative z-10">
                   <div className="mb-4 p-3 bg-brand/10 dark:bg-white/10 shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
@@ -748,12 +748,13 @@ export function SocialProof() {
         {/* Testimonials Marquee */}
         <Reveal>
           <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
-            {/* Left fade overlay */}
-            <div className="absolute left-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to right, #FDF8F0 0%, transparent 100%)" }} />
-            {/* Right fade overlay */}
-            <div className="absolute right-0 top-0 bottom-0 w-20 md:w-28 z-10 pointer-events-none" style={{ background: "linear-gradient(to left, #FDEEE0 0%, transparent 100%)" }} />
-
-            <div className="relative flex overflow-x-hidden group px-4 md:px-8">
+            <div 
+              className="relative flex overflow-x-hidden group px-4 md:px-8"
+              style={{
+                WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+                maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
+              }}
+            >
               {[0, 1].map((track) => (
                 <div
                   key={track}

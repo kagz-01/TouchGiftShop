@@ -56,8 +56,8 @@
   --surface-border: rgba(255, 255, 255, 0.08);
   --text-primary:   #FFFFFF;
   --text-muted:     rgba(255, 255, 255, 0.65);
-  --card-bg:        rgba(20, 15, 25, 0.52);
-  --card-border:    rgba(255, 150, 200, 0.18);
+  --card-bg:        rgba(30, 10, 40, 0.15);
+  --card-border:    rgba(255, 150, 200, 0.15);
   --card-shadow:    0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
   --card-hover-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1);
   /* Themed text */
@@ -169,8 +169,8 @@
   border: 1px solid var(--card-border);
   box-shadow: var(--card-shadow);
   color: var(--text-primary);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -219,24 +219,24 @@
 /* Dark mode: blush-rose glow (opposite to dark bg) */
 [data-theme="dark"] .card-theme {
   --card-glow: rgba(255, 130, 180, 0.18);
-  background: rgba(35, 0, 50, 0.55);
-  border-color: rgba(255, 150, 200, 0.22);
+  background: rgba(30, 10, 40, 0.15); /* Translucent glass */
+  border-color: rgba(255, 150, 200, 0.15);
 }
 [data-theme="dark"] .card-theme:hover {
   --card-glow: rgba(255, 180, 220, 0.30);
-  background: rgba(50, 0, 70, 0.70);
-  border-color: rgba(255, 180, 220, 0.40);
+  background: rgba(45, 15, 65, 0.25);
+  border-color: rgba(255, 180, 220, 0.30);
   box-shadow:
     0 24px 70px rgba(0, 0, 0, 0.50),
-    0 0 0 1px rgba(255, 180, 220, 0.35),
+    0 0 0 1px rgba(255, 180, 220, 0.25),
     0 10px 40px -4px rgba(255, 130, 180, 0.25);
 }
 
 /* Bento card — adapts its transparent bg to whichever section it sits in */
 .bento-card-theme {
   position: relative;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
   overflow: hidden;
 }
@@ -252,11 +252,11 @@
   box-shadow: 0 16px 50px rgba(212, 168, 83, 0.12), 0 0 0 1px rgba(212, 168, 83, 0.25);
 }
 [data-theme="dark"] .bento-card-theme {
-  background: rgba(35, 0, 50, 0.55);
+  background: rgba(20, 0, 30, 0.1);
   border-color: rgba(255, 150, 200, 0.22);
 }
 [data-theme="dark"] .bento-card-theme:hover {
-  background: rgba(50, 0, 70, 0.72);
+  background: rgba(30, 0, 45, 0.2);
   border-color: rgba(255, 180, 220, 0.38);
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48), 0 0 0 1px rgba(255, 180, 220, 0.32);
 }
@@ -360,7 +360,7 @@
 @layer components {
   /* Gift Card - Theme-aware Liquid Glass */
   .gift-card {
-    @apply relative backdrop-blur-xl rounded-[2.5rem] transition-all duration-500;
+    @apply relative backdrop-blur-md rounded-[2.5rem] transition-all duration-500;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     box-shadow: var(--card-shadow);
