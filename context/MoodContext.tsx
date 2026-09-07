@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 // ── Mood types ──────────────────────────────────────────────────────────────
-export type Mood = "default" | "romantic" | "apology" | "celebratory" | "corporate" | "custom";
+export type Mood = "default" | "romantic" | "apology" | "celebratory" | "corporate" | "custom" | "corp_appreciation" | "corp_milestone" | "corp_welcome";
 
 export interface MoodMeta {
   id: Mood;
@@ -67,6 +67,33 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Impress without compromise",
     heroSub: "Curated corporate gifts that reflect your brand's values — delivered on schedule.",
     cta: "View Corporate",
+  },
+  {
+    id: "corp_appreciation",
+    emoji: "🤝",
+    label: "Client Appreciation",
+    tagline: "Build lasting loyalty",
+    heroTitle: "Thank you for your business",
+    heroSub: "Show your clients they matter with curated, premium hampers.",
+    cta: "Shop Client Gifts",
+  },
+  {
+    id: "corp_milestone",
+    emoji: "🏆",
+    label: "Team Milestones",
+    tagline: "Celebrate your team's success",
+    heroTitle: "Recognize the hard work",
+    heroSub: "Reward your team for hitting targets and going above and beyond.",
+    cta: "Shop Team Gifts",
+  },
+  {
+    id: "corp_welcome",
+    emoji: "👋",
+    label: "Welcome Kits",
+    tagline: "Start them off right",
+    heroTitle: "Welcome to the team",
+    heroSub: "Onboarding hampers that make new hires feel valued from day one.",
+    cta: "Shop Onboarding",
   },
 ];
 

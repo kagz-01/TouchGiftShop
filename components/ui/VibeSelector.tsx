@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useMood, MOODS, type Mood, getCustomPalette } from "@/context/MoodContext";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Sparkles, Pencil, Check } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function VibeSelector() {
   const { mood, moodMeta, setMood, setCustomMood } = useMood();
@@ -14,6 +15,16 @@ export default function VibeSelector() {
   const [justChanged, setJustChanged] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  const pathname = usePathname();
+  const isCorporate = pathname?.startsWith("/corporate");
+
+  const visibleMoods = MOODS.filter((m) => {
+    if (isCorporate) {
+      return ["corporate", "corp_appreciation", "corp_milestone", "corp_welcome"].includes(m.id);
+    }
+    return ["default", "romantic", "apology", "celebratory", "corporate"].includes(m.id);
+  });
 
   // Close on outside click
   useEffect(() => {
@@ -108,8 +119,8 @@ export default function VibeSelector() {
 
           {/* Preset moods */}
           <ul className="px-2 pb-1 space-y-0.5">
-            {MOODS.map((m) => {
-              const active = m.id === mood;
+            {visibleMoods.map((m) => {
+              const active = mood === m.id;
               return (
                 <li key={m.id}>
                   <button
@@ -155,10 +166,10 @@ export default function VibeSelector() {
                 <span className="text-xl leading-none select-none">✏️</span>
                 <div className="flex-1 min-w-0">
                   <p className={cn("text-sm font-semibold leading-tight", mood === "custom" ? "text-brand" : "text-theme-heading")}>
-                    {mood === "custom" ? `${moodMeta.emoji} ${moodMeta.label}` : "My Own Vibe"}
+                    {mood === "custom" ? `${moodMeta.emoji} ${moodMeta.label}` : isCorporate ? "Custom Corporate Vibe" : "My Own Vibe"}
                   </p>
                   <p className="text-[10px] text-theme-muted truncate leading-tight mt-0.5">
-                    {mood === "custom" ? "Edit your custom vibe" : "Create a vibe that's uniquely yours"}
+                    {mood === "custom" ? "Edit your custom vibe" : isCorporate ? "e.g., Q3 Targets Met, Board Meeting" : "Create a vibe that's uniquely yours"}
                   </p>
                 </div>
                 <Pencil className="w-3.5 h-3.5 text-theme-muted" />
@@ -204,6 +215,12 @@ export default function VibeSelector() {
                   }}
                 />
               </div>
+
+              {isCorporate && (
+                <p className="text-[10px] text-theme-muted">
+                  Try keywords like <span className="text-gold">team</span>, <span className="text-gold">boss</span>, or <span className="text-gold">client</span> to unlock corporate colors.
+                </p>
+              )}
 
               {/* Palette preview */}
               {previewPalette && customLabel && (
