@@ -123,9 +123,9 @@ export function getCustomPalette(label: string) {
 interface MoodContextValue {
   mood: Mood;
   moodMeta: MoodMeta;
-  customMood: { label: string; emoji: string } | null;
+  customMood: { label: string; emoji: string; tagline?: string; gradient?: string; glow?: string } | null;
   setMood: (mood: Mood) => void;
-  setCustomMood: (label: string, emoji: string) => void;
+  setCustomMood: (label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => void;
 }
 
 const MoodContext = createContext<MoodContextValue>({
@@ -141,7 +141,7 @@ const STORAGE_CUSTOM_KEY = "tg_mood_custom";
 
 export function MoodProvider({ children }: { children: React.ReactNode }) {
   const [mood, setMoodState] = useState<Mood>("default");
-  const [customMood, setCustomMoodState] = useState<{ label: string; emoji: string } | null>(null);
+  const [customMood, setCustomMoodState] = useState<{ label: string; emoji: string; tagline?: string; gradient?: string; glow?: string } | null>(null);
 
   // Restore from localStorage on mount
   useEffect(() => {
@@ -167,7 +167,10 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
     } else {
       root.setAttribute("data-mood", mood);
       if (mood === "custom" && customMood) {
-        const palette = getCustomPalette(customMood.label);
+        // Use user-defined colors if available, fallback to keyword matching
+        const palette = (customMood.gradient && customMood.glow) 
+          ? { gradient: customMood.gradient, glow: customMood.glow } 
+          : getCustomPalette(customMood.label);
         root.style.setProperty("--mood-gradient", palette.gradient);
         root.style.setProperty("--mood-glow", palette.glow);
       } else {
@@ -182,8 +185,8 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
 
   const setMood = useCallback((m: Mood) => setMoodState(m), []);
 
-  const setCustomMood = useCallback((label: string, emoji: string) => {
-    const data = { label, emoji };
+  const setCustomMood = useCallback((label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => {
+    const data = { label, emoji, tagline, gradient, glow };
     setCustomMoodState(data);
     setMoodState("custom");
     try {
@@ -197,14 +200,14 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
         id: "custom",
         emoji: customMood.emoji || "✨",
         label: customMood.label || "My Vibe",
-        tagline: customMood.label,
-        heroTitle: `Gifting for: ${customMood.label}`,
-        heroSub: `You know exactly what you're looking for. Let's find the perfect ${customMood.label.toLowerCase()} gift.`,
-        cta: `Find ${customMood.label} Gifts`,
+        tagline: customMood.tagline || customMood.label,
+        heroTitle: "Just for you",
+        heroSub: "A unique curation tailored specifically to your custom vibe.",
+        cta: "Shop Custom Vibe",
         customLabel: customMood.label,
         customEmoji: customMood.emoji,
       }
-    : MOODS.find((m) => m.id === mood) ?? MOODS[0];
+    : (MOODS.find((m) => m.id === mood) || MOODS[0]);
 
   return (
     <MoodContext.Provider value={{ mood, moodMeta, customMood, setMood, setCustomMood }}>

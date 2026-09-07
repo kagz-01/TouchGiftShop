@@ -155,7 +155,10 @@
 }
 
 /* 🏢 CORPORATE — navy, slate, precise and composed */
-[data-mood="corporate"] {
+[data-mood="corporate"],
+[data-mood="corp_appreciation"],
+[data-mood="corp_milestone"],
+[data-mood="corp_welcome"] {
   --color-brand:       #0F2027; /* Deep Slate/Midnight */
   --color-brand-light: #203A43;
   --color-brand-dark:  #081216;
@@ -169,13 +172,22 @@
   --mood-particle:     #D4AF37;
 }
 [data-mood="corporate"] [data-theme="light"],
-[data-mood="corporate"]:not([data-theme="dark"]) {
+[data-mood="corporate"]:not([data-theme="dark"]),
+[data-mood="corp_appreciation"] [data-theme="light"],
+[data-mood="corp_appreciation"]:not([data-theme="dark"]),
+[data-mood="corp_milestone"] [data-theme="light"],
+[data-mood="corp_milestone"]:not([data-theme="dark"]),
+[data-mood="corp_welcome"] [data-theme="light"],
+[data-mood="corp_welcome"]:not([data-theme="dark"]) {
   --bg-base:  #F8F9FA;
   --bg-section-alt: #EDF2F7;
   --heading-color: #0F2027;
   --accent-color:  #D4AF37;
 }
-[data-mood="corporate"][data-theme="dark"] {
+[data-mood="corporate"][data-theme="dark"],
+[data-mood="corp_appreciation"][data-theme="dark"],
+[data-mood="corp_milestone"][data-theme="dark"],
+[data-mood="corp_welcome"][data-theme="dark"] {
   --bg-base: #0A0F1A; /* Deep Slate */
   --card-bg: rgba(32, 58, 67, 0.15);
 }

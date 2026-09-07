@@ -41,6 +41,21 @@ const PRESENCE_MESSAGES: Record<Mood | "custom", PresenceMessage[]> = {
     { text: "Your team deserves to feel valued, {name}.", emoji: "📊", cta: "Explore bulk gifts", ctaHref: "/corporate" },
     { text: "Still reviewing, {name}? We handle delivery for your entire team.", emoji: "✅", cta: "Talk to us", ctaHref: "/corporate" },
   ],
+  corp_appreciation: [
+    { text: "{name}, great impression starts with the right gift.", emoji: "🏢", cta: "View corporate gifts", ctaHref: "/corporate" },
+    { text: "Your team deserves to feel valued, {name}.", emoji: "📊", cta: "Explore bulk gifts", ctaHref: "/corporate" },
+    { text: "Still reviewing, {name}? We handle delivery for your entire team.", emoji: "✅", cta: "Talk to us", ctaHref: "/corporate" },
+  ],
+  corp_milestone: [
+    { text: "{name}, great impression starts with the right gift.", emoji: "🏢", cta: "View corporate gifts", ctaHref: "/corporate" },
+    { text: "Your team deserves to feel valued, {name}.", emoji: "📊", cta: "Explore bulk gifts", ctaHref: "/corporate" },
+    { text: "Still reviewing, {name}? We handle delivery for your entire team.", emoji: "✅", cta: "Talk to us", ctaHref: "/corporate" },
+  ],
+  corp_welcome: [
+    { text: "{name}, great impression starts with the right gift.", emoji: "🏢", cta: "View corporate gifts", ctaHref: "/corporate" },
+    { text: "Your team deserves to feel valued, {name}.", emoji: "📊", cta: "Explore bulk gifts", ctaHref: "/corporate" },
+    { text: "Still reviewing, {name}? We handle delivery for your entire team.", emoji: "✅", cta: "Talk to us", ctaHref: "/corporate" },
+  ],
   custom: [
     { text: "Hey {name}, still looking for the perfect gift? ✨", emoji: "✨", cta: "Keep exploring", ctaHref: "/shop" },
     { text: "{name}, your vibe is unique — so should the gift be.", emoji: "🌟", cta: "Browse gifts", ctaHref: "/shop" },
@@ -55,6 +70,9 @@ const RETURN_MESSAGES: Record<Mood | "custom", string[]> = {
   apology:      ["Back again, {name}? Let's make this right. 🙏",   "Still time to fix it, {name}. We've got you."],
   celebratory:  ["The party's still going, {name}! 🎉",              "You came back — time to make it unforgettable, {name}!"],
   corporate:    ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
+  corp_appreciation: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
+  corp_milestone: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
+  corp_welcome: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   custom:       ["Good to see you back, {name}! ✨",                  "Hey {name}, welcome back — let's find that gift."],
 };
 

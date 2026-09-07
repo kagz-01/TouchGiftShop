@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useMood, MOODS, type Mood, getCustomPalette } from "@/context/MoodContext";
+import { useMood, MOODS, type Mood, getCustomPalette, CUSTOM_PALETTE_PRESETS } from "@/context/MoodContext";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Sparkles, Pencil, Check } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -11,7 +11,9 @@ export default function VibeSelector() {
   const [open, setOpen] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
+  const [customTagline, setCustomTagline] = useState("");
   const [customEmoji, setCustomEmoji] = useState("✨");
+  const [customPaletteIndex, setCustomPaletteIndex] = useState<number | null>(null);
   const [justChanged, setJustChanged] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -52,10 +54,25 @@ export default function VibeSelector() {
 
   function handleCustomSubmit() {
     if (!customLabel.trim()) return;
-    setCustomMood(customLabel.trim(), customEmoji);
+    
+    // Use explicitly selected palette, or fallback to keyword guess
+    const palette = customPaletteIndex !== null 
+      ? CUSTOM_PALETTE_PRESETS[customPaletteIndex] 
+      : getCustomPalette(customLabel);
+
+    setCustomMood(
+      customLabel.trim(), 
+      customEmoji, 
+      customTagline.trim() || undefined,
+      palette.gradient,
+      palette.glow
+    );
+    
     setOpen(false);
     setShowCustomInput(false);
     setCustomLabel("");
+    setCustomTagline("");
+    setCustomPaletteIndex(null);
     flash();
   }
 
@@ -64,8 +81,10 @@ export default function VibeSelector() {
     setTimeout(() => setJustChanged(false), 1200);
   }
 
-  // Preview palette for custom input
-  const previewPalette = customLabel ? getCustomPalette(customLabel) : null;
+  // Derive preview palette
+  const previewPalette = customPaletteIndex !== null 
+    ? CUSTOM_PALETTE_PRESETS[customPaletteIndex] 
+    : (customLabel ? getCustomPalette(customLabel) : null);
   const isDefault = mood === "default";
 
   return (
@@ -216,17 +235,59 @@ export default function VibeSelector() {
                 />
               </div>
 
-              {isCorporate && (
-                <p className="text-[10px] text-theme-muted">
-                  Try keywords like <span className="text-gold">team</span>, <span className="text-gold">boss</span>, or <span className="text-gold">client</span> to unlock corporate colors.
-                </p>
-              )}
+              {/* Tagline input row */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customTagline}
+                  onChange={(e) => setCustomTagline(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
+                  placeholder='Description (e.g. "Q3 Kickoff!")'
+                  maxLength={50}
+                  aria-label="Vibe description"
+                  className="w-full h-9 px-3 rounded-xl text-xs border outline-none focus:ring-2"
+                  style={{
+                    background: "var(--surface)",
+                    borderColor: "var(--surface-border)",
+                    color: "var(--text-primary)",
+                  }}
+                />
+              </div>
 
-              {/* Palette preview */}
-              {previewPalette && customLabel && (
+              {/* Palette selection swatches */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-theme-muted">
+                    Color Theme
+                  </p>
+                  {isCorporate && customPaletteIndex === null && (
+                    <span className="text-[9px] text-gold italic">Auto-detecting...</span>
+                  )}
+                </div>
+                
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide snap-x">
+                  {CUSTOM_PALETTE_PRESETS.map((preset, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setCustomPaletteIndex(idx)}
+                      className={cn(
+                        "w-8 h-8 rounded-full flex-shrink-0 snap-center transition-transform hover:scale-110",
+                        customPaletteIndex === idx ? "ring-2 ring-offset-2 ring-brand scale-110" : "ring-1 ring-white/10"
+                      )}
+                      style={{ 
+                        background: preset.gradient
+                      }}
+                      aria-label="Select color palette"
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Preview Bar */}
+              {previewPalette && (
                 <div
                   className="h-1.5 rounded-full w-full transition-all duration-500"
-                  style={{ background: previewPalette.gradient }}
+                  style={{ background: previewPalette.gradient, boxShadow: `0 0 10px ${previewPalette.glow}` }}
                 />
               )}
 
