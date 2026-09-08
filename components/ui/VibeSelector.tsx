@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { useMood, MOODS, type Mood, getCustomPalette, CUSTOM_PALETTE_PRESETS } from "@/context/MoodContext";
 import { cn } from "@/lib/utils";
-import { ChevronDown, Sparkles, Pencil, Check } from "lucide-react";
+import { ChevronDown, Sparkles, Plus, Check, Trash2 } from "lucide-react";
 import { usePathname } from "next/navigation";
+import EmojiPicker, { Theme } from "emoji-picker-react";
 
 export default function VibeSelector() {
-  const { mood, moodMeta, setMood, setCustomMood } = useMood();
+  const { mood, moodMeta, customMoods, activeCustomId, setMood, setCustomMood, setActiveCustomId, removeCustomMood } = useMood();
   const [open, setOpen] = useState(false);
   const [showCustomInput, setShowCustomInput] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
   const [customTagline, setCustomTagline] = useState("");
   const [customEmoji, setCustomEmoji] = useState("✨");
@@ -34,6 +36,7 @@ export default function VibeSelector() {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
         setShowCustomInput(false);
+        setShowEmojiPicker(false);
       }
     }
     if (open) document.addEventListener("mousedown", handle);
@@ -49,6 +52,15 @@ export default function VibeSelector() {
     setMood(id);
     setOpen(false);
     setShowCustomInput(false);
+    setShowEmojiPicker(false);
+    flash();
+  }
+
+  function handleSelectCustom(id: string) {
+    setActiveCustomId(id);
+    setOpen(false);
+    setShowCustomInput(false);
+    setShowEmojiPicker(false);
     flash();
   }
 
@@ -166,6 +178,45 @@ export default function VibeSelector() {
                 </li>
               );
             })}
+            
+            {/* Saved Custom Moods */}
+            {customMoods.map((m) => {
+              const active = mood === "custom" && activeCustomId === m.id;
+              return (
+                <li key={m.id}>
+                  <div className={cn(
+                    "w-full flex items-center justify-between gap-1 px-3 py-2.5 rounded-xl transition-all duration-200",
+                    active ? "bg-brand/10 ring-1 ring-brand/30" : "hover:bg-white/5",
+                  )}>
+                    <button
+                      role="option"
+                      aria-selected={active}
+                      onClick={() => handleSelectCustom(m.id)}
+                      className="flex-1 flex items-center gap-3 text-left hover:scale-[1.02] active:scale-[0.98] transition-all"
+                    >
+                      <span className="text-xl leading-none select-none">{m.emoji}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className={cn("text-sm font-semibold leading-tight", active ? "text-brand" : "text-theme-heading")}>
+                          {m.label}
+                        </p>
+                        {m.tagline && (
+                          <p className="text-[10px] text-theme-muted truncate leading-tight mt-0.5">
+                            {m.tagline}
+                          </p>
+                        )}
+                      </div>
+                    </button>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); removeCustomMood(m.id); }}
+                      className="p-1.5 rounded-md hover:bg-red-500/10 text-theme-muted hover:text-red-400 transition-colors"
+                      title="Delete custom vibe"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
 
           {/* Divider */}
@@ -178,20 +229,16 @@ export default function VibeSelector() {
                 onClick={() => setShowCustomInput(true)}
                 className={cn(
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left",
-                  "transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
-                  mood === "custom" ? "bg-brand/10 ring-1 ring-brand/30" : "hover:bg-white/5",
+                  "transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] hover:bg-white/5 text-theme-heading",
                 )}
               >
-                <span className="text-xl leading-none select-none">✏️</span>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-semibold leading-tight", mood === "custom" ? "text-brand" : "text-theme-heading")}>
-                    {mood === "custom" ? `${moodMeta.emoji} ${moodMeta.label}` : isCorporate ? "Custom Corporate Vibe" : "My Own Vibe"}
-                  </p>
-                  <p className="text-[10px] text-theme-muted truncate leading-tight mt-0.5">
-                    {mood === "custom" ? "Edit your custom vibe" : isCorporate ? "e.g., Q3 Targets Met, Board Meeting" : "Create a vibe that's uniquely yours"}
-                  </p>
+                <div className="w-6 flex justify-center">
+                  <Plus className="w-4 h-4 opacity-70" />
                 </div>
-                <Pencil className="w-3.5 h-3.5 text-theme-muted" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold leading-tight">Create New Vibe</p>
+                  <p className="text-[10px] text-theme-muted truncate leading-tight mt-0.5">Mix your own colors and emojis</p>
+                </div>
               </button>
             </div>
           ) : (
@@ -202,20 +249,32 @@ export default function VibeSelector() {
 
               {/* Emoji + label input row */}
               <div className="flex gap-2">
-                {/* Emoji picker (simple input) */}
-                <input
-                  type="text"
-                  value={customEmoji}
-                  onChange={(e) => setCustomEmoji(e.target.value.slice(-2) || "✨")}
-                  maxLength={2}
-                  aria-label="Vibe emoji"
-                  className="w-12 h-10 rounded-xl text-center text-xl border outline-none focus:ring-2"
-                  style={{
-                    background: "var(--surface)",
-                    borderColor: "var(--surface-border)",
-                    color: "var(--text-primary)",
-                  }}
-                />
+                {/* Emoji picker button */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowEmojiPicker((p) => !p)}
+                    className="w-12 h-10 rounded-xl text-center text-xl border flex items-center justify-center hover:bg-white/5 transition-colors"
+                    style={{
+                      background: "var(--surface)",
+                      borderColor: "var(--surface-border)",
+                    }}
+                    title="Pick Emoji"
+                  >
+                    {customEmoji}
+                  </button>
+                  {showEmojiPicker && (
+                    <div className="absolute top-full left-0 mt-2 z-[300] shadow-2xl">
+                      <EmojiPicker 
+                        theme={Theme.AUTO} 
+                        onEmojiClick={(e) => {
+                          setCustomEmoji(e.emoji);
+                          setShowEmojiPicker(false);
+                          inputRef.current?.focus();
+                        }} 
+                      />
+                    </div>
+                  )}
+                </div>
                 {/* Label input */}
                 <input
                   ref={inputRef}

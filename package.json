@@ -19,6 +19,7 @@
     "country-telephone-data": "^0.6.3",
     "date-fns": "^3.6.0",
     "duckduckgo-images-api": "^1.0.5",
+    "emoji-picker-react": "^4.20.2",
     "framer-motion": "^13.0.0",
     "googlethis": "^1.8.0",
     "html-to-image": "^1.11.13",

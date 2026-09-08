@@ -155,10 +155,7 @@
 }
 
 /* 🏢 CORPORATE — navy, slate, precise and composed */
-[data-mood="corporate"],
-[data-mood="corp_appreciation"],
-[data-mood="corp_milestone"],
-[data-mood="corp_welcome"] {
+[data-mood="corporate"] {
   --color-brand:       #0F2027; /* Deep Slate/Midnight */
   --color-brand-light: #203A43;
   --color-brand-dark:  #081216;
@@ -172,24 +169,93 @@
   --mood-particle:     #D4AF37;
 }
 [data-mood="corporate"] [data-theme="light"],
-[data-mood="corporate"]:not([data-theme="dark"]),
-[data-mood="corp_appreciation"] [data-theme="light"],
-[data-mood="corp_appreciation"]:not([data-theme="dark"]),
-[data-mood="corp_milestone"] [data-theme="light"],
-[data-mood="corp_milestone"]:not([data-theme="dark"]),
-[data-mood="corp_welcome"] [data-theme="light"],
-[data-mood="corp_welcome"]:not([data-theme="dark"]) {
+[data-mood="corporate"]:not([data-theme="dark"]) {
   --bg-base:  #F8F9FA;
   --bg-section-alt: #EDF2F7;
   --heading-color: #0F2027;
   --accent-color:  #D4AF37;
 }
-[data-mood="corporate"][data-theme="dark"],
-[data-mood="corp_appreciation"][data-theme="dark"],
-[data-mood="corp_milestone"][data-theme="dark"],
-[data-mood="corp_welcome"][data-theme="dark"] {
+[data-mood="corporate"][data-theme="dark"] {
   --bg-base: #0A0F1A; /* Deep Slate */
   --card-bg: rgba(32, 58, 67, 0.15);
+}
+
+/* 🤝 CORP APPRECIATION — Navy & Platinum */
+[data-mood="corp_appreciation"] {
+  --color-brand:       #1B263B; /* Deep Navy */
+  --color-brand-light: #415A77;
+  --color-brand-dark:  #0D1B2A;
+  --color-gold:        #E0E1DD; /* Platinum/Silver */
+  --color-gold-light:  #F8F9FA;
+  --card-border:       rgba(65, 90, 119, 0.3);
+  --card-hover-shadow: 0 20px 60px rgba(65, 90, 119, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(224, 225, 221, 0.25);
+  --mood-gradient:     linear-gradient(135deg, #0D1B2A, #1B263B, #415A77);
+  --mood-bg-tint:      rgba(65, 90, 119, 0.05);
+  --mood-particle:     #E0E1DD;
+}
+[data-mood="corp_appreciation"] [data-theme="light"],
+[data-mood="corp_appreciation"]:not([data-theme="dark"]) {
+  --bg-base:  #F4F6F8;
+  --bg-section-alt: #E9ECEF;
+  --heading-color: #0D1B2A;
+  --accent-color:  #415A77;
+}
+[data-mood="corp_appreciation"][data-theme="dark"] {
+  --bg-base: #0D1B2A;
+  --card-bg: rgba(65, 90, 119, 0.15);
+}
+
+/* 🏆 CORP MILESTONE — Deep Forest & Champagne Gold */
+[data-mood="corp_milestone"] {
+  --color-brand:       #1C372D; /* Deep Forest Green */
+  --color-brand-light: #2D5A4C;
+  --color-brand-dark:  #0F1F19;
+  --color-gold:        #E5C158; /* Champagne Gold */
+  --color-gold-light:  #F3E1A6;
+  --card-border:       rgba(45, 90, 76, 0.3);
+  --card-hover-shadow: 0 20px 60px rgba(45, 90, 76, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(229, 193, 88, 0.25);
+  --mood-gradient:     linear-gradient(135deg, #0F1F19, #1C372D, #2D5A4C);
+  --mood-bg-tint:      rgba(45, 90, 76, 0.05);
+  --mood-particle:     #E5C158;
+}
+[data-mood="corp_milestone"] [data-theme="light"],
+[data-mood="corp_milestone"]:not([data-theme="dark"]) {
+  --bg-base:  #F7F9F8;
+  --bg-section-alt: #EBF0ED;
+  --heading-color: #0F1F19;
+  --accent-color:  #2D5A4C;
+}
+[data-mood="corp_milestone"][data-theme="dark"] {
+  --bg-base: #0A1410;
+  --card-bg: rgba(45, 90, 76, 0.15);
+}
+
+/* 👋 CORP WELCOME — Midnight Blue & Emerald */
+[data-mood="corp_welcome"] {
+  --color-brand:       #192231; /* Midnight */
+  --color-brand-light: #2A3B52;
+  --color-brand-dark:  #0E141E;
+  --color-gold:        #2ECC71; /* Vibrant Emerald */
+  --color-gold-light:  #A3E4D7;
+  --card-border:       rgba(42, 59, 82, 0.3);
+  --card-hover-shadow: 0 20px 60px rgba(42, 59, 82, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(46, 204, 113, 0.25);
+  --mood-gradient:     linear-gradient(135deg, #0E141E, #192231, #2A3B52);
+  --mood-bg-tint:      rgba(42, 59, 82, 0.05);
+  --mood-particle:     #2ECC71;
+}
+[data-mood="corp_welcome"] [data-theme="light"],
+[data-mood="corp_welcome"]:not([data-theme="dark"]) {
+  --bg-base:  #F5F7FA;
+  --bg-section-alt: #EAEFF5;
+  --heading-color: #0E141E;
+  --accent-color:  #2A3B52;
+}
+[data-mood="corp_welcome"][data-theme="dark"] {
+  --bg-base: #0B0E16;
+  --card-bg: rgba(42, 59, 82, 0.15);
 }
 
 /* Mood-aware hover glows (overrides card-theme hover) */

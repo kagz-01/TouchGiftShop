@@ -119,21 +119,38 @@ export function getCustomPalette(label: string) {
   return CUSTOM_PALETTE_PRESETS[CUSTOM_PALETTE_PRESETS.length - 1];
 }
 
+export type CustomVibeMeta = {
+  id: string;
+  label: string;
+  emoji: string;
+  tagline?: string;
+  gradient?: string;
+  glow?: string;
+};
+
 // ── Context ─────────────────────────────────────────────────────────────────
 interface MoodContextValue {
   mood: Mood;
   moodMeta: MoodMeta;
-  customMood: { label: string; emoji: string; tagline?: string; gradient?: string; glow?: string } | null;
+  customMood: CustomVibeMeta | null;
+  customMoods: CustomVibeMeta[];
+  activeCustomId: string | null;
   setMood: (mood: Mood) => void;
   setCustomMood: (label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => void;
+  setActiveCustomId: (id: string) => void;
+  removeCustomMood: (id: string) => void;
 }
 
 const MoodContext = createContext<MoodContextValue>({
   mood: "default",
   moodMeta: MOODS[0],
   customMood: null,
+  customMoods: [],
+  activeCustomId: null,
   setMood: () => {},
   setCustomMood: () => {},
+  setActiveCustomId: () => {},
+  removeCustomMood: () => {},
 });
 
 const STORAGE_KEY = "tg_mood";
@@ -141,18 +158,38 @@ const STORAGE_CUSTOM_KEY = "tg_mood_custom";
 
 export function MoodProvider({ children }: { children: React.ReactNode }) {
   const [mood, setMoodState] = useState<Mood>("default");
-  const [customMood, setCustomMoodState] = useState<{ label: string; emoji: string; tagline?: string; gradient?: string; glow?: string } | null>(null);
+  const [customMoods, setCustomMoods] = useState<CustomVibeMeta[]>([]);
+  const [activeCustomId, setActiveCustomIdState] = useState<string | null>(null);
+
+  const customMood = customMoods.find(m => m.id === activeCustomId) || null;
 
   // Restore from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY) as Mood | null;
       const savedCustom = localStorage.getItem(STORAGE_CUSTOM_KEY);
+      const savedActiveId = localStorage.getItem("tg_active_custom_id");
+
       if (saved && (MOODS.find((m) => m.id === saved) || saved === "custom")) {
         setMoodState(saved);
       }
+      
       if (savedCustom) {
-        setCustomMoodState(JSON.parse(savedCustom));
+        const parsed = JSON.parse(savedCustom);
+        if (Array.isArray(parsed)) {
+          setCustomMoods(parsed);
+        } else if (parsed.label) {
+          // Migrate old single object
+          const migrated: CustomVibeMeta = { id: "custom_legacy", ...parsed };
+          setCustomMoods([migrated]);
+          if (saved === "custom" && !savedActiveId) {
+            setActiveCustomIdState("custom_legacy");
+          }
+        }
+      }
+
+      if (savedActiveId) {
+        setActiveCustomIdState(savedActiveId);
       }
     } catch {}
   }, []);
@@ -186,13 +223,38 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
   const setMood = useCallback((m: Mood) => setMoodState(m), []);
 
   const setCustomMood = useCallback((label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => {
-    const data = { label, emoji, tagline, gradient, glow };
-    setCustomMoodState(data);
+    const newId = "custom_" + Date.now();
+    const data: CustomVibeMeta = { id: newId, label, emoji, tagline, gradient, glow };
+    
+    setCustomMoods(prev => {
+      const updated = [...prev, data];
+      try { localStorage.setItem(STORAGE_CUSTOM_KEY, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+    
+    setActiveCustomIdState(newId);
     setMoodState("custom");
-    try {
-      localStorage.setItem(STORAGE_CUSTOM_KEY, JSON.stringify(data));
-    } catch {}
+    try { localStorage.setItem("tg_active_custom_id", newId); } catch {}
   }, []);
+
+  const setActiveCustomId = useCallback((id: string) => {
+    setActiveCustomIdState(id);
+    setMoodState("custom");
+    try { localStorage.setItem("tg_active_custom_id", id); } catch {}
+  }, []);
+
+  const removeCustomMood = useCallback((id: string) => {
+    setCustomMoods(prev => {
+      const updated = prev.filter(m => m.id !== id);
+      try { localStorage.setItem(STORAGE_CUSTOM_KEY, JSON.stringify(updated)); } catch {}
+      return updated;
+    });
+    if (activeCustomId === id) {
+      setMoodState("default");
+      setActiveCustomIdState(null);
+      try { localStorage.removeItem("tg_active_custom_id"); } catch {}
+    }
+  }, [activeCustomId]);
 
   // Build effective moodMeta
   const moodMeta: MoodMeta = mood === "custom" && customMood
@@ -210,7 +272,7 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
     : (MOODS.find((m) => m.id === mood) || MOODS[0]);
 
   return (
-    <MoodContext.Provider value={{ mood, moodMeta, customMood, setMood, setCustomMood }}>
+    <MoodContext.Provider value={{ mood, moodMeta, customMood, customMoods, activeCustomId, setMood, setCustomMood, setActiveCustomId, removeCustomMood }}>
       {children}
     </MoodContext.Provider>
   );
