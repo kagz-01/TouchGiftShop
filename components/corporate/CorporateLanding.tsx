@@ -252,9 +252,7 @@ function CorporateHero() {
 
           {/* Right: Background Auto-scroller (Placeholder for future feature) */}
           <div className={`hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
-            <div className="relative w-[420px] h-[420px] flex items-center justify-center border border-white/5 rounded-3xl bg-white/5 backdrop-blur-sm">
-              <span className="text-white/30 text-sm font-medium tracking-widest uppercase">Auto-scroller coming soon</span>
-            </div>
+            {/* Auto-scroller will go here in the future */}
           </div>
         </div>
       </div>
