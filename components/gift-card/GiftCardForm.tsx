@@ -205,7 +205,8 @@ export default function GiftCardForm({}: Props) {
             senderName={isAnonymous ? (alias || "Anonymous") : senderName || "A friend"}
             isAnonymous={isAnonymous}
             alias={alias}
-            code={undefined}
+            template={template as any}
+            code={null}
           />
         </div>
         <button type="submit" disabled={loading} className="w-full bg-pink-700 text-white px-4 py-2 rounded-md">
@@ -213,6 +214,5 @@ export default function GiftCardForm({}: Props) {
         </button>
       </div>
     </form>
-    </div>
   );
 }

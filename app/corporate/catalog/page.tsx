@@ -3,8 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Building2, ArrowRight, Gift, Loader2 } from "lucide-react";
+import { Search, Building2, ArrowRight, Gift, Loader2, Sparkles, Filter, ChevronRight } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
+import BackToHome from "@/components/ui/BackToHome";
+import { useMood } from "@/context/MoodContext";
 
 interface CatalogProduct {
   id: string;
@@ -35,9 +37,9 @@ interface CorpTemplate {
 }
 
 const BULK_TIERS = [
-  { qty: "10 – 49 units", discount: "10% off" },
-  { qty: "50 – 99 units", discount: "15% off" },
-  { qty: "100+ units", discount: "20% off" },
+  { qty: "10–49 units", discount: "10% OFF" },
+  { qty: "50–99 units", discount: "15% OFF" },
+  { qty: "100+ units", discount: "20% OFF" },
 ];
 
 const PAGE_SIZE = 24;
@@ -51,6 +53,8 @@ export default function CorporateCatalogPage() {
   const [hasMore, setHasMore] = useState(false);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  const { moodMeta } = useMood();
 
   const fetchPage = useCallback(async (pageNum: number, append: boolean) => {
     setLoading(true);
@@ -94,60 +98,116 @@ export default function CorporateCatalogPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-gradient-to-br from-brand-dark via-brand to-brand-light text-white">
-        <div className="max-w-7xl mx-auto px-6 py-10">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60 mb-3">
-            <Building2 className="w-4 h-4" /> Corporate
-          </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-2">Corporate Gift Catalog</h1>
-          <p className="text-white/70 text-sm max-w-xl mb-6">
-            Bulk gifting with volume discounts, branded packaging and per-recipient notes. Same-day Nairobi delivery.
-          </p>
+    <div className="min-h-screen bg-brand-deep text-white font-sans selection:bg-gold/30">
+      {/* Premium Header / Hero */}
+      <header 
+        className="dark relative pt-8 pb-16 overflow-hidden transition-all duration-1000"
+        style={{
+          background: `radial-gradient(ellipse at top, var(--mood-glow, rgba(212,175,55,0.25)) 0%, #1A1A2E 60%, #14080D 100%)`
+        }}
+      >
+        {/* Ambient Glows */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div 
+            className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full blur-[150px] opacity-30" 
+            style={{ background: "var(--mood-gradient, linear-gradient(135deg, rgba(212,175,55,0.4), rgba(180,60,100,0.3)))" }}
+          />
+          <div 
+            className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20" 
+            style={{ background: "var(--mood-glow, rgba(212,175,55,0.25))" }}
+          />
+        </div>
+        
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: "60px 60px",
+        }} />
 
-          {/* Bulk tiers */}
-          <div className="flex flex-wrap gap-3">
-            {BULK_TIERS.map((t) => (
-              <div key={t.qty} className="bg-white/10 backdrop-blur-sm rounded-2xl px-4 py-2.5 border border-white/10">
-                <p className="text-sm font-bold">{t.discount}</p>
-                <p className="text-[11px] text-white/60">{t.qty}</p>
+        <div className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+          <div className="mb-8">
+            <BackToHome className="text-white/50 hover:text-white" />
+          </div>
+
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8 border-b border-white/10 pb-10">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gold text-xs font-bold uppercase tracking-[0.2em] mb-6">
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Corporate Collection</span>
               </div>
-            ))}
-            <Link
-              href="/corporate/build"
-              className="flex items-center gap-2 bg-gold text-brand-deep px-5 py-2.5 rounded-2xl text-sm font-bold hover:-translate-y-0.5 transition-transform"
-            >
-              Start Bulk Order <ArrowRight className="w-4 h-4" />
-            </Link>
+              <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-4 text-white">
+                Elevated Gifting,
+                <br />
+                <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent italic">
+                  Scaled for Business.
+                </span>
+              </h1>
+              <p className="text-white/60 text-base md:text-lg max-w-xl leading-relaxed">
+                Discover our premium curation of corporate gifts. Enjoy volume discounts, bespoke branding, and frictionless multi-address delivery.
+              </p>
+            </div>
+
+            {/* Bulk Discounts Card */}
+            <div className="w-full lg:w-auto flex-shrink-0 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 shadow-2xl">
+              <p className="text-xs font-bold text-white/50 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-gold" /> Volume Benefits
+              </p>
+              <div className="flex flex-wrap lg:flex-nowrap gap-3 mb-5">
+                {BULK_TIERS.map((t) => (
+                  <div key={t.qty} className="bg-white/5 rounded-2xl px-4 py-3 border border-white/5 hover:border-gold/30 transition-colors">
+                    <p className="text-gold font-display text-lg font-bold italic leading-none mb-1">{t.discount}</p>
+                    <p className="text-xs text-white/60 font-medium">{t.qty}</p>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/corporate/build"
+                className="group flex items-center justify-between w-full bg-gradient-to-r from-gold to-gold-light text-brand-deep px-5 py-3.5 rounded-2xl text-sm font-bold hover:shadow-[0_0_20px_rgba(212,168,83,0.3)] transition-all"
+              >
+                <span>Start a Bulk Order</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Templates strip */}
+      {/* Templates Strip (if any) */}
       {templates.length > 0 && (
-        <section className="max-w-7xl mx-auto px-6 pt-8">
-          <h2 className="font-display font-bold text-lg text-gray-900 mb-3 flex items-center gap-2">
-            <Gift className="w-5 h-5 text-brand" /> Ready-Made Templates
-          </h2>
-          <div className="flex gap-4 overflow-x-auto pb-2 hide-scrollbar snap-x">
+        <section className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-xl font-bold text-white flex items-center gap-2">
+              <Gift className="w-5 h-5 text-gold" /> Pre-curated Hampers
+            </h2>
+            <Link href="/corporate/build" className="text-xs font-bold text-gold hover:text-gold-light uppercase tracking-wider flex items-center gap-1">
+              View all <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="flex gap-5 overflow-x-auto pb-4 hide-scrollbar snap-x">
             {templates.map((t) => (
               <Link
                 key={t.id}
                 href="/corporate/build"
-                className="min-w-[240px] w-[240px] snap-start bg-white rounded-2xl border border-gray-200 p-4 hover:border-brand hover:shadow-md transition-all"
+                className="group min-w-[280px] w-[280px] snap-start bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5 hover:bg-white/10 hover:border-gold/30 transition-all duration-300"
               >
-                <p className="text-[10px] font-bold uppercase tracking-wider text-brand bg-brand/10 px-2 py-0.5 rounded-full inline-block mb-2">
-                  {t.category.replace(/-/g, " ")}
-                </p>
-                <h3 className="font-semibold text-sm truncate">{t.name}</h3>
-                <p className="text-xs text-gray-400 line-clamp-2 mt-1 min-h-[2rem]">{t.description}</p>
-                <div className="flex items-center justify-between mt-2 text-xs">
-                  <span className="font-bold text-brand-deep">
-                    {t.price_range_min != null ? `${formatKsh(t.price_range_min)}+` : "Custom"}
-                    <span className="text-gray-400 font-normal"> /person</span>
-                  </span>
-                  <span className="text-gray-400">{t.item_count} items</span>
+                <div className="flex justify-between items-start mb-3">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep bg-gold px-2.5 py-1 rounded-full">
+                    {t.category.replace(/-/g, " ")}
+                  </p>
+                  <span className="text-xs font-medium text-white/40">{t.item_count} items</span>
+                </div>
+                <h3 className="font-display font-bold text-lg mb-1 group-hover:text-gold transition-colors">{t.name}</h3>
+                <p className="text-sm text-white/50 line-clamp-2 min-h-[2.5rem] mb-4">{t.description}</p>
+                <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Est. per person</p>
+                    <p className="font-bold text-white">
+                      {t.price_range_min != null ? `${formatKsh(t.price_range_min)}+` : "Custom"}
+                    </p>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-gold group-hover:text-brand-deep transition-colors">
+                    <ArrowRight className="w-4 h-4" />
+                  </div>
                 </div>
               </Link>
             ))}
@@ -155,88 +215,126 @@ export default function CorporateCatalogPage() {
         </section>
       )}
 
-      {/* Search + categories */}
-      <div className="max-w-7xl mx-auto px-6 pt-6">
-        <div className="relative max-w-md mb-4">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search the catalog…"
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-brand"
-          />
-        </div>
-        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              !selectedCategory ? "bg-brand text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-brand"
-            }`}
-          >
-            All
-          </button>
-          {categories.map((cat) => (
+      {/* Main Catalog Section */}
+      <main className="max-w-[1600px] mx-auto px-6 sm:px-8 lg:px-12 pb-24 pt-8">
+        {/* Filters & Search */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 sticky top-4 z-40 bg-brand-deep/80 backdrop-blur-xl p-4 -mx-4 rounded-3xl border border-white/5 shadow-2xl">
+          <div className="flex items-center gap-3 overflow-x-auto hide-scrollbar flex-1">
+            <div className="flex items-center gap-2 pr-4 border-r border-white/10">
+              <Filter className="w-4 h-4 text-white/40" />
+              <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Filter</span>
+            </div>
             <button
-              key={cat.id}
-              onClick={() => setSelectedCategory(selectedCategory === cat.slug ? null : cat.slug)}
-              className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-                selectedCategory === cat.slug ? "bg-brand text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-brand"
+              onClick={() => setSelectedCategory(null)}
+              className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                !selectedCategory 
+                  ? "bg-gold text-brand-deep shadow-[0_0_15px_rgba(212,168,83,0.3)]" 
+                  : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
               }`}
             >
-              {cat.name}
+              All Items
             </button>
-          ))}
-        </div>
-      </div>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(selectedCategory === cat.slug ? null : cat.slug)}
+                className={`whitespace-nowrap px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  selectedCategory === cat.slug 
+                    ? "bg-gold text-brand-deep shadow-[0_0_15px_rgba(212,168,83,0.3)]" 
+                    : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
 
-      {/* Grid */}
-      <main className="max-w-7xl mx-auto px-6 py-6">
+          <div className="relative w-full md:w-72 flex-shrink-0">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search products..."
+              className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-gold/50 focus:bg-white/10 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* Product Grid */}
         {!loading && products.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-            <span className="text-4xl block mb-3">🔍</span>
-            <p className="text-gray-500 font-medium">Nothing matches</p>
-            <p className="text-sm text-gray-400 mt-1">Try a different search or category</p>
+          <div className="text-center py-24 bg-white/5 rounded-3xl border border-white/10">
+            <span className="text-5xl block mb-4 opacity-50">🔍</span>
+            <p className="text-white/80 font-display text-2xl font-bold mb-2">No products found</p>
+            <p className="text-white/50">Try adjusting your filters or search terms.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {(loading && products.length === 0 ? Array.from({ length: 10 }) : products).map((product, i) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {(loading && products.length === 0 ? Array.from({ length: 15 }) : products).map((product, i) => {
               const p = product as CatalogProduct;
-              if (!p?.id) return <div key={`skel-${i}`} className="bg-white rounded-2xl animate-pulse aspect-[3/4]" />;
+              if (!p?.id) return <div key={`skel-${i}`} className="bg-white/5 rounded-3xl animate-pulse aspect-[3/4] border border-white/5" />;
+              
               const hasSale = p.sale_price && p.sale_price < p.price;
-              const bulkPrice = Math.round((hasSale ? p.sale_price! : p.price) * 0.9);
+              const currentPrice = hasSale ? p.sale_price! : p.price;
+              const bulkPrice = Math.round(currentPrice * 0.9);
+
               return (
-                <div key={p.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md transition-all">
-                  <Link href={`/product/${p.slug}`} className="block">
-                    <div className="aspect-square bg-gray-100 relative">
+                <div key={p.id} className="group flex flex-col bg-white/5 backdrop-blur-sm rounded-3xl border border-white/10 overflow-hidden hover:border-gold/40 hover:bg-white/10 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(212,168,83,0.15)]">
+                  <Link href={`/product/${p.slug}`} className="block relative aspect-square overflow-hidden bg-[#0A0E17]">
+                    {p.image_url ? (
                       <Image
-                        src={p.image_url || "/placeholder.svg"}
+                        src={p.image_url}
                         alt={p.name}
                         fill
                         sizes="(max-width: 768px) 50vw, 20vw"
-                        className="object-cover"
+                        className="object-cover group-hover:scale-105 group-hover:opacity-90 transition-all duration-700 ease-out"
                       />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-white/10">
+                        <Gift className="w-12 h-12" />
+                      </div>
+                    )}
+                    
+                    {/* Hover Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/90 via-brand-deep/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    <div className="absolute bottom-4 left-0 right-0 px-4 flex justify-center translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <span className="bg-white/10 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-full border border-white/20">
+                        View Details
+                      </span>
                     </div>
                   </Link>
-                  <div className="p-3">
-                    <Link href={`/product/${p.slug}`}>
-                      <h3 className="font-medium text-sm leading-snug line-clamp-2 text-gray-900 min-h-[2.5rem] hover:text-brand transition-colors">
+                  
+                  <div className="p-5 flex flex-col flex-grow">
+                    <Link href={`/product/${p.slug}`} className="flex-grow">
+                      <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-white/90 group-hover:text-gold transition-colors mb-4 min-h-[2.5rem]">
                         {p.name}
                       </h3>
                     </Link>
-                    <div className="mt-1.5">
-                      <p className="text-sm font-bold text-brand-deep">{formatKsh(hasSale ? p.sale_price! : p.price)}</p>
-                      <p className="text-[11px] text-green-600 font-medium">10+ units: {formatKsh(bulkPrice)}</p>
-                    </div>
-                    {p.product_specs && p.product_specs.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {p.product_specs.slice(0, 2).map((spec) => (
-                          <span key={spec.spec_key} className="text-[10px] bg-gray-50 border border-gray-100 text-gray-500 rounded-full px-1.5 py-0.5">
-                            {spec.icon} {spec.spec_value}
-                          </span>
-                        ))}
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-end justify-between">
+                        <div>
+                          <p className="text-[10px] text-white/40 uppercase tracking-wider mb-0.5">Single Unit</p>
+                          <p className="text-sm font-bold text-white">{formatKsh(currentPrice)}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-gold uppercase tracking-wider mb-0.5">Bulk (10+)</p>
+                          <p className="text-sm font-bold text-gold">{formatKsh(bulkPrice)}</p>
+                        </div>
                       </div>
-                    )}
+                      
+                      {p.product_specs && p.product_specs.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 pt-3 border-t border-white/10">
+                          {p.product_specs.slice(0, 2).map((spec) => (
+                            <span key={spec.spec_key} className="text-[9px] font-medium uppercase tracking-wider bg-white/5 border border-white/10 text-white/60 rounded-full px-2 py-1 flex items-center gap-1">
+                              {spec.icon && <span>{spec.icon}</span>}
+                              {spec.spec_value}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -245,14 +343,15 @@ export default function CorporateCatalogPage() {
         )}
 
         {hasMore && (
-          <div className="text-center py-8">
+          <div className="text-center mt-16">
             <button
               onClick={() => fetchPage(page + 1, true)}
               disabled={loading}
-              className="px-6 py-2.5 bg-brand text-white rounded-xl text-sm font-semibold hover:bg-brand-deep disabled:opacity-50 inline-flex items-center gap-2"
+              className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-white/5 text-white rounded-full text-sm font-bold border border-white/10 hover:bg-white/10 hover:border-white/30 transition-all disabled:opacity-50 overflow-hidden"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-              Load More
+              <span className="relative z-10">Load More Products</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
             </button>
           </div>
         )}

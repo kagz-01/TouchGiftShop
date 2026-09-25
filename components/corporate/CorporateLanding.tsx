@@ -11,6 +11,7 @@ import {
   Upload, CheckCircle2, MessageSquare, ArrowRight, Sparkles,
 } from "lucide-react";
 import BackToHome from "@/components/ui/BackToHome";
+import { useMood } from "@/context/MoodContext";
 
 /* ─── Scroll reveal hook ─── */
 function useInView(threshold = 0.2) {
@@ -114,6 +115,8 @@ function CorporateHero() {
     "Upload a CSV. We handle the rest.",
   ];
 
+  const { moodMeta } = useMood();
+
   useEffect(() => { setLoaded(true); }, []);
   useEffect(() => {
     const timer = setInterval(() => setMsgIdx((p) => (p + 1) % messages.length), 3500);
@@ -137,11 +140,22 @@ function CorporateHero() {
 
 
   return (
-    <section className="relative min-h-[80vh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
+    <section 
+      className="dark relative min-h-[80vh] flex items-center overflow-hidden transition-all duration-1000"
+      style={{
+        background: `radial-gradient(ellipse at top, var(--mood-glow, rgba(212,175,55,0.25)) 0%, #1A1A2E 60%, #14080D 100%)`
+      }}
+    >
       {/* Ambient orbs */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[120px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div 
+          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[140px] animate-pulse-soft opacity-30" 
+          style={{ background: "var(--mood-gradient, linear-gradient(135deg, rgba(212,175,55,0.4), rgba(180,60,100,0.3)))" }}
+        />
+        <div 
+          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-[120px] animate-pulse-soft opacity-20" 
+          style={{ background: "var(--mood-glow, rgba(212,175,55,0.25))", animationDelay: "1s" }} 
+        />
       </div>
 
       {/* Grid pattern */}
@@ -152,7 +166,7 @@ function CorporateHero() {
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-12 relative z-40">
         <div className="mb-6">
-          <BackToHome className="text-white/60" />
+          <BackToHome className="text-white/60 hover:text-white transition-colors" />
         </div>
         <div className="grid md:grid-cols-2 gap-8 xl:gap-16 items-center max-w-[1800px] mx-auto">
 
@@ -186,7 +200,7 @@ function CorporateHero() {
             </h1>
 
             {/* Subheadline */}
-            <p className={`text-white/75 max-w-xl mb-8 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            <p className={`text-white/80 max-w-xl mb-8 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.15rem)" }}
             >
               Effortlessly recognize your team and appreciate your clients with curated hampers. We handle the logistics—from single sends to bulk CSV uploads.
@@ -217,37 +231,7 @@ function CorporateHero() {
               </a>
             </div>
 
-            {/* Quick pills */}
-            <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Users className="w-3.5 h-3.5 text-gold" />
-                Employee Recognition
-              </Link>
-              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Hand className="w-3.5 h-3.5 text-brand-light" />
-                Client Appreciation
-              </Link>
-              <Link href="/corporate/build" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <PartyPopper className="w-3.5 h-3.5 text-coral" />
-                Team Milestones
-              </Link>
-              <Link href="/corporate/templates" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Palette className="w-3.5 h-3.5 text-brand-light" />
-                Template Library
-              </Link>
-              <Link href="/corporate/whatsapp" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <MessageSquare className="w-3.5 h-3.5 text-success" />
-                WhatsApp Bot
-              </Link>
-              <Link href="/corporate/white-label" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Briefcase className="w-3.5 h-3.5 text-cyan-400" />
-                White-Label Portal
-              </Link>
-              <Link href="/corporate/showroom" className="flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white transition-all">
-                <Tent className="w-3.5 h-3.5 text-orange-400" />
-                Virtual Showroom
-              </Link>
-            </div>
+
           </div>
 
           {/* Right: Background Auto-scroller (Placeholder for future feature) */}
@@ -319,7 +303,7 @@ function CorporateProblem() {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
           {problems.map((p, i) => (
             <Reveal key={i} delay={300 + i * 120} direction="up">
               <div className="h-full p-6 shape-premium-card card-theme border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden">
@@ -865,27 +849,7 @@ function CorporateCTA() {
           </div>
         </Reveal>
 
-        {/* Secondary feature links */}
-        <Reveal delay={400}>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-10 max-w-3xl mx-auto">
-            <Link href="/corporate/templates" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <Palette className="w-4 h-4 text-gold" />
-              <span className="text-xs font-semibold text-theme-heading">Template Library</span>
-            </Link>
-            <Link href="/corporate/whatsapp" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <MessageSquare className="w-4 h-4 text-success" />
-              <span className="text-xs font-semibold text-theme-heading">WhatsApp Bot</span>
-            </Link>
-            <Link href="/corporate/white-label" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <Briefcase className="w-4 h-4 text-cyan-400" />
-              <span className="text-xs font-semibold text-theme-heading">White-Label Portal</span>
-            </Link>
-            <Link href="/corporate/showroom" className="group flex items-center gap-2 card-theme rounded-xl p-3 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-              <Tent className="w-4 h-4 text-orange-400" />
-              <span className="text-xs font-semibold text-theme-heading">Virtual Showroom</span>
-            </Link>
-          </div>
-        </Reveal>
+
       </div>
     </section>
   );

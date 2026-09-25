@@ -89,6 +89,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
                 "object-cover transition-transform duration-700 ease-out",
                 isHovered && "scale-110"
               )}
+              unoptimized
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-warm">

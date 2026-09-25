@@ -351,7 +351,7 @@ export default function MegaMenu() {
           onMouseLeave={handleMouseLeave}
           className="absolute top-[calc(100%+0.5rem)] left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-5xl z-50 animate-slide-down origin-top"
         >
-          <div className="card-theme shape-premium-card shadow-2xl border border-surface-border overflow-hidden">
+          <div className="bg-white dark:bg-[#1A1A2E] shadow-2xl rounded-3xl border border-gray-200 dark:border-white/10 overflow-hidden">
             <div className="grid grid-cols-12 gap-0">
               <div
                 className={`${

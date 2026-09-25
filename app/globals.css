@@ -484,6 +484,26 @@ html {
     0 10px 40px rgba(255, 215, 0, 0.15);
 }
 
+/* Mega menu specific override: stronger background for readability */
+.mega-menu-card {
+  /* slightly opaque background that adapts to theme */
+  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.94));
+  border-radius: 14px;
+  color: var(--text-primary, #111827);
+}
+[data-theme="dark"] .mega-menu-card {
+  background: linear-gradient(180deg, rgba(10,6,10,0.96), rgba(10,6,10,0.94));
+  color: #f8eef6;
+  border-color: rgba(255,255,255,0.06);
+}
+
+/* Add subtle inner padding and soft drop for the mega menu */
+.mega-menu-card { padding: 0.5rem; box-shadow: 0 24px 80px rgba(12,6,12,0.18); }
+.mega-menu-card .grid { background: transparent; }
+
+/* Reduce backdrop blur for mega menu so content isn't obscured */
+.mega-menu-card { backdrop-filter: none; -webkit-backdrop-filter: none; }
+
 /* Bento card — adapts its transparent bg to whichever section it sits in */
 .bento-card-theme {
   position: relative;

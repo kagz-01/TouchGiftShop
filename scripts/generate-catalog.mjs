@@ -1,0 +1,348 @@
+import fs from 'fs';
+import path from 'path';
+import { stringify } from 'csv-stringify/sync';
+
+const rawProducts = [
+  { name: 'DIAMOND SET 002', price: 2920, colors: 'BLACK, RED, BLUE AND GREEN', prefix: 'SET' },
+  { name: 'ECO-MID PEN SET', price: 780, colors: 'WHITE, GREEN, BLUE, ORANGE AND GREY', prefix: 'SET' },
+  { name: 'notebook code 500', price: 385, colors: 'black, yellow, cyan, purple, grey, Navy blue and royal blue', prefix: 'NBK' },
+  { name: 'CR015 CRYSTAL AWARD', price: 5500, colors: '', prefix: 'AWD' },
+  { name: 'E545 NOTEBOOK', price: 450, colors: 'RED, BLACK, GRAY AND GREEN', prefix: 'NBK' },
+  { name: 'GOLD BAR NOTEBOOK', price: 450, colors: 'BLUE, RED, GREY, GREEN AND BROWN', prefix: 'NBK' },
+  { name: 'SKIN FEEL SET 030', price: 2380, colors: 'blue, red and black', prefix: 'SET' },
+  { name: 'KNY-16 CRYSTAL AWARD', price: 4000, colors: '', prefix: 'AWD' },
+  { name: 'WOODSIDE ECO-NOTEBOOK.', price: 400, colors: 'BLACK, WHITE, BLUE, RED, GREY, ORANGE, GREEN, BROWN', prefix: 'NBK' },
+  { name: 'LADY LUCK & GENTLE JACK GIFT BOX', price: 1000, colors: '', sizes: 'Lady luck size L-33cm W-25cm H-12cm Gentle jack size L- 38cm W- 26cm H-13cm', prefix: 'BOX' },
+  { name: 'Notebook code638-25', price: 400, colors: 'black, red, green, blue, light blue, grey and brown', prefix: 'NBK' },
+  { name: 'clock 1676', price: 2000, colors: '', prefix: 'CLK' },
+  { name: 'KNY-001 CRYSTAL AWARD', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'ITALIAN DESIGN PEN CASES', price: 500, colors: '', prefix: 'ACC' },
+  { name: 'SUBLIMATION FRIDGE MAGNETS', price: 160, colors: 'SILVER, GOLD AND BLACK', prefix: 'ACC' },
+  { name: 'Code 002 Plastic Pens', price: 35, colors: 'Green, Blue, White, Red', prefix: 'PEN' },
+  { name: '2 Tone Mugs', price: 180, colors: 'Red, Blue, Green, Orange, Yellow', prefix: 'MUG' },
+  { name: 'Magic Mugs', price: 210, colors: 'Blue, Red', prefix: 'MUG' },
+  { name: 'Shiny Magic Mug', price: 250, colors: '', prefix: 'MUG' },
+  { name: 'Eco-Base Tumbler', price: 850, colors: 'Blue, Green, Red', prefix: 'FLK' },
+  { name: 'Charger Kit', price: 350, colors: '', sizes: 'Square, Round', prefix: 'ACC' },
+  { name: 'Crystal Clock Desk Organizer', price: 2800, colors: '', prefix: 'DEC' },
+  { name: 'Wood Desk Organizer', price: 1500, colors: 'Maplewood Brown', prefix: 'DEC' },
+  { name: 'Multicolored A5 Carrier Bag', price: 75, colors: '', sizes: 'A5 Portrait Laminated', prefix: 'BAG' },
+  { name: 'Multicolored A4 Carrier Bag', price: 120, colors: '', sizes: 'A4 Portrait Laminated', prefix: 'BAG' },
+  { name: 'White A5 Carrier Bag', price: 70, colors: 'White', sizes: 'A5 Portrait Laminated', prefix: 'BAG' },
+  { name: '0157A Crystal Award', price: 4945, colors: '', prefix: 'AWD' },
+  { name: 'Round Crystal Award', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'UN864 Crystal Laurel Award', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'Bamboo BT Speaker', price: 750, colors: '', prefix: 'TCH' },
+  { name: 'Rectangular Magnetic Name Tag', price: 100, colors: '', prefix: 'ACC' },
+  { name: 'Lapel Pin', price: 40, colors: '', sizes: 'Square 2cm, Rectangle 2cm', prefix: 'ACC' },
+  { name: 'A3 Sisal Buttoned Jute Bag', price: 650, colors: 'Black, Red, Blue, Green', sizes: 'A3', prefix: 'BAG' },
+  { name: 'A3 Landscape Canvas Ribbon Jute Bag', price: 650, colors: 'Blue, Red, Green, Black', sizes: 'A3 Landscape', prefix: 'BAG' },
+  { name: 'Tote Bags', price: 400, colors: 'White with Cream, White with Black', prefix: 'BAG' },
+  { name: 'Hipflask-04', price: 1200, colors: 'Orange', prefix: 'HPF' },
+  { name: 'Mouse Pads', price: 120, colors: '', sizes: 'Round, Rectangle', prefix: 'ACC' },
+  { name: 'Sublimation Mousepad', price: 110, colors: 'White', prefix: 'ACC' },
+  { name: 'Dual Thermal Flask', price: 700, colors: 'Black, Red, Blue, White, Grey, Pink', prefix: 'FLK' },
+  { name: '545 Set', price: 900, colors: 'Gray, Red, Blue, Green', prefix: 'SET' },
+  { name: 'KNY-21 Crystal Award', price: 4100, colors: '', prefix: 'AWD' },
+  { name: 'KNY-4 Crystal Award', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'Round Buckle Pen Set', price: 1000, colors: 'Black, Grey, Navy Blue, Green, Red', prefix: 'SET' },
+  { name: 'Metal Black Keyring', price: 120, colors: '', sizes: 'Rectangle', prefix: 'ACC' },
+  { name: 'A4 Handle Gift Box', price: 650, colors: 'Black, Baby Blue, Gold, Red, Silver, Blue', sizes: 'L-33cm H-12cm W-25cm', prefix: 'BOX' },
+  { name: '0131A Crystal Awards', price: 2800, colors: '', prefix: 'AWD' },
+  { name: '1000ml Flask', price: 950, colors: 'Black, White, Blue, Red, Orange, Yellow', prefix: 'FLK' },
+  { name: 'Wooden Base and Top Gift Set 001', price: 2650, colors: 'Red, Green, Black, Blue, Grey', prefix: 'SET' },
+  { name: 'Wine Tumbler', price: 750, colors: 'Orange, Mocka', prefix: 'FLK' },
+  { name: 'CR006 Crystal Award', price: 4950, colors: '', prefix: 'AWD' },
+  { name: 'Executive Classy Cardholders', price: 250, colors: 'Brown, Grey', prefix: 'ACC' },
+  { name: 'A248 Crystal Award', price: 3500, colors: '', prefix: 'AWD' },
+  { name: '750 ml Skinfeel Thermal Flask', price: 950, colors: 'White, Blue, Red', prefix: 'FLK' },
+  { name: 'Dual Flask Giftset 021', price: 2370, colors: 'Black, Blue, Grey', prefix: 'SET' },
+  { name: 'Cork Bottom Gift Set 002', price: 2590, colors: 'Orange, Red, Blue, Grey, Green, White, Black', prefix: 'SET' },
+  { name: 'clock 22190', price: 1000, colors: '', prefix: 'CLK' },
+  { name: 'CR004 Crystal Award', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'Double Station Mug Printing Machine', price: 24000, colors: '', prefix: 'MAC' },
+  { name: 'CR005 Crystal Award', price: 2900, colors: '', prefix: 'AWD' },
+  { name: 'A109 Crystal Award', price: 3000, colors: '', prefix: 'AWD' },
+  { name: 'Arrow Flasks Gift Sets', price: 3000, colors: 'Black, White', prefix: 'SET' },
+  { name: 'CR018 Crystal Award', price: 3500, colors: '', prefix: 'AWD' },
+  { name: 'A239 Crystal Award', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'CR007 Crystal Award', price: 5000, colors: '', prefix: 'AWD' },
+  { name: 'Rectangular Wooden (double side) Keyholder', price: 60, colors: '', prefix: 'ACC' },
+  { name: 'CR001 Crystal Award', price: 2600, colors: '', prefix: 'AWD' },
+  { name: 'M568 Round Crystal Award', price: 4500, colors: '', prefix: 'AWD' },
+  { name: 'CR003 Crystal Award', price: 2800, colors: '', prefix: 'AWD' },
+  { name: 'Luxury Black A3 Bag', price: 140, colors: '', sizes: 'A3 Landscape', prefix: 'BAG' },
+  { name: 'Luxury Multi Colored A4 Bags', price: 130, colors: 'Red, Blue, Black', sizes: 'A4 Landscape', prefix: 'BAG' },
+  { name: 'Diamond Flask', price: 950, colors: 'Black, Grey, White, Red', prefix: 'FLK' },
+  { name: 'Code 014 Plastic Pen', price: 35, colors: 'Black, Blue, Red, White, Grey, Green', prefix: 'PEN' },
+  { name: 'Rectangular Wooden (one side) Metallic Keyring', price: 150, colors: '', prefix: 'ACC' },
+  { name: 'Double Cork Notebook Pen Set', price: 780, colors: 'Green, Grey, Orange, Brown', prefix: 'SET' },
+  { name: 'Arrow Steel Flask', price: 850, colors: 'Black, White, Red, Blue, Grey, Pink', prefix: 'FLK' },
+  { name: 'European Design Pen Cases', price: 450, colors: '', prefix: 'ACC' },
+  { name: 'CR011 Crystal Award', price: 4500, colors: '', prefix: 'AWD' },
+  { name: 'KNY-5 Crystal Award', price: 3800, colors: '', prefix: 'AWD' },
+  { name: 'Round curved plastic pen', price: 20, colors: 'Blue, Green, White, Black, Red', prefix: 'PEN' },
+  { name: 'Executive Bamboo Notebook', price: 420, colors: 'Red, Brown, Orange, Black, Green, Blue', prefix: 'NBK' },
+  { name: 'CR012 Crystal Award', price: 5800, colors: '', prefix: 'AWD' },
+  { name: 'CODE P009', price: 150, colors: '', prefix: 'ACC' },
+  { name: 'Notebook 128', price: 500, colors: 'Gray, Red, Green, Blue, Black', prefix: 'NBK' },
+  { name: 'Band Flexy Notebook', price: 380, colors: 'Black, White, Red, Brown, Orange', prefix: 'NBK' },
+  { name: 'Diamond Flask Set', price: 2460, colors: 'Black, White, Red, Gray', prefix: 'SET' },
+  { name: 'Clock 22197', price: 999, colors: '', prefix: 'CLK' },
+  { name: 'Classic Combo Bamboo Set', price: 800, colors: '', prefix: 'SET' },
+  { name: 'A5 Band Notebooks', price: 380, colors: 'White, Orange, Wood, Brown, Green, Grey', prefix: 'NBK' },
+  { name: 'E59 Pen Set', price: 900, colors: 'Gray, Blue, Red, Green, Black', prefix: 'SET' },
+  { name: 'Diamond Mug 007', price: 2785, colors: 'Red, Blue, Green, Black', prefix: 'MUG' },
+  { name: '40cmx60cm Heat Press Machine', price: 48000, colors: 'Red', prefix: 'MAC' },
+  { name: '2 in 1 Laptop Sleeve', price: 1500, colors: 'Blue, Black', prefix: 'ACC' },
+  { name: 'Novac Gift Set 005', price: 2290, colors: 'Black, Blue, Orange, Red, Gray, White', prefix: 'SET' },
+  { name: 'Wooden Metallic keyring', price: 120, colors: '', prefix: 'ACC' },
+  { name: 'B5 Gold Strip Notebook', price: 700, colors: 'Black, Red, Brown, Grey, Blue', prefix: 'NBK' },
+  { name: 'Sleek Tumbler', price: 850, colors: 'Black, White, Blue, Red, Blush Pink', prefix: 'FLK' },
+  { name: 'A3 Landscape Printed Jute Bag', price: 650, colors: 'Red', prefix: 'BAG' },
+  { name: 'UN863', price: 3200, colors: '', prefix: 'AWD' },
+  { name: 'CODE P011', price: 150, colors: '', prefix: 'ACC' },
+  { name: 'Executive Wooden Finish Powerbank 10,000MAH', price: 2000, colors: '', prefix: 'TCH' },
+  { name: 'Jerrycan Alcohol Cabinet Storage Bar', price: 10500, colors: '', prefix: 'DEC' },
+  { name: 'A5 Executive Round Buckle Notebook', price: 600, colors: 'Black, Red, Blue, Jungle Green, Grey, Brown', prefix: 'NBK' },
+  { name: 'clock 1685', price: 2000, colors: '', prefix: 'CLK' },
+  { name: 'CR002 Crystal Award', price: 5000, colors: '', prefix: 'AWD' },
+  { name: 'Magnet Buckle Set', price: 2550, colors: 'Red, Blue, Gray', prefix: 'SET' },
+  { name: 'Diamond Flask Gift Set 001', price: 2700, colors: 'Blue, Grey, Black', prefix: 'SET' },
+  { name: 'Woodbase and Top Giftset 002', price: 2670, colors: 'Green, Red, Black, Blue, Grey', prefix: 'SET' },
+  { name: 'Bamboo Giftets', price: 2330, colors: 'Green, Black, Blue, Red', prefix: 'SET' },
+  { name: 'Wooden Pen Case', price: 380, colors: '', prefix: 'ACC' },
+  { name: 'Crystal Clock', price: 1500, colors: '', prefix: 'CLK' },
+  { name: 'Woodbase and Top Giftset 005', price: 2990, colors: 'Red, Blue, Black, Green', prefix: 'SET' },
+  { name: 'Stanley Cups', price: 1200, colors: 'Black, White, Ash Grey, Latte, Baby Blue, Mocha, Pink', sizes: '1.4 Litres', prefix: 'FLK' },
+  { name: 'New Frostedplastic Water Bottle (Code 003)', price: 650, colors: 'Blue, Gray', prefix: 'BOT' },
+  { name: 'KNY-13 Kenya Crystal Award', price: 3000, colors: '', prefix: 'AWD' },
+  { name: 'Notebook Carrier Bag', price: 30, colors: 'Blue, Black', prefix: 'BAG' },
+  { name: 'Military Jerrycan Minibar', price: 10500, colors: 'Military Green', prefix: 'DEC' },
+  { name: 'Black A3 Carrier Bag', price: 130, colors: 'Black', prefix: 'BAG' },
+  { name: 'Laptop Sleeve', price: 1500, colors: 'Blue, Black', prefix: 'ACC' },
+  { name: 'Wall Clock 6802E', price: 1200, colors: 'Black, White', prefix: 'CLK' },
+  { name: 'Beer Opener', price: 99, colors: '', prefix: 'ACC' },
+  { name: 'Classy Portrait Gift Bag', price: 300, colors: '', sizes: 'H 33cm L 26cm W 17cm', prefix: 'BAG' },
+  { name: 'Skinfeel Set 010', price: 2740, colors: 'Blue, Red, Green', prefix: 'SET' },
+  { name: 'Cocktail Tumblers', price: 690, colors: 'Mint Green, Red, Pink', prefix: 'FLK' },
+  { name: 'Checked Set 001', price: 2550, colors: 'Gray, Red, Black, Blue', prefix: 'SET' },
+  { name: 'Oval Metalic Keyring', price: 120, colors: '', prefix: 'ACC' },
+  { name: 'Baoke Pen', price: 55, colors: 'Black', prefix: 'PEN' },
+  { name: 'Novac Giftset 004', price: 2685, colors: 'Red, Blue, Black, White, Grey, Green', prefix: 'SET' },
+  { name: 'Fire Extinguisher Mini-Bar Set', price: 8500, colors: '', prefix: 'DEC' },
+  { name: 'Bamboo Notebook Pen Set', price: 780, colors: 'Black, Grey, Green', prefix: 'SET' },
+  { name: 'Canavas Laptop Bags', price: 2300, colors: 'White, Black', prefix: 'BAG' },
+  { name: 'Stairs Gift Box', price: 0, colors: 'Silver, Gold, Black, White', sizes: 'Size 1, Size 2, Size 3', prefix: 'BOX' },
+  { name: 'Smart Clock', price: 1800, colors: '', prefix: 'CLK' },
+  { name: 'Diamond Set 003', price: 2600, colors: 'Red, Green, Blue, Gray', prefix: 'SET' },
+  { name: 'Round Buckle Set023', price: 2505, colors: 'Black, Red, Green, Blue, Grey', prefix: 'SET' },
+  { name: 'Starbuck Mugs', price: 800, colors: 'Pink', prefix: 'MUG' },
+  { name: 'Clock 22395', price: 2000, colors: '', prefix: 'CLK' },
+  { name: 'Coasters', price: 180, colors: '', sizes: 'Round, Toothed, Square', prefix: 'ACC' },
+  { name: 'Wall Clock 22199', price: 1200, colors: 'Silver, Black', prefix: 'CLK' },
+  { name: 'KNY-17 Crystal Award', price: 4100, colors: '', prefix: 'AWD' },
+  { name: 'Rubber Hold Water Bottle', price: 500, colors: 'Black, White, Red', prefix: 'BOT' },
+  { name: '40cm*50cm heat press machine', price: 34000, colors: '', prefix: 'MAC' },
+  { name: 'KNY-25 Crystal Award', price: 3800, colors: '', prefix: 'AWD' },
+  { name: 'WB271', price: 2800, colors: '', prefix: 'AWD' },
+  { name: 'Mountain Climber Crystal Award', price: 5800, colors: '', prefix: 'AWD' },
+  { name: 'Visibility Pack', price: 2280, colors: '', prefix: 'SET' },
+  { name: 'Stylish Acrylic Pen Case', price: 100, colors: '', prefix: 'ACC' },
+  { name: 'Ceramic Mug', price: 160, colors: 'White', prefix: 'MUG' },
+  { name: 'Boba Thermal Flask', price: 800, colors: 'Blue', prefix: 'FLK' },
+  { name: 'Code P004', price: 150, colors: 'Black, Red, Blue, Brown', prefix: 'ACC' },
+  { name: 'Wave A5 Notebook', price: 450, colors: 'Blue, Brown, Red, Grey', prefix: 'NBK' },
+  { name: 'Long Neck Thermal Flask', price: 1000, colors: 'Red, Black, White', sizes: '800ml', prefix: 'FLK' },
+  { name: 'Code P008', price: 150, colors: '', prefix: 'ACC' },
+  { name: 'Code P006', price: 180, colors: 'Black, Red, Blue, Grey, Brown', prefix: 'ACC' },
+  { name: 'Luxury White A4 Bags', price: 110, colors: 'White', sizes: 'H 25cm L 30cm W 12cm', prefix: 'BAG' },
+  { name: 'Hipflask-01', price: 1500, colors: 'Beige', prefix: 'HPF' },
+  { name: 'Novac Set 006', price: 2570, colors: 'Black, Red, Gray', prefix: 'SET' },
+  { name: 'Woodbase and Top Giftset 003', price: 2490, colors: 'Black, Red, Blue, Green', prefix: 'SET' },
+  { name: 'Notebook code-698', price: 395, colors: 'Black, Red, Green, Blue, Grey', prefix: 'NBK' },
+  { name: 'Executive Metal Pen', price: 100, colors: 'Blue, Red, Gold, Silver, Orange, Green', prefix: 'PEN' },
+  { name: 'Aluminium Water Bottles', price: 490, colors: 'Red', prefix: 'BOT' },
+  { name: 'Arm Stand Clock', price: 600, colors: '', prefix: 'CLK' },
+  { name: 'Round Buckle Set 002', price: 2735, colors: 'Red, Gray, Blue, Black', prefix: 'SET' },
+  { name: 'Old Java Mug', price: 800, colors: 'Black, White, Blue, Green, Turquoise, Red', prefix: 'MUG' },
+  { name: 'KNY-18 Crystal Award', price: 3500, colors: '', prefix: 'AWD' },
+  { name: 'clock 22914', price: 1350, colors: 'Brown, Gold', prefix: 'CLK' },
+  { name: 'Sport Water Bottles', price: 490, colors: 'Black, White, Red, Pink', prefix: 'BOT' },
+  { name: 'Gold Strip Gift Set', price: 2730, colors: 'Blue, Grey, Black, Red', prefix: 'SET' },
+  { name: 'clock 21793', price: 2000, colors: 'Gold', prefix: 'CLK' },
+  { name: 'Woodbase Eco-Notebooks', price: 400, colors: 'White, Black, Grey, Brown, Green, Orange', sizes: 'A5', prefix: 'NBK' },
+  { name: '2 ring gold', price: 100, colors: 'Gold, Red, Navy Blue, Royal Blue, Black, White', prefix: 'PEN' },
+  { name: 'Goldrim Tumbler Straw', price: 200, colors: '', prefix: 'ACC' },
+  { name: 'click plastic pen', price: 20, colors: 'Blue, Red, Black, White, Green', prefix: 'PEN' },
+  { name: 'Eco- Cup', price: 450, colors: 'White, Black', prefix: 'MUG' },
+  { name: 'Luxury Pens', price: 299, colors: 'Blue, Red', prefix: 'PEN' },
+  { name: 'B5 Bamboo Flap Notebook', price: 690, colors: 'Orange, Red, Blue, Green, Black', sizes: 'B5', prefix: 'NBK' },
+  { name: 'code 007', price: 85, colors: 'Red, Grey, Royal Blue, Green', prefix: 'PEN' },
+  { name: 'Notebook code -025', price: 390, colors: 'Cyan, Grey, Black, Red, Navy Blue', prefix: 'NBK' },
+  { name: 'SET E128', price: 900, colors: 'Black, Blue, Gray, Green, Red', prefix: 'SET' },
+  { name: 'CLICK METAL PEN', price: 80, colors: 'Blue, Green, Red, Gray, Silver', prefix: 'PEN' },
+  { name: 'KNY-20 CRYSTAL AWARD', price: 4000, colors: '', prefix: 'AWD' },
+  { name: 'Hipflask-03', price: 1200, colors: 'Blue', prefix: 'HPF' },
+  { name: '0383 CRYSTAL AWARD', price: 3000, colors: '', prefix: 'AWD' },
+  { name: 'CODE P010', price: 150, colors: '', prefix: 'ACC' },
+  { name: 'GOLD STRIP SET', price: 2730, colors: 'Dark Blue, Gray, Black, Red', prefix: 'SET' },
+  { name: 'code 638- 25 note book- pen set', price: 900, colors: '', prefix: 'SET' },
+  { name: 'WOODEN LID WATER BOTTLE', price: 490, colors: 'Red, Black, White, Blue, Green, Orange, Purple, Pink', prefix: 'BOT' },
+  { name: '6080 CRYSTAL AWARD', price: 3500, colors: '', prefix: 'AWD' },
+  { name: 'CODE P005', price: 180, colors: 'Black, Red, Blue, Grey, Brown, Beige', prefix: 'ACC' },
+  { name: 'POWERBANK NOTEBOOK', price: 3500, colors: 'Black, Blue, Grey, Red, Orange', prefix: 'NBK' },
+  { name: 'CR013 CRYSTAL AWARD', price: 3500, colors: '', prefix: 'AWD' },
+  { name: 'GOLDBAR SET', price: 900, colors: 'Blue, Grey, Red, Brown', prefix: 'SET' },
+  { name: 'CORCK BOTTOM SET', price: 2590, colors: 'Orange, Black, Red, Gray, Green', prefix: 'SET' },
+  { name: 'AFRICA CRYSTAL AWARD', price: 4500, colors: '', prefix: 'AWD' },
+  { name: 'WAVES SET 001', price: 2600, colors: 'Red, Blue, Gray, Brown', prefix: 'SET' },
+  { name: 'DIAMOND TUMBLER SET', price: 2700, colors: 'Red, Blue, Black, Grey, Green', prefix: 'SET' },
+  { name: 'NEW JAVA MUGS', price: 830, colors: 'Turquoise, Red, Black, Navy Blue, Royal Blue, Jungle Green', prefix: 'MUG' },
+  { name: 'ECO-SIDE PEN SET', price: 780, colors: 'Black, White, Green, Red, Brown, Grey, Orange', prefix: 'SET' },
+  { name: 'KNY-10 CRYSTAL AWARD', price: 3500, colors: '', prefix: 'AWD' },
+  { name: 'B5 U-BUCKLE NOTEBOOK', price: 750, colors: 'Red', prefix: 'NBK' },
+  { name: 'DUAL FLASKS SET 008', price: 2470, colors: 'Grey, Black, White, Red, Blue', prefix: 'SET' },
+  { name: 'NOTEBOOK E59', price: 450, colors: 'Gray, Red, Blue, Black', prefix: 'NBK' },
+  { name: 'EXECUTIVE CARDHOLDER', price: 250, colors: 'Red, Blue, Black', prefix: 'ACC' },
+  { name: 'UN868', price: 4000, colors: '', prefix: 'AWD' },
+  { name: 'Notebook code- E105', price: 550, colors: 'Black, Green, Blue, Red, Grey', prefix: 'NBK' },
+  { name: 'Code 013', price: 150, colors: 'Red', prefix: 'PEN' },
+  { name: 'BAMBOO NOTEBOOKS', price: 400, colors: 'Black, Green, Blue, Red, Brown', prefix: 'NBK' },
+  { name: 'NOVA GIFT SET 002', price: 2390, colors: 'Orange, Red, Blue, Grey, Black', prefix: 'SET' },
+  { name: 'CR023 CRYSTAL AWARD', price: 4900, colors: '', prefix: 'AWD' },
+  { name: 'BLACK CARRIER A4 BAG', price: 130, colors: '', sizes: 'H 31cm L 27cm W 11cm', prefix: 'BAG' },
+  { name: 'STANLEY MUG STRAWS', price: 200, colors: '', prefix: 'ACC' },
+  { name: 'GOLDBAR SET 001', price: 2600, colors: 'Red, Green, Blue, Gray', prefix: 'SET' },
+  { name: 'Hipflask-05', price: 1200, colors: 'Black', prefix: 'HPF' },
+  { name: 'STANLEY MUG 1.4L', price: 1200, colors: 'Black, White, Pink, Ash Grey, Mocka, Baby Blue', sizes: '1.4L', prefix: 'FLK' },
+  { name: 'NOVAC FLASK', price: 850, colors: 'Red, Blue, Orange, Grey, White, Turquoise', prefix: 'FLK' },
+  { name: '15cm*15cm small heat press machine', price: 19000, colors: '', prefix: 'MAC' },
+  { name: 'LID GIFT BOX', price: 600, colors: 'White, Black, Red, Grey/Silver, Gold', sizes: 'L=33cm W=24cm H=12cm', prefix: 'BOX' },
+  { name: 'WOODBASE AND TOP GIFTSET 004', price: 2490, colors: 'White, Red, Blue, Green, Grey', prefix: 'SET' },
+  { name: 'SPORTY WATER BOTTLE', price: 490, colors: 'Black, White, Red, Pink', prefix: 'BOT' },
+  { name: 'E30 notebook pen set', price: 950, colors: 'Black, Blue, Jungle Green', prefix: 'SET' },
+  { name: 'clock 22569', price: 2000, colors: '', prefix: 'CLK' },
+  { name: 'TALL THERMAL FLASK', price: 800, colors: 'Orange', prefix: 'FLK' },
+  { name: 'WAVES SET', price: 900, colors: 'Blue, Gray, Red, Brown', prefix: 'SET' },
+  { name: 'UN862', price: 4500, colors: '', prefix: 'AWD' },
+  { name: 'A5 Curved Notebooks', price: 550, colors: 'Royal Blue, Light Blue, Grey, Green, Brown, Black, Orange, Red', prefix: 'NBK' },
+  { name: 'Silver Buckle Set', price: 900, colors: 'Black, Blue, Red, Brown, Grey', prefix: 'SET' },
+  { name: 'Code 012', price: 150, colors: 'Green', prefix: 'PEN' },
+  { name: 'Diamond Tumbler', price: 850, colors: 'Black, White, Royal Blue, Navy Blue, Green, Red', prefix: 'FLK' },
+  { name: 'clock 2856- 1', price: 2000, colors: '', prefix: 'CLK' },
+  { name: 'E105 Notebook - pen set', price: 950, colors: '', prefix: 'SET' },
+  { name: 'Hip Flask 06', price: 2100, colors: 'Brown', prefix: 'HPF' },
+  { name: 'Sheriff\'s Shield Crystal Award', price: 7400, colors: '', prefix: 'AWD' },
+  { name: 'Tea Handle Mug', price: 1200, colors: 'Black, White, Blue, Red, Grey, Green', prefix: 'MUG' }
+];
+
+const generateSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+
+const getDescription = (prefix, name) => {
+  const lName = name.toLowerCase();
+  switch (prefix) {
+    case 'NBK':
+      if (lName.includes('cork') || lName.includes('eco') || lName.includes('bamboo')) {
+        return 'An eco-friendly, premium executive notebook designed for professionals who value sustainability. Features high-quality pages and a stunning, durable cover for all your planning and journaling needs.';
+      }
+      return 'An elegant and professional A5 executive notebook. Features a premium finish, secure closure, and high-quality lined pages. The perfect corporate gift for meetings, journaling, and daily organization.';
+    case 'FLK':
+    case 'BOT':
+      return 'A premium thermal flask designed to maintain the perfect temperature for your hot or cold beverages. Crafted for durability and style, making it an excellent companion for the office or outdoor adventures.';
+    case 'HPF':
+      return 'A classic, sophisticated hipflask crafted from premium materials. Designed with elegance and discretion in mind. The perfect luxury gift for him for birthdays, anniversaries, or corporate milestones.';
+    case 'SET':
+      return 'A luxurious corporate gift set curated for maximum impact. Features premium matching accessories presented in an elegant box. Perfect for executive gifting, client appreciation, and employee milestones.';
+    case 'BOX':
+      return 'A premium, sturdy gift box designed to elevate any present. Features an elegant finish and secure closure to ensure your gift makes a stunning first impression before it is even opened.';
+    case 'MUG':
+      return 'A high-quality, insulated mug featuring a comfortable handle and secure lid. Perfect for keeping your morning coffee hot or your evening tea warm while working at the desk.';
+    case 'PEN':
+      if (lName.includes('bamboo') || lName.includes('eco')) {
+         return 'An eco-friendly executive pen designed for smooth writing and a comfortable grip. A sustainable, elegant choice for corporate branding and gifting.';
+      }
+      return 'A high-quality, professional executive pen designed for smooth writing. Perfect for corporate branding, daily office use, and client gifting.';
+    case 'DEC':
+      if (lName.includes('clock')) {
+        return 'An elegant crystal clock desk organizer that combines timekeeping with style. A premium statement piece for any executive desk or conference room.';
+      }
+      return 'A beautifully crafted wooden desk organizer designed to bring warmth and structure to your workspace. Perfect for executive offices, corporate gifts, and stylish home setups.';
+    case 'MUG':
+      if (lName.includes('magic')) {
+        return 'A fun and premium heat-sensitive magic mug that reveals a hidden design when filled with a hot beverage. A unique, memorable corporate gift or personal keepsake.';
+      }
+      if (lName.includes('2 tone') || lName.includes('two tone')) {
+        return 'A vibrant, high-quality two-tone ceramic mug featuring a coloured interior and handle. Perfect for morning coffee, corporate branding, and personalised gifting.';
+      }
+      return 'A high-quality, premium ceramic mug perfect for your morning coffee or evening tea. An ideal canvas for corporate logo branding and personalised gifting.';
+    case 'BAG':
+      if (lName.includes('jute') || lName.includes('canvas') || lName.includes('tote') || lName.includes('sisal')) {
+        return 'A premium eco-friendly reusable bag crafted from natural materials. Ideal for corporate events, branded gifting, and sustainable retail packaging. Customizable with your logo for a lasting impression.';
+      }
+      return 'A premium laminated paper carrier bag, perfect for retail packaging, corporate events, and branded gifting. Sturdy, stylish, and an elegant finishing touch for any gift.';
+    case 'AWD':
+      return 'A stunning crystal award crafted with precision and elegance. Ideal for recognizing employee excellence, corporate milestones, and distinguished achievement. Fully customizable with your logo or engraving.';
+    case 'TCH':
+      return 'A premium eco-friendly bamboo Bluetooth speaker with seamless 5.0 connectivity up to 33ft. A high-quality, sustainable tech gift that combines natural aesthetics with powerful sound performance.';
+    case 'MAC':
+      return 'A high-quality, professional grade machine to support your customized branding and printing business.';
+    case 'ACC':
+    case 'CLK':
+    default:
+      if (lName.includes('keyring')) {
+        return 'A premium customized keyring crafted with care. An excellent personalized accessory for your keys, making it a thoughtful small corporate gift or personal keepsake.';
+      }
+      return 'A premium executive accessory designed to add a touch of elegance to any office desk or home workspace. Crafted with attention to detail and high-quality materials.';
+  }
+};
+
+const records = rawProducts.map((p, idx) => {
+  const num = (idx + 1).toString().padStart(3, '0');
+  const sku = `${p.prefix}-${num}`;
+  
+  // Create tags based on prefix
+  const tags = ['corporate'];
+  if (p.prefix === 'NBK') tags.push('notebook', 'stationery');
+  if (p.prefix === 'HPF') tags.push('hipflask', 'drinkware');
+  if (p.prefix === 'FLK' || p.prefix === 'BOT') tags.push('flask', 'drinkware');
+  if (p.prefix === 'BOX') tags.push('gift box', 'packaging');
+  if (p.prefix === 'SET') tags.push('gift set', 'premium');
+  if (p.prefix === 'PEN') tags.push('pen', 'stationery', 'branding');
+  if (p.prefix === 'DEC') tags.push('desk', 'office', 'decor', 'organizer');
+  if (p.prefix === 'BAG') tags.push('bag', 'packaging', 'carrier bag');
+  if (p.prefix === 'AWD') tags.push('award', 'trophy', 'crystal', 'recognition');
+  if (p.prefix === 'TCH') tags.push('tech', 'speaker', 'bluetooth', 'bamboo');
+  if (p.prefix === 'MAC') tags.push('machine', 'printing', 'equipment');
+
+  // Format colors into array
+  const colorArray = p.colors ? p.colors.split(',').map(c => c.trim()) : [];
+  
+  // Format sizes into array
+  const sizeArray = p.sizes ? p.sizes.split(',').map(s => s.trim()) : [];
+
+  return {
+    name: p.name,
+    slug: generateSlug(p.name),
+    description: getDescription(p.prefix, p.name),
+    price: p.price,
+    sale_price: '',
+    image_url: '', // Leave blank for the script to fill!
+    images: '[]',
+    is_personalizable: 'TRUE', // As per user instruction, corporate gifts are highly customizable!
+    in_stock: 'TRUE',
+    stock_quantity: 100,
+    sku: sku,
+    status: 'published',
+    weight_kg: 0.5,
+    tags: JSON.stringify(tags),
+    color_variants: JSON.stringify(colorArray),
+    size_variants: JSON.stringify(sizeArray)
+  };
+});
+
+const csvContent = stringify(records, { header: true });
+const outputPath = path.join(process.cwd(), 'master_catalog.csv');
+fs.writeFileSync(outputPath, csvContent);
+
+console.log(`Generated master_catalog.csv with ${records.length} products! Added all pens.`);

@@ -31,6 +31,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-108"
+            unoptimized
           />
 
           {/* Hover overlay */}
