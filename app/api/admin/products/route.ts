@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
@@ -48,6 +49,13 @@ const ALLOWED_FIELDS = [
   "tags", "seo_title", "seo_description",
   "color_variants", "size_variants", "is_coming_soon",
 ];
+
+// Homepage + sitemap are prerendered; without this, edits only show up on the
+// next ISR cycle (or next deploy).
+function revalidateCatalog() {
+  revalidatePath("/");
+  revalidatePath("/sitemap.xml");
+}
 
 // GET /api/admin/products?search=...&category=...&in_stock=true&status=published&limit=50&offset=0
 export async function GET(req: Request) {
@@ -163,6 +171,8 @@ export async function POST(req: Request) {
     payload: { productId: product.id, name: product.name },
   });
 
+  revalidateCatalog();
+
   return NextResponse.json({ product }, { status: 201 });
 }
 
@@ -220,6 +230,8 @@ export async function PATCH(req: Request) {
     payload: { productId: id, updates: cleanUpdates },
   });
 
+  revalidateCatalog();
+
   return NextResponse.json({ success: true });
 }
 
@@ -249,6 +261,8 @@ export async function DELETE(req: Request) {
     event: "product-deleted",
     payload: { productId: id },
   });
+
+  revalidateCatalog();
 
   return NextResponse.json({ success: true });
 }

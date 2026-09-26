@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
 import { requireAdmin } from "@/lib/admin-auth";
 
@@ -220,6 +221,10 @@ export async function POST(req: Request) {
 
   if (summary.created + summary.updated > 0) {
     await broadcast("products-imported", { created: summary.created, updated: summary.updated });
+    // Homepage is prerendered — purge it so re-imported products show up now,
+    // not on the next ISR cycle.
+    revalidatePath("/");
+    revalidatePath("/sitemap.xml");
   }
 
   return NextResponse.json(summary);

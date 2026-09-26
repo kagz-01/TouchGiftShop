@@ -61,6 +61,26 @@ const PRESENCE_MESSAGES: Record<Mood | "custom", PresenceMessage[]> = {
     { text: "{name}, your vibe is unique — so should the gift be.", emoji: "🌟", cta: "Browse gifts", ctaHref: "/shop" },
     { text: "Still here, {name}? Let's find something truly special.", emoji: "💫", cta: "Explore now", ctaHref: "/shop" },
   ],
+  flowers: [
+    { text: "Still choosing, {name}? Say it with flowers 🌹", emoji: "🌹", cta: "Shop flowers", ctaHref: "/shop" },
+    { text: "{name}, the right arrangement says everything.", emoji: "💐", cta: "See arrangements", ctaHref: "/shop" },
+    { text: "Don't wait for the occasion, {name}. Send them today 🌸", emoji: "🌸", cta: "Send flowers", ctaHref: "/shop" },
+  ],
+  liquor: [
+    { text: "Still deciding, {name}? Raise a glass to it 🥂", emoji: "🥂", cta: "Shop spirits", ctaHref: "/shop" },
+    { text: "{name}, milestones deserve something worth toasting.", emoji: "🍾", cta: "See gift boxes", ctaHref: "/shop" },
+    { text: "The celebration's waiting, {name}. Grab the bottle 🍷", emoji: "🍷", cta: "Browse liquor", ctaHref: "/shop" },
+  ],
+  perfumes: [
+    { text: "Still searching for their scent, {name}? ✨", emoji: "✨", cta: "Shop perfumes", ctaHref: "/shop" },
+    { text: "{name}, a signature fragrance is never forgotten.", emoji: "🌸", cta: "See designer scents", ctaHref: "/shop" },
+    { text: "Leave a memory behind, {name} — it starts with a bottle 💫", emoji: "💫", cta: "Browse fragrances", ctaHref: "/shop" },
+  ],
+  hampers: [
+    { text: "Still browsing, {name}? The best gifts overflow 🧺", emoji: "🧺", cta: "Shop hampers", ctaHref: "/shop" },
+    { text: "{name}, abundance looks good on everyone.", emoji: "🍎", cta: "See hampers", ctaHref: "/shop" },
+    { text: "One basket, every reason to celebrate, {name} 🎁", emoji: "🎁", cta: "Build a hamper", ctaHref: "/gift-lab" },
+  ],
 };
 
 // Return time messages — shown when user returns after inactivity
@@ -74,6 +94,10 @@ const RETURN_MESSAGES: Record<Mood | "custom", string[]> = {
   corp_milestone: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   corp_welcome: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   custom:       ["Good to see you back, {name}! ✨",                  "Hey {name}, welcome back — let's find that gift."],
+  flowers:      ["Welcome back, {name}! 🌹 Something beautiful is waiting.", "Missed you, {name}! Let's pick out the perfect arrangement."],
+  liquor:       ["You came back, {name} 🥂 The toast is on hold.",    "Welcome back, {name} — let's find something worth opening."],
+  perfumes:     ["Back again, {name}! ✨ Their signature scent is here.", "Welcome back, {name} — a memory in a bottle awaits."],
+  hampers:      ["The basket's still waiting, {name}! 🧺",            "Welcome back, {name} — let's fill it with something wonderful."],
 };
 
 // ── Idle thresholds ──────────────────────────────────────────────────────────

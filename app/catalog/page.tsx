@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { Suspense, useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, Gift } from "lucide-react";
@@ -39,7 +39,7 @@ is_coming_soon?: boolean;
 
 const PAGE_SIZE = 24;
 
-export default function CatalogPage() {
+function CatalogPage() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category");
 
@@ -317,5 +317,21 @@ export default function CatalogPage() {
         )}
       </main>
     </div>
+  );
+}
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <CatalogPage />
+    </Suspense>
   );
 }

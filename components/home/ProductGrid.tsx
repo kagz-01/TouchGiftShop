@@ -47,7 +47,9 @@ async function getProducts(params: ShopParams): Promise<{
     selectCols = "*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)";
   }
 
-  let query = supabaseAdmin.from("products").select(selectCols, { count: "exact" });
+  // "estimated" — count only feeds the "Showing X of Y" label (hasMore comes
+  // from the row count of range(0, limit)), so skip the exact aggregate.
+  let query = supabaseAdmin.from("products").select(selectCols, { count: "estimated" });
 
   if (effectiveCategory) {
     const dbSlugs = getDbSlugs(effectiveCategory);

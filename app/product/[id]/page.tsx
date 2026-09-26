@@ -9,6 +9,7 @@ import ProductReviews from "@/components/reviews/ProductReviews";
 import ProductGallery from "@/components/product/ProductGallery";
 import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag } from "lucide-react";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
 
 async function getProduct(id: string): Promise<Product | null> {
@@ -29,16 +30,17 @@ async function getProduct(id: string): Promise<Product | null> {
 }
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  try {
-    const product = await getProduct(params.id);
-    if (!product) return { title: "Product Not Found | TouchGift" };
-    return {
-      title: `${product.name} | TouchGift`,
-      description: product.description?.slice(0, 155) ?? `Send ${product.name} as a gift. Same-day delivery in Nairobi.`,
-    };
-  } catch {
-    return { title: "Product | TouchGift" };
-  }
+  const product = await getProduct(params.id);
+
+  // Throw here, not in the page: this await is long enough that Next flushes
+  // the streaming shell (status 200) first, and a later notFound() can no
+  // longer downgrade the response to 404. getProduct never throws.
+  if (!product) notFound();
+
+  return {
+    title: `${product.name} | TouchGift`,
+    description: product.description?.slice(0, 155) ?? `Send ${product.name} as a gift. Same-day delivery in Nairobi.`,
+  };
 }
 
 function StructuredDescription({ text }: { text: string }) {
@@ -89,24 +91,9 @@ export default async function ProductPage({
 }) {
   const product = await getProduct(params.id);
 
-  if (!product) {
-    return (
-      <div className="min-h-screen section-theme-a flex items-center justify-center px-4">
-        <div className="text-center">
-          <span className="text-6xl block mb-4">🔍</span>
-          <p className="font-display text-xl font-semibold mb-2">Product not found</p>
-          <p className="text-brand-muted mb-6">This gift doesn&apos;t exist or has been removed.</p>
-          <Link
-            href="/shop"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-semibold rounded-2xl hover:bg-brand-dark transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Shop
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // Must be a real 404 — returning 200 with a "not found" body tells Google to
+  // index every missing product URL.
+  if (!product) notFound();
 
   const PERSONALIZE_KEYWORDS = [
     "custom", "personali", "engrav", "monogram", "bespoke",

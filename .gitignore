@@ -1,7 +1,10 @@
 node_modules
 .env.local
 .next
+.agent
+.cache  
 tsconfig.tsbuildinfo
 
 # local db artifacts
 db/sqlite.db
+promohub-pictures

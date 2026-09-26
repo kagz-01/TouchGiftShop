@@ -21,6 +21,13 @@ import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
 import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
 
+/**
+ * The homepage is prerendered — without this it is frozen at build time and
+ * keeps showing products that have since been deleted from the catalog.
+ * 60s keeps the edge copy fresh while still absorbing bursts of traffic.
+ */
+export const revalidate = 60;
+
 async function getByCategory(categorySlug: string, limit = 10): Promise<Product[]> {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

@@ -12,6 +12,12 @@ interface MotionCardProps {
   tilt?: boolean;
 }
 
+// Hoisted so 24+ product cards don't re-allocate them on every render.
+const HOVER_ON = { y: -6, scale: 1.015 } as const;
+const HOVER_OFF = {} as const;
+const TAP_ON = { scale: 0.975 } as const;
+const HOVER_TRANSITION = { type: "spring", stiffness: 350, damping: 24 } as const;
+
 /**
  * Product card with hover lift, pointer tilt, and tap compression.
  * Follows TouchGift spec: lift 4-7px, scale 1.015, tilt 2-4deg max.
@@ -44,9 +50,9 @@ export function MotionCard({ children, className, onClick, tilt = true }: Motion
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
-      whileHover={reduced ? {} : { y: -6, scale: 1.015 }}
-      whileTap={reduced ? {} : { scale: 0.975 }}
-      transition={{ type: "spring", stiffness: 350, damping: 24 }}
+      whileHover={reduced ? HOVER_OFF : HOVER_ON}
+      whileTap={reduced ? HOVER_OFF : TAP_ON}
+      transition={HOVER_TRANSITION}
       style={tilt && !reduced ? { rotateX, rotateY, transformStyle: "preserve-3d" } : undefined}
       className={className}
     >

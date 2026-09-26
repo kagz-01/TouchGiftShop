@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 // ── Mood types ──────────────────────────────────────────────────────────────
-export type Mood = "default" | "romantic" | "apology" | "celebratory" | "corporate" | "custom" | "corp_appreciation" | "corp_milestone" | "corp_welcome";
+export type Mood = "default" | "corporate" | "flowers" | "liquor" | "perfumes" | "hampers" | "romantic" | "apology" | "celebratory" | "custom" | "corp_appreciation" | "corp_milestone" | "corp_welcome";
 
 export interface MoodMeta {
   id: Mood;
@@ -24,13 +24,59 @@ export interface MoodMeta {
 export const MOODS: MoodMeta[] = [
   {
     id: "default",
-    emoji: "🎁",
-    label: "All Vibes",
-    tagline: "Find the perfect gift",
-    heroTitle: "Finding the perfect gift",
-    heroSub: "We're here to make the experience as beautiful as the gesture itself.",
+    emoji: "✨",
+    label: "The Signature",
+    tagline: "The Full Experience",
+    heroTitle: "Elevate the art of gifting",
+    heroSub: "Beautifully curated gifts for every occasion. Thoughtful, elegant and delivered with impeccable care.",
     cta: "Shop All Gifts",
   },
+  {
+    id: "corporate",
+    emoji: "🏢",
+    label: "The Executive Suite",
+    tagline: "Corporate & Branding",
+    heroTitle: "Make business feel personal",
+    heroSub: "Executive gifting and branded merchandise that leaves a lasting impression.",
+    cta: "View Corporate",
+  },
+  {
+    id: "flowers",
+    emoji: "🌹",
+    label: "The Grand Gesture",
+    tagline: "Curated Flowers",
+    heroTitle: "Say more without saying more",
+    heroSub: "Breathtaking floral arrangements designed to feel intimate, intentional and unforgettable.",
+    cta: "Send Flowers",
+  },
+  {
+    id: "liquor",
+    emoji: "🥂",
+    label: "The Toast",
+    tagline: "Liquor & Wine",
+    heroTitle: "Raise a glass to the milestones",
+    heroSub: "Premium spirits, champagne, and curated boxes to mark the moments that matter.",
+    cta: "Shop Spirits",
+  },
+  {
+    id: "perfumes",
+    emoji: "✨",
+    label: "Pure Elegance",
+    tagline: "Designer Perfumes",
+    heroTitle: "A memory in a bottle",
+    heroSub: "Authentic designer fragrances and beauty curations for the ultimate sensory gift.",
+    cta: "Shop Perfumes",
+  },
+  {
+    id: "hampers",
+    emoji: "🧺",
+    label: "The Abundance",
+    tagline: "Hampers & Fruits",
+    heroTitle: "Generosity, beautifully packaged",
+    heroSub: "Overflowing hampers of fresh fruits, artisan treats, and bespoke gifts.",
+    cta: "Shop Hampers",
+  },
+  // Keep the old ones just in case they are referenced somewhere else
   {
     id: "romantic",
     emoji: "💕",
@@ -58,15 +104,6 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Let's celebrate!",
     heroSub: "Bold, vibrant, impossible to ignore. Give them a moment they'll talk about forever.",
     cta: "Shop Celebrations",
-  },
-  {
-    id: "corporate",
-    emoji: "🏢",
-    label: "Corporate",
-    tagline: "Professional gifting, elevated",
-    heroTitle: "Impress without compromise",
-    heroSub: "Curated corporate gifts that reflect your brand's values — delivered on schedule.",
-    cta: "View Corporate",
   },
   {
     id: "corp_appreciation",

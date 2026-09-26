@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase-browser";
@@ -10,7 +10,7 @@ import { Smartphone, Mail, ArrowLeft, Loader2, CheckCircle2, MessageCircle, User
 
 type Method = "choose" | "phone" | "phone-otp" | "email" | "email-sent";
 
-export default function LoginPage() {
+function LoginPage() {
   const [method, setMethod] = useState<Method>("choose");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -506,5 +506,21 @@ function SubmitButton({ loading, label }: { loading: boolean; label: string }) {
     >
       {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : label}
     </button>
+  );
+}
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <LoginPage />
+    </Suspense>
   );
 }

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import { ArrowLeft, Loader2, CheckCircle2, Eye, EyeOff, KeyRound } from "lucide-react";
 
-export default function ResetPasswordPage() {
+function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -207,5 +207,21 @@ export default function ResetPasswordPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <ResetPasswordPage />
+    </Suspense>
   );
 }

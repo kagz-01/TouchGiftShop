@@ -3,6 +3,19 @@
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { Gift, Heart, Sparkles, Star } from "lucide-react";
 
+// Deterministic PRNG. These values are computed during render, so Math.random()
+// made server HTML differ from client HTML and React discarded the server
+// output on hydration — re-rendering all 96 particles on every page load.
+function mulberry32(seed: number) {
+  let a = seed;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 export default function AmbientBackground() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -32,15 +45,18 @@ export default function AmbientBackground() {
   ];
 
   // Dense central cluster of particles (forming a slightly arched band) to match inspiration
-  const particles = Array.from({ length: 80 }).map((_, i) => {
-    const left = Math.random() * 100;
-    // Arch equation: highest in the middle (50%), lowest at the edges (0%, 100%)
-    // Base top is ~30%. At edges it goes down to ~45%.
-    const archOffset = Math.pow((left - 50) / 50, 2) * 15; // 0 at center, 15 at edges
-    const top = 25 + archOffset + (Math.random() * 15 - 7.5); // Spread of 15vh
-    const size = 1 + Math.random() * 4;
-    return { left, top, size, delay: Math.random() * 5, dur: 2 + Math.random() * 4 };
-  });
+  const particles = (() => {
+    const rand = mulberry32(0x7a3f9c1d);
+    return Array.from({ length: 80 }).map(() => {
+      const left = rand() * 100;
+      // Arch equation: highest in the middle (50%), lowest at the edges (0%, 100%)
+      // Base top is ~30%. At edges it goes down to ~45%.
+      const archOffset = Math.pow((left - 50) / 50, 2) * 15; // 0 at center, 15 at edges
+      const top = 25 + archOffset + (rand() * 15 - 7.5); // Spread of 15vh
+      const size = 1 + rand() * 4;
+      return { left, top, size, delay: rand() * 5, dur: 2 + rand() * 4 };
+    });
+  })();
 
   return (
     <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-700 bg-[#120018]">

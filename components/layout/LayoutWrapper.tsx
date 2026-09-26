@@ -9,28 +9,51 @@ import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
 import { createClient } from "@/lib/supabase-browser";
+import { isGuest } from "@/lib/guest";
 
 const ADMIN_PREFIXES = ["/admin", "/admin-access-2026"];
+
+export type SessionUser = {
+  email?: string | null;
+  phone?: string | null;
+  is_anonymous?: boolean;
+  user_metadata?: Record<string, unknown>;
+} | null;
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = ADMIN_PREFIXES.some((p) => pathname.startsWith(p));
+  const [user, setUser] = useState<SessionUser>(null);
+  const [guest, setGuestFlag] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
 
-  // Grab user's display name for the presence toast
+  // Single auth lookup for the whole chrome — Header used to run its own
+  // getUser() + onAuthStateChange on top of this one.
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      const user = data.user;
-      if (!user) return;
-      // Try display_name from metadata first, then email prefix
-      const display =
-        user.user_metadata?.full_name ||
-        user.user_metadata?.name ||
-        user.email?.split("@")[0] ||
-        null;
-      setUserName(display);
+
+    const apply = (u: SessionUser) => {
+      setUser(u);
+      if (!u) {
+        setGuestFlag(isGuest());
+        setUserName(null);
+        return;
+      }
+      const meta = u.user_metadata ?? {};
+      setUserName(
+        (meta.full_name as string) ||
+          (meta.name as string) ||
+          u.email?.split("@")[0] ||
+          null
+      );
+    };
+
+    supabase.auth.getUser().then(({ data }) => apply(data.user));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      apply(session?.user ?? null);
     });
+    return () => subscription.unsubscribe();
   }, []);
 
   if (isAdmin) {
@@ -39,7 +62,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   return (
     <>
-      <Header />
+      <Header user={user} guest={guest} />
       <main className="flex-1 pb-20 md:pb-0 relative z-0">{children}</main>
       <Footer />
       <BottomNav />

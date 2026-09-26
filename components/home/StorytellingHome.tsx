@@ -10,7 +10,7 @@ import {
   Camera
 } from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
-import { useMood } from "@/context/MoodContext";
+import { useMood, MOODS } from "@/context/MoodContext";
 
 /* ─── Scroll-triggered animation hook ─── */
 function useInView(threshold = 0.2) {
@@ -159,14 +159,40 @@ function highlightDeliveryCopy(text: string) {
    ══════════════════════════════════════════════════════════ */
 export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
-  const { moodMeta } = useMood();
+  const { moodMeta, setMood, mood } = useMood();
+  const [isPaused, setIsPaused] = useState(false);
+
+  // The 6 main pillars for the hero
+  const heroMoods = MOODS.filter(m => ["default", "corporate", "flowers", "liquor", "perfumes", "hampers"].includes(m.id));
+
+  // Background mapping
+  const heroBackgrounds: Record<string, string> = {
+    default: "/hero/hero-all-vibe.webp",
+    corporate: "/hero/hero-corporate.webp",
+    flowers: "/hero/hero-flowers.webp",
+    liquor: "/hero/hero-liqour.webp",
+    perfumes: "/hero/hero-perfume.webp",
+    hampers: "/hero/hero-fruits.webp"
+  };
+
+  // Auto-rotate logic — every 3 seconds
+  useEffect(() => {
+    if (isPaused) return;
+    const interval = setInterval(() => {
+      const currentIndex = heroMoods.findIndex(m => m.id === moodMeta.id);
+      const nextIndex = (currentIndex + 1) % heroMoods.length;
+      setMood(heroMoods[nextIndex].id);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [moodMeta.id, isPaused, setMood, heroMoods]);
 
   const moodTypewriterMessages: Record<string, string[]> = {
     default:      ["TouchGift makes gifting feel thoughtful.", "Order now for fast same-day gift delivery in Nairobi.", "Wrapped beautifully. Delivered with care."],
-    romantic:     ["Love, wrapped and delivered today. 💕", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
-    apology:      ["Same-day delivery across Nairobi. 🙏", "The fastest path to forgiveness.", "Heartfelt, delivered in hours — not days."],
-    celebratory:  ["Let the celebrations begin! 🎉", "Pop. Confetti. Wow. Same-day delivery.", "Bold gifts that match the moment."],
     corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
+    flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
+    liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
+    perfumes:     ["Authentic designer fragrances. ✨", "A memory in a bottle.", "The ultimate sensory gift delivered today."],
+    hampers:      ["Generosity, beautifully packaged. 🧺", "Overflowing hampers of fresh fruits.", "Artisan treats and bespoke gifts."],
   };
 
   const deliveryMessage = useTypewriter(
@@ -175,75 +201,75 @@ export function HeroCinematic() {
 
   useEffect(() => { setLoaded(true); }, []);
 
-  const PRODUCTS = [
-    "/Hero/3-luxury-gifts-in-1-box.webp",
-    "/Hero/chocolates.webp",
-    "/Hero/flowers-chocolate.webp",
-    "/Hero/perfume-bouquet.webp",
-    "/Hero/perfume-hamper.webp",
-    "/Hero/couple-jewelry.webp",
-    "/Hero/glow-in-the-dark-necklace-and-bracelet-set-color-black-silver-size-os.webp",
-    "/Hero/Luxury-Packaging_3.webp",
-  ];
-
-  const LIFESTYLE = [
-    "/Hero/jearsy.webp",
-    "/Hero/caps.webp",
-    "/Hero/shades.webp",
-    "/Hero/bags.webp",
-    "/Hero/runners-gifts.webp",
-    "/Hero/gymn-hamper.webp",
-    "/Hero/women-set.webp",
-    "/Hero/saudades-pai.webp",
-  ];
-
   return (
-    <section className="dark relative min-h-[60vh] md:min-h-[75vh] flex items-center overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand via-brand-deep to-[#14080D]">
-      {/* Animated gradient orbs */}
-      <div className="absolute inset-0">
+    <section 
+      className="relative min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center overflow-hidden"
+    >
+      {/* ── CINEMATIC BACKGROUND IMAGES ── */}
+      {heroMoods.map((m) => (
+        <div
+          key={m.id}
+          className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${moodMeta.id === m.id ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+        >
+          <img 
+            src={heroBackgrounds[m.id]} 
+            alt={`${m.label} mood background`} 
+            className={`w-full h-full object-cover object-center transition-all ease-out ${
+              moodMeta.id === m.id 
+                ? "duration-[5000ms] scale-105 blur-0" 
+                : "duration-[2000ms] scale-100 blur-sm"
+            }`}
+          />
+          {/* Dark Overlay for better contrast */}
+          <div className="absolute inset-0 bg-black/60 md:bg-black/40 transition-colors duration-1000" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
+        </div>
+      ))}
+
+      {/* Animated gradient orbs (Subtle) */}
+      <div className="absolute inset-0 z-20 pointer-events-none mix-blend-overlay opacity-30">
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-light/20 rounded-full blur-[140px] animate-pulse-soft" />
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[120px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-coral/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "2s" }} />
       </div>
 
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-12 relative z-40">
-        <div className="grid md:grid-cols-2 gap-8 xl:gap-16 items-center max-w-[1800px] mx-auto">
+      {/* ── FOREGROUND CONTENT — LEFT ALIGNED ── */}
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 md:py-20 relative z-30 flex-1 flex flex-col justify-center">
+        <div className="flex flex-col items-start max-w-3xl text-left">
           
-          {/* ── LEFT COLUMN: COPY & CTA ── */}
-          <div className="w-full text-left">
-            {/* Typewriter delivery note */}
-            <div className={`inline-flex flex-col items-start bg-brand-deep/5 dark:bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-4 border border-brand-deep/10 dark:border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-white/60 dark:text-gold/80 mb-1 font-bold">
-                TouchGift Promise
+          {/* Typewriter delivery note */}
+          <div className={`inline-flex flex-col items-start bg-black/40 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/90 mb-1 font-bold">
+              TouchGift Promise
+            </span>
+            <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/95 font-medium tracking-tight min-h-[1.5rem] leading-snug">
+              <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
+              <span className="whitespace-normal tracking-tight drop-shadow-md">
+                {highlightDeliveryCopy(deliveryMessage)}
+                <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
               </span>
-              <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/90 dark:text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
-                <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
-                <span className="whitespace-normal tracking-tight">
-                  {highlightDeliveryCopy(deliveryMessage)}
-                  <span className="inline-block w-[1px] h-4 align-middle bg-brand-deep/50 dark:bg-white/70 ml-0.5 animate-pulse" />
-                </span>
-              </div>
             </div>
+          </div>
 
-            {/* Main headline */}
-            <h1 className={`font-display font-bold text-white leading-[0.95] mb-4 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 5rem)" }}
+          {/* Main headline */}
+          <div className="min-h-[160px] md:min-h-[220px] flex items-center">
+            <h1 className={`font-display font-bold text-white leading-[0.95] mb-5 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{ fontSize: "clamp(2.5rem, 6vw + 1rem, 6.5rem)" }}
             >
-              <span className="relative inline-block py-1 dark:text-shadow-glow">
+              <span className="relative inline-block py-1 drop-shadow-xl">
                 {moodMeta.id === "default" ? (
                   <>
                     Elevate the art
                     <br />
-                    <span className="relative inline-block">
-                      <span className="text-gradient bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent tracking-tight">
+                    <span className="relative inline-block mt-2">
+                      <span className="text-gradient bg-gradient-to-r from-gold via-white to-gold bg-clip-text text-transparent tracking-tight">
                         of gifting
                       </span>
-                      <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                      <svg className="absolute -bottom-3 left-0 w-full" viewBox="0 0 200 12" fill="none">
                         <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
                         <defs>
                           <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
                             <stop offset="0%" stopColor="#D4A853" />
-                            <stop offset="100%" stopColor="#E8C97A" />
+                            <stop offset="100%" stopColor="#FFF" />
                           </linearGradient>
                         </defs>
                       </svg>
@@ -251,108 +277,107 @@ export function HeroCinematic() {
                   </>
                 ) : (
                   <span
-                    className="bg-clip-text text-transparent"
-                    style={{ backgroundImage: "var(--mood-gradient)" }}
+                    key={moodMeta.id}
+                    className="bg-clip-text text-transparent animate-fade-in"
+                    style={{ backgroundImage: "var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF))" }}
                   >
                     {moodMeta.heroTitle}
                   </span>
                 )}
               </span>
             </h1>
+          </div>
 
-            {/* Subheadline */}
-            <p className={`text-white/75 max-w-xl mb-6 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.25rem)" }}
+          {/* Subheadline */}
+          <p key={`sub-${moodMeta.id}`} className={`text-white/90 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 animate-fade-in drop-shadow-lg font-medium ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.2rem)" }}
+          >
+            {moodMeta.id === "default"
+              ? "Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment."
+              : moodMeta.heroSub
+            }
+          </p>
+
+          {/* CTA */}
+          <div className={`flex flex-col sm:flex-row items-start gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <Link
+              href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
+              className="group relative px-10 py-4 font-bold rounded-full text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center text-brand-deep min-w-[200px]"
+              style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
             >
-              {moodMeta.id === "default"
-                ? "Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment."
-                : moodMeta.heroSub
-              }
-            </p>
-
-            {/* Urgency badge (Apology mood) */}
-            {moodMeta.urgencyBadge && (
-              <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full text-xs font-bold text-white border border-white/20 backdrop-blur-sm animate-pulse-soft"
-                style={{ background: "var(--mood-gradient)", boxShadow: "0 4px 20px var(--mood-glow)" }}
-              >
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                {moodMeta.urgencyBadge}
-              </div>
-            )}
-
-            {/* CTA */}
-            <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link
-                href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
-                className="group relative px-8 py-4 font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center text-brand-deep"
-                style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", boxShadow: "0 8px 24px var(--mood-glow, rgba(212,168,83,0.3))" }}
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  {moodMeta.cta}
-                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </Link>
-              <Link
-                href="/gift-lab"
-                className="group px-8 py-4 bg-brand-deep/5 dark:bg-white/10 backdrop-blur-sm text-white dark:text-white font-semibold rounded-2xl text-lg border border-white/20 dark:border-white/20 hover:bg-white/10 dark:hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  Build a Hamper
-                  <Sparkles className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
-                </span>
-              </Link>
-            </div>
-
-            {/* Quick Action Pills */}
-            <div className={`mt-8 flex flex-wrap items-center gap-3 transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link href="/gift-finder" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white transition-all">
-                <Target className="w-3.5 h-3.5 text-coral" />
-                AI Gift Match
-              </Link>
-              <Link href="/shop?category=corporate" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white transition-all">
-                <Building2 className="w-3.5 h-3.5 text-gold" />
-                Corporate Gifts
-              </Link>
-              <Link href="/pool/create" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white transition-all">
-                <span className="text-[14px]">👥</span>
-                Pool a Gift
-              </Link>
-              <Link href="/surprise" className="flex items-center gap-1.5 px-4 py-2 bg-brand-deep/5 hover:bg-brand-deep/10 dark:bg-white/5 dark:hover:bg-white/10 backdrop-blur-sm border border-brand-deep/10 dark:border-white/10 rounded-full text-xs font-semibold text-white/80 hover:text-white dark:text-white/80 dark:hover:text-white transition-all">
-                <EyeOff className="w-3.5 h-3.5 text-brand-light" />
-                Send Anonymously
-              </Link>
-            </div>
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
+                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </span>
+              <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            </Link>
           </div>
 
-          {/* ── RIGHT COLUMN: SPLIT STORY VISUALS ── */}
-          <div className={`relative h-[320px] md:h-[380px] xl:h-[440px] hidden md:flex gap-4 overflow-hidden rounded-[2.5rem] transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+        </div>
+      </div>
+
+      {/* ── BOTTOM PILL TAB NAVIGATOR ── */}
+      <div 
+        className="relative z-40 w-full pb-6 pt-2"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        {/* Hint text */}
+        <div className="text-center mb-3">
+          <span className="text-white/50 text-[10px] uppercase tracking-widest font-semibold drop-shadow-md">
+            Pick a mood to pin it · Auto-cycles every 3s
+          </span>
+        </div>
+
+        {/* Tabs row */}
+        <div className="flex justify-center w-full px-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-hide max-w-full px-2 snap-x">
+            {heroMoods.map((m) => {
+              const isActive = moodMeta.id === m.id;
+              return (
+                <button
+                  key={m.id}
+                  onClick={() => { setMood(m.id); setIsPaused(true); }}
+                  className={`snap-center relative px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 border backdrop-blur-md overflow-hidden flex-shrink-0 ${
+                    isActive 
+                      ? 'bg-black/60 text-white border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105' 
+                      : 'bg-black/30 text-white/60 border-white/10 hover:bg-black/50 hover:text-white hover:border-white/20'
+                  }`}
+                >
+                  {isActive && (
+                    <div 
+                      className="absolute inset-0 opacity-20 pointer-events-none" 
+                      style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF))" }}
+                    />
+                  )}
+                  <span className="relative z-10 drop-shadow-md">{m.label}</span>
+
+                  {/* Progress bar — shows 3s countdown on the active tab */}
+                  {isActive && !isPaused && (
+                    <span
+                      key={`prog-${moodMeta.id}`}
+                      className="absolute bottom-0 left-0 h-[2px] rounded-full animate-[grow-width_3s_linear_forwards]"
+                      style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF))" }}
+                    />
+                  )}
+                </button>
+              );
+            })}
             
-            {/* Column 1: Premium Products (Scrolling Up) */}
-            <div className="flex-1 relative">
-              <div className="flex flex-col gap-4 animate-marquee-vertical hover:[animation-play-state:paused]">
-                {[...PRODUCTS, ...PRODUCTS].map((src, i) => (
-                  <div key={`prod-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-brand-deep/5 dark:bg-white/10 group border border-brand-deep/10 dark:border-white/10">
-                    <img src={src} alt="Premium Gift" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Column 2: Emotional Reactions (Scrolling Down) */}
-            <div className="flex-1 relative pt-12">
-              <div className="flex flex-col gap-4 animate-marquee-vertical-reverse hover:[animation-play-state:paused]">
-                {[...LIFESTYLE, ...LIFESTYLE].map((src, i) => (
-                  <div key={`life-${i}`} className="relative rounded-2xl overflow-hidden shadow-sm aspect-[4/5] bg-brand-deep/5 dark:bg-white/10 group border border-brand-deep/10 dark:border-white/10">
-                    <img src={src} alt="Happy reaction" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  </div>
-                ))}
-              </div>
-            </div>
+            {/* Custom Vibe Builder Button */}
+            <button
+              onClick={() => { setIsPaused(true); alert("Custom Builder coming soon!"); }}
+              className="snap-center relative px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 border border-white/20 bg-gradient-to-r from-brand/80 to-coral/80 text-white shadow-[0_0_15px_rgba(155,27,90,0.4)] hover:scale-105 flex-shrink-0 flex items-center gap-1.5 group overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <span className="relative z-10 flex items-center gap-1">
+                <Sparkles className="w-3.5 h-3.5" />
+                Custom Vibe
+              </span>
+            </button>
           </div>
-          
         </div>
       </div>
     </section>

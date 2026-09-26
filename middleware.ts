@@ -33,29 +33,40 @@ export async function middleware(request: NextRequest) {
 
   let response = NextResponse.next({ request: { headers: request.headers } });
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options });
-          response = NextResponse.next({ request: { headers: request.headers } });
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: "", ...options });
-          response = NextResponse.next({ request: { headers: request.headers } });
-          response.cookies.set({ name, value: "", ...options });
-        },
-      },
-    }
-  );
+  // Only build a Supabase client when an auth cookie is actually present.
+  // Anonymous traffic (the vast majority, and every public image) would
+  // otherwise pay for a client + getSession() on every single request.
+  const hasAuthCookie = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") || c.name.includes("auth-token"));
 
-  await supabase.auth.getSession();
+  if (hasAuthCookie) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: CookieOptions) {
+            request.cookies.set({ name, value, ...options });
+            response = NextResponse.next({ request: { headers: request.headers } });
+            response.cookies.set({ name, value, ...options });
+          },
+          remove(name: string, options: CookieOptions) {
+            request.cookies.set({ name, value: "", ...options });
+            response = NextResponse.next({ request: { headers: request.headers } });
+            response.cookies.set({ name, value: "", ...options });
+          },
+        },
+      }
+    );
+
+    // Refreshes the session cookie when the access token has expired.
+    // The return value is intentionally unused.
+    await supabase.auth.getSession();
+  }
 
   const pathname = request.nextUrl.pathname;
   const ADMIN_LOGIN = "/admin-access-2026";
@@ -101,5 +112,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|manifest.json|icons).*)"],
+  matcher: [
+    // Skip static files and public assets — middleware was running on every
+    // /hero/*.webp, /products/* and /logo/* request.
+    "/((?!_next/static|_next/image|favicon.ico|manifest.json|icons|.*\\.(?:svg|png|jpg|jpeg|webp|avif|gif|ico|css|js|woff2?|txt|xml)$).*)",
+  ],
 };

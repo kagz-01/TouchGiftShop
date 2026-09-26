@@ -2,37 +2,11 @@
 
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
-import { useState, useEffect } from "react";
-
-const CART_KEY = "touchgift_cart";
-
-function getCartCount(): number {
-  if (typeof window === "undefined") return 0;
-  try {
-    const raw = localStorage.getItem(CART_KEY);
-    if (!raw) return 0;
-    const items = JSON.parse(raw);
-    return items.reduce((sum: number, i: any) => sum + (i.quantity || 1), 0);
-  } catch {
-    return 0;
-  }
-}
+import { useCart } from "@/lib/cart";
 
 export default function CartBadge() {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    setCount(getCartCount());
-    const onStorage = () => setCount(getCartCount());
-    window.addEventListener("storage", onStorage);
-
-    // Also poll for cart changes (localStorage doesn't fire events in same tab)
-    const interval = setInterval(() => setCount(getCartCount()), 1000);
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      clearInterval(interval);
-    };
-  }, []);
+  // Reactive count from CartProvider — no localStorage polling on a 1s timer.
+  const { itemCount: count } = useCart();
 
   return (
     <div className="group relative flex flex-col items-center justify-center">

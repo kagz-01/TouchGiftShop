@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
-export default function AdminAccessPage() {
+function AdminAccessPage() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/admin";
   const [password, setPassword] = useState("");
@@ -85,5 +85,21 @@ export default function AdminAccessPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="w-8 h-8 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <AdminAccessPage />
+    </Suspense>
   );
 }

@@ -9,6 +9,7 @@ import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
 import { Loader2, Sparkles, X } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { MotionCard } from "@/components/motion/MotionCard";
 
 export function ProductCard({ product, index, categorySlug }: { product: Product; index: number; categorySlug?: string }) {
@@ -190,6 +191,15 @@ export default function ProductGridClient({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  // router.refresh() re-renders the server component and passes new props, but
+  // client state is preserved — sync it so catalog broadcasts actually show.
+  useEffect(() => {
+    setProducts(initialProducts);
+    setHasMore(initialHasMore);
+    setPage(1);
+  }, [initialProducts, initialHasMore]);
 
   // Real-time: refresh when admin changes anything in the catalog
   useEffect(() => {
@@ -200,15 +210,17 @@ export default function ProductGridClient({
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
+    const onCatalogChange = () => router.refresh();
+
     let channel: ReturnType<typeof supabase.channel> | null = null;
     try {
       channel = supabase
         .channel("shop-products-live")
-        .on("broadcast", { event: "product-created" }, () => window.location.reload())
-        .on("broadcast", { event: "product-updated" }, () => window.location.reload())
-        .on("broadcast", { event: "product-deleted" }, () => window.location.reload())
-        .on("broadcast", { event: "products-imported" }, () => window.location.reload())
-        .on("broadcast", { event: "specs-changed" }, () => window.location.reload())
+        .on("broadcast", { event: "product-created" }, onCatalogChange)
+        .on("broadcast", { event: "product-updated" }, onCatalogChange)
+        .on("broadcast", { event: "product-deleted" }, onCatalogChange)
+        .on("broadcast", { event: "products-imported" }, onCatalogChange)
+        .on("broadcast", { event: "specs-changed" }, onCatalogChange)
         .subscribe();
     } catch {
       // WebSocket not available — skip real-time
@@ -223,7 +235,7 @@ export default function ProductGridClient({
         }
       }
     };
-  }, []);
+  }, [router]);
 
   const loadMore = async () => {
     setIsLoading(true);
@@ -272,7 +284,8 @@ export default function ProductGridClient({
   function removeFilter(param: string) {
     const url = new URL(window.location.href);
     url.searchParams.delete(param);
-    window.location.href = url.toString();
+    // pathname + search only — an absolute URL makes Next treat it as external
+    router.push(`${url.pathname}${url.search}`);
   }
 
   return (
@@ -299,7 +312,7 @@ export default function ProductGridClient({
               </button>
             ))}
             <button
-              onClick={() => { window.location.href = "/shop"; }}
+              onClick={() => { router.push("/shop"); }}
               className="text-xs font-semibold text-brand-muted hover:text-brand underline transition-colors"
             >
               Clear all
