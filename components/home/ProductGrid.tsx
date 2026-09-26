@@ -2,6 +2,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
 import type { Product } from "@/lib/types";
+import { optimizeProductImagesList } from "@/lib/image-url";
 import ProductGridClient from "./ProductGridClient";
 
 /** Params the shop understands — every MegaMenu link resolves to one of these. */
@@ -205,6 +206,7 @@ async function getProducts(params: ShopParams): Promise<{
 
   const hasMore = allProducts.length > limit;
   const products = hasMore ? allProducts.slice(0, limit) : allProducts;
+  optimizeProductImagesList(products);
 
   return {
     products,

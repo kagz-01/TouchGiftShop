@@ -11,6 +11,7 @@ import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag } from "lucide
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
+import { optimizeImageUrl, optimizeImageArray } from "@/lib/image-url";
 
 async function getProduct(id: string): Promise<Product | null> {
   try {
@@ -130,8 +131,8 @@ export default async function ProductPage({
           {/* ── Gallery ── */}
           <ProductGallery
             productName={product.name}
-            image_url={product.image_url}
-            images={product.images}
+            image_url={optimizeImageUrl(product.image_url, 1200) ?? null}
+            images={optimizeImageArray(product.images, 1200)}
             in_stock={product.in_stock}
             is_personalizable={autoPersonalizable}
           />

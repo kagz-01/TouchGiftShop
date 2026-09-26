@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
+import { optimizeProductImagesList } from "@/lib/image-url";
 
 // GET /api/products
 // All filter params:
@@ -221,6 +222,7 @@ export async function GET(req: Request) {
 
   const hasMore = allProducts.length > limit;
   const products = hasMore ? allProducts.slice(0, limit) : allProducts;
+  optimizeProductImagesList(products);
 
   // Build unique color/size/tag lists from the returned products for filter UI
   const colorSet = new Set<string>();

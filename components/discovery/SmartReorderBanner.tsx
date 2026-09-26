@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   getReorderSuggestions,
   formatReorderMessage,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/smart-reorder";
 
 export default function SmartReorderBanner() {
+  const router = useRouter();
   const [suggestions, setSuggestions] = useState<ReorderSuggestion[]>([]);
   const [current, setCurrent] = useState(0);
   const [dismissed, setDismissed] = useState<string[]>([]);
@@ -47,11 +49,11 @@ export default function SmartReorderBanner() {
   function handleShop() {
     if (suggestion.suggestedAction === "reorder") {
       // Go to product page (would need product slug in real app)
-      window.location.href = `/search?q=${encodeURIComponent(suggestion.lastGift.productName)}`;
+      router.push(`/search?q=${encodeURIComponent(suggestion.lastGift.productName)}`);
     } else if (suggestion.suggestedAction === "similar") {
-      window.location.href = `/search?q=${encodeURIComponent(suggestion.lastGift.productName)}&sort=popular`;
+      router.push(`/search?q=${encodeURIComponent(suggestion.lastGift.productName)}&sort=popular`);
     } else {
-      window.location.href = `/category/${suggestion.occasion}`;
+      router.push(`/category/${suggestion.occasion}`);
     }
   }
 

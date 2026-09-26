@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { getUpcomingEvents, formatCountdown, type SeasonalEvent } from "@/lib/seasonal-events";
 
 export default function SeasonalPromptBar() {
+  const router = useRouter();
   const [events, setEvents] = useState<SeasonalEvent[]>([]);
   const [dismissed, setDismissed] = useState<string[]>([]);
   const [current, setCurrent] = useState(0);
@@ -41,7 +43,7 @@ export default function SeasonalPromptBar() {
   function handleShop() {
     // Navigate to category page
     const category = event.categories[0] || "gifts";
-    window.location.href = `/category/${category}`;
+    router.push(`/category/${category}`);
   }
 
   return (

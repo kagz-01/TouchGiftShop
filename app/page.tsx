@@ -19,6 +19,7 @@ import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
+import { optimizeProductImagesList } from "@/lib/image-url";
 import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
 
 /**
@@ -39,9 +40,8 @@ async function getByCategory(categorySlug: string, limit = 10): Promise<Product[
     .eq("in_stock", true)
     .eq("product_categories.categories.slug", categorySlug)
     .limit(limit);
-  return (data ?? []) as unknown as Product[];
+  return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
 }
-
 async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -80,6 +80,10 @@ async function getFeaturedProducts() {
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
     ]);
+
+  [trending, lastMinute, edible, selfCare, personalised, under2k].forEach((list) =>
+    optimizeProductImagesList(list)
+  );
 
   return { trending, lastMinute, edible, selfCare, personalised, under2k };
 }

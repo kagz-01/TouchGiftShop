@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { optimizeProductImagesList } from "@/lib/image-url";
 
 // GET /api/catalog?category=liquor&budget=under-5k&page=1&limit=24
 export async function GET(req: Request) {
@@ -51,7 +52,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const products = data ?? [];
+  const products = optimizeProductImagesList(data ?? []) ?? [];
   const hasMore = products.length === limit;
 
   return NextResponse.json({ products, total: count ?? 0, hasMore, page });

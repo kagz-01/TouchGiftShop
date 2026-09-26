@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
 interface PinDropNotificationProps {
@@ -19,6 +20,7 @@ export default function PinDropNotification({
   enabled,
   onPinDropped,
 }: PinDropNotificationProps) {
+  const router = useRouter();
   const [notification, setNotification] = useState<{
     type: "pin-dropped" | "error";
     message: string;
@@ -102,7 +104,7 @@ export default function PinDropNotification({
           <p className="text-sm font-semibold">{notification.message}</p>
           {notification.type === "pin-dropped" && (
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => router.refresh()}
               className="text-xs font-semibold underline opacity-70 hover:opacity-100"
             >
               Tap to refresh
