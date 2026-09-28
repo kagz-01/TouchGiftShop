@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getRecommendation } from "@/lib/gift-quiz";
+import { getDbSlugs } from "@/lib/category-map";
 
 export async function POST(req: NextRequest) {
   const { messages } = await req.json();
@@ -109,13 +110,26 @@ If it's just normal chat or banter (or you need more info from them to search fo
              
              // Very basic fallback logic for DB querying
              const recommendation = getRecommendation({ recipient: recipient || 'any', occasion: occasion || 'any', budget: budget || 'any', interests: [] });
-             const categoryArray = recommendation.categories.length > 0 ? recommendation.categories : ["gifts-for-her"];
 
-             const { data: products } = await supabaseAdmin
+             // products has no `categories` column — the old filter always
+             // errored and the chat never returned anything. Resolve through
+             // the taxonomy instead, and skip the filter when a legacy or
+             // occasion slug has no category equivalent (see lib/category-map.ts).
+             const dbSlugs = recommendation.categories.flatMap((c) => getDbSlugs(c));
+             const selectCols = dbSlugs.length
+               ? "id, name, slug, price, images, description, product_categories!inner(categories!inner(slug))"
+               : "id, name, slug, price, images, description";
+
+             let query = supabaseAdmin
                .from("products")
-               .select("id, name, slug, price, images, description")
+               .select(selectCols)
                .eq("status", "published")
-               .contains("categories", [categoryArray[0]])
+               .eq("in_stock", true);
+             if (dbSlugs.length) {
+               query = query.in("product_categories.categories.slug", dbSlugs);
+             }
+             const { data: products } = await query
+               .order("created_at", { ascending: false })
                .limit(6);
 
              if (products && products.length > 0) {

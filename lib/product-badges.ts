@@ -54,7 +54,7 @@ export function getProductBadges(
   }
 
   // Category-specific badges
-  if (categorySlug === "hampers" || categorySlug === "hampers-gift-sets") {
+  if (categorySlug === "gift-sets") {
     badges.push({
       label: "Gift Ready",
       emoji: "🎁",

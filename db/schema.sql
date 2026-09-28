@@ -167,18 +167,6 @@ CREATE TABLE product_categories (
 CREATE INDEX idx_products_slug ON products(slug);
 
 -- ---------------------------------------------------------------------
--- WooCommerce sync support (products/categories are entered in
--- WooCommerce; this is how they arrive here — see lib/woocommerce.ts)
--- ---------------------------------------------------------------------
-
-ALTER TABLE products ADD COLUMN woocommerce_id INTEGER UNIQUE;
-ALTER TABLE products ADD COLUMN synced_at TIMESTAMPTZ;
-
-ALTER TABLE categories ADD COLUMN woocommerce_id INTEGER UNIQUE;
-
-CREATE INDEX idx_products_woocommerce_id ON products(woocommerce_id);
-
--- ---------------------------------------------------------------------
 -- Reminders (Stage 2 — saved occasion dates + nudge scheduling)
 -- ---------------------------------------------------------------------
 
@@ -844,7 +832,6 @@ CREATE TABLE vendor_payouts (
 
 -- Existing tables (original)
 CREATE INDEX idx_products_slug ON products(slug);
-CREATE INDEX idx_products_woocommerce_id ON products(woocommerce_id);
 CREATE INDEX idx_reminders_user_date ON reminders(user_id, occasion_date);
 CREATE INDEX idx_gift_cards_code ON gift_cards(code);
 CREATE INDEX idx_reviews_product_id ON reviews(product_id);
