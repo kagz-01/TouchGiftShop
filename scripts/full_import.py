@@ -40,6 +40,15 @@ BUCKET      = "products"
 FOLDER      = "corporate"          # subfolder for this supplier batch
 BATCH_SIZE  = 50
 
+# SKUs with no source image on disk (public/products/{SKU}.webp is missing), so
+# they render the placeholder card. Dropped from the import until a catalog that
+# includes their images lands.
+NO_IMAGE_SKUS = {
+    "PEN-233", "PEN-234", "PEN-235",
+    "NBK-224", "NBK-245", "NBK-247",
+    "SET-105", "BAG-115", "ACC-118", "HPF-155",
+}
+
 # Public URL prefix for this bucket/folder
 STORAGE_BASE = f"{SUPABASE_URL}/storage/v1/object/public/{BUCKET}/{FOLDER}"
 
@@ -172,15 +181,20 @@ def import_catalog():
 
         sku = row.get("sku", "").strip()
 
+        if sku in NO_IMAGE_SKUS:
+            skipped += 1
+            continue
+
+        # Customers pay the CSV's "selling price" — that column is the retail
+        # figure. The "price" column is the supplier number (always half of it)
+        # and must never surface, so there is no sale_price to derive.
+        selling = row.get("selling price", "").strip()
+        supplier = row.get("price", "").strip()
         try:
-            price = float(row.get("price", 0) or 0)
+            price = float(selling) if selling else float(supplier or 0)
         except ValueError:
             price = 0.0
-        try:
-            sale_price = float(row.get("selling price", 0) or 0)
-            sale_price = sale_price if sale_price > 0 else None
-        except ValueError:
-            sale_price = None
+        sale_price = None
         try:
             weight = float(row.get("weight_kg", 0) or 0) or None
         except ValueError:

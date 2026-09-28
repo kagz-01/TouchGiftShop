@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // `next dev` and `next start` share .next otherwise: dev rewrites it in
+  // development mode and the running prod server loses BUILD_ID plus every
+  // route manifest, so each API route 500s with a missing _error.js.
+  distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
   reactStrictMode: true,
   images: {
     unoptimized: true,
