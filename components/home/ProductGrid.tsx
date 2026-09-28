@@ -42,9 +42,13 @@ async function getProducts(params: ShopParams): Promise<{
 }> {
   const effectiveCategory = getEffectiveCategory(params);
 
+  // Empty = unresolved/legacy slug, so leave the catalog unfiltered rather
+  // than rendering an empty grid (see lib/category-map.ts).
+  const dbSlugs = effectiveCategory ? getDbSlugs(effectiveCategory) : [];
+
   // Always select specs for display
   let selectCols = "*, product_specs(spec_key, spec_value, icon, sort_order)";
-  if (effectiveCategory) {
+  if (dbSlugs.length) {
     selectCols = "*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)";
   }
 
@@ -52,8 +56,7 @@ async function getProducts(params: ShopParams): Promise<{
   // from the row count of range(0, limit)), so skip the exact aggregate.
   let query = supabaseAdmin.from("products").select(selectCols, { count: "estimated" });
 
-  if (effectiveCategory) {
-    const dbSlugs = getDbSlugs(effectiveCategory);
+  if (dbSlugs.length) {
     query = query.in("product_categories.categories.slug", dbSlugs);
   }
 

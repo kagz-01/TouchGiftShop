@@ -64,16 +64,17 @@ export async function GET(req: Request) {
   // Build the select string — always include specs for display
   let selectCols = "*, product_specs(spec_key, spec_value, icon, sort_order)";
 
-  // If category filter is used, we need the inner join
-  if (category) {
+  // Empty = unresolved/legacy slug, so don't filter (see lib/category-map.ts)
+  const dbSlugs = category ? getDbSlugs(category) : [];
+
+  if (dbSlugs.length) {
     selectCols = "*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)";
   }
 
   let query = supabaseAdmin.from("products").select(selectCols, { count: "exact" });
 
   // ── Category filter ──
-  if (category) {
-    const dbSlugs = getDbSlugs(category);
+  if (dbSlugs.length) {
     query = query.in("product_categories.categories.slug", dbSlugs);
   }
 

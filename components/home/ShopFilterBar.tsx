@@ -3,32 +3,12 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRef, useCallback, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { categoryIcon } from "@/components/shop/CategoryIcons";
+import { useShopCategories } from "@/components/shop/useShopCategories";
 import {
-  Sparkles, Cake, Gem, Heart, Baby, Building2, Feather,
-  GraduationCap, Flower2, HeartPulse, Gift, Dumbbell,
-  Gamepad2, Home, ChefHat, Filter, ArrowUpDown, Tag,
+  Sparkles, Filter, ArrowUpDown, Tag,
   Percent, Clock, Star, ChevronDown, X, SlidersHorizontal,
 } from "lucide-react";
-
-const CATEGORIES = [
-  { label: "All Gifts", icon: <Sparkles className="w-4 h-4" />, slug: "" },
-  { label: "Birthdays", icon: <Cake className="w-4 h-4" />, slug: "birthdays" },
-  { label: "Anniversaries", icon: <Gem className="w-4 h-4" />, slug: "anniversaries" },
-  { label: "Weddings", icon: <Heart className="w-4 h-4" />, slug: "weddings" },
-  { label: "Baby", icon: <Baby className="w-4 h-4" />, slug: "baby" },
-  { label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, slug: "graduation" },
-  { label: "Condolences", icon: <Feather className="w-4 h-4" />, slug: "condolences" },
-  { label: "Just Because", icon: <HeartPulse className="w-4 h-4" />, slug: "just-because" },
-  { label: "Apology", icon: <Flower2 className="w-4 h-4" />, slug: "apology" },
-  { label: "Milestone", icon: <GraduationCap className="w-4 h-4" />, slug: "milestone" },
-  { label: "For Her", icon: <HeartPulse className="w-4 h-4" />, slug: "for-her" },
-  { label: "For Him", icon: <Gift className="w-4 h-4" />, slug: "for-him" },
-  { label: "Fitness", icon: <Dumbbell className="w-4 h-4" />, slug: "fitness" },
-  { label: "Gaming", icon: <Gamepad2 className="w-4 h-4" />, slug: "gaming" },
-  { label: "Home", icon: <Home className="w-4 h-4" />, slug: "home-decor" },
-  { label: "Kitchen", icon: <ChefHat className="w-4 h-4" />, slug: "kitchen" },
-  { label: "Corporate", icon: <Building2 className="w-4 h-4" />, slug: "corporate" },
-];
 
 const SORT_OPTIONS = [
   { label: "Newest", value: "newest" },
@@ -173,6 +153,8 @@ export default function ShopFilterBar() {
   const activeMinPrice = searchParams.get("minPrice") ?? "";
   const activeMaxPrice = searchParams.get("maxPrice") ?? "";
 
+  const categories = useShopCategories();
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
@@ -265,11 +247,11 @@ export default function ShopFilterBar() {
         boxShadow: "var(--card-shadow)",
       }}
     >
-      {/* ── Occasions ── */}
+      {/* ── Categories ── */}
       <div className="relative mb-4 pb-4" style={{ borderBottom: "1px solid var(--surface-border)" }}>
         <div className="flex items-center gap-2 mb-2 px-1">
           <Sparkles className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-          <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Occasion / Theme</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Shop by Category</h3>
         </div>
 
         {canScrollLeft && (
@@ -284,7 +266,7 @@ export default function ShopFilterBar() {
           className="flex gap-2 overflow-x-auto scrollbar-hide -mx-2 px-2 pb-1"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {CATEGORIES.map((cat) => (
+          {[{ slug: "", name: "All Gifts", count: 0 }, ...categories].map((cat) => (
             <button
               key={cat.slug}
               onClick={() => setCategory(cat.slug)}
@@ -298,8 +280,10 @@ export default function ShopFilterBar() {
                 border: "1px solid var(--card-border)",
               } : undefined}
             >
-              <div className="flex items-center justify-center shrink-0">{cat.icon}</div>
-              {cat.label}
+              <div className="flex items-center justify-center shrink-0">
+                {categoryIcon(cat.slug)}
+              </div>
+              {cat.name}
             </button>
           ))}
         </div>

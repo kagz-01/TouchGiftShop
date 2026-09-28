@@ -1,256 +1,114 @@
 /**
- * Maps user-friendly category slugs (used in UI tabs, MegaMenu, OccasionFilter)
- * to the category slugs actually stored in Supabase.
+ * Resolves a category slug from a URL (`/shop?category=<slug>`) to the slugs
+ * used in the `categories` table.
  *
- * Multiple DB slugs can map to one UI slug (e.g. "corporate" maps to several
- * product categories).
+ * The taxonomy was rebuilt in scripts/link_categories.py: URLs now carry the
+ * real DB slug, so current slugs pass straight through. Slugs still emitted by
+ * the quiz, AI and seasonal modules are translated here; anything unknown
+ * resolves to `[]`, which callers read as "no category filter applies".
  *
- * These entries date from the old taxonomy import — the `product_categories`
- * join table is currently empty, so a mapping resolves to slugs that match no
- * products. See "Categories" in the README.
+ * That matters because ~200 links across the app still point at the old
+ * WooCommerce taxonomy. Filtering on those would render an empty grid, which
+ * is worse than showing the full catalog.
  */
 
-export const CATEGORY_MAP: Record<string, string[]> = {
-  // Occasions
-  birthdays: ["birthday-gifts"],
-  anniversaries: ["occasions", "flowers-aromatics", "fresh-flower-bouquets", "jewelry-fine-pieces"],
-  weddings: ["occasions", "flowers-aromatics", "fresh-flower-bouquets", "gift-packaging-accessories"],
-  baby: ["baby-shower-gifts", "kids-baby-gifts", "early-education-toys"],
-  "baby-essentials": ["baby-shower-gifts", "kids-baby-gifts", "newborn-essentials", "baby-feeding-sets"],
-  "baby-toys": ["kids-baby-gifts", "early-education-toys", "baby-sensory-toys"],
-  "baby-nursery": ["nursery-decor", "baby-room-accessories", "home-lifestyle"],
-  "baby-keepsakes": ["baby-keepsake-gifts", "personalized-gifts", "photo-frames-keepsakes"],
-  "baby-clothing": ["baby-clothing-sets", "kids-baby-gifts"],
-  "baby-hampers": ["baby-shower-gifts", "hampers-gift-sets", "kids-baby-gifts"],
-  "baby-bath": ["baby-bath-time", "kids-baby-gifts", "wellness-self-care-hampers"],
-  graduation: ["occasions", "personalized-gifts", "personalized-journals-notebooks"],
-  milestone: ["personalized-gifts", "personalized-journals-notebooks", "jewelry-fine-pieces", "watches-timepieces"],
-  condolences: ["greeting-cards-note-cards", "flowers-aromatics", "fresh-flower-bouquets"],
+const TAXONOMY = new Set([
+  "awards-trophies",
+  "stationery-office",
+  "drinkware",
+  "bags",
+  "clocks",
+  "tech-gadgets",
+  "accessories",
+  "gift-sets",
+  "apparel",
+  "flowers",
+  "perfumes",
+  "fruits-edibles",
+]);
 
-  // Sentiments
-  "thank-you": ["personalized-gifts", "flowers-aromatics", "fresh-flower-bouquets", "greeting-cards-note-cards"],
-  apology: ["flowers-aromatics", "fresh-flower-bouquets", "greeting-cards-note-cards", "apology"],
-  "get-well": ["flowers-aromatics", "fresh-flower-bouquets", "wellness-self-care-hampers"],
-  "just-because": ["just-because", "personalized-gifts", "flowers-aromatics", "fresh-flower-bouquets"],
+/**
+ * Legacy slug → current taxonomy. `[]` means the label has no category
+ * equivalent (an occasion, an audience, a gift idea) so it must not filter.
+ */
+const LEGACY: Record<string, string[]> = {
+  // Gift-type categories that still have an equivalent
+  hampers: ["gift-sets"],
+  "hampers-gift-sets": ["gift-sets"],
+  "wellness-self-care-hampers": ["gift-sets"],
+  "baby-shower-gifts": ["gift-sets"],
+  "wine-whiskey-beverage-hampers": ["gift-sets"],
+  "personalized-gifts": ["awards-trophies", "stationery-office"],
+  "books-magazines-gifts": ["stationery-office"],
+  "greeting-cards-note-cards": ["stationery-office"],
+  "jewelry-fine-pieces": ["accessories"],
+  "watches-accessories": ["clocks", "accessories"],
+  "watches-timepieces": ["clocks"],
+  gadgets: ["tech-gadgets"],
+  tech: ["tech-gadgets"],
+  "home-decor": ["accessories"],
+  "home-lifestyle": ["accessories"],
+  candles: ["accessories"],
+  "stocking-fillers": ["accessories"],
+  "wall-art-decor": ["accessories"],
+  "kitchen-tools": ["accessories"],
+  "picnic-accessories": ["accessories"],
+  wellness: ["gift-sets"],
+  "bath-body-gifts": ["gift-sets"],
+  "spa-experience-vouchers": ["gift-sets"],
 
-  // For Her
-  her: [
-    "womens-luxury-accessories",
-    "handbags-clutches-purses",
-    "scarves-wraps-shawls",
-    "sunglasses-fashion-essentials",
-    "fashion-accessories",
-    "jewelry-fine-pieces",
-    "handmade-jewelry",
-    "flowers-aromatics",
-    "fresh-flower-bouquets",
-    "plush-toys-dolls",
-    "luxury-perfumes-fragrance-collection",
-    "personalized-gifts",
-    "name-printed-mugs-drinkware",
-  ],
-  "for-her": [
-    "womens-luxury-accessories",
-    "handbags-clutches-purses",
-    "scarves-wraps-shawls",
-    "sunglasses-fashion-essentials",
-    "fashion-accessories",
-    "jewelry-fine-pieces",
-    "handmade-jewelry",
-    "flowers-aromatics",
-    "fresh-flower-bouquets",
-    "plush-toys-dolls",
-    "luxury-perfumes-fragrance-collection",
-    "personalized-gifts",
-    "name-printed-mugs-drinkware",
-  ],
-  flowers: ["flowers-aromatics", "fresh-flower-bouquets"],
-  jewellery: ["jewelry-fine-pieces", "handmade-jewelry", "watches-timepieces"],
-  personalised: ["personalized-gifts", "personalized-desk-accessories", "personalized-journals-notebooks", "name-printed-mugs-drinkware"],
-  spa: ["wellness-self-care-hampers"],
+  // Deliberately absent: gourmet, chocolates, fruits, whisky-hampers.
+  // Their only home is `fruits-edibles`, which has no stock yet, so they fall
+  // through to [] and show the full catalog instead of an empty grid. Point
+  // new links straight at `fruits-edibles` once edibles are imported.
 
-  // For Him
-  him: [
-    "mens-premium-accessories",
-    "watches-timepieces",
-    "wallets-cardholders",
-    "monogrammed-wallets-accessories",
-    "sunglasses-fashion-essentials",
-    "personalized-gifts",
-    "name-printed-mugs-drinkware",
-    "art-craft-gifts",
-  ],
-  "for-him": [
-    "mens-premium-accessories",
-    "watches-timepieces",
-    "wallets-cardholders",
-    "monogrammed-wallets-accessories",
-    "sunglasses-fashion-essentials",
-    "personalized-gifts",
-    "name-printed-mugs-drinkware",
-    "art-craft-gifts",
-  ],
-  drinks: ["wine-whiskey-beverage-hampers", "hampers-gift-sets"],
-  gadgets: ["luxury-kitchen-accessories", "home-lifestyle"],
-  grooming: ["wellness-self-care-hampers", "luxury-perfumes-fragrance-collection"],
-  stationery: ["personalized-journals-notebooks", "planners-premium-stationery", "office-desk-essentials", "personalized-desk-accessories"],
-  sports: ["home-lifestyle", "fashion-accessories", "watches-timepieces"],
-
-  // Corporate
-  corporate: [
-    "corporate-business-gifts",
-    "corporate-events-gifts",
-    "corporate-appreciation-hampers",
-    "corporate-events-awards",
-    "clients-welcome-kits",
-    "staff-recognition-awards",
-    "branded-merchandise",
-    "executive-gift-set",
-    "personalized-desk-accessories",
-    "personalized-journals-notebooks",
-  ],
-
-  // Hampers
-  hampers: [
-    "hampers-gift-sets",
-    "customizable-hamper-kits",
-    "wellness-self-care-hampers",
-    "wine-whiskey-beverage-hampers",
-    "corporate-appreciation-hampers",
-    "hamper-packaging-supplies",
-  ],
-
-  // Candles
-  candles: ["candle-holders-lanterns", "home-lifestyle"],
-
-  // Beverages
-  beverages: ["wine-whiskey-beverage-hampers", "hampers-gift-sets", "customizable-hamper-kits"],
-  "alcoholic": ["wine-whiskey-beverage-hampers", "hampers-gift-sets"],
-  "non-alcoholic": ["juices-tea-coffee-gifts", "hampers-gift-sets", "customizable-hamper-kits"],
-
-  // Food & Treats
-  "food-treats": ["hampers-gift-sets", "customizable-hamper-kits", "chocolates-sweets-gifts"],
-  chocolates: ["hampers-gift-sets", "customizable-hamper-kits", "chocolates-sweets-gifts"],
-
-  // Plants
-  plants: ["plants-succulents", "flowers-aromatics", "home-lifestyle"],
-
-  // Books & Media
-  "books-media": ["books-magazines-gifts", "personalized-journals-notebooks"],
-
-  // Experience Gifts
-  "experience-gifts": ["spa-experience-vouchers", "wellness-self-care-hampers", "dining-experience-vouchers"],
-
-  // Subscriptions
-  subscriptions: ["monthly-subscription-boxes", "wellness-self-care-hampers"],
-
-  // Pet Gifts
-  "pet-gifts": ["pet-accessories-gifts", "home-lifestyle"],
-
-  // Composite / Curated Collections
-  "date-night": ["flowers-aromatics", "fresh-flower-bouquets", "chocolates-sweets-gifts", "wine-whiskey-beverage-hampers"],
-  "self-care": ["wellness-self-care-hampers", "candle-holders-lanterns", "luxury-perfumes-fragrance-collection"],
-
-  // Fitness & Gym
-  fitness: ["fitness-equipment", "home-lifestyle", "fashion-accessories"],
-  "gym-accessories": ["fitness-equipment", "fashion-accessories"],
-
-  // Gaming
-  gaming: ["gaming-accessories", "board-games-puzzles", "home-lifestyle"],
-  "board-games": ["board-games-puzzles", "early-education-toys"],
-
-  // Music
-  music: ["vinyl-records", "musical-accessories", "home-lifestyle"],
-
-  // Outdoor & Camping
-  outdoor: ["camping-gear", "picnic-accessories", "home-lifestyle"],
-  camping: ["camping-gear", "home-lifestyle"],
-
-  // Home Decor
-  "home-decor": ["wall-art-decor", "home-lifestyle", "candle-holders-lanterns"],
-  "wall-art": ["wall-art-decor", "art-prints-canvas", "wall-hangings-sculptures"],
-
-  // Kitchen
-  kitchen: ["kitchen-tools", "luxury-kitchen-accessories", "home-lifestyle"],
-
-  // Wedding Registry
-  "wedding-registry": ["wedding-registry-items", "home-lifestyle", "personalized-gifts"],
-  "his-hers": ["wedding-registry-items", "personalized-gifts"],
-
-  // Professional Appreciation
-  "teacher-gifts": ["teacher-appreciation", "personalized-gifts", "greeting-cards-note-cards"],
-  "nurse-gifts": ["nurse-appreciation", "wellness-self-care-hampers", "personalized-gifts"],
-
-  // Seasonal
-  christmas: ["christmas-gifts", "hampers-gift-sets", "candle-holders-lanterns"],
-  valentines: ["valentines-gifts", "flowers-aromatics", "chocolates-sweets-gifts"],
-  easter: ["easter-gifts", "chocolates-sweets-gifts", "kids-baby-gifts"],
-
-  // Collections (MegaMenu)
-  wellness: ["wellness-self-care-hampers", "spa-experience-vouchers", "candle-holders-lanterns"],
-  tech: ["home-lifestyle", "gaming-accessories", "luxury-kitchen-accessories"],
-  experiences: ["spa-experience-vouchers", "dining-experience-vouchers"],
-  housewarming: ["home-lifestyle", "wall-art-decor", "candle-holders-lanterns", "plants-succulents"],
-
-  // Audience (MegaMenu — By Recipient)
-  parents: ["home-lifestyle", "wellness-self-care-hampers", "luxury-kitchen-accessories", "personalized-gifts"],
-  friend: ["just-because", "chocolates-sweets-gifts", "plush-toys-dolls", "board-games-puzzles"],
-  colleague: ["corporate-business-gifts", "office-desk-essentials", "personalized-desk-accessories"],
-
-  // Holidays (MegaMenu — Kenyan + International)
-  "mothers-day": ["mothers-day-fathers-day", "flowers-aromatics", "fresh-flower-bouquets", "wellness-self-care-hampers"],
-  "fathers-day": ["mothers-day-fathers-day", "mens-premium-accessories", "watches-timepieces"],
-  eid: ["hampers-gift-sets", "chocolates-sweets-gifts", "personalized-gifts"],
-  madaraka: ["hampers-gift-sets", "handmade-african-art", "handmade-crafts-fairs"],
-  mashujaa: ["hampers-gift-sets", "handmade-african-art", "collectible-award-sculpture"],
-  jamhuri: ["hampers-gift-sets", "handmade-african-art", "handmade-crafts-fairs"],
-  utamaduni: ["handmade-african-art", "handmade-crafts-fairs", "art-craft-gifts"],
-  "labour-day": ["office-desk-essentials", "corporate-business-gifts"],
-  "womens-day": ["womens-luxury-accessories", "flowers-aromatics", "fresh-flower-bouquets"],
-
-  // Cultural life moments (MegaMenu — Gift Lab + Occasions)
-  ruracio: ["wedding-registry-items", "personalized-gifts", "jewelry-fine-pieces"],
-  dowry: ["home-lifestyle", "hampers-gift-sets", "luxury-gifts"],
-  circumcision: ["mens-premium-accessories", "personalized-gifts", "watches-timepieces"],
-  christening: ["baby-shower-gifts", "kids-baby-gifts", "greeting-cards-note-cards"],
-  funeral: ["greeting-cards-note-cards", "fresh-flower-bouquets", "flowers-aromatics"],
-
-  // MegaMenu link slugs that had no mapping — getDbSlugs fell through to the
-  // raw slug, so these returned zero products. Verified against the DB.
-  liquor: ["wine-whiskey-beverage-hampers"],
-  perfumes: ["luxury-perfumes-fragrance-collection"],
-  "best-sellers": ["best-sellers"],
+  // No equivalent — occasions, audiences and segments must not filter
+  birthdays: [],
+  anniversaries: [],
+  weddings: [],
+  baby: [],
+  graduation: [],
+  "graduation-gifts": [],
+  condolences: [],
+  "just-because": [],
+  apology: [],
+  milestone: [],
+  "for-her": [],
+  "for-him": [],
+  "for-couples": [],
+  "for-parents": [],
+  "for-colleagues": [],
+  colleagues: [],
+  fitness: [],
+  gaming: [],
+  music: [],
+  outdoor: [],
+  kitchen: [],
+  corporate: [],
+  christmas: [],
+  "christmas-gifts": [],
+  "valentines-day-gifts": [],
+  "valentines-gifts": [],
+  "easter-gifts": [],
+  "teacher-appreciation": [],
+  "nurse-appreciation": [],
+  "thank-you-gifts": [],
+  "experience-gifts": [],
+  "dining-experience-vouchers": [],
+  "monthly-subscription-boxes": [],
+  "kids-baby-gifts": [],
+  "baby-toys": [],
+  "newborn-essentials": [],
+  "balloons-gifts": [],
+  "liquor": [],
+  "whisky-spirits-hampers": [],
 };
 
 /**
- * Links are written the way they read ("birthday", "colleagues") while the map
- * keys are stored differently. Applied before the lookup so both direct callers
- * and normalized shop params resolve to real DB slugs.
- */
-const SLUG_ALIASES: Record<string, string> = {
-  birthday: "birthdays",
-  anniversary: "anniversaries",
-  wedding: "weddings",
-  colleagues: "colleague",
-  "thinking-of-you": "just-because",
-  "new-job": "milestone",
-  retirement: "milestone",
-};
-
-/**
- * True when we have a curated mapping for this slug. Callers use this to decide
- * whether it is safe to apply a filter — an unmapped slug would match nothing
- * and show an empty shop.
- */
-export function hasMapping(uiSlug: string): boolean {
-  return (SLUG_ALIASES[uiSlug] ?? uiSlug) in CATEGORY_MAP;
-}
-
-/**
- * Returns the DB category slugs for a given UI slug.
- * If no mapping exists, returns the original slug as a single-element array
- * (for direct DB slug lookups like "just-because").
+ * Returns the DB category slugs for a UI slug.
+ * Empty array = do not filter (see header comment).
  */
 export function getDbSlugs(uiSlug: string): string[] {
-  return CATEGORY_MAP[SLUG_ALIASES[uiSlug] ?? uiSlug] || [uiSlug];
+  if (TAXONOMY.has(uiSlug)) return [uiSlug];
+  return LEGACY[uiSlug] ?? [];
 }

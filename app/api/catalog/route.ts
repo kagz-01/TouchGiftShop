@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getDbSlugs } from "@/lib/category-map";
 import { supabaseAdmin } from "@/lib/supabase";
 import { optimizeProductImagesList } from "@/lib/image-url";
 
@@ -21,7 +22,8 @@ export async function GET(req: Request) {
     .eq("in_stock", true);
 
   if (category && category !== "all") {
-    query = query.eq("product_categories.categories.slug", category);
+    const dbSlugs = getDbSlugs(category);
+    if (dbSlugs.length) query = query.in("product_categories.categories.slug", dbSlugs);
   }
 
   if (search) {

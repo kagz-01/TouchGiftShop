@@ -29,6 +29,10 @@ SUPABASE_SERVICE = os.environ["SUPABASE_SERVICE_ROLE_KEY"]
 from supabase import create_client, Client
 sb: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE)
 
+# Taxonomy rebuild runs after the import (see link_categories.py)
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from link_categories import link_categories  # noqa: E402
+
 # ── Config ──────────────────────────────────────────────────────────────
 CSV_FILE    = Path("promohub-catalog.csv")
 IMAGES_DIR  = Path("public/products")
@@ -228,6 +232,7 @@ if __name__ == "__main__":
     ensure_bucket()
     upload_images()
     import_catalog()
+    link_categories()
 
     print("\n" + "=" * 60)
     print("  All done! Products are live in Supabase.")

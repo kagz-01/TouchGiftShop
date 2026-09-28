@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import { categoryIcon } from "@/components/shop/CategoryIcons";
+import { useShopCategories } from "@/components/shop/useShopCategories";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronDown, Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2, Apple } from "lucide-react";
@@ -35,28 +37,28 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "By Person",
         links: [
-          { href: "/shop?for=her", label: "For Her", icon: <User className="w-4 h-4" />, description: "Curated for the remarkable women in your life." },
-          { href: "/shop?for=him", label: "For Him", icon: <User className="w-4 h-4" />, description: "Sophisticated choices for the modern gentleman." },
-          { href: "/shop?for=couples", label: "For Couples", icon: <Users className="w-4 h-4" />, description: "Shared experiences and paired luxury gifts." },
-          { href: "/shop?for=parents", label: "For Parents", icon: <Heart className="w-4 h-4" />, description: "Show your deepest appreciation." },
-          { href: "/shop?for=colleagues", label: "For Colleagues", icon: <Building2 className="w-4 h-4" />, description: "Professional, elegant, and always appropriate." },
+          { href: "/shop", label: "For Her", icon: <User className="w-4 h-4" />, description: "Curated for the remarkable women in your life." },
+          { href: "/shop", label: "For Him", icon: <User className="w-4 h-4" />, description: "Sophisticated choices for the modern gentleman." },
+          { href: "/shop", label: "For Couples", icon: <Users className="w-4 h-4" />, description: "Shared experiences and paired luxury gifts." },
+          { href: "/shop", label: "For Parents", icon: <Heart className="w-4 h-4" />, description: "Show your deepest appreciation." },
+          { href: "/shop", label: "For Colleagues", icon: <Building2 className="w-4 h-4" />, description: "Professional, elegant, and always appropriate." },
         ],
       },
       {
         title: "By Budget",
         links: [
-          { href: "/shop?price=under-2k", label: "Under KSh 2,000", icon: <Tag className="w-4 h-4" />, description: "Small tokens of great appreciation." },
-          { href: "/shop?price=2k-5k", label: "KSh 2,000-5,000", icon: <Tag className="w-4 h-4" />, description: "Our most popular sweet spot." },
-          { href: "/shop?price=5k-10k", label: "KSh 5,000-10,000", icon: <Tag className="w-4 h-4" />, description: "Premium tier for those special moments." },
-          { href: "/shop?price=over-10k", label: "Luxury KSh 10,000+", icon: <Gem className="w-4 h-4" />, description: "The grand gesture. Pure opulence." },
+          { href: "/shop?minPrice=0&maxPrice=2000", label: "Under KSh 2,000", icon: <Tag className="w-4 h-4" />, description: "Small tokens of great appreciation." },
+          { href: "/shop?minPrice=2000&maxPrice=5000", label: "KSh 2,000-5,000", icon: <Tag className="w-4 h-4" />, description: "Our most popular sweet spot." },
+          { href: "/shop?minPrice=5000&maxPrice=10000", label: "KSh 5,000-10,000", icon: <Tag className="w-4 h-4" />, description: "Premium tier for those special moments." },
+          { href: "/shop?minPrice=10000", label: "Luxury KSh 10,000+", icon: <Gem className="w-4 h-4" />, description: "The grand gesture. Pure opulence." },
         ],
       },
       {
         title: "Quick Help",
         links: [
           { href: "/ai-finder", label: "AI Gift Finder", icon: <Bot className="w-4 h-4" />, description: "Let our smart concierge find the perfect match." },
-          { href: "/shop?filter=last-minute", label: "Last-Minute Gifts", icon: <Clock className="w-4 h-4" />, description: "Guaranteed same-day Nairobi delivery." },
-          { href: "/shop?filter=best-sellers", label: "Best Sellers", icon: <Trophy className="w-4 h-4" />, description: "Tried, tested, and universally loved." },
+          { href: "/shop", label: "Last-Minute Gifts", icon: <Clock className="w-4 h-4" />, description: "Guaranteed same-day Nairobi delivery." },
+          { href: "/shop", label: "Best Sellers", icon: <Trophy className="w-4 h-4" />, description: "Tried, tested, and universally loved." },
         ],
       },
     ],
@@ -77,27 +79,27 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Milestones",
         links: [
-          { href: "/shop?occasion=birthday", label: "Birthdays", icon: <Cake className="w-4 h-4" />, description: "Make their new year unforgettable." },
-          { href: "/shop?occasion=anniversary", label: "Anniversaries", icon: <HeartPulse className="w-4 h-4" />, description: "Celebrate your years together." },
-          { href: "/shop?occasion=graduation", label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, description: "Mark their greatest achievement." },
-          { href: "/shop?occasion=wedding", label: "Weddings & Engagement", icon: <Church className="w-4 h-4" />, description: "For the newly weds and lovebirds." },
+          { href: "/shop", label: "Birthdays", icon: <Cake className="w-4 h-4" />, description: "Make their new year unforgettable." },
+          { href: "/shop", label: "Anniversaries", icon: <HeartPulse className="w-4 h-4" />, description: "Celebrate your years together." },
+          { href: "/shop", label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, description: "Mark their greatest achievement." },
+          { href: "/shop", label: "Weddings & Engagement", icon: <Church className="w-4 h-4" />, description: "For the newly weds and lovebirds." },
         ],
       },
       {
         title: "Just Because",
         links: [
-          { href: "/shop?occasion=thank-you", label: "Thank You", icon: <HeartHandshake className="w-4 h-4" />, description: "Gratitude expressed beautifully." },
-          { href: "/shop?occasion=get-well", label: "Get Well Soon", icon: <Activity className="w-4 h-4" />, description: "Wishes for a speedy recovery." },
-          { href: "/shop?occasion=thinking-of-you", label: "Thinking of You", icon: <MessageCircle className="w-4 h-4" />, description: "When they cross your mind." },
-          { href: "/shop?occasion=apology", label: "Apology (I'm Sorry)", icon: <Undo className="w-4 h-4" />, description: "Mend fences with a sweet gesture." },
+          { href: "/shop", label: "Thank You", icon: <HeartHandshake className="w-4 h-4" />, description: "Gratitude expressed beautifully." },
+          { href: "/shop", label: "Get Well Soon", icon: <Activity className="w-4 h-4" />, description: "Wishes for a speedy recovery." },
+          { href: "/shop", label: "Thinking of You", icon: <MessageCircle className="w-4 h-4" />, description: "When they cross your mind." },
+          { href: "/shop", label: "Apology (I'm Sorry)", icon: <Undo className="w-4 h-4" />, description: "Mend fences with a sweet gesture." },
         ],
       },
       {
         title: "Professional",
         links: [
-          { href: "/shop?occasion=new-job", label: "New Job & Promotion", icon: <Briefcase className="w-4 h-4" />, description: "Celebrate their career leaps." },
-          { href: "/shop?occasion=retirement", label: "Retirement", icon: <Clock className="w-4 h-4" />, description: "Honoring a legacy of hard work." },
-          { href: "/shop?occasion=farewell", label: "Farewell / Bon Voyage", icon: <Flag className="w-4 h-4" />, description: "Send them off in style." },
+          { href: "/shop", label: "New Job & Promotion", icon: <Briefcase className="w-4 h-4" />, description: "Celebrate their career leaps." },
+          { href: "/shop", label: "Retirement", icon: <Clock className="w-4 h-4" />, description: "Honoring a legacy of hard work." },
+          { href: "/shop", label: "Farewell / Bon Voyage", icon: <Flag className="w-4 h-4" />, description: "Send them off in style." },
         ],
       },
     ],
@@ -116,29 +118,11 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
     label: "Collections",
     sections: [
       {
-        title: "Signature Gifts",
-        links: [
-          { href: "/shop?category=hampers", label: "Curated Hampers", icon: <ShoppingBasket className="w-4 h-4" />, description: "Our famous hand-packed luxury boxes." },
-          { href: "/shop?category=flowers", label: "Fresh Flowers", icon: <Flower2 className="w-4 h-4" />, description: "Hand-tied bouquets and bloom boxes." },
-          { href: "/shop?category=liquor", label: "Fine Spirits & Wine", icon: <Flame className="w-4 h-4" />, description: "Premium bottles for a proper toast." },
-          { href: "/shop?category=perfumes", label: "Designer Fragrances", icon: <Sparkles className="w-4 h-4" />, description: "Authentic, high-end signature scents." },
-        ],
-      },
-      {
-        title: "Specialty",
-        links: [
-          { href: "/shop?category=wellness", label: "Wellness & Spa", icon: <Activity className="w-4 h-4" />, description: "Relaxation and self-care essentials." },
-          { href: "/shop?category=chocolates", label: "Gourmet Chocolates", icon: <Candy className="w-4 h-4" />, description: "Artisan chocolates and sweet treats." },
-          { href: "/shop?category=fruits", label: "Fresh Fruit Baskets", icon: <Apple className="w-4 h-4" />, description: "Farm-fresh exotic fruit selections." },
-          { href: "/shop?category=tech", label: "Tech & Gadgets", icon: <Smartphone className="w-4 h-4" />, description: "Premium accessories for the modern era." },
-        ],
-      },
-      {
         title: "The Edits",
         links: [
-          { href: "/shop?edit=local", label: "Made in Kenya", icon: <Map className="w-4 h-4" />, description: "Showcasing the best local artisans." },
-          { href: "/shop?edit=sustainable", label: "Eco-Friendly", icon: <Leaf className="w-4 h-4" />, description: "Sustainable and earth-conscious picks." },
-          { href: "/shop?edit=personalized", label: "Personalized", icon: <Target className="w-4 h-4" />, description: "Engraved, monogrammed, and bespoke." },
+          { href: "/shop", label: "Made in Kenya", icon: <Map className="w-4 h-4" />, description: "Showcasing the best local artisans." },
+          { href: "/shop?tag=sustainable", label: "Eco-Friendly", icon: <Leaf className="w-4 h-4" />, description: "Sustainable and earth-conscious picks." },
+          { href: "/shop?personalizable=1", label: "Personalized", icon: <Target className="w-4 h-4" />, description: "Engraved, monogrammed, and bespoke." },
         ],
       }
     ]
@@ -288,6 +272,7 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
 ];
 
 export default function MegaMenu() {
+  const categories = useShopCategories();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -317,14 +302,39 @@ export default function MegaMenu() {
     };
   }, []);
 
-  const activeData = MEGA_MENU_DATA.find((m) => m.id === activeMenu);
+  // Categories are built from the live list so a newly imported product
+  // line shows up here without a deploy. Only the hand-written edits stay.
+  const menus = useMemo(() => {
+    const shopByCategory = {
+      title: "Shop by Category",
+      links: categories.map((c) => ({
+        href: `/shop?category=${c.slug}`,
+        label: c.name,
+        icon: categoryIcon(c.slug),
+        description: `${c.count} product${c.count === 1 ? "" : "s"} in stock.`,
+      })),
+    };
+    return MEGA_MENU_DATA.map((m) =>
+      m.id === "collections"
+        ? {
+            ...m,
+            sections: [
+              shopByCategory,
+              ...m.sections.filter((section) => section.title === "The Edits"),
+            ],
+          }
+        : m
+    );
+  }, [categories]);
+
+  const activeData = menus.find((m) => m.id === activeMenu);
 
   return (
     <div ref={menuRef} className="relative" onMouseLeave={handleMouseLeave}>
 
       {/* NAV LINKS */}
       <nav className="flex items-center justify-center gap-10 py-3.5">
-        {MEGA_MENU_DATA.map((item) => {
+        {menus.map((item) => {
           const isActive = activeMenu === item.id;
           return (
             <button

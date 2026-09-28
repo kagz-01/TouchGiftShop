@@ -42,13 +42,27 @@ async function getByCategory(categorySlug: string, limit = 10): Promise<Product[
     .limit(limit);
   return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
 }
+async function getByTag(tag: string, limit = 10): Promise<Product[]> {
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  const { data } = await supabase
+    .from("products")
+    .select("*")
+    .eq("in_stock", true)
+    .contains("tags", JSON.stringify([tag]))
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
+}
 async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const [trending, lastMinute, edible, selfCare, personalised, under2k] =
+  const [trending, lastMinute, drinkware, giftSets, personalised, under2k] =
     await Promise.all([
       supabase
         .from("products")
@@ -67,9 +81,9 @@ async function getFeaturedProducts() {
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
 
-      getByCategory("chocolates-sweets-gifts", 10),
-      getByCategory("wellness-self-care-hampers", 10),
-      getByCategory("personalized-gifts", 10),
+      getByCategory("drinkware", 10),
+      getByCategory("gift-sets", 10),
+      getByTag("personalised", 10),
 
       supabase
         .from("products")
@@ -81,15 +95,15 @@ async function getFeaturedProducts() {
         .then((r) => (r.data ?? []) as Product[]),
     ]);
 
-  [trending, lastMinute, edible, selfCare, personalised, under2k].forEach((list) =>
+  [trending, lastMinute, drinkware, giftSets, personalised, under2k].forEach((list) =>
     optimizeProductImagesList(list)
   );
 
-  return { trending, lastMinute, edible, selfCare, personalised, under2k };
+  return { trending, lastMinute, drinkware, giftSets, personalised, under2k };
 }
 
 export default async function HomePage() {
-  const { trending, lastMinute, edible, selfCare, personalised, under2k } =
+  const { trending, lastMinute, drinkware, giftSets, personalised, under2k } =
     await getFeaturedProducts();
 
   return (
@@ -151,9 +165,9 @@ export default async function HomePage() {
             speed: 28,
           },
           {
-            title: "Edible Gifts",
-            viewAllHref: "/shop?category=chocolates-sweets-gifts",
-            products: edible,
+            title: "Drinkware",
+            viewAllHref: "/shop?category=drinkware",
+            products: drinkware,
             direction: "down",
             speed: 36,
           },
@@ -197,10 +211,10 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-4 space-y-0">
         <FeaturedRow
-          title="The Self-Care Collection"
-          subtitle="Wellness hampers & spa sets"
-          products={selfCare}
-          viewAllHref="/shop?category=wellness-self-care-hampers"
+          title="Gift Sets & Hampers"
+          subtitle="Hand-packed hampers & curated sets"
+          products={giftSets}
+          viewAllHref="/shop?category=gift-sets"
           viewAllLabel="See all"
           tint="cool"
           marqueeDirection="left"
@@ -209,7 +223,7 @@ export default async function HomePage() {
           title="Make it Personal · Under KSh 2,000"
           subtitle="Engraved, printed & budget-friendly gifts"
           products={[...personalised, ...under2k].slice(0, 10)}
-          viewAllHref="/shop?category=personalized-gifts"
+          viewAllHref="/shop?tag=personalised"
           viewAllLabel="See all"
           tint="warm"
           marqueeDirection="right"

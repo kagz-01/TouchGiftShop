@@ -34,8 +34,13 @@ export default async function QuizResults({
 
   let query = supabaseAdmin
     .from("products")
-    .select("*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)")
-    .in("product_categories.categories.slug", allDbSlugs);
+    .select("*, product_categories!inner(categories!inner(slug)), product_specs(spec_key, spec_value, icon, sort_order)");
+
+  // Empty = no resolvable categories (legacy/occasion slug), so return the
+  // full catalog rather than an empty quiz result — see lib/category-map.ts.
+  if (allDbSlugs.length) {
+    query = query.in("product_categories.categories.slug", allDbSlugs);
+  }
 
   // Apply budget filter if any
   if (answers.budget && answers.budget !== "any") {

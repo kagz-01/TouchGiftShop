@@ -80,13 +80,26 @@ fewer bytes than the original files, with no `/_next/image` in the path.
 
 ### Categories
 
-`categories` and the `product_categories` join table are the old WooCommerce
-taxonomy. `lib/category-map.ts` translates the friendly slugs used in links
-(`flowers`, `birthday`) into the DB slugs the shop queries.
+The shop taxonomy lives in `categories` (one row per top-level category) and
+`product_categories` (many-to-many product↔category links).
 
-> **Known gap:** `product_categories` is empty, so every category filter
-> currently returns nothing. Text search (`?q=`) and budget tiers
-> (`?budget=`) work as expected.
+The catalog CSV carries no category column, so links are derived by
+`scripts/link_categories.py` from the SKU prefix (`AWD`→`awards-trophies`,
+`NBK`/`PEN`→`stationery-office`, `FLK`/`MUG`→`drinkware`, ...) plus the product
+`tags` (`award`, `drinkware`, `gift set`, ...). A product can sit in several
+categories — a flask set is both `drinkware` and `gift-sets`.
+
+```bash
+python3 scripts/link_categories.py
+```
+
+`scripts/full_import.py` runs this after every import, so links are rebuilt
+whenever products change. `/api/categories` only lists categories that
+currently have products: import apparel, flowers, perfumes or edibles and they
+show up in the shop chips and MegaMenu with no code change.
+
+URL slugs and DB slugs are the same value — `lib/category-map.ts` is the single
+place to add an alias if a slug is ever renamed.
 
 ### One-time setup
 
