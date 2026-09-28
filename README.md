@@ -47,76 +47,62 @@ adding them now would be scaffolding for infrastructure that doesn't exist.
 7. Design pass (see `/mnt/skills/public/frontend-design/SKILL.md`) once the
    functional skeleton is proven — do not skip this before real users see it.
 
-## Hosting: cPanel/wp-admin's actual role
+## Hosting: cPanel's actual role
 
 - **cPanel DNS Zone Editor**: point the main domain's A/CNAME records at
   wherever this Next.js app is deployed (e.g. Vercel).
 - **MX records**: leave these alone so `@yourdomain` email keeps working
   through cPanel's mail server regardless of where the website itself runs.
-- **wp-admin**: this is where WooCommerce actually lives now — see the
-  architecture section below. Put it on a subdomain (e.g.
-  `admin.touchgift.co.ke`) rather than the main domain, since it's a private
-  staff tool, not the public storefront.
 
-## Architecture: WooCommerce for data entry, everything else custom
+## Architecture: Supabase is the source of truth for products
 
-Product/inventory data entry uses **WooCommerce running privately** (e.g.
-at `admin.touchgift.co.ke`) — staff add and edit products there using
-WooCommerce's normal product form, which is a better data-entry experience
-than anything worth building from scratch at this stage.
+WooCommerce was dropped entirely — there is no wp-admin, no webhook and no
+sync. `lib/woocommerce.ts`, `lib/sync-product.ts` and
+`app/api/sync/woocommerce/webhook` are gone.
 
-**WooCommerce is not the storefront and does not touch checkout.** The
-public site, checkout, M-Pesa payment, order status, group gifting pools,
-wishlists, and the Surprise Safeguard are all still the custom Next.js +
-Supabase system already in this repo — none of that fits WooCommerce's
-single-payer order model anyway.
-
-Products flow one way, WooCommerce → Supabase:
+Products live in the Supabase `products` table and arrive two ways:
 
 ```
-wp-admin (staff add/edit a product)
-        │
-        ▼  webhook, signed with WOOCOMMERCE_WEBHOOK_SECRET
-app/api/sync/woocommerce/webhook   →  lib/sync-product.ts  →  Supabase `products`
-        ▲
-        │  full reconciliation, safe to re-run any time
-scripts/sync-woocommerce-products.ts
+promohub-catalog.csv  ── scripts/full_import.py / import_catalog.py ──┐
+                 admin CSV import (app/api/admin/products/import)
+                                                              ▼
+                                                    Supabase `products`
+                                                              │
+ /admin/products  ── create / update / delete ────────────────┤
+                                                              ▼
+                                       revalidateCatalog() on every mutation
+                                       → / , /shop, /sitemap.xml refresh ≤60s
 ```
+
+Product images live in the `products` bucket of Supabase Storage and are
+served through the on-demand render endpoint (`lib/image-url.ts`) — about 75%
+fewer bytes than the original files, with no `/_next/image` in the path.
+
+### Categories
+
+`categories` and the `product_categories` join table are the old WooCommerce
+taxonomy. `lib/category-map.ts` translates the friendly slugs used in links
+(`flowers`, `birthday`) into the DB slugs the shop queries.
+
+> **Known gap:** `product_categories` is empty, so every category filter
+> currently returns nothing. Text search (`?q=`) and budget tiers
+> (`?budget=`) work as expected.
 
 ### One-time setup
 
-1. Install WordPress + WooCommerce on the private admin subdomain (this is
-   what the wp-admin access is actually for).
-2. WooCommerce → Settings → Advanced → REST API → generate a key with
-   **Read** permissions. Put it in `.env.local` as `WOOCOMMERCE_CONSUMER_KEY`
-   / `WOOCOMMERCE_CONSUMER_SECRET`.
-3. WooCommerce → Settings → Advanced → Webhooks → new webhook:
-   - Topic: **Product updated** (add a second one for **Product created**)
-   - Delivery URL: `https://<your-domain>/api/sync/woocommerce/webhook`
-   - Secret: any string, matching `WOOCOMMERCE_WEBHOOK_SECRET` in `.env.local`
-4. Run the initial full sync so existing products show up immediately:
+1. Fill `.env.local` with the Supabase keys (`NEXT_PUBLIC_SUPABASE_URL`,
+   `SUPABASE_SERVICE_ROLE_KEY`).
+2. Upload the WebP image batch into the `products` bucket
+   (`products/corporate/<SKU>.webp`).
+3. Load the catalog from the supplier CSV:
    ```bash
-   npx tsx scripts/sync-woocommerce-products.ts
-   ```
-5. Seed the TouchGift-only narrative categories (Apology, Milestone, Just
-   Because) — these have no WooCommerce equivalent:
-   ```bash
-   npx tsx scripts/seed-narrative-categories.ts
+   python3 scripts/full_import.py
    ```
 
-After that, editing a product in wp-admin updates the live TouchGift site
-within seconds via the webhook — no manual re-sync needed. Re-run the full
-sync script any time you want to reconcile everything at once (e.g. after
-bulk-importing products via WooCommerce's own CSV importer).
+### Legacy columns
 
-### What doesn't come from WooCommerce
-
-- `is_personalizable` has no WooCommerce equivalent yet — defaults to
-  `false`. Set it manually in Supabase for now, or extend the sync to read
-  a WooCommerce product tag once staff start using one.
-- Narrative categories, seeded separately (above) since WooCommerce has no
-  concept of "Apology" or "Just Because" as a taxonomy that needs to exist
-  on their side.
+`products.woocommerce_id` and `categories.woocommerce_id` are leftovers.
+Nothing reads or writes them any more.
 
 ## Getting started
 

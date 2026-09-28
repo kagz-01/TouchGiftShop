@@ -41,9 +41,9 @@ export default function SeasonalPromptBar() {
   }
 
   function handleShop() {
-    // Navigate to category page
-    const category = event.categories[0] || "gifts";
-    router.push(`/category/${category}`);
+    // Category filtering is unavailable while product_categories is empty —
+    // /shop?category=<slug> would render an empty grid.
+    router.push("/shop");
   }
 
   return (

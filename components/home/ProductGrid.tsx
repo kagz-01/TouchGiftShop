@@ -100,17 +100,17 @@ async function getProducts(params: ShopParams): Promise<{
 
   // Color filter
   if (params.color) {
-    query = query.contains("color_variants", [{ name: params.color }]);
+    query = query.contains("color_variants", JSON.stringify([{ name: params.color }]));
   }
 
   // Size filter
   if (params.size) {
-    query = query.contains("size_variants", [{ name: params.size }]);
+    query = query.contains("size_variants", JSON.stringify([{ name: params.size }]));
   }
 
   // Tag filter
   if (params.tag) {
-    query = query.contains("tags", [params.tag]);
+    query = query.contains("tags", JSON.stringify([params.tag]));
   }
 
   // Hard filters

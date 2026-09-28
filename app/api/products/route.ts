@@ -129,17 +129,17 @@ export async function GET(req: Request) {
   // ── Color filter (JSONB array contains) ──
   if (color) {
     // Use jsonb path query: color_variants must contain an element with matching name
-    query = query.contains("color_variants", [{ name: color }]);
+    query = query.contains("color_variants", JSON.stringify([{ name: color }]));
   }
 
   // ── Size filter (JSONB array contains) ──
   if (size) {
-    query = query.contains("size_variants", [{ name: size }]);
+    query = query.contains("size_variants", JSON.stringify([{ name: size }]));
   }
 
   // ── Tag filter (JSONB array contains) ──
   if (tag) {
-    query = query.contains("tags", [tag]);
+    query = query.contains("tags", JSON.stringify([tag]));
   }
 
   // ── Hard filters ──
@@ -172,8 +172,8 @@ export async function GET(req: Request) {
 
   // ── Pagination ──
   const from = (page - 1) * limit;
-  const fetchTo = from + limit; // range is inclusive, so limit items = from..from+limit-1
-  const { data, error, count } = await query.range(from, fetchTo - 1);
+  // Fetch one extra row as a sentinel: hasMore below is `length > limit`.
+  const { data, error, count } = await query.range(from, from + limit);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

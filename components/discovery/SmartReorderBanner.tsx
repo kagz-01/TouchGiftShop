@@ -49,11 +49,12 @@ export default function SmartReorderBanner() {
   function handleShop() {
     if (suggestion.suggestedAction === "reorder") {
       // Go to product page (would need product slug in real app)
-      router.push(`/search?q=${encodeURIComponent(suggestion.lastGift.productName)}`);
+      router.push(`/shop?q=${encodeURIComponent(suggestion.lastGift.productName)}`);
     } else if (suggestion.suggestedAction === "similar") {
-      router.push(`/search?q=${encodeURIComponent(suggestion.lastGift.productName)}&sort=popular`);
+      router.push(`/shop?q=${encodeURIComponent(suggestion.lastGift.productName)}`);
     } else {
-      router.push(`/category/${suggestion.occasion}`);
+      // Category filtering is unavailable while product_categories is empty.
+      router.push("/shop");
     }
   }
 

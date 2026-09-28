@@ -1,9 +1,13 @@
 /**
  * Maps user-friendly category slugs (used in UI tabs, MegaMenu, OccasionFilter)
- * to the actual WooCommerce/Supabase category slugs in the database.
+ * to the category slugs actually stored in Supabase.
  *
  * Multiple DB slugs can map to one UI slug (e.g. "corporate" maps to several
- * WooCommerce product categories).
+ * product categories).
+ *
+ * These entries date from the old taxonomy import — the `product_categories`
+ * join table is currently empty, so a mapping resolves to slugs that match no
+ * products. See "Categories" in the README.
  */
 
 export const CATEGORY_MAP: Record<string, string[]> = {
@@ -210,7 +214,37 @@ export const CATEGORY_MAP: Record<string, string[]> = {
   circumcision: ["mens-premium-accessories", "personalized-gifts", "watches-timepieces"],
   christening: ["baby-shower-gifts", "kids-baby-gifts", "greeting-cards-note-cards"],
   funeral: ["greeting-cards-note-cards", "fresh-flower-bouquets", "flowers-aromatics"],
+
+  // MegaMenu link slugs that had no mapping — getDbSlugs fell through to the
+  // raw slug, so these returned zero products. Verified against the DB.
+  liquor: ["wine-whiskey-beverage-hampers"],
+  perfumes: ["luxury-perfumes-fragrance-collection"],
+  "best-sellers": ["best-sellers"],
 };
+
+/**
+ * Links are written the way they read ("birthday", "colleagues") while the map
+ * keys are stored differently. Applied before the lookup so both direct callers
+ * and normalized shop params resolve to real DB slugs.
+ */
+const SLUG_ALIASES: Record<string, string> = {
+  birthday: "birthdays",
+  anniversary: "anniversaries",
+  wedding: "weddings",
+  colleagues: "colleague",
+  "thinking-of-you": "just-because",
+  "new-job": "milestone",
+  retirement: "milestone",
+};
+
+/**
+ * True when we have a curated mapping for this slug. Callers use this to decide
+ * whether it is safe to apply a filter — an unmapped slug would match nothing
+ * and show an empty shop.
+ */
+export function hasMapping(uiSlug: string): boolean {
+  return (SLUG_ALIASES[uiSlug] ?? uiSlug) in CATEGORY_MAP;
+}
 
 /**
  * Returns the DB category slugs for a given UI slug.
@@ -218,5 +252,5 @@ export const CATEGORY_MAP: Record<string, string[]> = {
  * (for direct DB slug lookups like "just-because").
  */
 export function getDbSlugs(uiSlug: string): string[] {
-  return CATEGORY_MAP[uiSlug] || [uiSlug];
+  return CATEGORY_MAP[SLUG_ALIASES[uiSlug] ?? uiSlug] || [uiSlug];
 }
