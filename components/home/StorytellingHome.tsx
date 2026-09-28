@@ -154,16 +154,34 @@ function highlightDeliveryCopy(text: string) {
   return parts;
 }
 
+// The 6 hero moods. Hoisted to module scope on purpose: HeroCinematic
+// re-renders ~4x/second off the typewriter below, and an inline .filter()
+// produced a new array reference each time — which reset the rotation
+// interval on every render, so the 3s timer never got to elapse.
+const HERO_MOODS = MOODS.filter((m) =>
+  ["default", "corporate", "flowers", "liquor", "perfumes", "hampers"].includes(m.id)
+);
+
+const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
+  default:      ["TouchGift makes gifting feel thoughtful.", "Order now for fast same-day gift delivery in Nairobi.", "Wrapped beautifully. Delivered with care."],
+  corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
+  flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
+  liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
+  perfumes:     ["Authentic designer fragrances. ✨", "A memory in a bottle.", "The ultimate sensory gift delivered today."],
+  hampers:      ["Generosity, beautifully packaged. 🧺", "Overflowing hampers of fresh fruits.", "Artisan treats and bespoke gifts."],
+};
+
 /* ══════════════════════════════════════════════════════════
    SECTION 1: THE HOOK — 3/4 cinematic hero with logo reveal
    ══════════════════════════════════════════════════════════ */
 export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
   const { moodMeta, setMood, mood } = useMood();
-  const [isPaused, setIsPaused] = useState(false);
-
-  // The 6 main pillars for the hero
-  const heroMoods = MOODS.filter(m => ["default", "corporate", "flowers", "liquor", "perfumes", "hampers"].includes(m.id));
+  // Hovering the tab row pauses so you can read it; clicking a mood pins it
+  // and it stays pinned after the pointer leaves, until you click it again.
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPinned, setIsPinned] = useState(false);
+  const isPaused = isPinned || isHovered;
 
   // Background mapping
   const heroBackgrounds: Record<string, string> = {
@@ -175,28 +193,19 @@ export function HeroCinematic() {
     hampers: "/hero/hero-fruits.webp"
   };
 
-  // Auto-rotate logic — every 3 seconds
+  // Auto-rotate logic — every 7 seconds, so each mood lands before we move on
   useEffect(() => {
     if (isPaused) return;
     const interval = setInterval(() => {
-      const currentIndex = heroMoods.findIndex(m => m.id === moodMeta.id);
-      const nextIndex = (currentIndex + 1) % heroMoods.length;
-      setMood(heroMoods[nextIndex].id);
-    }, 3000);
+      const currentIndex = HERO_MOODS.findIndex(m => m.id === moodMeta.id);
+      const nextIndex = (currentIndex + 1) % HERO_MOODS.length;
+      setMood(HERO_MOODS[nextIndex].id);
+    }, 7000);
     return () => clearInterval(interval);
-  }, [moodMeta.id, isPaused, setMood, heroMoods]);
-
-  const moodTypewriterMessages: Record<string, string[]> = {
-    default:      ["TouchGift makes gifting feel thoughtful.", "Order now for fast same-day gift delivery in Nairobi.", "Wrapped beautifully. Delivered with care."],
-    corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
-    flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
-    liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
-    perfumes:     ["Authentic designer fragrances. ✨", "A memory in a bottle.", "The ultimate sensory gift delivered today."],
-    hampers:      ["Generosity, beautifully packaged. 🧺", "Overflowing hampers of fresh fruits.", "Artisan treats and bespoke gifts."],
-  };
+  }, [moodMeta.id, isPaused, setMood]);
 
   const deliveryMessage = useTypewriter(
-    moodTypewriterMessages[moodMeta.id] ?? moodTypewriterMessages.default
+    MOOD_TYPEWRITER_MESSAGES[moodMeta.id] ?? MOOD_TYPEWRITER_MESSAGES.default
   );
 
   useEffect(() => { setLoaded(true); }, []);
@@ -206,7 +215,7 @@ export function HeroCinematic() {
       className="relative min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* ── CINEMATIC BACKGROUND IMAGES ── */}
-      {heroMoods.map((m) => (
+      {HERO_MOODS.map((m) => (
         <div
           key={m.id}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${moodMeta.id === m.id ? "opacity-100 z-10" : "opacity-0 z-0"}`}
@@ -321,25 +330,32 @@ export function HeroCinematic() {
       {/* ── BOTTOM PILL TAB NAVIGATOR ── */}
       <div 
         className="relative z-40 w-full pb-6 pt-2"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Hint text */}
         <div className="text-center mb-3">
           <span className="text-white/50 text-[10px] uppercase tracking-widest font-semibold drop-shadow-md">
-            Pick a mood to pin it · Auto-cycles every 3s
+            Pick a mood to pin it · Auto-cycles every 7s
           </span>
         </div>
 
         {/* Tabs row */}
         <div className="flex justify-center w-full px-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-hide max-w-full px-2 snap-x">
-            {heroMoods.map((m) => {
+            {HERO_MOODS.map((m) => {
               const isActive = moodMeta.id === m.id;
               return (
                 <button
                   key={m.id}
-                  onClick={() => { setMood(m.id); setIsPaused(true); }}
+                  onClick={() => {
+                    if (m.id === moodMeta.id && isPinned) {
+                      setIsPinned(false); // unpin → resume cycling
+                    } else {
+                      setMood(m.id);
+                      setIsPinned(true); // pin: survives pointer leaving
+                    }
+                  }}
                   className={`snap-center relative px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 border backdrop-blur-md overflow-hidden flex-shrink-0 ${
                     isActive 
                       ? 'bg-black/60 text-white border-white/40 shadow-[0_0_20px_rgba(255,255,255,0.15)] scale-105' 
@@ -358,7 +374,7 @@ export function HeroCinematic() {
                   {isActive && !isPaused && (
                     <span
                       key={`prog-${moodMeta.id}`}
-                      className="absolute bottom-0 left-0 h-[2px] rounded-full animate-[grow-width_3s_linear_forwards]"
+                      className="absolute bottom-0 left-0 h-[2px] rounded-full animate-[grow-width_7s_linear_forwards]"
                       style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF))" }}
                     />
                   )}
@@ -368,7 +384,7 @@ export function HeroCinematic() {
             
             {/* Custom Vibe Builder Button */}
             <button
-              onClick={() => { setIsPaused(true); alert("Custom Builder coming soon!"); }}
+              onClick={() => alert("Custom Builder coming soon!")}
               className="snap-center relative px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 border border-white/20 bg-gradient-to-r from-brand/80 to-coral/80 text-white shadow-[0_0_15px_rgba(155,27,90,0.4)] hover:scale-105 flex-shrink-0 flex items-center gap-1.5 group overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />

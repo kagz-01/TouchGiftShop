@@ -1113,6 +1113,13 @@ html {
   100% { transform: translateY(0); }
 }
 
+/* Hero mood countdown bar — the 7s progress line on the active mood tab.
+   Referenced by animate-[grow-width_7s_linear_forwards] in StorytellingHome. */
+@keyframes grow-width {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
 /* Gift card 3D flip utilities */
 .preserve-3d { transform-style: preserve-3d; }
 .backface-hidden { backface-visibility: hidden; }
