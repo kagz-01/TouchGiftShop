@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import {
   Gift, Sparkles, Heart,
-  Clock, PackageX, MapPin, Banknote,
+  MapPin,
   Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
   Building2,
   Camera
@@ -288,7 +288,7 @@ export function HeroCinematic() {
                   <span
                     key={moodMeta.id}
                     className="bg-clip-text text-transparent animate-fade-in"
-                    style={{ backgroundImage: "var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF))" }}
+                    style={{ backgroundImage: "var(--mood-gradient-text, var(--mood-gradient, linear-gradient(to right, #D4A853, #FFFFFF)))" }}
                   >
                     {moodMeta.heroTitle}
                   </span>
@@ -311,8 +311,8 @@ export function HeroCinematic() {
           <div className={`flex flex-col sm:flex-row items-start gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <Link
               href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
-              className="group relative px-10 py-4 font-bold rounded-full text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center text-brand-deep min-w-[200px]"
-              style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
+              className="group relative px-10 py-4 font-bold rounded-full text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
+              style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
             >
               <span className="relative z-10 flex items-center justify-center gap-2">
                 <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
@@ -401,47 +401,168 @@ export function HeroCinematic() {
 }
 
 /* ══════════════════════════════════════════════════════════
-   SECTION 2: THE PROBLEM — Relatable pain point
+   SECTION 2: THE PROBLEM — 4 compact cards, each with a
+   looping mini-scene that only runs while on screen.
    ══════════════════════════════════════════════════════════ */
+function useActiveScene() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { threshold: 0.3 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, on };
+}
+
+const SCENE =
+  "relative h-[84px] rounded-xl overflow-hidden flex-none bg-brand/[0.07] dark:bg-white/[0.06]";
+
+/* 1 — Racing clock: sweeping arc, spinning hands, courier on a filling road */
+function ClockScene() {
+  const etaRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    const el = etaRef.current;
+    if (!el) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (t: number) => {
+      const p = ((t - start) % 5000) / 5000;
+      const left = Math.max(0, Math.round(92 * (1 - p)));
+      el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  return (
+    <div className="gd-clock relative h-[84px] rounded-xl overflow-hidden flex-none bg-brand-deep dark:bg-[#08080C]">
+      <span
+        ref={etaRef}
+        className="gd-eta absolute right-2.5 top-2.5 text-[11px] font-semibold tracking-wide text-[#F3C9BD]"
+      >
+        1:32
+      </span>
+      <svg className="gd-clockface absolute left-2.5 top-2.5" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden>
+        <circle cx="18" cy="18" r="14" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
+        <circle
+          className="gd-arc text-brand"
+          cx="18" cy="18" r="14"
+          stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+          transform="rotate(-90 18 18)"
+        />
+        <line className="gd-hand1" x1="18" y1="18" x2="18" y2="8" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+        <line className="gd-hand2 text-brand" x1="18" y1="18" x2="25" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      </svg>
+      <div className="gd-road">
+        <i className="gd-dash" />
+        <span className="gd-rider">🛵</span>
+      </div>
+    </div>
+  );
+}
+
+/* 2 — Uninspired choices: a conveyor of filler, one star picked out of it */
+function PickScene() {
+  return (
+    <div className={`${SCENE} gd-pick flex items-center`}>
+      <div className="gd-beltwrap">
+        <div className="gd-belt">
+          {Array.from({ length: 20 }).map((_, i) => (
+            <span key={i} className="gd-dot bg-brand/20 dark:bg-white/15" />
+          ))}
+        </div>
+      </div>
+      <div className="gd-star">
+        <span className="text-white text-[15px] leading-none">✦</span>
+      </div>
+      <span className="gd-spark gd-sp1 text-brand">✦</span>
+      <span className="gd-spark gd-sp2 text-brand">✦</span>
+    </div>
+  );
+}
+
+/* 3 — Logistical headaches: pin drop on a route that draws itself */
+function LogisticsScene({ step }: { step: number }) {
+  return (
+    <div className={SCENE}>
+      <span className={`gd-tick absolute left-2.5 top-2 items-center gap-1 text-[10px] font-semibold text-brand ${step >= 1 ? "is-on" : ""}`}>
+        📍 Address received
+      </span>
+      <svg width="100%" height="100%" viewBox="0 0 220 84" preserveAspectRatio="xMidYMid meet" aria-hidden>
+        <circle cx="16" cy="60" r="4" className="text-brand" fill="currentColor" />
+        <path
+          d="M16 60C60 60 60 26 110 32S170 54 196 42"
+          className={`gd-mline text-brand ${step >= 2 ? "is-on" : ""}`}
+          stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="5 6"
+        />
+        <circle className={`gd-rip text-brand ${step >= 3 ? "is-on" : ""}`} cx="196" cy="42" r="7" fill="none" stroke="currentColor" strokeWidth="1.3" />
+        <g className={`gd-pin text-brand ${step >= 1 ? "is-on" : ""}`}>
+          <path d="M196 42c-7-9-9-13-9-18a9 9 0 0 1 18 0c0 5-2 9-9 18z" fill="currentColor" />
+          <circle cx="196" cy="24" r="3" fill="#fff" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* 4 — Unexpected costs: a receipt that adds up to exactly what you saw */
+function CostScene({ step }: { step: number }) {
+  return (
+    <div className={`${SCENE} gd-cost flex flex-col justify-center gap-[5px] px-3.5`}>
+      <div className="flex justify-between text-[10.5px] text-theme-muted tabular-nums">
+        <span>Gift</span><span>KES 2,500</span>
+      </div>
+      <div className={`gd-fee flex justify-between text-[10.5px] text-theme-muted tabular-nums ${step >= 1 ? "is-on" : ""}`}>
+        <span>Delivery</span><span>KES 300</span>
+      </div>
+      <div className={`gd-fee flex justify-between text-[10.5px] text-theme-muted tabular-nums gd-strike ${step >= 2 ? "is-on" : ""}`}>
+        <span>Hidden fee</span><span>KES 0</span>
+      </div>
+      <div className="flex justify-between text-[10.5px] font-bold text-theme-heading tabular-nums border-t border-black/10 dark:border-white/10 pt-[5px] mt-px">
+        <span>Total</span>
+        <span>
+          KES {(step >= 1 ? 2800 : 2500).toLocaleString("en-KE")}{" "}
+          <b className={`gd-check text-[#1B8A4E] ${step >= 2 ? "is-on" : ""}`}>✓</b>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function DilemmaCard({
+  title, desc, delay, children,
+}: { title: string; desc: string; delay: number; children: React.ReactNode }) {
+  return (
+    <Reveal delay={delay} className="h-full">
+      <div className="gd-card card-theme shape-premium-card flex h-full flex-col gap-3.5 overflow-hidden p-4 pb-5 transition-transform duration-500 hover:-translate-y-1.5">
+        {children}
+        <h3 className="font-display text-lg font-bold leading-snug text-theme-heading">{title}</h3>
+        <p className="text-[13px] leading-relaxed text-theme-body">{desc}</p>
+      </div>
+    </Reveal>
+  );
+}
+
 export function ProblemSection() {
-  const problems = [
-    { 
-      title: "The Racing Clock", 
-      desc: "Forgot an important date? We orchestrate lightning-fast same-day deliveries across Nairobi, ensuring your gesture arrives exactly when it should.",
-      icon: <Clock className="w-8 h-8 text-brand" />,
-      colSpan: "md:col-span-2",
-      bg: "bg-blush/40 dark:bg-white/5",
-      titleColor: "text-brand-deep dark:text-white",
-      textColor: "text-brand-deep/75 dark:text-white/70",
-    },
-    { 
-      title: "Uninspired Choices", 
-      desc: "We bypass the ordinary, offering only meticulously curated pieces designed to leave a lasting impression.",
-      icon: <PackageX className="w-8 h-8 text-gold" />,
-      colSpan: "md:col-span-1",
-      bg: "bg-surface-secondary dark:bg-white/5",
-      titleColor: "text-brand-deep dark:text-white",
-      textColor: "text-brand-deep/75 dark:text-white/70",
-    },
-    { 
-      title: "Logistical Headaches", 
-      desc: "No address? No problem. We seamlessly coordinate with your recipient, preserving the magic without the stress.",
-      icon: <MapPin className="w-8 h-8 text-coral" />,
-      colSpan: "md:col-span-1",
-      bg: "bg-surface-warm dark:bg-white/5",
-      titleColor: "text-brand-deep dark:text-white",
-      textColor: "text-brand-deep/75 dark:text-white/70",
-    },
-    { 
-      title: "Unexpected Costs", 
-      desc: "Experience absolute transparency. What you see is exactly what you pay—no hidden fees, just pure peace of mind.",
-      icon: <Banknote className="w-8 h-8 text-brand" />,
-      colSpan: "md:col-span-2",
-      bg: "bg-white dark:bg-white/5",
-      titleColor: "text-brand-deep dark:text-white",
-      textColor: "text-brand-deep/75 dark:text-white/70",
-    },
-  ];
+  const { ref, on } = useActiveScene();
+  const [logiStep, setLogiStep] = useState(0);
+  const [costStep, setCostStep] = useState(0);
+
+  useEffect(() => {
+    if (!on) return;
+    const id = setInterval(() => setLogiStep((s) => (s + 1) % 4), 1200);
+    return () => clearInterval(id);
+  }, [on]);
+
+  useEffect(() => {
+    if (!on) return;
+    const id = setInterval(() => setCostStep((s) => (s + 1) % 4), 1000);
+    return () => clearInterval(id);
+  }, [on]);
 
   return (
     <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
@@ -466,23 +587,196 @@ export function ProblemSection() {
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {problems.map((p, i) => (
-            <Reveal key={i} delay={300 + i * 150} direction="up" className={p.colSpan}>
-              <div className={`h-full p-6 md:p-8 shape-premium-card border border-brand/5 shadow-soft hover:shadow-card-hover transition-all duration-500 hover:-translate-y-2 group card-theme relative overflow-hidden`}>
-                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="relative z-10">
-                  <div className="mb-4 p-3 bg-brand/10 dark:bg-white/10 shape-premium-button shadow-sm inline-block group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
-                    {p.icon}
-                  </div>
-                  <h3 className={`text-2xl font-display font-bold mb-3 heading-elegant text-theme-heading`}>{p.title}</h3>
-                  <p className={`leading-relaxed text-elegant text-theme-body`}>{p.desc}</p>
-                </div>
-              </div>
-            </Reveal>
-          ))}
+        <div
+          ref={ref}
+          data-on={on ? "1" : "0"}
+          className="gd grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
+        >
+          <DilemmaCard
+            delay={0}
+            title="The Racing Clock"
+            desc="Same-day delivery across Nairobi for the moments that cannot wait."
+          >
+            <ClockScene />
+          </DilemmaCard>
+
+          <DilemmaCard
+            delay={100}
+            title="Uninspired Choices"
+            desc="A tightly curated edit so you are never scrolling through filler."
+          >
+            <PickScene />
+          </DilemmaCard>
+
+          <DilemmaCard
+            delay={200}
+            title="Logistical Headaches"
+            desc="No address? We can coordinate discreetly with your recipient."
+          >
+            <LogisticsScene step={logiStep} />
+          </DilemmaCard>
+
+          <DilemmaCard
+            delay={300}
+            title="Unexpected Costs"
+            desc="Clear pricing and transparent delivery from the start."
+          >
+            <CostScene step={costStep} />
+          </DilemmaCard>
         </div>
       </div>
+
+      <style jsx global>{`
+        /* idle the whole block when it scrolls out of view */
+        .gd[data-on="0"] * { animation-play-state: paused !important; }
+
+        .gd-card { min-height: 250px; }
+
+        /* ── 1 · clock ── */
+        .gd-arc {
+          stroke-dasharray: 82;
+          stroke-dashoffset: 82;
+          animation: gd-arcfill 5s linear infinite;
+        }
+        .gd-hand1, .gd-hand2 {
+          transform-box: view-box;
+          transform-origin: 18px 18px;
+        }
+        .gd-hand1 { animation: gd-spin 5s linear infinite; }
+        .gd-hand2 { animation: gd-spin 1.4s linear infinite; }
+        .gd-road {
+          position: absolute;
+          left: 52px;
+          right: 10px;
+          bottom: 16px;
+          height: 2px;
+        }
+        .gd-road::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: rgba(255, 255, 255, 0.18);
+          border-radius: 2px;
+        }
+        .gd-dash {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 2px;
+          width: 0;
+          background: #9B1B5A;
+          border-radius: 2px;
+          animation: gd-fillw 5s ease-in-out infinite;
+        }
+        .gd-rider {
+          position: absolute;
+          bottom: -1px;
+          left: 0;
+          font-size: 15px;
+          transform: scaleX(-1);
+          animation: gd-ride 5s ease-in-out infinite;
+        }
+        @keyframes gd-arcfill { to { stroke-dashoffset: 0; } }
+        @keyframes gd-spin { to { transform: rotate(360deg); } }
+        @keyframes gd-fillw { 0% { width: 0; } 82%, 100% { width: 100%; } }
+        @keyframes gd-ride { 0% { left: 0; } 82%, 100% { left: calc(100% - 15px); } }
+
+        /* ── 2 · conveyor ── */
+        .gd-beltwrap {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+        }
+        .gd-belt {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          height: 100%;
+          width: max-content;
+          animation: gd-belt 12s linear infinite;
+        }
+        .gd-dot { width: 16px; height: 16px; border-radius: 5px; flex: none; }
+        .gd-star {
+          position: absolute;
+          left: 50%;
+          top: 52%;
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          background: #9B1B5A;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 8px 18px -6px rgba(155, 27, 90, 0.55);
+          animation: gd-pop 3s ease-in-out infinite;
+        }
+        .gd-spark {
+          position: absolute;
+          font-size: 11px;
+          animation: gd-tw 1.2s ease-in-out infinite alternate;
+        }
+        .gd-sp1 { top: 12px; left: calc(50% + 20px); }
+        .gd-sp2 { bottom: 14px; left: calc(50% - 26px); animation-delay: 0.4s; }
+        @keyframes gd-belt { to { transform: translateX(-50%); } }
+        @keyframes gd-pop {
+          0%, 15% { transform: translate(-50%, -50%) scale(0.8) rotate(-6deg); }
+          35%, 80% { transform: translate(-50%, -50%) scale(1) rotate(0); }
+          100% { transform: translate(-50%, -50%) scale(0.8) rotate(-6deg); }
+        }
+        @keyframes gd-tw { to { transform: scale(1.5); opacity: 0.35; } }
+
+        /* ── 3 · route ── */
+        .gd-mline { opacity: 0.3; transition: opacity 0.3s; }
+        .gd-mline.is-on { opacity: 1; animation: gd-march 0.8s linear infinite; }
+        .gd-pin {
+          opacity: 0;
+          transform: translateY(-14px) scale(0.7);
+          transform-box: view-box;
+          transform-origin: 196px 42px;
+          transition: opacity 0.4s, transform 0.4s cubic-bezier(0.3, 1.6, 0.4, 1);
+        }
+        .gd-pin.is-on { opacity: 1; transform: none; }
+        .gd-rip {
+          opacity: 0;
+          transform-box: view-box;
+          transform-origin: 196px 42px;
+        }
+        .gd-rip.is-on { animation: gd-rip 1.2s ease-out infinite; }
+        .gd-tick { display: flex; opacity: 0; transition: opacity 0.3s; }
+        .gd-tick.is-on { opacity: 1; }
+        @keyframes gd-march { to { stroke-dashoffset: -11; } }
+        @keyframes gd-rip {
+          0% { transform: scale(0.3); opacity: 0.7; }
+          100% { transform: scale(2.6); opacity: 0; }
+        }
+
+        /* ── 4 · receipt ── */
+        .gd-fee { opacity: 0; transform: translateY(3px); transition: opacity 0.3s, transform 0.3s; }
+        .gd-fee.is-on { opacity: 1; transform: none; }
+        .gd-strike span:first-child { text-decoration: line-through; text-decoration-color: #9B1B5A; }
+        .gd-strike span:last-child { color: #9B1B5A; }
+        .gd-check { opacity: 0; transition: opacity 0.3s; }
+        .gd-check.is-on { opacity: 1; }
+
+        /* dark surfaces need a lifted rose — #9B1B5A only reaches ~2.4:1 there */
+        [data-theme="dark"] .gd-arc,
+        [data-theme="dark"] .gd-hand2,
+        [data-theme="dark"] .gd-pin,
+        [data-theme="dark"] .gd-rip,
+        [data-theme="dark"] .gd-mline,
+        [data-theme="dark"] .gd-spark,
+        [data-theme="dark"] .gd-tick,
+        [data-theme="dark"] .gd-strike span:last-child { color: #F9A8C8; }
+        [data-theme="dark"] .gd-dash,
+        [data-theme="dark"] .gd-star { background: #E86FA8; }
+        [data-theme="dark"] .gd-eta { color: #F9A8C8; }
+
+        @media (prefers-reduced-motion: reduce) {
+          .gd * { animation: none !important; }
+        }
+      `}</style>
     </section>
   );
 }
