@@ -4,9 +4,22 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
+/* `from` arrives from the query string, so it must be treated as untrusted even
+   though the middleware sets it to a pathname. Without this, a crafted
+   /admin-access-2026?from=//evil.com sends the operator off-site after login,
+   and ?from=javascript:... executes as script once assigned to location.href. */
+function safeInternalPath(value: string | null): string {
+  const fallback = "/admin";
+  if (!value) return fallback;
+  if (!value.startsWith("/")) return fallback;                       // absolute URLs
+  if (value.startsWith("//") || value.startsWith("/\\")) return fallback; // protocol-relative
+  if (/^\/[a-z][a-z0-9+.-]*:/i.test(value)) return fallback;         // /javascript:, /https:
+  return value;
+}
+
 function AdminAccessPage() {
   const searchParams = useSearchParams();
-  const from = searchParams.get("from") || "/admin";
+  const from = safeInternalPath(searchParams.get("from"));
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
