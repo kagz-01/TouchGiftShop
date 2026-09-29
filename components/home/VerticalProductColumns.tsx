@@ -21,7 +21,10 @@ interface VerticalProductColumnsProps {
   /** Height of the scrolling viewport in px */
   height?: number;
   sectionTitle?: string;
-  sectionSubtitle?: string;
+  /** Small gold label above the title */
+  sectionEyebrow?: string;
+  /** One-line supporting copy under the title */
+  sectionSub?: string;
 }
 
 function ProductCard({ product }: { product: Product }) {
@@ -62,26 +65,34 @@ export default function VerticalProductColumns({
   columns,
   height = 560,
   sectionTitle,
-  sectionSubtitle,
+  sectionEyebrow,
+  sectionSub,
 }: VerticalProductColumnsProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <section className="py-16 md:py-20 section-theme-a relative overflow-hidden">
+    <section className="py-10 md:py-12 section-theme-a relative overflow-hidden">
       {/* Subtle warm gradient top */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/20 via-transparent to-blush/10 pointer-events-none" />
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         {/* Section heading */}
         {sectionTitle && (
-          <div className="text-center mb-14">
-            <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-3">
-              {sectionSubtitle || "Discover"}
-            </p>
-            <h2 className="font-display text-4xl md:text-5xl font-bold leading-tight text-theme-heading">
+          <div className="text-center mb-8">
+            {sectionEyebrow && (
+              <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-3">
+                {sectionEyebrow}
+              </p>
+            )}
+            <h2 className="font-display text-3xl md:text-4xl font-bold leading-tight text-theme-heading">
               {sectionTitle}
             </h2>
+            {sectionSub && (
+              <p className="text-theme-body text-base md:text-lg italic mt-3">
+                {sectionSub}
+              </p>
+            )}
           </div>
         )}
 

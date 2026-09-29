@@ -431,10 +431,13 @@ body, header, nav, section, article, aside, footer,
    Uses low-specificity so per-component styles can still override.
    ──────────────────────────────────────────────────────────────────────── */
 
-/* Mood-tinted text accent */
+/* Mood-tinted text accent.
+   Uses --mood-gradient-text (the lightened variant) because the base
+   gradient starts dark on several moods — clipped to glyphs it made
+   prices and labels vanish on dark surfaces. */
 [data-mood] .text-brand,
 [data-mood] .text-gold {
-  background: var(--mood-gradient);
+  background: var(--mood-gradient-text, var(--mood-gradient));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

@@ -72,12 +72,14 @@ async function getFeaturedProducts() {
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
 
+      // "Last Minute" reads as "the most gift you can get inside the budget,
+      // today" — so rank by value, not by cheapest-first.
       supabase
         .from("products")
         .select("*")
         .eq("in_stock", true)
         .lte("price", 3000)
-        .order("price", { ascending: true })
+        .order("price", { ascending: false })
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
 
@@ -90,7 +92,7 @@ async function getFeaturedProducts() {
         .select("*")
         .eq("in_stock", true)
         .lte("price", 2000)
-        .order("price", { ascending: true })
+        .order("price", { ascending: false })
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
     ]);
@@ -117,38 +119,17 @@ export default async function HomePage() {
           CHAPTER 1: The Emotional Hook
           ═══════════════════════════════════════════ */}
       <HeroCinematic />
-      <ProblemSection />
-      <SolutionSection />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 1.5: TouchGift Superpowers (USPs)
+          CHAPTER 1.25: Discovery, immediately
+          Answers the hero's "pick a mood" prompt with
+          buyable stock instead of more narrative.
+          Trending ↓  |  Last Minute ↑  |  Drinkware ↓
           ═══════════════════════════════════════════ */}
-      <SuperpowersStrip />
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 2: Trust — Social Proof
-          ═══════════════════════════════════════════ */}
-      <SocialProof />
-
-      {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
-      <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
-        <div className="flex-1"><SeasonalPromptBar /></div>
-        <div className="flex-1"><SmartReorderBanner /></div>
-      </div>
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 3A: Discovery — Occasion Pills + Vertical Columns
-          Trending ↓  |  Last Minute ↑  |  Edible ↓
-          ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-10" delay={0}>
-        <Suspense fallback={null}>
-          <OccasionPills />
-        </Suspense>
-      </ScrollReveal>
-
       <VerticalProductColumns
-        sectionTitle="Gifts for every mood"
-        sectionSubtitle="Explore"
+        sectionEyebrow="You picked a mood"
+        sectionTitle="We already did the work."
+        sectionSub="Live stock, ready to send. Same-day across Nairobi."
         columns={[
           {
             title: "Trending Now",
@@ -174,6 +155,34 @@ export default async function HomePage() {
         ]}
         height={520}
       />
+
+      <ProblemSection />
+      <SolutionSection />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 1.5: TouchGift Superpowers (USPs)
+          ═══════════════════════════════════════════ */}
+      <SuperpowersStrip />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 2: Trust — Social Proof
+          ═══════════════════════════════════════════ */}
+      <SocialProof />
+
+      {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
+      <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
+        <div className="flex-1"><SeasonalPromptBar /></div>
+        <div className="flex-1"><SmartReorderBanner /></div>
+      </div>
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 3A: Category shortcuts
+          ═══════════════════════════════════════════ */}
+      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-10" delay={0}>
+        <Suspense fallback={null}>
+          <OccasionPills />
+        </Suspense>
+      </ScrollReveal>
 
       {/* ═══════════════════════════════════════════
           INTERSTITIAL — AI Gift Finder CTA break
