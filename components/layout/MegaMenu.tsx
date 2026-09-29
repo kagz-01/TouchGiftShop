@@ -4,13 +4,20 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { categoryIcon } from "@/components/shop/CategoryIcons";
 import { useShopCategories } from "@/components/shop/useShopCategories";
 import Link from "next/link";
-import Image from "next/image";
-import { ChevronDown, Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2, Apple } from "lucide-react";
+import { ChevronDown, Bot, MessageCircle, Target, Zap, CreditCard, Cake, Heart, HeartHandshake, Baby, GraduationCap, Feather, HeartPulse, User, Users, Briefcase, ShoppingBasket, Flower2, Sparkles, Activity, Home, Smartphone, Map, FlaskConical, Gem, Gift, Sword, Church, Banknote, Diamond, ClipboardList, Clock, RefreshCw, ScrollText, Package, Truck, Undo, Flag, Shield, Drama, Hammer, Dumbbell, Egg, Star, Leaf, Candy, Flame, Tag, Trophy, ChefHat, Gamepad2, Music, Tent, Building2, Apple, Wine, Shirt, LayoutDashboard, CalendarDays, Wallet, ScanLine, Store, Boxes, PartyPopper } from "lucide-react";
 
+
+type MenuLink = {
+  /** Omit the href to render the row as a non-clickable "soon" placeholder. */
+  href?: string;
+  label: string;
+  icon?: React.ReactNode;
+  description?: string;
+};
 
 type MegaMenuSection = {
   title: string;
-  links: Array<{ href: string; label: string; icon?: React.ReactNode; description?: string }>;
+  links: MenuLink[];
 };
 
 type MegaMenuCategory = {
@@ -22,11 +29,20 @@ type MegaMenuCategory = {
   featured?: {
     title: string;
     description: string;
-    image: string;
     href: string;
     buttonText?: string;
-  }[];
+  };
 };
+
+// Lines we are building toward. Once a slug picks up stock in the catalog it
+// turns into a live link with a count, straight from /api/categories.
+const VISION_LINES = [
+  { slug: "apparel",        label: "Wearables & Apparel", description: "Branded polos, caps, jackets.",      icon: <Shirt className="w-4 h-4" /> },
+  { slug: null,             label: "Wine & Spirits",      description: "Bottles worth toasting to.",         icon: <Wine className="w-4 h-4" /> },
+  { slug: "flowers",        label: "Fresh Flowers",       description: "Same-day bouquets across Nairobi.",  icon: <Flower2 className="w-4 h-4" /> },
+  { slug: "fruits-edibles", label: "Fruit Hampers",       description: "For hospitals and fruit lovers.",    icon: <Apple className="w-4 h-4" /> },
+  { slug: "perfumes",       label: "Luxury Perfumes",     description: "Authentic designer scents.",         icon: <ScanLine className="w-4 h-4" /> },
+];
 
 const MEGA_MENU_DATA: MegaMenuCategory[] = [
   {
@@ -37,95 +53,38 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "By Person",
         links: [
-          { href: "/shop", label: "For Her", icon: <User className="w-4 h-4" />, description: "Curated for the remarkable women in your life." },
-          { href: "/shop", label: "For Him", icon: <User className="w-4 h-4" />, description: "Sophisticated choices for the modern gentleman." },
-          { href: "/shop", label: "For Couples", icon: <Users className="w-4 h-4" />, description: "Shared experiences and paired luxury gifts." },
-          { href: "/shop", label: "For Parents", icon: <Heart className="w-4 h-4" />, description: "Show your deepest appreciation." },
-          { href: "/shop", label: "For Colleagues", icon: <Building2 className="w-4 h-4" />, description: "Professional, elegant, and always appropriate." },
+          { href: "/shop", label: "For Her", icon: <User className="w-4 h-4" />, description: "For the women you love." },
+          { href: "/shop", label: "For Him", icon: <User className="w-4 h-4" />, description: "Refined picks for him." },
+          { href: "/shop", label: "For Couples", icon: <Users className="w-4 h-4" />, description: "Made for two." },
+          { href: "/shop", label: "For Parents", icon: <Heart className="w-4 h-4" />, description: "Thank them, beautifully." },
+          { href: "/shop", label: "For Colleagues", icon: <Building2 className="w-4 h-4" />, description: "Polished and appropriate." },
         ],
       },
       {
         title: "By Budget",
         links: [
-          { href: "/shop?minPrice=0&maxPrice=2000", label: "Under KSh 2,000", icon: <Tag className="w-4 h-4" />, description: "Small tokens of great appreciation." },
-          { href: "/shop?minPrice=2000&maxPrice=5000", label: "KSh 2,000-5,000", icon: <Tag className="w-4 h-4" />, description: "Our most popular sweet spot." },
-          { href: "/shop?minPrice=5000&maxPrice=10000", label: "KSh 5,000-10,000", icon: <Tag className="w-4 h-4" />, description: "Premium tier for those special moments." },
-          { href: "/shop?minPrice=10000", label: "Luxury KSh 10,000+", icon: <Gem className="w-4 h-4" />, description: "The grand gesture. Pure opulence." },
+          { href: "/shop?minPrice=0&maxPrice=2000", label: "Under KSh 2,000", icon: <Tag className="w-4 h-4" />, description: "Small tokens, big meaning." },
+          { href: "/shop?minPrice=2000&maxPrice=5000", label: "KSh 2,000-5,000", icon: <Tag className="w-4 h-4" />, description: "Our most popular tier." },
+          { href: "/shop?minPrice=5000&maxPrice=10000", label: "KSh 5,000-10,000", icon: <Tag className="w-4 h-4" />, description: "For the bigger moments." },
+          { href: "/shop?minPrice=10000", label: "Luxury KSh 10,000+", icon: <Gem className="w-4 h-4" />, description: "The grand gesture." },
         ],
       },
       {
         title: "Quick Help",
         links: [
-          { href: "/ai-finder", label: "AI Gift Finder", icon: <Bot className="w-4 h-4" />, description: "Let our smart concierge find the perfect match." },
-          { href: "/shop", label: "Last-Minute Gifts", icon: <Clock className="w-4 h-4" />, description: "Guaranteed same-day Nairobi delivery." },
-          { href: "/shop", label: "Best Sellers", icon: <Trophy className="w-4 h-4" />, description: "Tried, tested, and universally loved." },
+          { href: "/gift-finder", label: "AI Gift Finder", icon: <Bot className="w-4 h-4" />, description: "Chat it out with T-Gifter." },
+          { href: "/gift-quiz", label: "Gift Finder Quiz", icon: <Sparkles className="w-4 h-4" />, description: "4 questions, curated picks." },
+          { href: "/shop", label: "Last-Minute Gifts", icon: <Clock className="w-4 h-4" />, description: "Same-day Nairobi delivery." },
+          { href: "/shop", label: "Best Sellers", icon: <Trophy className="w-4 h-4" />, description: "Tried, tested, loved." },
         ],
       },
     ],
-    featured: [
-      {
-        title: "Not sure what to gift?",
-        description: "Answer a few questions and let our AI concierge narrow it down to the perfect curated selection.",
-        image: "/hero/hero-toast.webp",
-        href: "/ai-finder",
-        buttonText: "Try Gift Match"
-      },
-    ],
-  },
-  {
-    id: "occasions",
-    label: "Occasions",
-    sections: [
-      {
-        title: "Milestones",
-        links: [
-          { href: "/shop", label: "Birthdays", icon: <Cake className="w-4 h-4" />, description: "Make their new year unforgettable." },
-          { href: "/shop", label: "Anniversaries", icon: <HeartPulse className="w-4 h-4" />, description: "Celebrate your years together." },
-          { href: "/shop", label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, description: "Mark their greatest achievement." },
-          { href: "/shop", label: "Weddings & Engagement", icon: <Church className="w-4 h-4" />, description: "For the newly weds and lovebirds." },
-        ],
-      },
-      {
-        title: "Just Because",
-        links: [
-          { href: "/shop", label: "Thank You", icon: <HeartHandshake className="w-4 h-4" />, description: "Gratitude expressed beautifully." },
-          { href: "/shop", label: "Get Well Soon", icon: <Activity className="w-4 h-4" />, description: "Wishes for a speedy recovery." },
-          { href: "/shop", label: "Thinking of You", icon: <MessageCircle className="w-4 h-4" />, description: "When they cross your mind." },
-          { href: "/shop", label: "Apology (I'm Sorry)", icon: <Undo className="w-4 h-4" />, description: "Mend fences with a sweet gesture." },
-        ],
-      },
-      {
-        title: "Professional",
-        links: [
-          { href: "/shop", label: "New Job & Promotion", icon: <Briefcase className="w-4 h-4" />, description: "Celebrate their career leaps." },
-          { href: "/shop", label: "Retirement", icon: <Clock className="w-4 h-4" />, description: "Honoring a legacy of hard work." },
-          { href: "/shop", label: "Farewell / Bon Voyage", icon: <Flag className="w-4 h-4" />, description: "Send them off in style." },
-        ],
-      },
-    ],
-    featured: [
-      {
-        title: "The Calendar",
-        description: "Never miss a date. Set up gift reminders for birthdays and anniversaries and get curated suggestions.",
-        image: "/hero/hero-flowers.webp",
-        href: "/reminders",
-        buttonText: "Set Reminders"
-      },
-    ]
-  },
-  {
-    id: "collections",
-    label: "Collections",
-    sections: [
-      {
-        title: "The Edits",
-        links: [
-          { href: "/shop", label: "Made in Kenya", icon: <Map className="w-4 h-4" />, description: "Showcasing the best local artisans." },
-          { href: "/shop?tag=sustainable", label: "Eco-Friendly", icon: <Leaf className="w-4 h-4" />, description: "Sustainable and earth-conscious picks." },
-          { href: "/shop?personalizable=1", label: "Personalized", icon: <Target className="w-4 h-4" />, description: "Engraved, monogrammed, and bespoke." },
-        ],
-      }
-    ]
+    featured: {
+      title: "Not sure what to gift?",
+      description: "Answer 4 quick questions and we will curate the picks that actually suit them.",
+      href: "/gift-quiz",
+      buttonText: "Try Gift Match",
+    },
   },
   {
     id: "gift-lab",
@@ -135,140 +94,157 @@ const MEGA_MENU_DATA: MegaMenuCategory[] = [
       {
         title: "Step 1: The Base",
         links: [
-          { href: "/gift-lab?step=base&type=box", label: "Premium Keepsake Box", icon: <Package className="w-4 h-4" />, description: "Our signature magnetic closure boxes." },
+          { href: "/gift-lab?step=base&type=box", label: "Premium Keepsake Box", icon: <Package className="w-4 h-4" />, description: "Signature magnetic boxes." },
           { href: "/gift-lab?step=base&type=basket", label: "Woven Artisan Basket", icon: <ShoppingBasket className="w-4 h-4" />, description: "Hand-woven traditional baskets." },
-          { href: "/gift-lab?step=base&type=tote", label: "Eco-Friendly Tote", icon: <Leaf className="w-4 h-4" />, description: "Reusable, heavy-canvas branded totes." },
+          { href: "/gift-lab?step=base&type=tote", label: "Eco-Friendly Tote", icon: <Leaf className="w-4 h-4" />, description: "Heavy-canvas reusable totes." },
         ],
       },
       {
         title: "Step 2: The Goodies",
         links: [
-          { href: "/gift-lab?step=items&cat=treats", label: "Gourmet Treats", icon: <Candy className="w-4 h-4" />, description: "Fill it with chocolates, nuts, and sweets." },
-          { href: "/gift-lab?step=items&cat=drinks", label: "Wines & Spirits", icon: <Flame className="w-4 h-4" />, description: "Add a celebratory bottle to the mix." },
-          { href: "/gift-lab?step=items&cat=spa", label: "Spa & Self-Care", icon: <Activity className="w-4 h-4" />, description: "Bath salts, candles, and lotions." },
+          { href: "/gift-lab?step=items&cat=treats", label: "Gourmet Treats", icon: <Candy className="w-4 h-4" />, description: "Chocolates, nuts, and sweets." },
+          { href: "/gift-lab?step=items&cat=drinks", label: "Wines & Spirits", icon: <Wine className="w-4 h-4" />, description: "Add a celebratory bottle." },
+          { href: "/gift-lab?step=items&cat=spa", label: "Spa & Self-Care", icon: <Activity className="w-4 h-4" />, description: "Bath salts, candles, lotions." },
         ],
       },
       {
         title: "Step 3: The Finish",
         links: [
-          { href: "/gift-lab?step=finish", label: "Handwritten Notes", icon: <ScrollText className="w-4 h-4" />, description: "Your message, penned by our calligraphers." },
-          { href: "/gift-lab?step=finish", label: "Silk Ribbon Selection", icon: <Heart className="w-4 h-4" />, description: "Choose the perfect color to tie it off." },
-          { href: "/gift-lab?step=finish", label: "Add Fresh Flowers", icon: <Flower2 className="w-4 h-4" />, description: "Top it off with a miniature bouquet." },
+          { href: "/gift-lab?step=finish", label: "Handwritten Notes", icon: <ScrollText className="w-4 h-4" />, description: "Penned by our calligraphers." },
+          { href: "/gift-lab?step=finish", label: "Silk Ribbon Selection", icon: <Heart className="w-4 h-4" />, description: "Pick the colour to tie it off." },
+          { href: "/gift-lab?step=finish", label: "Add Fresh Flowers", icon: <Flower2 className="w-4 h-4" />, description: "Top it with a mini bouquet." },
         ],
       },
     ],
-    featured: [
+    featured: {
+      title: "The Ultimate Customizer",
+      description: "Be the curator. Mix premium items into a one-of-one gift they will not forget.",
+      href: "/gift-lab",
+      buttonText: "Start Building",
+    },
+  },
+  {
+    id: "occasions",
+    label: "Occasions",
+    sections: [
       {
-        title: "The Ultimate Customizer",
-        description: "Be the curator. Mix and match premium items to create a 1-of-1 gift experience that they will never forget.",
-        image: "/hero/hero-corporate.webp",
-        href: "/gift-lab",
-        buttonText: "Start Building"
+        title: "Milestones",
+        links: [
+          { href: "/shop", label: "Birthdays", icon: <Cake className="w-4 h-4" />, description: "Make their new year count." },
+          { href: "/shop", label: "Anniversaries", icon: <HeartPulse className="w-4 h-4" />, description: "Celebrate your years together." },
+          { href: "/shop", label: "Graduation", icon: <GraduationCap className="w-4 h-4" />, description: "Mark their biggest win." },
+          { href: "/shop", label: "Weddings", icon: <Church className="w-4 h-4" />, description: "For the newly-weds." },
+        ],
+      },
+      {
+        title: "Just Because",
+        links: [
+          { href: "/shop", label: "Thank You", icon: <HeartHandshake className="w-4 h-4" />, description: "Gratitude, said properly." },
+          { href: "/shop", label: "Get Well Soon", icon: <Activity className="w-4 h-4" />, description: "Wishes for a full recovery." },
+          { href: "/shop", label: "Thinking of You", icon: <MessageCircle className="w-4 h-4" />, description: "When they cross your mind." },
+          { href: "/shop", label: "I'm Sorry", icon: <Undo className="w-4 h-4" />, description: "Mend it with a gesture." },
+        ],
+      },
+      {
+        title: "Professional",
+        links: [
+          { href: "/shop", label: "New Job & Promotion", icon: <Briefcase className="w-4 h-4" />, description: "Celebrate the career leap." },
+          { href: "/shop", label: "Retirement", icon: <Clock className="w-4 h-4" />, description: "Honour a legacy of work." },
+          { href: "/shop", label: "Farewell", icon: <Flag className="w-4 h-4" />, description: "Send them off in style." },
+        ],
       },
     ],
+    featured: {
+      title: "Never miss a date",
+      description: "Set reminders for birthdays and anniversaries and get curated suggestions before the day.",
+      href: "/reminders",
+      buttonText: "Set Reminders",
+    },
+  },
+  {
+    id: "collections",
+    label: "Collections",
+    sections: [
+      {
+        title: "The Edits",
+        links: [
+          { href: "/shop?tag=corporate", label: "Corporate Gifting", icon: <Briefcase className="w-4 h-4" />, description: "Branded kits for teams." },
+          { href: "/shop?personalizable=1", label: "Personalized", icon: <Target className="w-4 h-4" />, description: "Engraved and monogrammed." },
+          { href: "/shop?tag=sustainable", label: "Eco-Friendly", icon: <Leaf className="w-4 h-4" />, description: "Earth-conscious picks." },
+        ],
+      },
+    ],
+    featured: {
+      title: "Browse the full shelf",
+      description: "Everything we carry, filterable by price, colour, size, and occasion.",
+      href: "/catalog",
+      buttonText: "Open Catalog",
+    },
   },
   {
     id: "corporate",
     label: "Corporate",
     sections: [
       {
-        title: "Corporate Services",
+        title: "For Your Team",
         links: [
-          { href: "/corporate/clients", label: "Client Appreciation", icon: <Briefcase className="w-4 h-4" />, description: "Keep your VIPs loyal with luxury." },
-          { href: "/corporate/team", label: "Employee Onboarding", icon: <Users className="w-4 h-4" />, description: "Welcome kits that make a statement." },
-          { href: "/corporate/events", label: "Events & Conferences", icon: <Tent className="w-4 h-4" />, description: "Bulk speaker gifts and attendee swag." },
+          { href: "/corporate/clients", label: "Client Appreciation", icon: <Briefcase className="w-4 h-4" />, description: "Keep your VIPs loyal." },
+          { href: "/corporate/pools", label: "Team Gift Pools", icon: <Users className="w-4 h-4" />, description: "Chip in together, gift bigger." },
+          { href: "/corporate/milestones", label: "Milestone Gifting", icon: <CalendarDays className="w-4 h-4" />, description: "Birthdays and workiversaries, automated." },
         ],
       },
       {
-        title: "Branded Merch",
+        title: "Catalog & Bulk",
         links: [
-          { href: "/corporate/catalog", label: "PromoHub Catalog", icon: <ScrollText className="w-4 h-4" />, description: "Browse 1000+ items for your logo." },
-          { href: "/corporate/apparel", label: "Branded Apparel", icon: <User className="w-4 h-4" />, description: "Premium polos, jackets, and caps." },
-          { href: "/corporate/drinkware", label: "Custom Drinkware", icon: <FlaskConical className="w-4 h-4" />, description: "Tumblers, mugs, and water bottles." },
+          { href: "/corporate/catalog", label: "Promo Catalog", icon: <ScrollText className="w-4 h-4" />, description: "Browse items for your logo." },
+          { href: "/corporate/showroom", label: "Virtual Showroom", icon: <Store className="w-4 h-4" />, description: "See the range before you buy." },
+          { href: "/corporate/build", label: "Hamper Builder", icon: <ShoppingBasket className="w-4 h-4" />, description: "Assemble hampers in bulk." },
         ],
       },
       {
-        title: "Operations",
+        title: "Plan & Track",
         links: [
-          { href: "/corporate/fulfillment", label: "Warehousing & Fulfillment", icon: <Truck className="w-4 h-4" />, description: "We store it and ship it on demand." },
-          { href: "/corporate/api", label: "HR API Integration", icon: <Zap className="w-4 h-4" />, description: "Automate birthday and anniversary gifts." },
-        ]
-      }
-    ],
-    featured: [
-      {
-        title: "The Executive Suite",
-        description: "Dedicated account managers, bulk discounts, and fully white-labeled gifting solutions for enterprises.",
-        image: "/hero/hero-corporate.webp",
-        href: "/corporate",
-        buttonText: "Corporate Portal"
+          { href: "/corporate/calendar", label: "Gifting Calendar", icon: <CalendarDays className="w-4 h-4" />, description: "Plan the whole year at once." },
+          { href: "/corporate/dashboard", label: "Impact Dashboard", icon: <LayoutDashboard className="w-4 h-4" />, description: "Spend and delivery, tracked." },
+          { href: "/corporate/whatsapp", label: "WhatsApp Bot", icon: <MessageCircle className="w-4 h-4" />, description: "Gifting straight from chat." },
+        ],
       },
     ],
+    featured: {
+      title: "The Executive Suite",
+      description: "Account managers, bulk pricing, and white-labelled gifting for enterprises.",
+      href: "/corporate",
+      buttonText: "Corporate Portal",
+    },
   },
   {
     id: "gift-cards",
     label: "Gift Cards",
     sections: [
       {
-        title: "Choose",
+        title: "Send",
         links: [
-          { href: "/gift-cards/digital", label: "Digital Gift Card", icon: <Sparkles className="w-4 h-4" />, description: "Delivered instantly to their inbox." },
-          { href: "/corporate/gift-cards", label: "Corporate Cards", icon: <Building2 className="w-4 h-4" />, description: "Bulk gift cards for your entire team." },
-          { href: "/gift-cards/schedule", label: "Scheduled Delivery", icon: <Clock className="w-4 h-4" />, description: "Buy now, send on their birthday." },
-          { href: "/gift-cards/custom", label: "Custom Amount", icon: <Banknote className="w-4 h-4" />, description: "You decide the exact value." },
+          { href: "/gift-cards", label: "Digital Gift Card", icon: <Sparkles className="w-4 h-4" />, description: "Straight to their inbox." },
+          { href: "/corporate", label: "Cards for Your Team", icon: <Building2 className="w-4 h-4" />, description: "Bulk cards, one invoice." },
+          { href: "/reminders", label: "Schedule a Delivery", icon: <Clock className="w-4 h-4" />, description: "Buy now, send on the day." },
         ],
       },
       {
-        title: "Use & Support",
+        title: "Manage",
         links: [
-          { href: "/gift-cards/balance", label: "Check Balance", icon: <CreditCard className="w-4 h-4" />, description: "See how much magic you have left." },
-          { href: "/gift-cards/redeem", label: "Redeem a Card", icon: <RefreshCw className="w-4 h-4" />, description: "Apply a gift card to your account." },
-          { href: "/faq/gift-cards", label: "Gift Card FAQ", icon: <MessageCircle className="w-4 h-4" />, description: "Common questions answered." },
-          { href: "/terms/gift-cards", label: "Terms & Conditions", icon: <ScrollText className="w-4 h-4" />, description: "The fine print, kept simple." },
+          { href: "/account", label: "Check Balance", icon: <CreditCard className="w-4 h-4" />, description: "See what is left to spend." },
+          { href: "/orders", label: "Your Orders", icon: <Package className="w-4 h-4" />, description: "Track what you have sent." },
+          { href: "/track", label: "Track a Gift", icon: <Map className="w-4 h-4" />, description: "Follow the delivery live." },
         ],
       },
     ],
-    featured: [
-      {
-        title: "Let them choose",
-        description: "Send a beautifully designed digital gift card instantly or schedule it for their special day. No sizing guesses required.",
-        image: "/hero/hero-flowers.webp",
-        href: "/gift-cards",
-        buttonText: "Buy Gift Card"
-      },
-    ],
+    featured: {
+      title: "Let them choose",
+      description: "Send a beautifully designed digital card instantly, or schedule it for their day.",
+      href: "/gift-cards",
+      buttonText: "Buy Gift Card",
+    },
   },
-  {
-    id: "inspiration",
-    label: "Inspiration",
-    sections: [
-      {
-        title: "The Gifting Guide",
-        links: [
-          { href: "/blog/trends", label: "2026 Gifting Trends", icon: <Star className="w-4 h-4" />, description: "What everyone is loving right now." },
-          { href: "/blog/etiquette", label: "Gifting Etiquette", icon: <ScrollText className="w-4 h-4" />, description: "The unwritten rules of giving." },
-          { href: "/blog/corporate-roi", label: "Corporate ROI", icon: <Activity className="w-4 h-4" />, description: "How gifting impacts client retention." },
-        ],
-      },
-      {
-        title: "Spotlight",
-        links: [
-          { href: "/makers", label: "Meet the Makers", icon: <Users className="w-4 h-4" />, description: "Stories behind our local artisans." },
-          { href: "/sustainability", label: "Our Eco Promise", icon: <Leaf className="w-4 h-4" />, description: "How we're reducing our footprint." },
-          { href: "/about", label: "The TouchGift Story", icon: <Heart className="w-4 h-4" />, description: "Why we started revolutionizing gifts." },
-        ],
-      }
-    ],
-    featured: [
-      {
-        title: "The TouchGift Magazine",
-        description: "Dive into our editorial space for interviews, styling tips, and the art of modern gifting.",
-        image: "/hero/hero-wine.webp",
-        href: "/blog",
-        buttonText: "Read the Mag"
-      }
-    ]
-  }
 ];
 
 export default function MegaMenu() {
@@ -302,10 +278,10 @@ export default function MegaMenu() {
     };
   }, []);
 
-  // Categories are built from the live list so a newly imported product
-  // line shows up here without a deploy. Only the hand-written edits stay.
+  // Categories are built from the live list so a newly imported product line
+  // shows up here without a deploy. Only the hand-written edits stay.
   const menus = useMemo(() => {
-    const shopByCategory = {
+    const shopByCategory: MegaMenuSection = {
       title: "Shop by Category",
       links: categories.map((c) => ({
         href: `/shop?category=${c.slug}`,
@@ -314,15 +290,20 @@ export default function MegaMenu() {
         description: `${c.count} product${c.count === 1 ? "" : "s"} in stock.`,
       })),
     };
+
+    const expandingRange: MegaMenuSection = {
+      title: "Expanding Range",
+      links: VISION_LINES.map((line) => {
+        const stocked = line.slug ? categories.find((c) => c.slug === line.slug) : undefined;
+        return stocked
+          ? { href: `/shop?category=${stocked.slug}`, label: line.label, icon: line.icon, description: `${stocked.count} in stock.` }
+          : { label: line.label, icon: line.icon, description: line.description };
+      }),
+    };
+
     return MEGA_MENU_DATA.map((m) =>
       m.id === "collections"
-        ? {
-            ...m,
-            sections: [
-              shopByCategory,
-              ...m.sections.filter((section) => section.title === "The Edits"),
-            ],
-          }
+        ? { ...m, sections: [shopByCategory, ...m.sections, expandingRange] }
         : m
     );
   }, [categories]);
@@ -350,22 +331,22 @@ export default function MegaMenu() {
               }`}
             >
               {item.label}
-              
-              <ChevronDown 
+
+              <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform duration-200 ${
                   isActive ? "rotate-180 text-brand" : "text-theme-body/40 group-hover:text-brand"
-                }`} 
+                }`}
               />
-              
+
               {item.highlight && !isActive && (
                 <span className="absolute -top-1.5 -right-2 w-1.5 h-1.5 bg-coral rounded-full animate-pulse-soft" />
               )}
 
               {/* Active Underline Indicator */}
-              <span 
+              <span
                 className={`absolute -bottom-[15px] left-0 right-0 h-0.5 bg-brand transition-transform duration-300 origin-center ${
                   isActive ? "scale-x-100" : "scale-x-0"
-                }`} 
+                }`}
               />
             </button>
           );
@@ -376,94 +357,104 @@ export default function MegaMenu() {
       {activeData && (
         <div
           onMouseEnter={() => handleMouseEnter(activeData.id)}
-          className="absolute top-[calc(100%+4px)] left-0 z-50"
-          style={{
-            width: "min(900px, calc(100vw - 4rem))",
-            animation: "slideDownFade 0.16s ease-out both",
-          }}
+          className="absolute top-[calc(100%+4px)] left-1/2 -translate-x-1/2 z-50"
+          style={{ width: "min(1140px, calc(100vw - 3rem))" }}
         >
+          {/* Animation lives on its own layer: the keyframes set transform,
+              which would otherwise wipe out -translate-x-1/2 above. */}
+          <div style={{ animation: "slideDownFade 0.16s ease-out both" }}>
           <div className="absolute -top-2 left-0 right-0 h-2" />
           <div className="bg-white dark:bg-[#16162a] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.14),0_1px_0_rgba(155,27,90,0.07)] border border-gray-100 dark:border-white/10 overflow-hidden">
-            <div className="grid grid-cols-12">
+            <div className="flex items-stretch">
 
               {/* LINK COLUMNS */}
-              <div className={`${activeData.featured ? "col-span-8" : "col-span-12"} grid divide-x divide-gray-100 dark:divide-white/8 ${
-                activeData.sections.length === 1 ? "grid-cols-1"
-                : activeData.sections.length === 2 ? "grid-cols-2"
-                : "grid-cols-3"
-              }`}>
+              <div className="flex-1 min-w-0 flex divide-x divide-gray-100 dark:divide-white/8">
                 {activeData.sections.map((section) => (
-                  <div key={section.title} className="p-6">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-theme-body/50 mb-4 pb-2 border-b border-gray-100 dark:border-white/8">
+                  <div key={section.title} className="flex-1 min-w-0 p-5">
+                    <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-theme-body/50 mb-3">
+                      <span className="w-4 h-px bg-brand/40" />
                       {section.title}
                     </p>
-                    <ul className="space-y-1.5">
-                      {section.links.map((link) => (
-                        <li key={link.href + link.label}>
-                          <Link
-                            href={link.href}
-                            onClick={() => setActiveMenu(null)}
-                            className="group flex items-start gap-3 p-2.5 rounded-xl hover:bg-brand/5 transition-all duration-200"
-                          >
+                    <ul className="space-y-0.5">
+                      {section.links.map((link) => {
+                        const row = (
+                          <>
                             {link.icon && (
-                              <span className="flex-shrink-0 w-8 h-8 mt-0.5 flex items-center justify-center rounded-lg bg-brand/6 text-brand/60 group-hover:bg-brand/12 group-hover:text-brand transition-all duration-200 [&>svg]:w-4 [&>svg]:h-4">
+                              <span className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg bg-brand/6 text-brand/55 group-hover:bg-brand/12 group-hover:text-brand transition-all duration-200 [&>svg]:w-4 [&>svg]:h-4">
                                 {link.icon}
                               </span>
                             )}
-                            <div className="flex flex-col gap-0.5">
-                              <span className="text-[13px] font-bold text-theme-heading group-hover:text-brand transition-colors">
-                                {link.label}
+                            <span className="min-w-0 flex-1">
+                              <span className="flex items-center gap-2">
+                                <span className="text-[13px] font-bold text-theme-heading group-hover:text-brand transition-colors">
+                                  {link.label}
+                                </span>
+                                {!link.href && (
+                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-brand/60 bg-brand/8 rounded-full px-1.5 py-0.5">
+                                    Soon
+                                  </span>
+                                )}
                               </span>
-                              <span className="text-[11px] text-theme-body/60 underline decoration-theme-body/20 underline-offset-2">
-                                {link.description || "Thoughtful choices, beautifully arranged"}
+                              {link.description && (
+                                <span className="block text-[11px] leading-snug text-theme-body/60 mt-0.5">
+                                  {link.description}
+                                </span>
+                              )}
+                            </span>
+                          </>
+                        );
+
+                        return (
+                          <li key={link.label}>
+                            {link.href ? (
+                              <Link
+                                href={link.href}
+                                onClick={() => setActiveMenu(null)}
+                                className="group flex items-start gap-3 p-2 rounded-xl hover:bg-brand/5 transition-all duration-200"
+                              >
+                                {row}
+                              </Link>
+                            ) : (
+                              <span className="group flex items-start gap-3 p-2 rounded-xl cursor-default">
+                                {row}
                               </span>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 ))}
               </div>
 
               {/* FEATURED CARD */}
-              {activeData.featured && activeData.featured[0] && (
-                <div className="col-span-4 relative overflow-hidden bg-gradient-to-br from-brand/7 via-brand/3 to-coral/5 dark:from-brand/15 dark:via-brand/8 dark:to-coral/10 p-6 flex flex-col">
-                  <div className="absolute -top-10 -right-10 w-36 h-36 bg-brand/15 rounded-full blur-3xl pointer-events-none" />
-                  <div className="absolute -bottom-8 -left-8 w-28 h-28 bg-coral/15 rounded-full blur-2xl pointer-events-none" />
-                  <div className="relative z-10 flex flex-col h-full">
-                    <span className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-brand/60 mb-3">
-                      <span className="w-4 h-px bg-brand/40" />
-                      TouchGift Edit
-                    </span>
-                    <div className="w-full aspect-video mb-4 rounded-xl overflow-hidden shadow-lg ring-1 ring-black/5">
-                      <Image
-                        src={activeData.featured[0].image}
-                        alt={activeData.featured[0].title}
-                        width={260}
-                        height={146}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <p className="font-display font-bold text-[18px] text-theme-heading leading-snug mb-1.5">
-                      {activeData.featured[0].title}
-                    </p>
-                    <p className="text-xs text-theme-body leading-relaxed mb-5 flex-1">
-                      {activeData.featured[0].description}
-                    </p>
-                    <Link
-                      href={activeData.featured[0].href}
-                      onClick={() => setActiveMenu(null)}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white rounded-xl text-xs font-bold hover:bg-brand-dark hover:shadow-[0_4px_16px_rgba(155,27,90,0.35)] hover:-translate-y-0.5 transition-all duration-200 self-start"
-                    >
-                      {activeData.featured[0].buttonText || "Explore"}
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                    </Link>
-                  </div>
-                </div>
+              {activeData.featured && (
+                <aside className="relative w-[300px] shrink-0 overflow-hidden bg-gradient-to-br from-brand/8 via-brand/4 to-coral/6 dark:from-brand/18 dark:via-brand/10 dark:to-coral/12 p-6 flex flex-col border-l border-gray-100 dark:border-white/8">
+                  <span className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-brand/10 blur-3xl pointer-events-none" />
+                  <span className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-coral/10 blur-2xl pointer-events-none" />
+                  <span className="relative inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-brand/60 mb-4">
+                    <span className="w-4 h-px bg-brand/40" />
+                    TouchGift Edit
+                  </span>
+                  <p className="relative font-display font-bold text-[20px] text-theme-heading leading-snug mb-2">
+                    {activeData.featured.title}
+                  </p>
+                  <p className="relative text-xs text-theme-body leading-relaxed">
+                    {activeData.featured.description}
+                  </p>
+                  <Link
+                    href={activeData.featured.href}
+                    onClick={() => setActiveMenu(null)}
+                    className="relative mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white rounded-xl text-xs font-bold hover:bg-brand-dark hover:shadow-[0_4px_16px_rgba(155,27,90,0.35)] hover:-translate-y-0.5 transition-all duration-200 self-start"
+                  >
+                    {activeData.featured.buttonText || "Explore"}
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </Link>
+                </aside>
               )}
 
             </div>
+          </div>
           </div>
         </div>
       )}
