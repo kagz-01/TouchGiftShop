@@ -19,6 +19,7 @@ import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
 import { optimizeProductImagesList } from "@/lib/image-url";
+import { formatKsh } from "@/lib/utils";
 import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
 
 /**
@@ -41,27 +42,13 @@ async function getByCategory(categorySlug: string, limit = 10): Promise<Product[
     .limit(limit);
   return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
 }
-async function getByTag(tag: string, limit = 10): Promise<Product[]> {
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-  const { data } = await supabase
-    .from("products")
-    .select("*")
-    .eq("in_stock", true)
-    .contains("tags", JSON.stringify([tag]))
-    .order("created_at", { ascending: false })
-    .limit(limit);
-  return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
-}
 async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const [trending, lastMinute, drinkware, giftSets, personalised, under2k] =
+  const [trending, lastMinute, perfume, giftSets, perfumeStats] =
     await Promise.all([
       supabase
         .from("products")
@@ -82,29 +69,36 @@ async function getFeaturedProducts() {
         .limit(10)
         .then((r) => (r.data ?? []) as Product[]),
 
-      getByCategory("drinkware", 10),
+      // Perfumes are 51% of the in-stock catalogue, so they get a column in the
+      // first product moment under the hero rather than a slot further down.
+      getByCategory("perfumes", 10),
       getByCategory("gift-sets", 10),
-      getByTag("personalised", 10),
 
+      // Count + price floor drive the sub-headline, so the copy can't go stale
+      // when stock or pricing changes.
       supabase
         .from("products")
-        .select("*")
+        .select("price, product_categories!inner(categories!inner(slug))")
         .eq("in_stock", true)
-        .lte("price", 2000)
-        .order("price", { ascending: false })
-        .limit(10)
-        .then((r) => (r.data ?? []) as Product[]),
+        .eq("product_categories.categories.slug", "perfumes")
+        .then((r) => {
+          const prices = ((r.data ?? []) as unknown as { price: number }[]).map((p) => p.price);
+          return {
+            count: prices.length,
+            from: prices.length ? Math.min(...prices) : 0,
+          };
+        }),
     ]);
 
-  [trending, lastMinute, drinkware, giftSets, personalised, under2k].forEach((list) =>
+  [trending, lastMinute, perfume, giftSets].forEach((list) =>
     optimizeProductImagesList(list)
   );
 
-  return { trending, lastMinute, drinkware, giftSets, personalised, under2k };
+  return { trending, lastMinute, perfume, giftSets, perfumeStats };
 }
 
 export default async function HomePage() {
-  const { trending, lastMinute, drinkware, giftSets, personalised, under2k } =
+  const { trending, lastMinute, perfume, giftSets, perfumeStats } =
     await getFeaturedProducts();
 
   return (
@@ -145,9 +139,9 @@ export default async function HomePage() {
             speed: 28,
           },
           {
-            title: "Drinkware",
-            viewAllHref: "/shop?category=drinkware",
-            products: drinkware,
+            title: "Perfumes",
+            viewAllHref: "/shop?category=perfumes",
+            products: perfume,
             direction: "down",
             speed: 36,
           },
@@ -215,7 +209,9 @@ export default async function HomePage() {
 
       {/* ═══════════════════════════════════════════
           CHAPTER 3B: Discovery — Horizontal Rows
-          Self Care ←  |  Hampers →  |  Personal + Under 2K ←
+          Hampers ←  |  Perfumes →
+          Perfumes floor at KSh 6,075, so the old "Under KSh 2,000" row
+          could never carry them; the keyring edit went to /shop only.
           ═══════════════════════════════════════════ */}
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-4 space-y-0">
         <FeaturedRow
@@ -228,10 +224,14 @@ export default async function HomePage() {
           marqueeDirection="left"
         />
         <FeaturedRow
-          title="Make it Personal · Under KSh 2,000"
-          subtitle="Engraved, printed & budget-friendly gifts"
-          products={[...personalised, ...under2k].slice(0, 10)}
-          viewAllHref="/shop?tag=personalised"
+          title="The one they'll wear on you."
+          subtitle={
+            perfumeStats.count > 0
+              ? `${perfumeStats.count} authentic fragrances, from ${formatKsh(perfumeStats.from)}`
+              : "Authentic designer and niche scents"
+          }
+          products={perfume}
+          viewAllHref="/shop?category=perfumes"
           viewAllLabel="See all"
           tint="warm"
           marqueeDirection="right"

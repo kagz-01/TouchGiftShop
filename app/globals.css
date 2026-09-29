@@ -1034,9 +1034,19 @@ html {
   100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
 }
 
+/* Horizontal marquee. The track holds TWO copies of its cards and is sized to
+   its content (w-max), so -50% is exactly one copy — the seam always lands
+   between duplicates. Keep in sync with the `marquee` keyframes in
+   tailwind.config.ts; this unlayered copy wins the cascade, so a divergence
+   between the two silently changes every horizontal marquee on the site. */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
+}
+
+@keyframes marqueeReverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes slide-down {

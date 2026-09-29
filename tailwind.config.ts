@@ -153,11 +153,14 @@ const config: Config = {
           "50%": { borderColor: "#9B1B5A" },
         },
         marquee: {
+          // Must match @keyframes marquee in globals.css (that copy is
+          // unlayered and wins). -50% assumes a w-max track holding two
+          // copies of its content.
           "0%": { transform: "translateX(0)" },
-          "100%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(-50%)" },
         },
         marqueeReverse: {
-          "0%": { transform: "translateX(-100%)" },
+          "0%": { transform: "translateX(-50%)" },
           "100%": { transform: "translateX(0)" },
         },
         marqueeVertical: {

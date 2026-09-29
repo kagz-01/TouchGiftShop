@@ -784,122 +784,116 @@ export function ProblemSection() {
    SECTION 3: THE SOLUTION — Brand reveal
    ══════════════════════════════════════════════════════════ */
 export function SolutionSection() {
-  const bentoCards = [
-    {
-      icon: <Target className="w-8 h-8 text-gold" />,
-      title: "Bespoke Curation",
-      desc: "Each piece is hand-selected for uncompromising quality and elegance, ensuring every unboxing is a moment of pure delight.",
-      colSpan: "md:col-span-2 lg:col-span-2",
-      bg: "bento-card-theme",
-      accentColor: "group-hover:border-gold/50",
-      isBrand: false,
-    },
-    {
-      icon: <Zap className="w-8 h-8 text-brand" />,
-      title: "Impeccable Timing",
-      desc: "Swift, seamless delivery across Nairobi, arriving beautifully presented exactly when it matters most.",
-      colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bento-card-theme",
-      accentColor: "group-hover:border-brand/40",
-      isBrand: false,
-    },
-    {
-      icon: <MapPin className="w-8 h-8 text-coral" />,
-      title: "The Mystery Pin-Drop",
-      desc: "A touch of mystery. We discreetly coordinate the delivery location with them, preserving the magic of the surprise.",
-      colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bento-card-theme",
-      accentColor: "group-hover:border-coral/40",
-      isBrand: false,
-    },
-    {
-      icon: <EyeOff className="w-8 h-8 text-brand-light" />,
-      title: "Absolute Discretion",
-      desc: "Total discretion. Price tags and sender details are entirely removed, allowing the sentiment to speak for itself.",
-      colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bento-card-theme",
-      accentColor: "group-hover:border-brand-light/40",
-      isBrand: false,
-    },
-    {
-      icon: <Camera className="w-8 h-8 text-success" />,
-      title: "A Glimpse of Joy",
-      desc: "See the magic unfold. You receive a photograph of the exquisitely wrapped gift just before it begins its journey.",
-      colSpan: "md:col-span-1 lg:col-span-1",
-      bg: "bento-card-theme",
-      accentColor: "group-hover:border-success/40",
-      isBrand: false,
-    },
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+
+  const A = [
+    { src: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600", label: "Branded jerseys", t: "bulk", s: "aspect-[4/5]" },
+    { src: "https://images.unsplash.com/photo-1577903259929-79a61f2372d8?auto=format&fit=crop&q=80&w=600", label: "Client thank-you hamper", t: "corporate", s: "aspect-[4/3]" },
+    { src: "https://images.unsplash.com/photo-1582214959049-74d7561fbaac?auto=format&fit=crop&q=80&w=600", label: "Engraved desk piece", t: "solo", s: "aspect-square" },
+    { src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=600", label: "Team welcome set", t: "corporate", s: "aspect-[4/5]" }
   ];
+  const B = [
+    { src: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=600", label: "Staff appreciation boxes", t: "bulk", s: "aspect-[4/3]" },
+    { src: "https://images.unsplash.com/photo-1507960664917-8178e2eb0e57?auto=format&fit=crop&q=80&w=600", label: "Logo notebook and pen", t: "solo", s: "aspect-[4/5]" },
+    { src: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=600", label: "Executive gift set", t: "corporate", s: "aspect-square" },
+    { src: "https://images.unsplash.com/photo-1511268559489-34b624fbfcf5?auto=format&fit=crop&q=80&w=600", label: "Event giveaways", t: "bulk", s: "aspect-[4/3]" }
+  ];
+  
+  const N: Record<string, string> = { corporate: "Corporate gifting", bulk: "Bulk order", solo: "Solo branding" };
+
+  const renderCard = (g: any, i: number) => (
+    <div 
+      key={`${g.label}-${i}`} 
+      className={`bg-white dark:bg-black/20 border border-brand/10 dark:border-white/10 rounded-2xl p-2 pb-3 mb-4 transition-all duration-300 ${
+        activeTab && activeTab !== g.t ? "opacity-30 grayscale" : "opacity-100"
+      }`}
+    >
+      <div className={`relative rounded-xl overflow-hidden bg-gradient-to-br from-brand/5 to-brand/20 ${g.s}`}>
+        <img src={g.src} alt={g.label} className="absolute inset-0 w-full h-full object-cover" />
+      </div>
+      <p className="mt-2.5 mx-1.5 text-[15px] font-semibold text-theme-heading">{g.label}</p>
+      <small className="block mx-1.5 text-[13px] text-brand font-medium">{N[g.t]}</small>
+    </div>
+  );
 
   return (
-    <section className="py-10 md:py-14 section-theme-c relative overflow-hidden">
-      {/* Ambient glow orbs */}
-      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-gold/8 rounded-full blur-[120px] pointer-events-none animate-pulse-soft" />
-      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-brand/25 rounded-full blur-[100px] pointer-events-none animate-pulse-soft" style={{ animationDelay: "1s" }} />
+    <section className="py-16 md:py-24 section-theme-c relative overflow-hidden min-h-[60vh] lg:min-h-[75vh] flex flex-col justify-center" id="corporate">
+      {/* Background accents */}
+      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Top/bottom gold rule */}
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
-        {/* Heading block */}
-        <div className="text-center mb-4">
-          <Reveal direction="scale">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl mb-4 border border-gold/30 bg-gradient-to-br from-gold/20 to-gold/5 shadow-[0_0_48px_rgba(212,168,83,0.25)] animate-float">
-              <Gift className="w-10 h-10 text-gold" />
-            </div>
-          </Reveal>
-
+      <div className="w-full max-w-[1180px] mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-10 md:gap-14 items-center relative z-10">
+        <div>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold italic tracking-wide text-theme-heading mb-6">
-              The Art of{" "}
-              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                Gifting
-              </span>
+            <p className="text-brand font-bold text-sm uppercase tracking-wider mb-3">Corporate gifting</p>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-[54px] font-bold text-theme-heading leading-[1.1] mb-5">
+              Your brand, in their hands.
             </h2>
+            <p className="text-lg text-theme-body mb-6 max-w-lg leading-relaxed">
+              Every gift your business sends says something about you. We make it say the right thing, with your name on it, wrapped and delivered.
+            </p>
           </Reveal>
 
           <Reveal delay={200}>
-            <p className="text-theme-body max-w-2xl mx-auto mb-4 text-lg leading-relaxed">
-              We don't just fulfil orders. We architect emotional experiences, transforming the act of giving into an unforgettable story.
+            <p className="text-brand font-medium text-[15px] mb-2">Which sounds like you?</p>
+            <ul className="border-t border-brand/10 dark:border-white/10 mb-6">
+              {[
+                { id: "corporate", title: "Gifting a team or clients", desc: "Hampers and gift sets, wrapped and delivered to each person." },
+                { id: "bulk", title: "Sending the same gift to many", desc: "From 10 units, one M-Pesa payment." },
+                { id: "solo", title: "Need it to carry your name", desc: "Your logo or name on a single piece." }
+              ].map((way) => (
+                <li
+                  key={way.id}
+                  onMouseEnter={() => setActiveTab(way.id)}
+                  onMouseLeave={() => setActiveTab(null)}
+                  onFocus={() => setActiveTab(way.id)}
+                  onBlur={() => setActiveTab(null)}
+                  tabIndex={0}
+                  className="group relative px-5 py-3.5 border-b border-brand/10 dark:border-white/10 cursor-pointer transition-colors hover:bg-white/50 dark:hover:bg-white/5 outline-none focus-visible:bg-white/50"
+                >
+                  <div className={`absolute left-1 top-[27px] w-2 h-2 rounded-full transition-colors ${
+                    activeTab === way.id ? "bg-brand" : "bg-gold"
+                  }`} />
+                  <b className="block font-display font-bold text-lg text-theme-heading group-hover:text-brand transition-colors">{way.title}</b>
+                  <em className="not-italic text-[15px] text-theme-body">{way.desc}</em>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          <Reveal delay={300}>
+            <p className="text-[15px] text-theme-body mb-5">
+              Gifts for people you love are on the rest of this page. Gifts your business depends on have their own home.
             </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/corporate" className="px-6 py-3.5 rounded-xl bg-brand text-white font-semibold text-base hover:bg-brand-dark hover:shadow-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+                Enter the corporate platform
+              </Link>
+              <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting." className="px-6 py-3.5 rounded-xl bg-transparent border-2 border-brand/20 text-theme-heading font-semibold text-base hover:border-brand hover:text-brand transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+                Talk to us first
+              </a>
+            </div>
           </Reveal>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {bentoCards.map((card, i) => (
-            <Reveal key={i} delay={300 + i * 100} direction="up" className={card.colSpan}>
-              <div
-                className={`group relative h-full shape-premium-bento p-6 md:p-8 text-left border ${
-                  card.isBrand ? 'border-white/10' : 'border-brand/8 dark:border-white/10'
-                } ${
-                  card.accentColor
-                } transition-all duration-500 overflow-hidden cursor-default ${
-                  card.bg
-                }`}
-              >
-                {/* Per-card shimmer on hover */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                <div className="relative z-10">
-                  <div className={`w-14 h-14 rounded-2xl ${
-                    card.isBrand ? 'bg-white/10' : 'bg-brand/8 dark:bg-white/10'
-                  } backdrop-blur-md flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500`}>
-                    {card.icon}
-                  </div>
-                  <h3 className="font-display text-xl md:text-2xl font-bold text-theme-heading mb-3 italic group-hover:text-gold transition-colors duration-300">
-                    {card.title}
-                  </h3>
-                  <p className="text-theme-body leading-relaxed group-hover:text-theme-heading transition-colors duration-300">
-                    {card.desc}
-                  </p>
-                </div>
+        {/* Marquee Stage */}
+        <Reveal delay={400} className="relative h-[440px] md:h-[600px] overflow-hidden">
+          <div className="grid grid-cols-2 gap-4 h-full group">
+            {/* Column 1 - Downwards */}
+            <div className="overflow-hidden h-full">
+              <div className="animate-marquee-vertical-reverse group-hover:[animation-play-state:paused]">
+                {[...A, ...A].map((g, i) => renderCard(g, i))}
               </div>
-            </Reveal>
-          ))}
-        </div>
+            </div>
+            
+            {/* Column 2 - Upwards */}
+            <div className="overflow-hidden h-full">
+              <div className="animate-marquee-vertical group-hover:[animation-play-state:paused]">
+                {[...B, ...B].map((g, i) => renderCard(g, i))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -1123,13 +1117,11 @@ export function SocialProof() {
                 maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
               }}
             >
-              {[0, 1].map((track) => (
-                <div
-                  key={track}
-                  aria-hidden={track === 1}
-                  className="animate-marquee flex gap-5 min-w-full shrink-0 items-stretch group-hover:[animation-play-state:paused]"
-                >
-                  {displayReviews.map((t, i) => (
+              {/* One w-max track, two copies inside — the -50% keyframe then
+                  lands on the copy boundary. Two sibling min-w-full tracks
+                  drifted and drew cards over each other. */}
+              <div className="animate-marquee flex gap-5 w-max items-stretch group-hover:[animation-play-state:paused]">
+                  {[...displayReviews, ...displayReviews].map((t, i) => (
                     <div
                       key={i}
                       className="flex-shrink-0 w-[300px] md:w-[360px] card-theme rounded-[1.5rem] p-6 flex flex-col gap-4 whitespace-normal"
@@ -1156,8 +1148,7 @@ export function SocialProof() {
                       </div>
                     </div>
                   ))}
-                </div>
-              ))}
+              </div>
             </div>
           </div>
         </Reveal>
