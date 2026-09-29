@@ -7,7 +7,6 @@ import {
   SolutionSection,
   SocialProof,
   StoryHowItWorks,
-  FinalCTA,
 } from "@/components/home/StorytellingHome";
 import OccasionPills from "@/components/home/OccasionPills";
 import FeaturedRow from "@/components/home/FeaturedRow";
@@ -262,7 +261,6 @@ export default async function HomePage() {
           CHAPTER 6: Final Conversion
           ═══════════════════════════════════════════ */}
       <StoryHowItWorks />
-      <FinalCTA />
 
       {/* Visit us — shop location map */}
       <VisitUs />

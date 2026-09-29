@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import {
-  Gift, Sparkles, Heart,
+  Gift, Sparkles,
   MapPin,
   Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
   Building2,
@@ -574,15 +574,14 @@ export function ProblemSection() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold mb-6 text-theme-heading">
-              Finding the perfect gift
-              <br />
-              <span className="text-theme-muted font-normal italic">is often harder than it should be.</span>
+            <h2 className="font-display section-heading font-bold text-theme-heading">
+              Care shouldn&apos;t feel like <span className="italic text-gold">work.</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <p className="text-theme-body text-lg leading-relaxed">
-              You want to show how much you care, but finding the perfect gift shouldn't be stressful. We're here to make the experience as beautiful as the gesture itself.
+            <div className="w-10 h-px bg-gold/70 mx-auto mb-6" />
+            <p className="text-theme-body text-lg italic leading-relaxed">
+              You want it to mean something. It shouldn&apos;t take all afternoon.
             </p>
           </Reveal>
         </div>
@@ -1189,110 +1188,3 @@ export function SocialProof() {
     </section>
   );
 }
-
-/* ══════════════════════════════════════════════════════════
-   SECTION 7: FINAL CTA — Convert
-   ══════════════════════════════════════════════════════════ */
-export function FinalCTA() {
-  return (
-    <section className="relative overflow-hidden section-theme-g py-10 md:py-14 flex items-center justify-center text-center border-t border-brand/10 dark:border-white/10">
-      {/* Background orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-[10%] w-[500px] h-[500px] bg-brand/5 rounded-full blur-[130px] animate-pulse-soft" />
-        <div className="absolute bottom-0 right-[10%] w-[400px] h-[400px] bg-gold/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1.5s" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[200px] bg-brand/5 rounded-full blur-[80px]" />
-      </div>
-
-      <div className="w-full page-container relative z-10 max-w-4xl mx-auto flex flex-col items-center">
-        <Reveal>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand/5 backdrop-blur-sm border border-brand/10 rounded-full mb-6">
-            <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-            <span className="text-theme-body text-xs font-semibold tracking-wide">Now delivering across Nairobi</span>
-          </div>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <h2 className="font-display display-heading font-bold text-theme-heading mb-4">
-            Ready to create
-            <br />
-            <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-              an unforgettable
-            </span>
-            <br />
-            moment?
-          </h2>
-        </Reveal>
-
-        <Reveal delay={200}>
-          <p className="text-lg md:text-xl text-theme-body max-w-2xl mx-auto mb-6 leading-relaxed">
-            Skip the stress. We curate, wrap beautifully, and deliver with care — so all you have to do is watch them smile.
-          </p>
-        </Reveal>
-
-        {/* Primary CTAs */}
-        <Reveal delay={300}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <Link
-              href="/shop"
-              className="group relative inline-flex px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-[0_8px_40px_rgba(212,168,83,0.5)] hover:-translate-y-1 items-center justify-center"
-            >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                Send a Gift Now
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </span>
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </Link>
-            <Link
-              href="/gift-finder"
-              className="group px-8 py-4 bg-brand-deep/5 dark:bg-white/10 backdrop-blur-sm text-theme-heading font-semibold rounded-2xl text-lg border border-surface-border hover:bg-brand/10 dark:hover:bg-white/20 transition-all duration-300 hover:-translate-y-1"
-            >
-              <span className="flex items-center justify-center gap-2">
-                AI Gift Finder
-                <Target className="w-5 h-5 text-coral group-hover:scale-110 transition-transform" />
-              </span>
-            </Link>
-          </div>
-        </Reveal>
-
-        {/* Secondary CTAs — new features */}
-        <Reveal delay={400}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-            <Link
-              href="/gift-cards"
-              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
-            >
-              <div className="w-12 h-12 bg-gold/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Gift className="w-6 h-6 text-gold" />
-              </div>
-              <p className="font-display font-bold text-theme-heading text-sm mb-1">Gift Cards</p>
-              <p className="text-theme-body text-xs">Let them choose. Digital codes sent instantly.</p>
-            </Link>
-            <Link
-              href="/referrals"
-              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
-            >
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Heart className="w-6 h-6 text-emerald-500" />
-              </div>
-              <p className="font-display font-bold text-theme-heading text-sm mb-1">Refer &amp; Earn</p>
-              <p className="text-theme-body text-xs">Earn 1,000 pts (≈KSh 500) when friends order. Share your code.</p>
-            </Link>
-            <Link
-              href="/subscriptions"
-              className="group card-theme rounded-2xl p-5 border border-surface-border hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center"
-            >
-              <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Rocket className="w-6 h-6 text-brand" />
-              </div>
-              <p className="font-display font-bold text-theme-heading text-sm mb-1">Gift Subscriptions</p>
-              <p className="text-theme-body text-xs">Never forget a birthday. AI auto-sends gifts.</p>
-            </Link>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
