@@ -291,9 +291,9 @@ export default function ProductGridClient({
   return (
     <section className="py-8">
       <div className="page-container-capped">
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep text-center mb-4 animate-fade-in-up">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep dark:text-white text-center mb-4 animate-fade-in-up">
           {heading || "All Gifts"}
-          <span className="block text-sm font-normal text-brand-muted mt-1">
+          <span className="block text-sm font-normal text-brand-muted dark:text-white/60 mt-1">
             Showing {products.length} of {totalCount} gifts
           </span>
         </h2>
@@ -327,8 +327,8 @@ export default function ProductGridClient({
         {products.length === 0 ? (
           <div className="text-center py-16 max-w-md mx-auto">
             <span className="text-6xl block mb-4">🫣</span>
-            <p className="font-display text-xl font-bold text-brand-deep mb-2">Nothing here yet!</p>
-            <p className="text-sm text-brand-muted leading-relaxed mb-6">
+            <p className="font-display text-xl font-bold text-brand-deep dark:text-white mb-2">Nothing here yet!</p>
+            <p className="text-sm text-brand-muted dark:text-white/65 leading-relaxed mb-6">
               We&apos;re working on getting more gifts for this category. In the meantime, our gifting squad is out there hunting for the perfect items. Check back soon — or browse something else while you wait!
             </p>
             <Link

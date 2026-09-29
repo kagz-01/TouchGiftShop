@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
-import { Bell, Search, X, UserRound, MessageCircle, ChevronRight } from "lucide-react";
+import { Bell, Search, X, UserRound, MessageCircle, ChevronRight, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import VibeSelector from "@/components/ui/VibeSelector";
@@ -83,9 +83,9 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
         className={cn("hidden md:block sticky top-0 z-50 transition-all duration-500")}
         style={{
           backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "blur(8px)",
-          background: scrolled ? "rgba(var(--surface-raw, 255,255,255), 0.97)" : "rgba(var(--surface-raw, 255,255,255), 0.90)",
+          background: scrolled ? "var(--header-bg-scrolled)" : "var(--header-bg)",
           borderBottom: scrolled ? "1px solid rgba(155,27,90,0.10)" : "1px solid rgba(155,27,90,0.05)",
-          boxShadow: scrolled ? "0 4px 30px rgba(155,27,90,0.08), 0 1px 0 rgba(255,255,255,0.8)" : "none",
+          boxShadow: scrolled ? "0 4px 30px rgba(155,27,90,0.08)" : "none",
         }}
       >
         {/* TOP ROW: Logo | Search | Icons */}
@@ -133,6 +133,15 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
 
           {/* Right Actions */}
           <div className="flex items-center gap-1 flex-shrink-0">
+            {/* Corporate CTA */}
+            <Link
+              href="/corporate"
+              className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-brand hover:bg-brand/8 transition-all duration-200 border border-brand/20 hover:border-brand/40 hover:shadow-[0_0_0_3px_rgba(155,27,90,0.06)]"
+            >
+              <Briefcase className="w-3.5 h-3.5" />
+              <span>Corporate</span>
+            </Link>
+            <div className="w-px h-5 bg-surface-border mx-1 hidden xl:block" />
             <Link href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 border border-green-200 dark:border-green-800">
               <MessageCircle className="w-4 h-4" />
               <span>Chat on WhatsApp</span>

@@ -62,7 +62,7 @@ export default function ProductGallery({
   }, [isLightboxOpen, allImages.length]);
 
   return (
-    <div className="flex flex-col-reverse md:flex-row gap-4 w-full animate-fade-in-up">
+    <div className={cn("flex flex-col-reverse md:flex-row gap-4 w-full animate-fade-in-up", (showCustomizer || isLightboxOpen) && "!animate-none")}>
       {/* Thumbnails */}
       {allImages.length > 1 && (
         <div className="flex md:flex-col gap-3 overflow-x-auto md:overflow-y-auto md:max-h-[500px] hide-scrollbar snap-x md:snap-y pb-2 md:pb-0 md:pr-2 md:w-24 shrink-0">

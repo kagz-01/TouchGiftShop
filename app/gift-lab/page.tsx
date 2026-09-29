@@ -33,7 +33,7 @@ export default function GiftLabPage() {
             <Sparkles className="w-3.5 h-3.5 text-brand" />
             <span className="text-[11px] font-semibold text-brand uppercase tracking-wider">Gift Lab</span>
           </div>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-brand-deep mb-3 leading-tight">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-brand-deep dark:text-white mb-3 leading-tight">
             Go beyond the generic.
           </h2>
           <p className="text-brand-muted max-w-md mx-auto text-sm leading-relaxed">

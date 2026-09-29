@@ -294,7 +294,7 @@ export default function GiftCardShowcase() {
           font-family: Georgia, serif;
           font-size: 18px;
           font-weight: 600;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
           margin: 0 0 4px;
         }
         .gc-step-sub {
@@ -326,18 +326,18 @@ export default function GiftCardShowcase() {
           border-radius: 12px;
           background: var(--card-bg, #fff);
           font: 600 14px/1.2 Arial, sans-serif;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .gc-amount-btn:hover {
-          border-color: var(--brand, #a51b58);
+          border-color: var(--accent-color, #a51b58);
           background: var(--brand-5, rgba(165,27,88,0.04));
         }
         .gc-amount-btn.selected {
-          border-color: var(--brand, #a51b58);
+          border-color: var(--accent-color, #a51b58);
           background: var(--brand-5, rgba(165,27,88,0.08));
-          color: var(--brand, #a51b58);
+          color: var(--accent-color, #a51b58);
         }
         .gc-check {
           position: absolute;
@@ -346,7 +346,7 @@ export default function GiftCardShowcase() {
           width: 18px;
           height: 18px;
           border-radius: 50%;
-          background: var(--brand, #a51b58);
+          background: var(--color-brand, #a51b58);
           color: white;
           font-size: 10px;
           display: flex;
@@ -365,7 +365,7 @@ export default function GiftCardShowcase() {
           overflow: hidden;
           transition: border-color 0.2s;
         }
-        .gc-custom-input-wrap:focus-within { border-color: var(--brand, #a51b58); }
+        .gc-custom-input-wrap:focus-within { border-color: var(--accent-color, #a51b58); }
         .gc-custom-prefix {
           padding: 10px 12px;
           background: var(--surface, #f8f9fa);
@@ -380,7 +380,7 @@ export default function GiftCardShowcase() {
           outline: none;
           font: 500 14px Arial, sans-serif;
           background: transparent;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
         }
 
         /* Textarea */
@@ -391,7 +391,7 @@ export default function GiftCardShowcase() {
           overflow: hidden;
           transition: border-color 0.2s;
         }
-        .gc-textarea-wrap:focus-within { border-color: var(--brand, #a51b58); }
+        .gc-textarea-wrap:focus-within { border-color: var(--accent-color, #a51b58); }
         .gc-textarea {
           width: 100%;
           min-height: 90px;
@@ -401,7 +401,7 @@ export default function GiftCardShowcase() {
           font: 400 14px/1.5 Arial, sans-serif;
           resize: vertical;
           background: transparent;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
         }
         .gc-char-count {
           position: absolute;
@@ -431,9 +431,9 @@ export default function GiftCardShowcase() {
           transition: all 0.2s ease;
           text-align: center;
         }
-        .gc-delivery-btn:hover { border-color: var(--brand, #a51b58); }
+        .gc-delivery-btn:hover { border-color: var(--accent-color, #a51b58); }
         .gc-delivery-btn.selected {
-          border-color: var(--brand, #a51b58);
+          border-color: var(--accent-color, #a51b58);
           background: var(--brand-5, rgba(165,27,88,0.06));
         }
         .gc-delivery-check {
@@ -443,7 +443,7 @@ export default function GiftCardShowcase() {
           width: 18px;
           height: 18px;
           border-radius: 50%;
-          background: var(--brand, #a51b58);
+          background: var(--color-brand, #a51b58);
           color: white;
           font-size: 10px;
           display: flex;
@@ -453,7 +453,7 @@ export default function GiftCardShowcase() {
         .gc-delivery-icon { font-size: 22px; }
         .gc-delivery-btn strong {
           font-size: 12px;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
         }
         .gc-delivery-btn span:last-child {
           font-size: 11px;
@@ -466,7 +466,7 @@ export default function GiftCardShowcase() {
           padding: 16px;
           border: none;
           border-radius: 14px;
-          background: var(--brand, #a51b58);
+          background: var(--color-brand, #a51b58);
           color: white;
           font: 700 15px/1 Arial, sans-serif;
           cursor: pointer;
@@ -506,7 +506,7 @@ export default function GiftCardShowcase() {
           text-align: center;
           font-size: 11px;
           letter-spacing: 1.5px;
-          color: var(--brand, #a51b58);
+          color: var(--accent-color, #a51b58);
           opacity: 0.5;
           margin: 0;
         }
@@ -546,7 +546,7 @@ export default function GiftCardShowcase() {
           letter-spacing: 0.1em;
           color: var(--text-muted, #8b8b9e);
         }
-        .gc-thumb.active .gc-thumb-label { color: var(--brand, #a51b58); }
+        .gc-thumb.active .gc-thumb-label { color: var(--accent-color, #a51b58); }
 
         /* ── Features ── */
         .gc-features {
@@ -570,7 +570,7 @@ export default function GiftCardShowcase() {
           display: block;
           font-size: 11px;
           letter-spacing: 0.08em;
-          color: var(--text-heading, #1a1a2e);
+          color: var(--heading-color, #1a1a2e);
         }
         .gc-feature span {
           font-size: 12px;

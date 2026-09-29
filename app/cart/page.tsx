@@ -19,8 +19,8 @@ export default function CartPage() {
     return (
       <div className="min-h-screen section-theme-e flex flex-col items-center justify-center px-4 text-center">
         <ShoppingBag className="w-16 h-16 text-brand/20 mb-4" />
-        <h1 className="text-2xl font-bold text-brand-deep mb-2">Your cart is empty</h1>
-        <p className="text-brand-muted mb-6">Browse our gift collection and find something special.</p>
+        <h1 className="text-2xl font-bold text-brand-deep dark:text-white mb-2">Your cart is empty</h1>
+        <p className="text-brand-muted dark:text-white/70 mb-6">Browse our gift collection and find something special.</p>
         <Link
           href="/shop"
           className="px-6 py-3 bg-brand text-white rounded-xl font-medium hover:bg-brand-dark transition-colors"

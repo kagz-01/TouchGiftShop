@@ -108,17 +108,17 @@ export default async function ProductPage({
   return (
     <div className="min-h-screen section-theme-a">
       {/* ── Top bar ── */}
-      <div className="bg-white border-b border-black/5 sticky top-0 z-30">
+      <div className="bg-white dark:bg-[#0B0B0E] border-b border-black/5 dark:border-white/10 sticky top-0 z-30">
         <div className="page-container-capped py-3 flex items-center gap-3">
           <Link
             href="/shop"
-            className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors"
+            className="flex items-center gap-2 text-sm text-brand-muted hover:text-brand dark:hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Back to Shop</span>
           </Link>
-          <span className="text-black/15 hidden sm:inline">/</span>
-          <span className="text-sm text-brand-deep font-medium truncate max-w-[200px] hidden sm:inline">
+          <span className="text-black/15 dark:text-white/20 hidden sm:inline">/</span>
+          <span className="text-sm text-brand-deep dark:text-white font-medium truncate max-w-[200px] hidden sm:inline">
             {product.name}
           </span>
         </div>
@@ -143,11 +143,11 @@ export default async function ProductPage({
             {/* Title & price */}
             <div>
               {product.category && (
-                <p className="text-[11px] font-semibold text-brand/70 uppercase tracking-wider mb-2">
+                <p className="text-[11px] font-semibold text-brand/70 dark:text-white/60 uppercase tracking-wider mb-2">
                   {product.category.replace(/-/g, " ")}
                 </p>
               )}
-              <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep leading-tight mb-3">
+              <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep dark:text-white leading-tight mb-3">
                 {product.name}
               </h1>
               <div className="flex items-baseline gap-3">
@@ -182,7 +182,7 @@ export default async function ProductPage({
                   {product.color_variants.map((cv, i) => (
                     <button
                       key={i}
-                      className="flex items-center gap-2 px-3 py-2 border border-black/10 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 border border-black/10 dark:border-white/15 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
                     >
                       <span className="w-4 h-4 rounded-full border border-gray-200" style={{ backgroundColor: cv.name.toLowerCase() }} />
                       {cv.name}
@@ -203,7 +203,7 @@ export default async function ProductPage({
                   {product.size_variants.map((sv, i) => (
                     <button
                       key={i}
-                      className="flex items-center gap-2 px-4 py-2 border border-black/10 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 border border-black/10 dark:border-white/15 rounded-xl text-sm font-medium hover:border-brand hover:bg-brand/5 transition-colors"
                     >
                       {sv.name}
                       {sv.priceOverride && (

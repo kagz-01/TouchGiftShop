@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { Rnd } from "react-rnd";
 import { toPng } from "html-to-image";
@@ -155,13 +156,13 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[200] bg-surface flex flex-col md:flex-row animate-fade-in">
+  return createPortal(
+    <div className="fixed inset-0 z-[200] bg-surface dark:bg-[#101015] flex flex-col md:flex-row animate-fade-in">
       {/* Sidebar Toolbar */}
-      <div className="w-full md:w-80 bg-white border-r border-surface-border flex flex-col shadow-xl z-10">
-        <div className="p-6 border-b border-surface-border flex items-center justify-between">
+      <div className="w-full md:w-80 bg-white dark:bg-[#1A1A22] border-r border-surface-border dark:border-white/10 flex flex-col shadow-xl z-10">
+        <div className="p-6 border-b border-surface-border dark:border-white/10 flex items-center justify-between">
           <h2 className="font-display font-bold text-lg">Customization Studio</h2>
-          <button onClick={onClose} className="p-2 hover:bg-surface rounded-full transition-colors">
+          <button onClick={onClose} className="p-2 hover:bg-surface dark:hover:bg-white/10 rounded-full transition-colors">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -173,14 +174,14 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={addTextLayer}
-              className="flex flex-col items-center justify-center p-4 bg-surface rounded-xl border border-surface-border hover:border-brand hover:text-brand transition-colors gap-2"
+              className="flex flex-col items-center justify-center p-4 bg-surface dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 hover:border-brand hover:text-brand dark:hover:border-brand transition-colors gap-2"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
               </svg>
               <span className="text-sm font-medium">Add Text</span>
             </button>
-            <label className="flex flex-col items-center justify-center p-4 bg-surface rounded-xl border border-surface-border hover:border-brand hover:text-brand transition-colors gap-2 cursor-pointer">
+            <label className="flex flex-col items-center justify-center p-4 bg-surface dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 hover:border-brand hover:text-brand dark:hover:border-brand transition-colors gap-2 cursor-pointer">
               <input type="file" accept="image/*" className="hidden" onChange={addImageLayer} />
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -189,7 +190,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
             </label>
             <button
               onClick={addShapeLayer}
-              className="flex flex-col items-center justify-center p-4 bg-surface rounded-xl border border-surface-border hover:border-brand hover:text-brand transition-colors gap-2 col-span-2"
+              className="flex flex-col items-center justify-center p-4 bg-surface dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 hover:border-brand hover:text-brand dark:hover:border-brand transition-colors gap-2 col-span-2"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
@@ -200,7 +201,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
 
           {/* Edit Selected Tool */}
           {selectedId && (
-            <div className="space-y-4 pt-6 border-t border-surface-border animate-fade-in-up">
+            <div className="space-y-4 pt-6 border-t border-surface-border dark:border-white/10 animate-fade-in-up">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold text-sm uppercase tracking-wider text-brand-muted">Edit Layer</h3>
                 <button
@@ -219,7 +220,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
                       type="text"
                       value={layers.find((l) => l.id === selectedId)?.content}
                       onChange={(e) => updateLayer(selectedId, { content: e.target.value })}
-                      className="w-full border border-surface-border rounded-lg px-3 py-2 text-sm outline-none focus:border-brand"
+                      className="w-full border border-surface-border dark:border-white/15 dark:bg-white/5 dark:text-white rounded-lg px-3 py-2 text-sm outline-none focus:border-brand"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -237,7 +238,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
                       <select
                         value={layers.find((l) => l.id === selectedId)?.fontFamily}
                         onChange={(e) => updateLayer(selectedId, { fontFamily: e.target.value })}
-                        className="w-full border border-surface-border rounded-lg px-2 py-2 text-sm outline-none focus:border-brand"
+                        className="w-full border border-surface-border dark:border-white/15 dark:bg-[#1A1A22] dark:text-white dark:[color-scheme:dark] rounded-lg px-2 py-2 text-sm outline-none focus:border-brand"
                       >
                         <option value="Inter, sans-serif">Sans</option>
                         <option value="'Playfair Display', serif">Serif</option>
@@ -266,7 +267,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
                       <select
                         value={layers.find((l) => l.id === selectedId)?.borderRadius}
                         onChange={(e) => updateLayer(selectedId, { borderRadius: e.target.value })}
-                        className="w-full border border-surface-border rounded-lg px-2 py-2 text-sm outline-none focus:border-brand"
+                        className="w-full border border-surface-border dark:border-white/15 dark:bg-[#1A1A22] dark:text-white dark:[color-scheme:dark] rounded-lg px-2 py-2 text-sm outline-none focus:border-brand"
                       >
                         <option value="0%">Square</option>
                         <option value="50%">Circle</option>
@@ -279,7 +280,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
           )}
         </div>
 
-        <div className="p-6 border-t border-surface-border bg-white mt-auto">
+        <div className="p-6 border-t border-surface-border dark:border-white/10 bg-white dark:bg-[#1A1A22] mt-auto">
           <button
             onClick={handleSave}
             disabled={saving || layers.length === 0}
@@ -304,7 +305,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
       </div>
 
       {/* Canvas Area */}
-      <div className="flex-1 bg-surface-secondary flex items-center justify-center p-4 md:p-12 overflow-hidden relative" onClick={() => setSelectedId(null)}>
+      <div className="flex-1 bg-surface-secondary dark:bg-[#0D0D12] flex items-center justify-center p-4 md:p-12 overflow-hidden relative" onClick={() => setSelectedId(null)}>
         <div
           ref={containerRef}
           className="relative w-full max-w-2xl aspect-square md:aspect-[4/3] bg-white rounded-3xl shadow-card overflow-hidden"
@@ -367,6 +368,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

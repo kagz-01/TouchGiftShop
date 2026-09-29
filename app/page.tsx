@@ -234,15 +234,15 @@ export default async function HomePage() {
       <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-10" delay={0}>
         <Link
           href="/shop"
-          className="group block bg-white border-2 border-surface-border hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"
+          className="group block bg-white dark:bg-white/[0.04] border-2 border-surface-border dark:border-white/10 hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"
         >
           <div className="flex items-center justify-center gap-3">
             <ShoppingBag className="w-6 h-6 text-brand group-hover:scale-110 transition-transform duration-300" />
             <div>
               <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">Browse All 200+ Gifts</p>
-              <p className="text-xs text-brand-muted">Across 30+ curated categories — something for everyone</p>
+              <p className="text-xs text-brand-muted dark:text-white/60">Across 30+ curated categories — something for everyone</p>
             </div>
-            <svg className="w-5 h-5 text-brand-muted group-hover:text-brand group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5 text-brand-muted dark:text-white/60 group-hover:text-brand group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>

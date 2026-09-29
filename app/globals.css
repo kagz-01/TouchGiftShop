@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── GLOBAL MOOD TRANSITION ──────────────────────────────────────────────────
+   Smooth the brand color and background shifts when mood changes.
+   ──────────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow, fill, stroke;
+  transition-duration: 600ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* But keep animations and transforms instant so they aren't sluggish */
+*, *::before, *::after {
+  transition-property: none;
+}
+/* Selective transitions only on semantic elements that respond to mood */
+body, header, nav, section, article, aside, footer,
+.card-theme, .bento-card-theme, .btn, button, a,
+[class*="bg-brand"], [class*="text-brand"], [class*="border-brand"] {
+  transition: background-color 600ms cubic-bezier(0.4,0,0.2,1),
+              border-color 600ms cubic-bezier(0.4,0,0.2,1),
+              color 400ms cubic-bezier(0.4,0,0.2,1),
+              box-shadow 600ms cubic-bezier(0.4,0,0.2,1);
+}
+
 /* ========================
    THEME TOKENS
    ======================== */
@@ -23,6 +45,9 @@
   --accent-color:    #E8A0C8;
   --link-color:      #FF80C0;
   --muted-color:     rgba(255, 190, 220, 0.6);
+
+  /* Hero CTA label on top of --mood-gradient (see StorytellingHome) */
+  --mood-on-gradient: #1A0A10;
 }
 
 /* LIGHT MODE (default) — warm cream palette */
@@ -32,6 +57,9 @@
   --bg-section-alt: #FFF9F2;
   --surface:        rgba(255, 255, 255, 0.5);
   --surface-border: rgba(155, 27, 90, 0.08);
+  /* Sticky header fill — Header.tsx reads these directly */
+  --header-bg:          rgba(255, 255, 255, 0.90);
+  --header-bg-scrolled: rgba(255, 255, 255, 0.97);
   --text-primary:   #1A000A;
   --text-muted:     #6D5B64;
   --card-bg:        rgba(255, 255, 255, 0.72);
@@ -54,6 +82,8 @@
   --bg-section-alt: #121217;
   --surface:        rgba(255, 255, 255, 0.04);
   --surface-border: rgba(255, 255, 255, 0.08);
+  --header-bg:          rgba(18, 18, 23, 0.92);
+  --header-bg-scrolled: rgba(18, 18, 23, 0.98);
   --text-primary:   #FFFFFF;
   --text-muted:     rgba(255, 255, 255, 0.65);
   --card-bg:        rgba(30, 10, 40, 0.15);
@@ -86,6 +116,8 @@
   --card-hover-shadow: 0 20px 60px rgba(194, 24, 91, 0.22), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(233, 30, 99, 0.35);
   --mood-gradient:     linear-gradient(135deg, #C2185B, #E91E63, #FF4081);
+  --mood-gradient-text: linear-gradient(135deg, #F48FB1, #FCE4EC);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(255, 20, 100, 0.04);
   --mood-particle:     #FF80AB;
 }
@@ -113,6 +145,8 @@
   --card-hover-shadow: 0 20px 60px rgba(0, 121, 107, 0.22), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(0, 137, 123, 0.35);
   --mood-gradient:     linear-gradient(135deg, #004D40, #00796B, #4DB6AC);
+  --mood-gradient-text: linear-gradient(135deg, #4DB6AC, #B2DFDB);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(0, 150, 136, 0.04);
   --mood-particle:     #80CBC4;
 }
@@ -165,6 +199,8 @@
   --card-hover-shadow: 0 20px 60px rgba(32, 58, 67, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(212, 175, 55, 0.25); /* Gold glow */
   --mood-gradient:     linear-gradient(135deg, #0F2027, #203A43, #2C5364);
+  --mood-gradient-text: linear-gradient(135deg, #D4AF37, #F3E3B3);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(32, 58, 67, 0.05);
   --mood-particle:     #D4AF37;
 }
@@ -191,6 +227,8 @@
   --card-hover-shadow: 0 20px 60px rgba(65, 90, 119, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(224, 225, 221, 0.25);
   --mood-gradient:     linear-gradient(135deg, #0D1B2A, #1B263B, #415A77);
+  --mood-gradient-text: linear-gradient(135deg, #9FB8D6, #E3EDF7);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(65, 90, 119, 0.05);
   --mood-particle:     #E0E1DD;
 }
@@ -217,6 +255,8 @@
   --card-hover-shadow: 0 20px 60px rgba(45, 90, 76, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(229, 193, 88, 0.25);
   --mood-gradient:     linear-gradient(135deg, #0F1F19, #1C372D, #2D5A4C);
+  --mood-gradient-text: linear-gradient(135deg, #81C784, #D7F2E3);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(45, 90, 76, 0.05);
   --mood-particle:     #E5C158;
 }
@@ -243,6 +283,8 @@
   --card-hover-shadow: 0 20px 60px rgba(42, 59, 82, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
   --mood-glow:         rgba(46, 204, 113, 0.25);
   --mood-gradient:     linear-gradient(135deg, #0E141E, #192231, #2A3B52);
+  --mood-gradient-text: linear-gradient(135deg, #A5B8D0, #E1EAF5);
+  --mood-on-gradient:   #FFFFFF;
   --mood-bg-tint:      rgba(42, 59, 82, 0.05);
   --mood-particle:     #2ECC71;
 }
@@ -256,6 +298,114 @@
 [data-mood="corp_welcome"][data-theme="dark"] {
   --bg-base: #0B0E16;
   --card-bg: rgba(42, 59, 82, 0.15);
+}
+
+/* 🌹 FLOWERS — blush rose, petal pink, garden romance */
+[data-mood="flowers"] {
+  --color-brand:       #AD1457;
+  --color-brand-light: #E91E8C;
+  --color-brand-dark:  #6A0F3A;
+  --color-gold:        #F8BBD9;
+  --color-gold-light:  #FCE4EC;
+  --card-border:       rgba(173, 20, 87, 0.18);
+  --card-hover-shadow: 0 20px 60px rgba(173, 20, 87, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(233, 30, 140, 0.35);
+  --mood-gradient:     linear-gradient(135deg, #6A0F3A, #AD1457, #E91E8C, #F48FB1);
+  --mood-gradient-text: linear-gradient(135deg, #F48FB1, #FCE4EC);
+  --mood-on-gradient:  #FFFFFF;
+  --mood-bg-tint:      rgba(233, 30, 140, 0.04);
+  --mood-particle:     #F48FB1;
+}
+[data-mood="flowers"]:not([data-theme="dark"]) {
+  --bg-base:        #FFF5F9;
+  --bg-section-alt: #FDEEF5;
+  --heading-color:  #6A0F3A;
+  --accent-color:   #AD1457;
+}
+[data-mood="flowers"][data-theme="dark"] {
+  --bg-base: #140008;
+  --card-bg: rgba(100, 10, 50, 0.10);
+}
+
+/* 🥂 LIQUOR — deep bourbon amber, cognac, celebration gold */
+[data-mood="liquor"] {
+  --color-brand:       #8B4513;
+  --color-brand-light: #C1690D;
+  --color-brand-dark:  #4A2409;
+  --color-gold:        #D4A853;
+  --color-gold-light:  #F0C96E;
+  --card-border:       rgba(139, 69, 19, 0.22);
+  --card-hover-shadow: 0 20px 60px rgba(193, 105, 13, 0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+  --mood-glow:         rgba(212, 168, 83, 0.40);
+  --mood-gradient:     linear-gradient(135deg, #4A2409, #8B4513, #C1690D, #D4A853);
+  --mood-gradient-text: linear-gradient(135deg, #D4A853, #F0D080);
+  --mood-on-gradient:  #FFFFFF;
+  --mood-bg-tint:      rgba(139, 69, 19, 0.05);
+  --mood-particle:     #D4A853;
+}
+[data-mood="liquor"]:not([data-theme="dark"]) {
+  --bg-base:        #FDFAF4;
+  --bg-section-alt: #F5EDD9;
+  --heading-color:  #3E1A06;
+  --accent-color:   #8B4513;
+}
+[data-mood="liquor"][data-theme="dark"] {
+  --bg-base: #0E0702;
+  --card-bg: rgba(80, 40, 5, 0.12);
+}
+
+/* ✨ PERFUMES — luxe noir, velvet orchid, soft amber silk */
+[data-mood="perfumes"] {
+  --color-brand:       #4A148C;
+  --color-brand-light: #7B1FA2;
+  --color-brand-dark:  #2A0059;
+  --color-gold:        #CE93D8;
+  --color-gold-light:  #F3E5F5;
+  --card-border:       rgba(74, 20, 140, 0.20);
+  --card-hover-shadow: 0 20px 60px rgba(123, 31, 162, 0.28), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(123, 31, 162, 0.38);
+  --mood-gradient:     linear-gradient(135deg, #2A0059, #4A148C, #7B1FA2, #CE93D8);
+  --mood-gradient-text: linear-gradient(135deg, #CE93D8, #F3E5F5);
+  --mood-on-gradient:  #FFFFFF;
+  --mood-bg-tint:      rgba(74, 20, 140, 0.04);
+  --mood-particle:     #CE93D8;
+}
+[data-mood="perfumes"]:not([data-theme="dark"]) {
+  --bg-base:        #FDF5FF;
+  --bg-section-alt: #F3E5F5;
+  --heading-color:  #2A0059;
+  --accent-color:   #7B1FA2;
+}
+[data-mood="perfumes"][data-theme="dark"] {
+  --bg-base: #0C0014;
+  --card-bg: rgba(60, 10, 100, 0.12);
+}
+
+/* 🧺 HAMPERS — earthy warmth, harvest gold, abundant green */
+[data-mood="hampers"] {
+  --color-brand:       #558B2F;
+  --color-brand-light: #7CB342;
+  --color-brand-dark:  #33691E;
+  --color-gold:        #D4A853;
+  --color-gold-light:  #F0C96E;
+  --card-border:       rgba(85, 139, 47, 0.20);
+  --card-hover-shadow: 0 20px 60px rgba(124, 179, 66, 0.25), inset 0 1px 0 rgba(255,255,255,0.1);
+  --mood-glow:         rgba(124, 179, 66, 0.32);
+  --mood-gradient:     linear-gradient(135deg, #33691E, #558B2F, #8BC34A, #D4A853);
+  --mood-gradient-text: linear-gradient(135deg, #D4A853, #AED581);
+  --mood-on-gradient:  #FFFFFF;
+  --mood-bg-tint:      rgba(85, 139, 47, 0.04);
+  --mood-particle:     #AED581;
+}
+[data-mood="hampers"]:not([data-theme="dark"]) {
+  --bg-base:        #F6FFF0;
+  --bg-section-alt: #F1F8E9;
+  --heading-color:  #1B5E20;
+  --accent-color:   #558B2F;
+}
+[data-mood="hampers"][data-theme="dark"] {
+  --bg-base: #080F04;
+  --card-bg: rgba(40, 70, 15, 0.12);
 }
 
 /* Mood-aware hover glows (overrides card-theme hover) */

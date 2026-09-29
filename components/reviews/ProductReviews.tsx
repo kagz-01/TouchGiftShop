@@ -47,12 +47,12 @@ export default function ProductReviews({
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h2 className="font-display text-2xl font-bold text-brand-deep">
+          <h2 className="font-display text-2xl font-bold text-brand-deep dark:text-white">
             Customer Reviews
           </h2>
           {stats.totalReviews > 0 && (
             <div className="flex items-center gap-3 mt-2">
-              <span className="text-3xl font-bold text-brand-deep">
+              <span className="text-3xl font-bold text-brand-deep dark:text-white">
                 {stats.averageRating}
               </span>
               <StarRating rating={Math.round(stats.averageRating)} size="md" />

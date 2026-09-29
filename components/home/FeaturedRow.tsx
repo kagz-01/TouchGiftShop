@@ -52,9 +52,9 @@ export default function FeaturedRow({
 
   const tintClass =
     tint === "warm"
-      ? "bg-blush/30"
+      ? "bg-blush/30 dark:bg-brand/10"
       : tint === "cool"
-      ? "bg-surface-secondary"
+      ? "bg-surface-secondary dark:bg-white/5"
       : "";
 
   return (
@@ -77,7 +77,7 @@ export default function FeaturedRow({
         <div>
           <h2 className="font-display text-xl md:text-3xl font-bold">{title}</h2>
           {subtitle && (
-            <p className="text-sm text-brand-muted mt-1">{subtitle}</p>
+            <p className="text-sm text-brand-muted dark:text-white/70 mt-1">{subtitle}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
