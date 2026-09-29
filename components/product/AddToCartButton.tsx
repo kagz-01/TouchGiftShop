@@ -306,7 +306,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                   ) : (
                     <>
                       <ShoppingCart className="w-4 h-4" />
-                      Add to Cart
+                      Add to Bag
                     </>
                   )}
                 </button>
@@ -315,7 +315,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                   onClick={handleBuyNow}
                   className="flex-1 py-3 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-sm rounded-xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all"
                 >
-                  Buy Now →
+                  Send Now →
                 </button>
               </div>
             </div>

@@ -323,10 +323,10 @@ export default function MegaMenu() {
               onClick={() => setActiveMenu(isActive ? null : item.id)}
               className={`relative flex items-center gap-1 text-[13px] font-bold tracking-wide transition-all duration-200 select-none group ${
                 isActive
-                  ? "text-brand"
+                  ? "text-brand dark:text-brand-light"
                   : item.highlight
-                  ? "text-brand hover:text-brand-dark"
-                  : "text-theme-heading hover:text-brand"
+                  ? "text-brand dark:text-brand-light hover:text-brand-dark dark:hover:text-white"
+                  : "text-theme-heading hover:text-brand dark:hover:text-brand-light"
               }`}
             >
               {item.label}

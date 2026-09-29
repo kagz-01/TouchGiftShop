@@ -159,45 +159,70 @@ export default function ShopFilterBar() {
         boxShadow: "var(--card-shadow)",
       }}
     >
-      {/* ── CATEGORY TABS ── */}
-      <div className="relative mb-4 pb-4" style={{ borderBottom: "1px solid var(--surface-border)" }}>
-        <div className="flex items-center gap-2 mb-2 px-1">
+      {/* ── CATEGORY TABS (Premium Cards) ── */}
+      <div className="relative mb-6 pb-6" style={{ borderBottom: "1px solid var(--surface-border)" }}>
+        <div className="flex items-center gap-2 mb-4 px-1">
           <Sparkles className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
           <h3 className="text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Shop by Category</h3>
         </div>
 
         {canScrollLeft && (
-          <div className="absolute left-0 top-6 bottom-0 w-12 bg-gradient-to-r from-black/20 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-10 bottom-0 w-16 bg-gradient-to-r from-black/20 to-transparent z-10 pointer-events-none" />
         )}
         {canScrollRight && (
-          <div className="absolute right-0 top-6 bottom-0 w-12 bg-gradient-to-l from-black/20 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-10 bottom-0 w-16 bg-gradient-to-l from-black/20 to-transparent z-10 pointer-events-none" />
         )}
 
         <div
           ref={scrollRef}
-          className="flex gap-2 overflow-x-auto scrollbar-hide -mx-2 px-2 pb-1"
+          className="flex gap-3 overflow-x-auto scrollbar-hide -mx-2 px-2 pb-2"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          {[{ slug: "", name: "All Gifts", count: 0 }, ...categories].map((cat) => (
-            <button
-              key={cat.slug}
-              onClick={() => setCategory(cat.slug)}
-              className={cn(
-                "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-200 shrink-0",
-                activeCategory === cat.slug ? "bg-brand text-white shadow-ribbon" : ""
-              )}
-              style={activeCategory !== cat.slug ? {
-                background: "var(--surface)",
-                color: "var(--text-muted)",
-                border: "1px solid var(--card-border)",
-              } : undefined}
-            >
-              <div className="flex items-center justify-center shrink-0">
-                {categoryIcon(cat.slug)}
-              </div>
-              {cat.name}
-            </button>
-          ))}
+          {/* Inject focus categories. If count is 0, they say Coming Soon */}
+          {[
+            { slug: "", name: "All Gifts", count: 1 },
+            ...categories.filter(c => ["perfumes", "gift-sets"].includes(c.slug)),
+            { slug: "flowers", name: "Flowers", count: categories.find(c => c.slug === "flowers")?.count || 0 },
+            { slug: "drinks", name: "Drinks & Spirits", count: categories.find(c => c.slug === "drinks")?.count || 0 },
+            { slug: "fruits", name: "Fruit Hampers", count: categories.find(c => c.slug === "fruits")?.count || 0 },
+            { slug: "apparel", name: "Wearables", count: categories.find(c => c.slug === "apparel")?.count || 0 },
+            ...categories.filter(c => !["perfumes", "gift-sets", "flowers", "drinks", "fruits", "apparel"].includes(c.slug)),
+          ].map((cat) => {
+            const isComingSoon = cat.count === 0 && cat.slug !== "";
+            const isActive = activeCategory === cat.slug;
+            
+            return (
+              <button
+                key={cat.slug || 'all'}
+                onClick={() => !isComingSoon && setCategory(cat.slug)}
+                disabled={isComingSoon}
+                className={cn(
+                  "relative flex flex-col items-center justify-center gap-2 w-[100px] h-[90px] rounded-2xl text-sm font-semibold transition-all duration-300 shrink-0 border",
+                  isActive ? "bg-brand border-brand text-white shadow-ribbon scale-105" : "bg-white/50 hover:bg-white dark:bg-black/20 dark:hover:bg-black/40 border-black/10 dark:border-white/10 hover:border-brand/40",
+                  isComingSoon ? "opacity-60 grayscale cursor-not-allowed" : ""
+                )}
+                style={(!isActive && !isComingSoon) ? {
+                  color: "var(--heading-color)",
+                } : undefined}
+              >
+                <div className={cn(
+                  "flex items-center justify-center w-10 h-10 rounded-full",
+                  isActive ? "bg-white/20" : "bg-brand/5 text-brand"
+                )}>
+                  {categoryIcon(cat.slug)}
+                </div>
+                <span className="text-[11px] text-center leading-tight px-1">
+                  {cat.name}
+                </span>
+                
+                {isComingSoon && (
+                  <span className="absolute -top-2 bg-black text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
+                    Soon
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 

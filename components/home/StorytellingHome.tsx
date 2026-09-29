@@ -404,170 +404,130 @@ export function HeroCinematic() {
    SECTION 2: THE PROBLEM — 4 compact cards, each with a
    looping mini-scene that only runs while on screen.
    ══════════════════════════════════════════════════════════ */
-function useActiveScene() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => setOn(e.isIntersecting), { threshold: 0.3 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return { ref, on };
-}
 
-const SCENE =
-  "relative h-[84px] rounded-xl overflow-hidden flex-none bg-brand/[0.07] dark:bg-white/[0.06]";
+const DILEMMA_SCENE = "relative h-[140px] rounded-xl overflow-hidden flex-none bg-gradient-to-br from-brand/[0.04] to-gold/[0.03] dark:from-brand/[0.08] dark:to-gold/[0.05] flex items-center justify-center";
 
-/* 1 — Racing clock: sweeping arc, spinning hands, courier on a filling road */
+/* 1 — The Racing Clock */
 function ClockScene() {
-  const etaRef = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const el = etaRef.current;
-    if (!el) return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = (t: number) => {
-      const p = ((t - start) % 5000) / 5000;
-      const left = Math.max(0, Math.round(92 * (1 - p)));
-      el.textContent = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
-    <div className="gd-clock relative h-[84px] rounded-xl overflow-hidden flex-none bg-brand-deep dark:bg-[#08080C]">
-      <span
-        ref={etaRef}
-        className="gd-eta absolute right-2.5 top-2.5 text-[11px] font-semibold tracking-wide text-[#F3C9BD]"
-      >
-        1:32
-      </span>
-      <svg className="gd-clockface absolute left-2.5 top-2.5" width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden>
-        <circle cx="18" cy="18" r="14" stroke="rgba(255,255,255,0.18)" strokeWidth="2" />
-        <circle
-          className="gd-arc text-brand"
-          cx="18" cy="18" r="14"
-          stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-          transform="rotate(-90 18 18)"
-        />
-        <line className="gd-hand1" x1="18" y1="18" x2="18" y2="8" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
-        <line className="gd-hand2 text-brand" x1="18" y1="18" x2="25" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <div className={DILEMMA_SCENE}>
+      <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
+        <path d="M 0 110 Q 90 140 180 110" fill="none" stroke="rgba(0,0,0,0.1)" strokeWidth="12" />
+        <path d="M 0 110 Q 90 140 180 110" fill="none" stroke="#9B1B5A" strokeWidth="2" strokeDasharray="6 6" className="gd-road-svg" />
+        <circle cx="90" cy="60" r="30" fill="white" stroke="#9B1B5A" strokeWidth="3" />
+        <circle cx="90" cy="60" r="26" fill="url(#clockGrad)" />
+        <line x1="90" y1="60" x2="90" y2="40" stroke="#9B1B5A" strokeWidth="3" strokeLinecap="round" className="gd-hand1-svg" />
+        <line x1="90" y1="60" x2="105" y2="60" stroke="#D4A853" strokeWidth="3" strokeLinecap="round" className="gd-hand2-svg" />
+        <circle cx="90" cy="60" r="4" fill="#9B1B5A" />
+        <text x="20" y="115" fontSize="26" className="gd-scooter-svg">🛵</text>
+        <defs>
+          <linearGradient id="clockGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#fff" />
+            <stop offset="100%" stopColor="#fdf8f9" />
+          </linearGradient>
+        </defs>
       </svg>
-      <div className="gd-road">
-        <i className="gd-dash" />
-        <span className="gd-rider">🛵</span>
-      </div>
     </div>
   );
 }
 
-/* 2 — Uninspired choices: a conveyor of filler, one star picked out of it */
+/* 2 — Uninspired Choices */
 function PickScene() {
   return (
-    <div className={`${SCENE} gd-pick flex items-center`}>
-      <div className="gd-beltwrap">
-        <div className="gd-belt">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <span key={i} className="gd-dot bg-brand/20 dark:bg-white/15" />
-          ))}
-        </div>
-      </div>
-      <div className="gd-star">
-        <span className="text-white text-[15px] leading-none">✦</span>
-      </div>
-      <span className="gd-spark gd-sp1 text-brand">✦</span>
-      <span className="gd-spark gd-sp2 text-brand">✦</span>
-    </div>
-  );
-}
-
-/* 3 — Logistical headaches: pin drop on a route that draws itself */
-function LogisticsScene({ step }: { step: number }) {
-  return (
-    <div className={SCENE}>
-      <span className={`gd-tick absolute left-2.5 top-2 items-center gap-1 text-[10px] font-semibold text-brand ${step >= 1 ? "is-on" : ""}`}>
-        📍 Address received
-      </span>
-      <svg width="100%" height="100%" viewBox="0 0 220 84" preserveAspectRatio="xMidYMid meet" aria-hidden>
-        <circle cx="16" cy="60" r="4" className="text-brand" fill="currentColor" />
-        <path
-          d="M16 60C60 60 60 26 110 32S170 54 196 42"
-          className={`gd-mline text-brand ${step >= 2 ? "is-on" : ""}`}
-          stroke="currentColor" strokeWidth="2" fill="none" strokeDasharray="5 6"
-        />
-        <circle className={`gd-rip text-brand ${step >= 3 ? "is-on" : ""}`} cx="196" cy="42" r="7" fill="none" stroke="currentColor" strokeWidth="1.3" />
-        <g className={`gd-pin text-brand ${step >= 1 ? "is-on" : ""}`}>
-          <path d="M196 42c-7-9-9-13-9-18a9 9 0 0 1 18 0c0 5-2 9-9 18z" fill="currentColor" />
-          <circle cx="196" cy="24" r="3" fill="#fff" />
+    <div className={DILEMMA_SCENE}>
+      <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
+        <rect x="0" y="100" width="180" height="6" fill="rgba(0,0,0,0.1)" />
+        <g className="gd-boxes-svg">
+          <rect x="20" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
+          <rect x="60" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
+          <rect x="100" y="65" width="36" height="36" rx="6" fill="url(#brandGrad)" filter="url(#glow)" className="gd-perfect-svg" />
+          <path d="M 118 65 L 118 101" stroke="white" strokeWidth="2" opacity="0.5" className="gd-perfect-svg" />
+          <path d="M 100 83 L 136 83" stroke="white" strokeWidth="2" opacity="0.5" className="gd-perfect-svg" />
+          <rect x="146" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
+          <rect x="186" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
         </g>
+        <text x="135" y="60" fontSize="16" className="gd-sparkle-svg">✨</text>
+        <defs>
+          <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#9B1B5A" />
+            <stop offset="100%" stopColor="#D4A853" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
       </svg>
     </div>
   );
 }
 
-/* 4 — Unexpected costs: a receipt that adds up to exactly what you saw */
-function CostScene({ step }: { step: number }) {
+/* 3 — Logistical Headaches */
+function LogisticsScene() {
   return (
-    <div className={`${SCENE} gd-cost flex flex-col justify-center gap-[5px] px-3.5`}>
-      <div className="flex justify-between text-[10.5px] text-theme-muted tabular-nums">
-        <span>Gift</span><span>KES 2,500</span>
-      </div>
-      <div className={`gd-fee flex justify-between text-[10.5px] text-theme-muted tabular-nums ${step >= 1 ? "is-on" : ""}`}>
-        <span>Delivery</span><span>KES 300</span>
-      </div>
-      <div className={`gd-fee flex justify-between text-[10.5px] text-theme-muted tabular-nums gd-strike ${step >= 2 ? "is-on" : ""}`}>
-        <span>Hidden fee</span><span>KES 0</span>
-      </div>
-      <div className="flex justify-between text-[10.5px] font-bold text-theme-heading tabular-nums border-t border-black/10 dark:border-white/10 pt-[5px] mt-px">
-        <span>Total</span>
-        <span>
-          KES {(step >= 1 ? 2800 : 2500).toLocaleString("en-KE")}{" "}
-          <b className={`gd-check text-[#1B8A4E] ${step >= 2 ? "is-on" : ""}`}>✓</b>
-        </span>
-      </div>
+    <div className={DILEMMA_SCENE}>
+      <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
+        <path d="M 30 70 Q 50 20, 80 80 T 120 40 T 150 70" fill="none" stroke="#ccc" strokeWidth="2" strokeDasharray="4 4" className="gd-chaos-svg" />
+        <path d="M 30 70 Q 90 20 150 70" fill="none" stroke="#9B1B5A" strokeWidth="3" strokeDasharray="140" className="gd-smooth-svg" />
+        <text x="30" y="80" textAnchor="middle" fontSize="24">🏠</text>
+        <text x="150" y="80" textAnchor="middle" fontSize="24">🎁</text>
+        <text x="150" y="45" textAnchor="middle" fontSize="24" className="gd-mappin-svg">📍</text>
+      </svg>
     </div>
   );
 }
 
+/* 4 — Unexpected Costs */
+function CostScene() {
+  return (
+    <div className={DILEMMA_SCENE}>
+      <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
+        <g className="gd-receipt-svg">
+          <rect x="50" y="30" width="80" height="90" fill="white" filter="url(#shadow3)" />
+          <path d="M 50 120 L 55 115 L 60 120 L 65 115 L 70 120 L 75 115 L 80 120 L 85 115 L 90 120 L 95 115 L 100 120 L 105 115 L 110 120 L 115 115 L 120 120 L 125 115 L 130 120" fill="white" />
+          <rect x="60" y="45" width="40" height="4" fill="#ccc" rx="2" />
+          <rect x="110" y="45" width="10" height="4" fill="#ccc" rx="2" />
+          <rect x="60" y="60" width="30" height="4" fill="#ccc" rx="2" />
+          <rect x="110" y="60" width="10" height="4" fill="#ccc" rx="2" />
+          <line x1="60" y1="75" x2="120" y2="75" stroke="#eee" strokeWidth="2" />
+          <rect x="60" y="85" width="20" height="6" fill="#221512" rx="2" />
+          <rect x="100" y="85" width="20" height="6" fill="#221512" rx="2" className="gd-total-svg" />
+        </g>
+        <g className="gd-stamp-svg">
+          <rect x="35" y="55" width="110" height="30" rx="4" fill="none" stroke="#22c55e" strokeWidth="3" transform="rotate(-15 90 70)" />
+          <text x="90" y="76" textAnchor="middle" fill="#22c55e" fontSize="13" fontWeight="800" letterSpacing="1" transform="rotate(-15 90 70)">NO HIDDEN FEES</text>
+        </g>
+        <defs>
+          <filter id="shadow3">
+            <feDropShadow dx="0" dy="4" stdDeviation="4" floodOpacity="0.1"/>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+  );
+}
 function DilemmaCard({
   title, desc, delay, children,
 }: { title: string; desc: string; delay: number; children: React.ReactNode }) {
   return (
     <Reveal delay={delay} className="h-full">
-      <div className="gd-card card-theme shape-premium-card flex h-full flex-col gap-3.5 overflow-hidden p-4 pb-5 transition-transform duration-500 hover:-translate-y-1.5">
+      <div className="gd-card card-theme shape-premium-card group flex h-full flex-col gap-3.5 overflow-hidden p-4 pb-5 transition-transform duration-500 hover:-translate-y-1.5">
         {children}
-        <h3 className="font-display text-lg font-bold leading-snug text-theme-heading">{title}</h3>
-        <p className="text-[13px] leading-relaxed text-theme-body">{desc}</p>
+        <h3 className="font-display text-[17px] font-bold leading-snug text-theme-heading">{title}</h3>
+        <p className="text-[12.5px] leading-relaxed text-theme-body">{desc}</p>
       </div>
     </Reveal>
   );
 }
 
 export function ProblemSection() {
-  const { ref, on } = useActiveScene();
-  const [logiStep, setLogiStep] = useState(0);
-  const [costStep, setCostStep] = useState(0);
-
-  useEffect(() => {
-    if (!on) return;
-    const id = setInterval(() => setLogiStep((s) => (s + 1) % 4), 1200);
-    return () => clearInterval(id);
-  }, [on]);
-
-  useEffect(() => {
-    if (!on) return;
-    const id = setInterval(() => setCostStep((s) => (s + 1) % 4), 1000);
-    return () => clearInterval(id);
-  }, [on]);
-
   return (
     <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        <div className="text-center max-w-2xl mx-auto mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-6">
           <Reveal>
             <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
               The Gifting Dilemma
@@ -579,18 +539,14 @@ export function ProblemSection() {
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <div className="w-10 h-px bg-gold/70 mx-auto mb-6" />
-            <p className="text-theme-body text-lg italic leading-relaxed">
+            <div className="w-10 h-px bg-gold/70 mx-auto mb-6 mt-4" />
+            <p className="text-theme-body text-[15px] italic leading-relaxed">
               You want it to mean something. It shouldn&apos;t take all afternoon.
             </p>
           </Reveal>
         </div>
 
-        <div
-          ref={ref}
-          data-on={on ? "1" : "0"}
-          className="gd grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5"
-        >
+        <div className="gd grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <DilemmaCard
             delay={0}
             title="The Racing Clock"
@@ -612,7 +568,7 @@ export function ProblemSection() {
             title="Logistical Headaches"
             desc="No address? We can coordinate discreetly with your recipient."
           >
-            <LogisticsScene step={logiStep} />
+            <LogisticsScene />
           </DilemmaCard>
 
           <DilemmaCard
@@ -620,157 +576,97 @@ export function ProblemSection() {
             title="Unexpected Costs"
             desc="Clear pricing and transparent delivery from the start."
           >
-            <CostScene step={costStep} />
+            <CostScene />
           </DilemmaCard>
         </div>
       </div>
 
       <style jsx global>{`
-        /* idle the whole block when it scrolls out of view */
-        .gd[data-on="0"] * { animation-play-state: paused !important; }
-
-        .gd-card { min-height: 250px; }
-
         /* ── 1 · clock ── */
-        .gd-arc {
-          stroke-dasharray: 82;
-          stroke-dashoffset: 82;
-          animation: gd-arcfill 5s linear infinite;
-        }
-        .gd-hand1, .gd-hand2 {
-          transform-box: view-box;
-          transform-origin: 18px 18px;
-        }
-        .gd-hand1 { animation: gd-spin 5s linear infinite; }
-        .gd-hand2 { animation: gd-spin 1.4s linear infinite; }
-        .gd-road {
-          position: absolute;
-          left: 52px;
-          right: 10px;
-          bottom: 16px;
-          height: 2px;
-        }
-        .gd-road::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: rgba(255, 255, 255, 0.18);
-          border-radius: 2px;
-        }
-        .gd-dash {
-          position: absolute;
-          left: 0;
-          top: 0;
-          height: 2px;
-          width: 0;
-          background: #9B1B5A;
-          border-radius: 2px;
-          animation: gd-fillw 5s ease-in-out infinite;
-        }
-        .gd-rider {
-          position: absolute;
-          bottom: -1px;
-          left: 0;
-          font-size: 15px;
-          transform: scaleX(-1);
-          animation: gd-ride 5s ease-in-out infinite;
-        }
-        @keyframes gd-arcfill { to { stroke-dashoffset: 0; } }
+        .gd-road-svg { stroke-dashoffset: 0; }
+        .group:hover .gd-road-svg { animation: gd-road-anim 2s linear infinite; }
+        @keyframes gd-road-anim { to { stroke-dashoffset: -24; } }
+
+        .gd-hand1-svg { transform-origin: 90px 60px; transform: rotate(0deg); }
+        .group:hover .gd-hand1-svg { animation: gd-spin 3s linear infinite; }
+
+        .gd-hand2-svg { transform-origin: 90px 60px; transform: rotate(0deg); }
+        .group:hover .gd-hand2-svg { animation: gd-spin 12s linear infinite; }
+
         @keyframes gd-spin { to { transform: rotate(360deg); } }
-        @keyframes gd-fillw { 0% { width: 0; } 82%, 100% { width: 100%; } }
-        @keyframes gd-ride { 0% { left: 0; } 82%, 100% { left: calc(100% - 15px); } }
+
+        .gd-scooter-svg { opacity: 1; transform: translateX(65px); }
+        .group:hover .gd-scooter-svg { animation: gd-scooter-anim 4s ease-in-out infinite; }
+        @keyframes gd-scooter-anim {
+          0% { opacity: 0; transform: translateX(-40px); }
+          20%, 80% { opacity: 1; transform: translateX(65px); }
+          100% { opacity: 0; transform: translateX(180px); }
+        }
 
         /* ── 2 · conveyor ── */
-        .gd-beltwrap {
-          position: absolute;
-          inset: 0;
-          overflow: hidden;
-          -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
-          mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+        .gd-boxes-svg { transform: translateX(-40px); }
+        .group:hover .gd-boxes-svg { animation: gd-belt-anim 4s ease-in-out infinite; }
+        @keyframes gd-belt-anim {
+          0% { transform: translateX(0); }
+          30%, 70% { transform: translateX(-40px); }
+          100% { transform: translateX(-80px); opacity: 0; }
         }
-        .gd-belt {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          height: 100%;
-          width: max-content;
-          animation: gd-belt 12s linear infinite;
+
+        .gd-perfect-svg { transform-origin: 118px 83px; transform: scale(1.1); }
+        .group:hover .gd-perfect-svg { animation: gd-perfect-anim 4s ease-in-out infinite; }
+        @keyframes gd-perfect-anim {
+          0% { transform: scale(1); }
+          30%, 70% { transform: scale(1.1); }
+          100% { transform: scale(1); }
         }
-        .gd-dot { width: 16px; height: 16px; border-radius: 5px; flex: none; }
-        .gd-star {
-          position: absolute;
-          left: 50%;
-          top: 52%;
-          width: 34px;
-          height: 34px;
-          border-radius: 10px;
-          background: #9B1B5A;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 8px 18px -6px rgba(155, 27, 90, 0.55);
-          animation: gd-pop 3s ease-in-out infinite;
+
+        .gd-sparkle-svg { opacity: 1; transform: scale(1); transform-origin: 143px 52px; }
+        .group:hover .gd-sparkle-svg { animation: gd-sparkle-anim 4s ease-in-out infinite; }
+        @keyframes gd-sparkle-anim {
+          0%, 25% { opacity: 0; transform: scale(0); }
+          35%, 65% { opacity: 1; transform: scale(1.3); }
+          75%, 100% { opacity: 0; transform: scale(0); }
         }
-        .gd-spark {
-          position: absolute;
-          font-size: 11px;
-          animation: gd-tw 1.2s ease-in-out infinite alternate;
-        }
-        .gd-sp1 { top: 12px; left: calc(50% + 20px); }
-        .gd-sp2 { bottom: 14px; left: calc(50% - 26px); animation-delay: 0.4s; }
-        @keyframes gd-belt { to { transform: translateX(-50%); } }
-        @keyframes gd-pop {
-          0%, 15% { transform: translate(-50%, -50%) scale(0.8) rotate(-6deg); }
-          35%, 80% { transform: translate(-50%, -50%) scale(1) rotate(0); }
-          100% { transform: translate(-50%, -50%) scale(0.8) rotate(-6deg); }
-        }
-        @keyframes gd-tw { to { transform: scale(1.5); opacity: 0.35; } }
 
         /* ── 3 · route ── */
-        .gd-mline { opacity: 0.3; transition: opacity 0.3s; }
-        .gd-mline.is-on { opacity: 1; animation: gd-march 0.8s linear infinite; }
-        .gd-pin {
-          opacity: 0;
-          transform: translateY(-14px) scale(0.7);
-          transform-box: view-box;
-          transform-origin: 196px 42px;
-          transition: opacity 0.4s, transform 0.4s cubic-bezier(0.3, 1.6, 0.4, 1);
-        }
-        .gd-pin.is-on { opacity: 1; transform: none; }
-        .gd-rip {
-          opacity: 0;
-          transform-box: view-box;
-          transform-origin: 196px 42px;
-        }
-        .gd-rip.is-on { animation: gd-rip 1.2s ease-out infinite; }
-        .gd-tick { display: flex; opacity: 0; transition: opacity 0.3s; }
-        .gd-tick.is-on { opacity: 1; }
-        @keyframes gd-march { to { stroke-dashoffset: -11; } }
-        @keyframes gd-rip {
-          0% { transform: scale(0.3); opacity: 0.7; }
-          100% { transform: scale(2.6); opacity: 0; }
+        .gd-chaos-svg { opacity: 0; }
+        .group:hover .gd-chaos-svg { animation: gd-chaos-anim 4s infinite; }
+        @keyframes gd-chaos-anim { 0%, 30% { opacity: 1; } 40%, 100% { opacity: 0; } }
+
+        .gd-smooth-svg { stroke-dashoffset: 0; }
+        .group:hover .gd-smooth-svg { animation: gd-smooth-anim 4s infinite; }
+        @keyframes gd-smooth-anim { 0%, 35% { stroke-dashoffset: 140; } 55%, 100% { stroke-dashoffset: 0; } }
+
+        .gd-mappin-svg { opacity: 1; transform: translateY(0); }
+        .group:hover .gd-mappin-svg { animation: gd-mappin-anim 4s infinite; }
+        @keyframes gd-mappin-anim {
+          0%, 55% { opacity: 0; transform: translateY(-20px); }
+          65% { opacity: 1; transform: translateY(0); }
+          75% { transform: translateY(-5px); }
+          85%, 100% { opacity: 1; transform: translateY(0); }
         }
 
         /* ── 4 · receipt ── */
-        .gd-fee { opacity: 0; transform: translateY(3px); transition: opacity 0.3s, transform 0.3s; }
-        .gd-fee.is-on { opacity: 1; transform: none; }
-        .gd-strike span:first-child { text-decoration: line-through; text-decoration-color: #9B1B5A; }
-        .gd-strike span:last-child { color: #9B1B5A; }
-        .gd-check { opacity: 0; transition: opacity 0.3s; }
-        .gd-check.is-on { opacity: 1; }
+        .gd-receipt-svg { transform: translateY(0); }
+        .group:hover .gd-receipt-svg { animation: gd-receipt-anim 4s ease-out infinite; }
+        @keyframes gd-receipt-anim {
+          0% { transform: translateY(60px); opacity: 0; }
+          15%, 85% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(-60px); opacity: 0; }
+        }
 
-        /* dark surfaces need a lifted rose — #9B1B5A only reaches ~2.4:1 there */
-        [data-theme="dark"] .gd-arc,
-        [data-theme="dark"] .gd-hand2,
-        [data-theme="dark"] .gd-pin,
-        [data-theme="dark"] .gd-rip,
-        [data-theme="dark"] .gd-mline,
-        [data-theme="dark"] .gd-spark,
-        [data-theme="dark"] .gd-tick,
-        [data-theme="dark"] .gd-strike span:last-child { color: #F9A8C8; }
-        [data-theme="dark"] .gd-dash,
-        [data-theme="dark"] .gd-star { background: #E86FA8; }
-        [data-theme="dark"] .gd-eta { color: #F9A8C8; }
+        .gd-total-svg { fill: #22c55e; }
+        .group:hover .gd-total-svg { animation: gd-total-anim 4s infinite; }
+        @keyframes gd-total-anim { 0%, 30% { fill: #221512; } 35%, 100% { fill: #22c55e; } }
+
+        .gd-stamp-svg { transform-origin: 90px 70px; opacity: 1; transform: scale(1); }
+        .group:hover .gd-stamp-svg { animation: gd-stamp-anim 4s infinite; }
+        @keyframes gd-stamp-anim {
+          0%, 40% { opacity: 0; transform: scale(2); }
+          50% { opacity: 1; transform: scale(0.9); }
+          55%, 90% { opacity: 1; transform: scale(1); }
+          100% { opacity: 0; transform: scale(1); }
+        }
 
         @media (prefers-reduced-motion: reduce) {
           .gd * { animation: none !important; }
@@ -786,61 +682,68 @@ export function ProblemSection() {
 export function SolutionSection() {
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
+  // Column A: alternates square → tall → square → tall
   const A = [
-    { src: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600", label: "Branded jerseys", t: "bulk", s: "aspect-[4/5]" },
-    { src: "https://images.unsplash.com/photo-1577903259929-79a61f2372d8?auto=format&fit=crop&q=80&w=600", label: "Client thank-you hamper", t: "corporate", s: "aspect-[4/3]" },
-    { src: "https://images.unsplash.com/photo-1582214959049-74d7561fbaac?auto=format&fit=crop&q=80&w=600", label: "Engraved desk piece", t: "solo", s: "aspect-square" },
-    { src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=600", label: "Team welcome set", t: "corporate", s: "aspect-[4/5]" }
+    { src: "https://images.unsplash.com/photo-1577903259929-79a61f2372d8?auto=format&fit=crop&q=80&w=800", label: "Client hamper", t: "corporate", tall: false },
+    { src: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800", label: "Branded jerseys", t: "bulk", tall: true },
+    { src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=800", label: "Team welcome set", t: "corporate", tall: false },
+    { src: "https://images.unsplash.com/photo-1582214959049-74d7561fbaac?auto=format&fit=crop&q=80&w=800", label: "Engraved desk piece", t: "solo", tall: true },
   ];
+  // Column B: offset — tall → square → tall → square
   const B = [
-    { src: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=600", label: "Staff appreciation boxes", t: "bulk", s: "aspect-[4/3]" },
-    { src: "https://images.unsplash.com/photo-1507960664917-8178e2eb0e57?auto=format&fit=crop&q=80&w=600", label: "Logo notebook and pen", t: "solo", s: "aspect-[4/5]" },
-    { src: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=600", label: "Executive gift set", t: "corporate", s: "aspect-square" },
-    { src: "https://images.unsplash.com/photo-1511268559489-34b624fbfcf5?auto=format&fit=crop&q=80&w=600", label: "Event giveaways", t: "bulk", s: "aspect-[4/3]" }
+    { src: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=800", label: "Staff appreciation boxes", t: "bulk", tall: true },
+    { src: "https://images.unsplash.com/photo-1507960664917-8178e2eb0e57?auto=format&fit=crop&q=80&w=800", label: "Logo notebook & pen", t: "solo", tall: false },
+    { src: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=800", label: "Executive gift set", t: "corporate", tall: true },
+    { src: "https://images.unsplash.com/photo-1511268559489-34b624fbfcf5?auto=format&fit=crop&q=80&w=800", label: "Event giveaways", t: "bulk", tall: false },
   ];
-  
   const N: Record<string, string> = { corporate: "Corporate gifting", bulk: "Bulk order", solo: "Solo branding" };
 
-  const renderCard = (g: any, i: number) => (
-    <div 
-      key={`${g.label}-${i}`} 
-      className={`bg-white dark:bg-black/20 border border-brand/10 dark:border-white/10 rounded-2xl p-2 pb-3 mb-4 transition-all duration-300 ${
-        activeTab && activeTab !== g.t ? "opacity-30 grayscale" : "opacity-100"
+  // Pixel heights drive the alternation — aspect-ratio doesn't work inside a fixed-height scroll column
+  const renderCard = (g: typeof A[0], i: number) => (
+    <div
+      key={`${g.label}-${i}`}
+      className={`rounded-2xl overflow-hidden mb-3 transition-all duration-500 ${
+        activeTab && activeTab !== g.t ? "opacity-20 grayscale" : "opacity-100"
       }`}
     >
-      <div className={`relative rounded-xl overflow-hidden bg-gradient-to-br from-brand/5 to-brand/20 ${g.s}`}>
+      <div
+        className="relative w-full overflow-hidden bg-gradient-to-br from-brand/10 to-brand/20"
+        style={{ height: g.tall ? "280px" : "190px" }}
+      >
         <img src={g.src} alt={g.label} className="absolute inset-0 w-full h-full object-cover" />
       </div>
-      <p className="mt-2.5 mx-1.5 text-[15px] font-semibold text-theme-heading">{g.label}</p>
-      <small className="block mx-1.5 text-[13px] text-brand font-medium">{N[g.t]}</small>
+      <div className="bg-white dark:bg-surface-elevated px-3 py-2.5 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
+        <p className="font-display font-semibold text-sm text-theme-heading">{g.label}</p>
+        <span className="text-[12px] text-brand font-medium">{N[g.t]}</span>
+      </div>
     </div>
   );
 
   return (
-    <section className="py-16 md:py-24 section-theme-c relative overflow-hidden min-h-[60vh] lg:min-h-[75vh] flex flex-col justify-center" id="corporate">
-      {/* Background accents */}
-      <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-gold/5 rounded-full blur-[100px] pointer-events-none" />
+    <section className="section-theme-c relative overflow-hidden py-16 md:py-20 min-h-[70vh] lg:min-h-[80vh] flex flex-col justify-center" id="corporate">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand/3 via-transparent to-gold/3 pointer-events-none" />
 
-      <div className="w-full max-w-[1180px] mx-auto px-6 grid grid-cols-1 md:grid-cols-[1.05fr_1fr] gap-10 md:gap-14 items-center relative z-10">
+      <div className="max-w-7xl mx-auto w-full px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-12 items-center relative z-10">
+
+        {/* LEFT — copy */}
         <div>
           <Reveal delay={100}>
-            <p className="text-brand font-bold text-sm uppercase tracking-wider mb-3">Corporate gifting</p>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-[54px] font-bold text-theme-heading leading-[1.1] mb-5">
-              Your brand, in their hands.
+            <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
+            <h2 className="font-display font-bold text-theme-heading leading-tight mb-5" style={{ fontSize: "clamp(2rem, 3.2vw, 3rem)" }}>
+              Your brand,<br />in their hands.
             </h2>
-            <p className="text-lg text-theme-body mb-6 max-w-lg leading-relaxed">
-              Every gift your business sends says something about you. We make it say the right thing, with your name on it, wrapped and delivered.
+            <p className="text-base text-theme-body leading-relaxed mb-7 max-w-sm">
+              Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
             </p>
           </Reveal>
 
           <Reveal delay={200}>
-            <p className="text-brand font-medium text-[15px] mb-2">Which sounds like you?</p>
-            <ul className="border-t border-brand/10 dark:border-white/10 mb-6">
+            <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
+            <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
               {[
                 { id: "corporate", title: "Gifting a team or clients", desc: "Hampers and gift sets, wrapped and delivered to each person." },
                 { id: "bulk", title: "Sending the same gift to many", desc: "From 10 units, one M-Pesa payment." },
-                { id: "solo", title: "Need it to carry your name", desc: "Your logo or name on a single piece." }
+                { id: "solo", title: "Need it to carry your name", desc: "Your logo or name on a single piece." },
               ].map((way) => (
                 <li
                   key={way.id}
@@ -849,51 +752,53 @@ export function SolutionSection() {
                   onFocus={() => setActiveTab(way.id)}
                   onBlur={() => setActiveTab(null)}
                   tabIndex={0}
-                  className="group relative px-5 py-3.5 border-b border-brand/10 dark:border-white/10 cursor-pointer transition-colors hover:bg-white/50 dark:hover:bg-white/5 outline-none focus-visible:bg-white/50"
+                  className={`group relative pl-5 py-4 border-b border-brand/10 dark:border-white/10 cursor-pointer transition-all rounded-lg outline-none ${
+                    activeTab === way.id ? "bg-white/70 dark:bg-white/5 shadow-sm" : "hover:bg-white/50 dark:hover:bg-white/5"
+                  }`}
                 >
-                  <div className={`absolute left-1 top-[27px] w-2 h-2 rounded-full transition-colors ${
-                    activeTab === way.id ? "bg-brand" : "bg-gold"
+                  <div className={`absolute left-0 top-[20px] w-2 h-2 rounded-full transition-all ${
+                    activeTab === way.id ? "bg-brand scale-125" : "bg-gold/70"
                   }`} />
-                  <b className="block font-display font-bold text-lg text-theme-heading group-hover:text-brand transition-colors">{way.title}</b>
-                  <em className="not-italic text-[15px] text-theme-body">{way.desc}</em>
+                  <b className="block font-display font-bold text-base text-theme-heading group-hover:text-brand transition-colors">{way.title}</b>
+                  <em className="not-italic text-xs text-theme-body block mt-0.5 leading-relaxed">{way.desc}</em>
                 </li>
               ))}
             </ul>
           </Reveal>
 
-          <Reveal delay={300}>
-            <p className="text-[15px] text-theme-body mb-5">
+          <Reveal delay={280}>
+            <p className="text-xs text-theme-body opacity-60 mb-5">
               Gifts for people you love are on the rest of this page. Gifts your business depends on have their own home.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link href="/corporate" className="px-6 py-3.5 rounded-xl bg-brand text-white font-semibold text-base hover:bg-brand-dark hover:shadow-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+              <Link href="/corporate" className="px-6 py-3 rounded-xl bg-brand text-white font-semibold text-sm hover:brightness-110 hover:shadow-lg transition-all">
                 Enter the corporate platform
               </Link>
-              <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting." className="px-6 py-3.5 rounded-xl bg-transparent border-2 border-brand/20 text-theme-heading font-semibold text-base hover:border-brand hover:text-brand transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+              <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting."
+                className="px-6 py-3 rounded-xl border-2 border-brand/20 text-theme-heading font-semibold text-sm hover:border-brand hover:text-brand transition-all">
                 Talk to us first
               </a>
             </div>
           </Reveal>
         </div>
 
-        {/* Marquee Stage */}
-        <Reveal delay={400} className="relative h-[440px] md:h-[600px] overflow-hidden">
-          <div className="grid grid-cols-2 gap-4 h-full group">
-            {/* Column 1 - Downwards */}
-            <div className="overflow-hidden h-full">
-              <div className="animate-marquee-vertical-reverse group-hover:[animation-play-state:paused]">
-                {[...A, ...A].map((g, i) => renderCard(g, i))}
-              </div>
-            </div>
-            
-            {/* Column 2 - Upwards */}
-            <div className="overflow-hidden h-full">
-              <div className="animate-marquee-vertical group-hover:[animation-play-state:paused]">
-                {[...B, ...B].map((g, i) => renderCard(g, i))}
-              </div>
+        {/* RIGHT — marquee, NO Reveal wrapper (Reveal's opacity animation fights CSS transform and causes the glitch)
+            Exactly 2× content matches the translateY(-50%) keyframe loop point perfectly */}
+        <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "78vh", maxHeight: "720px" }}>
+          {/* Col 1 scrolls down */}
+          <div className="overflow-hidden h-full">
+            <div className="animate-marquee-vertical-reverse" style={{ willChange: "transform" }}>
+              {[...A, ...A].map((g, i) => renderCard(g, i))}
             </div>
           </div>
-        </Reveal>
+          {/* Col 2 scrolls up, offset by padding-top so columns feel staggered */}
+          <div className="overflow-hidden h-full pt-16">
+            <div className="animate-marquee-vertical" style={{ willChange: "transform" }}>
+              {[...B, ...B].map((g, i) => renderCard(g, i))}
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );

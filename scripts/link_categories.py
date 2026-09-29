@@ -45,10 +45,11 @@ CATEGORIES = [
     ("Tech & Gadgets", "tech-gadgets"),
     ("Accessories", "accessories"),
     ("Gift Sets & Hampers", "gift-sets"),
-    ("Apparel & Merch", "apparel"),
+    ("Wearables & Apparel", "apparel"),
     ("Flowers", "flowers"),
-    ("Perfumes & Fragrance", "perfumes"),
-    ("Fruits & Edibles", "fruits-edibles"),
+    ("Fragrances", "perfumes"),
+    ("Drinks & Spirits", "drinks"),
+    ("Fruits & Edibles", "fruits"),
 ]
 
 # SKU prefix → slugs. Prefixes are the most reliable signal: they are
@@ -138,12 +139,17 @@ TAG_TO_SLUG = {
     "t-shirt": "apparel",
     "cap": "apparel",
     "overall": "apparel",
+    "wearable": "apparel",
     "flowers": "flowers",
     "bouquet": "flowers",
     "perfume": "perfumes",
     "fragrance": "perfumes",
-    "edible": "fruits-edibles",
-    "fruit": "fruits-edibles",
+    "drinks": "drinks",
+    "wine": "drinks",
+    "whiskey": "drinks",
+    "alcohol": "drinks",
+    "edible": "fruits",
+    "fruit": "fruits",
 }
 
 SLUGS = {slug for _, slug in CATEGORIES}

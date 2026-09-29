@@ -139,7 +139,14 @@ async function getProducts(params: ShopParams): Promise<{
         query = query.order("created_at", { ascending: false });
     }
   } else {
-    query = query.order("created_at", { ascending: false });
+    // If no specific sort is requested, and we are viewing "All Gifts"
+    // sort by ID (UUID v4) to perfectly interleave/shuffle the products
+    // instead of grouping them by created_at which clusters imports.
+    if (!effectiveCategory && !params.q) {
+      query = query.order("id", { ascending: true });
+    } else {
+      query = query.order("created_at", { ascending: false });
+    }
   }
 
   const limit = 24;

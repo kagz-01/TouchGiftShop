@@ -57,6 +57,8 @@ CREATE TABLE group_gifting_pools (
     status pool_status_enum DEFAULT 'active',
     expires_at TIMESTAMPTZ NOT NULL,
     -- V2 columns (gift-pool-migration)
+    is_poll_mode BOOLEAN DEFAULT FALSE,
+    poll_options JSONB DEFAULT NULL,
     recipient_name VARCHAR(100),
     recipient_photo_url TEXT,
     occasion VARCHAR(50),
@@ -1419,3 +1421,21 @@ CREATE TABLE admin_sessions (
     token TEXT PRIMARY KEY,
     expires_at TIMESTAMPTZ NOT NULL
 );
+
+-- ---------------------------------------------------------------------
+-- RLS Policies for group_gifting_pools & pool_contributions
+-- ---------------------------------------------------------------------
+
+ALTER TABLE group_gifting_pools ENABLE ROW LEVEL SECURITY;
+ALTER TABLE pool_contributions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "pools_select_public" ON group_gifting_pools FOR SELECT USING (true);
+CREATE POLICY "pools_insert_authenticated" ON group_gifting_pools FOR INSERT WITH CHECK (auth.uid() = organiser_user_id);
+CREATE POLICY "pools_update_own" ON group_gifting_pools FOR UPDATE USING (auth.uid() = organiser_user_id);
+CREATE POLICY "pools_delete_own" ON group_gifting_pools FOR DELETE USING (auth.uid() = organiser_user_id);
+CREATE POLICY "pools_service_role" ON group_gifting_pools FOR ALL USING (auth.role() = 'service_role');
+
+CREATE POLICY "contributions_select_public" ON pool_contributions FOR SELECT USING (true);
+CREATE POLICY "contributions_insert_public" ON pool_contributions FOR INSERT WITH CHECK (true);
+CREATE POLICY "contributions_service_role" ON pool_contributions FOR ALL USING (auth.role() = 'service_role');
+

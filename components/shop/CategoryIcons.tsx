@@ -1,6 +1,6 @@
 import {
   Trophy, PenLine, Coffee, Backpack, Clock, Smartphone,
-  KeyRound, Gift, Shirt, Flower2, Sparkles, Apple,
+  KeyRound, Gift, Shirt, Flower2, Sparkles, Apple, Wine
 } from "lucide-react";
 
 /**
@@ -19,7 +19,8 @@ export const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   apparel: <Shirt className="w-4 h-4" />,
   flowers: <Flower2 className="w-4 h-4" />,
   perfumes: <Sparkles className="w-4 h-4" />,
-  "fruits-edibles": <Apple className="w-4 h-4" />,
+  fruits: <Apple className="w-4 h-4" />,
+  drinks: <Wine className="w-4 h-4" />,
 };
 
 export function categoryIcon(slug: string): React.ReactNode {

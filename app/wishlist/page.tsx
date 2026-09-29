@@ -239,7 +239,7 @@ export default function WishlistPage() {
                     href={`/checkout?productId=${item.product_id}`}
                     className="text-xs px-3 py-2 bg-brand text-white rounded-xl font-semibold hover:bg-brand-dark transition-colors"
                   >
-                    Buy Now
+                    Send Now
                   </Link>
                   <button
                     onClick={() => removeItem(item.id)}

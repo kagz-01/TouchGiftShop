@@ -136,7 +136,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
             {/* Corporate CTA */}
             <Link
               href="/corporate"
-              className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-brand hover:bg-brand/8 transition-all duration-200 border border-brand/20 hover:border-brand/40 hover:shadow-[0_0_0_3px_rgba(155,27,90,0.06)]"
+              className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-brand dark:text-brand-light hover:bg-brand/8 dark:hover:bg-brand/20 transition-all duration-200 border border-brand/20 dark:border-brand/40 hover:border-brand/40 dark:hover:border-brand/60 hover:shadow-[0_0_0_3px_rgba(155,27,90,0.06)] dark:hover:shadow-[0_0_0_3px_rgba(196,41,122,0.15)]"
             >
               <Briefcase className="w-3.5 h-3.5" />
               <span>Corporate</span>

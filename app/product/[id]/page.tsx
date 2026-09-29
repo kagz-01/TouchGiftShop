@@ -47,6 +47,96 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 function StructuredDescription({ text }: { text: string }) {
   if (!text) return null;
 
+  // ── Perfume Format Parsing ──
+  // Check if it follows the exact fragrance description pattern from the CSV
+  if (text.includes("is for") && text.includes("Notes lean")) {
+    let hook = "";
+    let whoFor = "";
+    let notes = "";
+    let bestFor = "";
+    let ifYouLike = "";
+    let whyBuy = "";
+    
+    // The hook is usually the first sentence.
+    const firstPeriod = text.indexOf(".");
+    if (firstPeriod !== -1) {
+      hook = text.substring(0, firstPeriod + 1).trim();
+    }
+    
+    // Who it's for
+    const isForMatch = text.match(/is for (.*?)\./);
+    if (isForMatch) whoFor = isForMatch[1].trim();
+    
+    // Notes
+    const notesMatch = text.match(/Notes lean (.*?)\./);
+    if (notesMatch) notes = notesMatch[1].trim();
+    
+    // Best for
+    const bestForMatch = text.match(/Best for (.*?)\./);
+    if (bestForMatch) bestFor = bestForMatch[1].trim();
+    
+    // If you like
+    const likeMatch = text.match(/If you like (.*?)\./);
+    if (likeMatch) ifYouLike = likeMatch[1].trim();
+    
+    // Why buy (usually the last sentence, after "If you like..." or at the end)
+    const sentences = text.split(". ").map(s => s.trim()).filter(Boolean);
+    whyBuy = sentences[sentences.length - 1];
+    if (!whyBuy.endsWith(".")) whyBuy += ".";
+
+    return (
+      <div className="space-y-5">
+        {hook && (
+          <p className="text-[15px] font-medium italic text-brand-deep dark:text-white/90">
+            {hook}
+          </p>
+        )}
+        
+        {whoFor && (
+          <div>
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Who it's for</p>
+            <p className="text-sm text-brand-deep/80 dark:text-white/70">{whoFor}.</p>
+          </div>
+        )}
+        
+        {notes && (
+          <div>
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Notes</p>
+            <div className="flex flex-wrap gap-2 mt-1.5">
+              {notes.replace(/and/g, "·").split(/·|,/).map(n => n.trim()).filter(Boolean).map(note => (
+                <span key={note} className="text-[11px] font-semibold bg-brand/10 dark:bg-brand/20 border border-brand/20 text-brand dark:text-brand-light px-2 py-1 rounded-md">
+                  {note}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {bestFor && (
+          <div>
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Best worn</p>
+            <p className="text-sm text-brand-deep/80 dark:text-white/70">{bestFor}.</p>
+          </div>
+        )}
+        
+        {ifYouLike && (
+          <div>
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">If you like</p>
+            <p className="text-sm text-brand-deep/80 dark:text-white/70">{ifYouLike}.</p>
+          </div>
+        )}
+        
+        {whyBuy && whyBuy !== hook && (
+          <div className="pt-2 mt-2 border-t border-black/5 dark:border-white/10">
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Why gift them</p>
+            <p className="text-sm text-brand-deep/80 dark:text-white/70">{whyBuy}</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Standard Format Parsing ──
   let mainText = text;
   let features: string[] = [];
 
@@ -160,18 +250,12 @@ export default async function ProductPage({
                     </span>
                   </>
                 ) : (
-                  <span className="text-3xl font-bold text-gold">{formatKsh(product.price)}</span>
+                  <span className="text-3xl font-bold text-brand-deep dark:text-white">{formatKsh(product.price)}</span>
                 )}
                 {!product.in_stock && (
                   <span className="text-sm text-red-500 font-semibold">Out of stock</span>
                 )}
               </div>
-              {product.sku && (
-                <p className="text-xs text-gray-400 mt-1 font-mono">SKU: {product.sku}</p>
-              )}
-              {product.stock_quantity != null && product.in_stock && (
-                <p className="text-xs text-green-600 mt-1 font-medium">{product.stock_quantity} in stock</p>
-              )}
             </div>
 
             {/* Color Variants */}
@@ -245,7 +329,7 @@ export default async function ProductPage({
 
             {/* Description */}
             {product.description && (
-              <div className="bg-white rounded-2xl border border-black/6 p-5">
+              <div className="bg-white dark:bg-white/5 rounded-2xl border border-black/6 dark:border-white/10 p-5">
                 <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-3">
                   About this gift
                 </p>
@@ -263,8 +347,8 @@ export default async function ProductPage({
             <ProductAIHelper productName={product.name} productId={product.id} />
 
             {/* Gift Lab upsell */}
-            <div className="bg-white border border-black/6 rounded-2xl p-4 flex items-center gap-4">
-              <div className="w-10 h-10 bg-brand/8 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="bg-white dark:bg-white/5 border border-black/6 dark:border-white/10 rounded-2xl p-4 flex items-center gap-4">
+              <div className="w-10 h-10 bg-brand/8 dark:bg-brand/20 rounded-xl flex items-center justify-center flex-shrink-0">
                 <ShoppingBag className="w-5 h-5 text-brand" />
               </div>
               <div className="flex-1 min-w-0">
