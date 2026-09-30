@@ -109,7 +109,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
           <button
             onClick={handleAddToWishlist}
             className={cn(
-              "absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 z-10",
+              "absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 z-10",
               wishlisted
                 ? "bg-brand text-white shadow-ribbon"
                 : "bg-white/10 backdrop-blur-md border border-white/20 text-white/80 hover:text-white hover:bg-white/20 hover:scale-110"
@@ -171,14 +171,14 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
                   if (isSelectedForSubscription) removeSubscriptionItem(product.id);
                   else addSubscriptionItem(product as any);
                 }}
-                className={cn("w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-center text-sm font-semibold shadow-soft transition-colors", 
+                className={cn("w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-3 text-center text-sm font-semibold shadow-soft transition-colors", 
                   isSelectedForSubscription ? "bg-white/30 text-white" : "text-white/90 hover:bg-white/20"
                 )}
               >
                 {isSelectedForSubscription ? "Added to Subscription" : "Add to Subscription"}
               </button>
             ) : (
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-2.5 text-center text-sm font-semibold text-white/90 shadow-soft">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl px-4 py-3 text-center text-sm font-semibold text-white/90 shadow-soft">
                 <span className="flex items-center justify-center gap-2">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -230,7 +230,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
             <p className="text-gold font-bold text-base">{formatKsh(product.price)}</p>
             <div
               className={cn(
-                "w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
+                "w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300",
                 isHovered ? "scale-110" : ""
               )}
               style={{

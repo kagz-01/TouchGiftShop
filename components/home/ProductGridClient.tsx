@@ -40,7 +40,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
           {/* Quick view */}
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-2 text-center text-xs font-bold text-brand shadow-sm">
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3.5 text-center text-xs font-bold text-brand shadow-sm">
               View Gift →
             </div>
           </div>
