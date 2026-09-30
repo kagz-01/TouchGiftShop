@@ -248,35 +248,29 @@ export function HeroCinematic() {
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-[130px] md:pt-[140px] pb-10 md:pb-16 relative z-30 flex-1 flex flex-col justify-center">
         <div className="flex flex-col items-start max-w-3xl text-left">
           
-          {/* Typewriter delivery note */}
-          <div className={`inline-flex flex-col items-start bg-black/40 backdrop-blur-md rounded-2xl px-5 py-3 mb-8 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/90 mb-1 font-bold">
-              TouchGift Promise
+          {/* Eyebrow */}
+          <div className={`flex items-center gap-3 mb-4 md:mb-6 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <div className="h-[1px] w-8 md:w-12 bg-gold"></div>
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-gold font-bold">
+              TouchGift Signature
             </span>
-            <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/95 font-medium tracking-tight min-h-[1.5rem] leading-snug">
-              <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
-              <span className="whitespace-normal tracking-tight drop-shadow-md">
-                {highlightDeliveryCopy(deliveryMessage)}
-                <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
-              </span>
-            </div>
           </div>
 
           {/* Main headline */}
-          <div className="min-h-[160px] md:min-h-[220px] flex items-center">
-            <h1 className={`font-display font-bold text-white leading-[0.95] mb-5 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(2.5rem, 6vw + 1rem, 6.5rem)" }}
+          <div className="flex items-center mb-6">
+            <h1 className={`font-display font-bold text-white leading-[1.1] transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+              style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
             >
               <span className="relative inline-block py-1 drop-shadow-xl">
                 {moodMeta.id === "default" ? (
                   <>
-                    Elevate the art
+                    Elevate the
                     <br />
-                    <span className="relative inline-block mt-2">
+                    <span className="relative inline-block mt-1">
                       <span className="text-gradient bg-gradient-to-r from-gold via-white to-gold bg-clip-text text-transparent tracking-tight">
-                        of gifting
+                        art of gifting
                       </span>
-                      <svg className="absolute -bottom-3 left-0 w-full" viewBox="0 0 200 12" fill="none">
+                      <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
                         <path d="M2 8 C50 2, 150 2, 198 8" stroke="url(#gold-gradient)" strokeWidth="3" strokeLinecap="round" className={loaded ? "animate-[draw-line_1s_ease-out_0.8s_forwards]" : ""} style={{ strokeDasharray: 200, strokeDashoffset: 200 }} />
                         <defs>
                           <linearGradient id="gold-gradient" x1="0" y1="0" x2="200" y2="0">
@@ -301,30 +295,56 @@ export function HeroCinematic() {
           </div>
 
           {/* Subheadline */}
-          <p key={`sub-${moodMeta.id}`} className={`text-white/90 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 animate-fade-in drop-shadow-lg font-medium ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-            style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.2rem)" }}
+          <p key={`sub-${moodMeta.id}`} className={`text-white/90 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 animate-fade-in drop-shadow-lg font-medium ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} text-base md:text-lg`}
           >
             {moodMeta.id === "default"
-              ? "Discover beautifully curated gifts for every occasion. We handle the presentation and same-day delivery across Nairobi, so you can focus on the moment."
+              ? "Beautifully curated gifts for every occasion. Thoughtful, elegant and delivered with impeccable care."
               : moodMeta.heroSub
             }
           </p>
 
-          {/* CTA */}
-          <div className={`flex flex-col sm:flex-row items-start gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <Link
-              href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
-              className="group relative px-10 py-4 font-bold rounded-full text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[200px]"
-              style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
-            >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
-                <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+          {/* CTA & Features */}
+          <div className={`flex flex-col items-start transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 w-full sm:w-auto">
+              <Link
+                href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
+                className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px]"
+                style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
+              >
+                <span className="relative z-10 flex items-center justify-center gap-2">
+                  <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
+                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </span>
+                <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              </Link>
+              
+              {moodMeta.id === "default" && (
+                <Link
+                  href="/build-a-hamper"
+                  className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px] bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/20"
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Build a hamper
+                  </span>
+                </Link>
+              )}
+            </div>
+
+            {/* Typewriter delivery note (replaces the checkmarks with live data) */}
+            <div className="flex items-center gap-2 text-[13px] md:text-sm text-white/80 font-medium tracking-tight">
+              <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className="whitespace-normal">
+                {highlightDeliveryCopy(deliveryMessage)}
+                <span className="inline-block w-[1px] h-3.5 align-middle bg-white/70 ml-0.5 animate-pulse" />
               </span>
-              <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            </Link>
+            </div>
           </div>
 
         </div>
@@ -698,8 +718,16 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
   const renderCard = (g: typeof A[0], i: number) => (
     <div
       key={`${g.label}-${i}`}
-      className={`rounded-2xl overflow-hidden mb-3 transition-all duration-500 ${
-        activeTab && activeTab !== g.t ? "opacity-20 grayscale" : "opacity-100"
+      // Highlight the matching route instead of dimming everything else to
+      // 20%. A greyscale + opacity-20 wall of photos strobed as the columns
+      // scrolled, and stayed washed out for as long as the cursor rested on the
+      // list. Now the match is marked and the rest only softens.
+      className={`rounded-2xl overflow-hidden mb-3 transition-[opacity,box-shadow] duration-300 ${
+        !activeTab
+          ? "opacity-100"
+          : activeTab === g.t
+            ? "opacity-100 ring-2 ring-brand/50 ring-offset-1 ring-offset-transparent"
+            : "opacity-60"
       }`}
     >
       <div
