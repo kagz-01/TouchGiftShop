@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Target, Zap, MapPin, EyeOff, Camera, X, ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -43,6 +43,7 @@ const PILLARS = [
 export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
   const [mounted, setMounted] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,8 +53,10 @@ export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-      // Small delay to allow display:block before adding opacity/transform classes
-      requestAnimationFrame(() => setAnimateIn(true));
+      requestAnimationFrame(() => {
+        setAnimateIn(true);
+        closeButtonRef.current?.focus();
+      });
     } else {
       document.body.style.overflow = "unset";
       setAnimateIn(false);
@@ -62,6 +65,16 @@ export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+
+  // Close on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!mounted) return null;
   if (!isOpen && !animateIn) return null;
@@ -78,6 +91,9 @@ export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
         animateIn ? "opacity-100 backdrop-blur-md bg-black/40" : "opacity-0 backdrop-blur-none bg-black/0"
       )}
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="brand-pillars-title"
     >
       <div
         className={cn(
@@ -88,8 +104,9 @@ export function BrandPillarsModal({ isOpen, onClose }: BrandPillarsModalProps) {
       >
         {/* Close button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
-          className="absolute top-6 right-6 p-2 rounded-full text-theme-muted hover:text-theme-heading hover:bg-theme-surface/50 transition-colors"
+          className="absolute top-6 right-6 w-11 h-11 flex items-center justify-center rounded-full text-theme-muted hover:text-theme-heading hover:bg-theme-surface/50 transition-colors focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
           aria-label="Close"
         >
           <X className="w-6 h-6" />

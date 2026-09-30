@@ -21,6 +21,7 @@ export default function NotificationBell({ user }: { user: any }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const bellButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   // Close dropdown on click outside
@@ -33,6 +34,19 @@ export default function NotificationBell({ user }: { user: any }) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Escape key closes the dropdown and returns focus to the bell button
+  useEffect(() => {
+    if (!isOpen) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        bellButtonRef.current?.focus();
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
 
   // Fetch notifications
   useEffect(() => {
@@ -83,16 +97,19 @@ export default function NotificationBell({ user }: { user: any }) {
   return (
     <div className="group relative flex flex-col items-center justify-center" ref={dropdownRef}>
       <button
+        ref={bellButtonRef}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Notifications"
+        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
         className={cn(
-          "relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200",
+          "relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none",
           isOpen ? "bg-brand/10 text-brand" : "text-brand-muted hover:text-brand hover:bg-brand/5"
         )}
       >
         <Bell className="w-4 h-4" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+          <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" aria-hidden="true" />
         )}
       </button>
 
@@ -103,7 +120,12 @@ export default function NotificationBell({ user }: { user: any }) {
       )}
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-surface-border overflow-hidden z-50 animate-pop">
+        <div 
+          className="absolute top-full right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-surface-border overflow-hidden z-50 animate-pop"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Notifications panel"
+        >
           <div className="p-4 border-b border-surface-border flex items-center justify-between bg-surface">
             <h3 className="font-bold text-brand-deep">Notifications</h3>
             {unreadCount > 0 && (
