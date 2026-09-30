@@ -234,13 +234,14 @@ export default async function HomePage() {
         height={520}
       />
 
-      {/* Second door: business buyers fork off here, before the consumer
-          narrative starts. Also where the hero's corporate mood tab lands. */}
-
-      <ProblemSection />
-
-      {/* Corporate gifting section — second door for B2B buyers */}
+      {/* ═══════════════════════════════════════════
+          CHAPTER 2: Corporate — second door for B2B buyers,
+          immediately after the product showcase.
+          ═══════════════════════════════════════════ */}
       <SolutionSection />
+
+      {/* The gifting dilemma — emotional hook for consumer buyers */}
+      <ProblemSection />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1.5: TouchGift Superpowers (USPs)
