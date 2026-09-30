@@ -176,7 +176,7 @@ const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
    ══════════════════════════════════════════════════════════ */
 export function HeroCinematic() {
   const [loaded, setLoaded] = useState(false);
-  const { moodMeta, setMood, mood } = useMood();
+  const { moodMeta, setMood, clearMood, mood } = useMood();
   // Hovering the tab row pauses so you can read it; clicking a mood pins it
   // and it stays pinned after the pointer leaves, until you click it again.
   const [isHovered, setIsHovered] = useState(false);
@@ -199,7 +199,7 @@ export function HeroCinematic() {
     const interval = setInterval(() => {
       const currentIndex = HERO_MOODS.findIndex(m => m.id === moodMeta.id);
       const nextIndex = (currentIndex + 1) % HERO_MOODS.length;
-      setMood(HERO_MOODS[nextIndex].id);
+      setMood(HERO_MOODS[nextIndex].id, false);
     }, 7000);
     return () => clearInterval(interval);
   }, [moodMeta.id, isPaused, setMood]);
@@ -351,9 +351,10 @@ export function HeroCinematic() {
                   onClick={() => {
                     if (m.id === moodMeta.id && isPinned) {
                       setIsPinned(false); // unpin → resume cycling
+                      clearMood();         // and hand the palette back
                     } else {
-                      setMood(m.id);
-                      setIsPinned(true); // pin: survives pointer leaving
+                      setMood(m.id, true); // deliberate: persists site-wide
+                      setIsPinned(true);  // survives pointer leaving
                     }
                   }}
                   className={`snap-center relative px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 border backdrop-blur-md overflow-hidden flex-shrink-0 ${
@@ -966,7 +967,7 @@ export function SocialProof() {
             </Reveal>
             <Reveal delay={100}>
               <h2 className="font-display text-4xl lg:text-5xl font-medium mb-6 text-theme-heading leading-[1.1]">
-                Loved by gift-givers across Nairobi.
+                Loved by gift givers across Kenya.
               </h2>
             </Reveal>
             <Reveal delay={200}>
@@ -994,32 +995,43 @@ export function SocialProof() {
           </div>
         </div>
 
-        {/* Bottom: Review Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displayReviews.map((t, i) => (
-            <Reveal key={i} delay={200 + (i * 100)} direction="up">
-              <div className="bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-3xl p-8 flex flex-col gap-6 h-full shadow-sm hover:shadow-md transition-shadow">
-                
-                {/* Author & Stars */}
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-surface-warm dark:bg-white/10 flex items-center justify-center shrink-0">
-                    <span className="text-brand dark:text-white/80 text-[11px] font-bold tracking-wider">{t.initials}</span>
-                  </div>
-                  <div>
-                    <span className="block font-bold text-sm tracking-wide text-theme-heading mb-1">{t.name}</span>
-                    <StarRow count={t.stars} />
-                  </div>
-                </div>
+        {/* Bottom: Review Cards Marquee */}
+        <Reveal>
+          <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
+            <div
+              className="relative flex overflow-x-hidden group px-4 md:px-8"
+              style={{
+                WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+                maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
+              }}
+            >
+              <div className="animate-marquee flex gap-5 w-max items-stretch group-hover:[animation-play-state:paused]">
+                {[...displayReviews, ...displayReviews].map((t, i) => (
+                  <div 
+                    key={i} 
+                    className="flex-shrink-0 w-[300px] md:w-[360px] bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-3xl p-8 flex flex-col gap-6 h-full shadow-sm hover:shadow-md transition-shadow whitespace-normal"
+                  >
+                    {/* Author & Stars */}
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-surface-warm dark:bg-white/10 flex items-center justify-center shrink-0">
+                        <span className="text-brand dark:text-white/80 text-[11px] font-bold tracking-wider">{t.initials}</span>
+                      </div>
+                      <div>
+                        <span className="block font-bold text-sm tracking-wide text-theme-heading mb-1">{t.name}</span>
+                        <StarRow count={t.stars} />
+                      </div>
+                    </div>
 
-                {/* Quote */}
-                <p className="text-sm leading-relaxed text-theme-body flex-1">
-                  &ldquo;{t.text}&rdquo;
-                </p>
-
+                    {/* Quote */}
+                    <p className="text-sm leading-relaxed text-theme-body flex-1">
+                      &ldquo;{t.text}&rdquo;
+                    </p>
+                  </div>
+                ))}
               </div>
-            </Reveal>
-          ))}
-        </div>
+            </div>
+          </div>
+        </Reveal>
 
         {/* Google reviews CTA */}
         <Reveal delay={600}>
