@@ -72,27 +72,31 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
       {/* ── SEASONAL PROMPT BAR ── */}
       <SeasonalPromptBar />
 
-      {/* ── ANNOUNCEMENT BAR ── */}
-      <div className="hidden md:block bg-brand text-white text-center text-[11px] font-medium tracking-wide py-2 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
-        <span className={cn("inline-block transition-all duration-300", announcementVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1")}>
-          {ANNOUNCEMENTS[announcementIndex]}
-        </span>
-        <Link href="/shop" className="ml-3 inline-flex items-center gap-0.5 text-white/80 hover:text-white underline underline-offset-2 transition-colors text-[10px] font-semibold tracking-wider uppercase">
-          Shop now <ChevronRight className="w-3 h-3" />
-        </Link>
-      </div>
-
-      {/* ── MAIN HEADER ── */}
-      <header
-        className={cn("hidden md:block sticky top-0 z-50 transition-all duration-500")}
+      {/* ── FIXED HEADER SHELL: announcement bar + main nav, floats over hero ── */}
+      <div
+        className={cn("hidden md:flex flex-col fixed top-0 left-0 right-0 z-50 transition-all duration-500")}
         style={{
-          backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "blur(8px)",
-          background: scrolled ? "var(--header-bg-scrolled)" : "var(--header-bg)",
-          borderBottom: scrolled ? "1px solid rgba(155,27,90,0.10)" : "1px solid rgba(155,27,90,0.05)",
+          backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "blur(0px)",
+          background: scrolled ? "var(--header-bg-scrolled)" : "transparent",
+          borderBottom: scrolled ? "1px solid rgba(155,27,90,0.10)" : "1px solid transparent",
           boxShadow: scrolled ? "0 4px 30px rgba(155,27,90,0.08)" : "none",
         }}
       >
+        {/* ── ANNOUNCEMENT BAR ── */}
+        <div className={cn("bg-brand/90 text-white text-center text-[11px] font-medium tracking-wide py-2 px-4 relative overflow-hidden transition-all duration-300", scrolled ? "py-1.5" : "py-2")}>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
+          <span className={cn("inline-block transition-all duration-300", announcementVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1")}>
+            {ANNOUNCEMENTS[announcementIndex]}
+          </span>
+          <Link href="/shop" className="ml-3 inline-flex items-center gap-0.5 text-white/80 hover:text-white underline underline-offset-2 transition-colors text-[10px] font-semibold tracking-wider uppercase">
+            Shop now <ChevronRight className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {/* ── MAIN HEADER ── */}
+        <header
+          className={cn("hidden md:block transition-all duration-500")}
+        >
         {/* TOP ROW: Logo | Search | Icons */}
         <div className="page-container-capped py-3 flex items-center gap-4">
 
@@ -201,6 +205,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
         {/* Accent border on scroll */}
         <div className={cn("absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent transition-opacity duration-300", scrolled ? "opacity-100" : "opacity-0")} />
       </header>
+      </div> {/* end fixed header shell */}
 
       {/* Search Overlay */}
       {searchOpen && (

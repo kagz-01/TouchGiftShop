@@ -212,7 +212,7 @@ export function HeroCinematic() {
 
   return (
     <section 
-      className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen -mt-[130px] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* ── CINEMATIC BACKGROUND IMAGES ── */}
       {HERO_MOODS.map((m) => (
@@ -242,7 +242,7 @@ export function HeroCinematic() {
       </div>
 
       {/* ── FOREGROUND CONTENT — LEFT ALIGNED ── */}
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 md:py-20 relative z-30 flex-1 flex flex-col justify-center">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-[130px] md:pt-[140px] pb-10 md:pb-16 relative z-30 flex-1 flex flex-col justify-center">
         <div className="flex flex-col items-start max-w-3xl text-left">
           
           {/* Typewriter delivery note */}
