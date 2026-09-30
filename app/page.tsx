@@ -204,9 +204,35 @@ export default async function HomePage() {
       <SuperpowersStrip />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 2: Trust — Social Proof
+          CHAPTER 3B: Discovery — Horizontal Rows
+          Hampers ←  |  Perfumes →
+          Perfumes floor at KSh 6,075, so the old "Under KSh 2,000" row
+          could never carry them; the keyring edit went to /shop only.
           ═══════════════════════════════════════════ */}
-      <SocialProof />
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-4 space-y-0">
+        <FeaturedRow
+          title="Gift Sets & Hampers"
+          subtitle="Hand-packed hampers & curated sets"
+          products={giftSets}
+          viewAllHref="/shop?category=gift-sets"
+          viewAllLabel="See all"
+          tint="cool"
+          marqueeDirection="left"
+        />
+        <FeaturedRow
+          title="The one they'll wear on you."
+          subtitle={
+            perfumeStats.count > 0
+              ? `${perfumeStats.count} authentic fragrances, from ${formatKsh(perfumeStats.from)}`
+              : "Authentic designer and niche scents"
+          }
+          products={perfume}
+          viewAllHref="/shop?category=perfumes"
+          viewAllLabel="See all"
+          tint="warm"
+          marqueeDirection="right"
+        />
+      </div>
 
       {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
       <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
@@ -243,39 +269,8 @@ export default async function HomePage() {
         </a>
       </ScrollReveal>
 
-      {/* ═══════════════════════════════════════════
-          CHAPTER 3B: Discovery — Horizontal Rows
-          Hampers ←  |  Perfumes →
-          Perfumes floor at KSh 6,075, so the old "Under KSh 2,000" row
-          could never carry them; the keyring edit went to /shop only.
-          ═══════════════════════════════════════════ */}
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-4 space-y-0">
-        <FeaturedRow
-          title="Gift Sets & Hampers"
-          subtitle="Hand-packed hampers & curated sets"
-          products={giftSets}
-          viewAllHref="/shop?category=gift-sets"
-          viewAllLabel="See all"
-          tint="cool"
-          marqueeDirection="left"
-        />
-        <FeaturedRow
-          title="The one they'll wear on you."
-          subtitle={
-            perfumeStats.count > 0
-              ? `${perfumeStats.count} authentic fragrances, from ${formatKsh(perfumeStats.from)}`
-              : "Authentic designer and niche scents"
-          }
-          products={perfume}
-          viewAllHref="/shop?category=perfumes"
-          viewAllLabel="See all"
-          tint="warm"
-          marqueeDirection="right"
-        />
-      </div>
-
       {/* Browse All CTA */}
-      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-10" delay={0}>
+      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-4 pb-10" delay={0}>
         <Link
           href="/shop"
           className="group block bg-white dark:bg-white/[0.04] border-2 border-surface-border dark:border-white/10 hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"
@@ -292,6 +287,11 @@ export default async function HomePage() {
           </div>
         </Link>
       </ScrollReveal>
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 2: Trust — Social Proof
+          ═══════════════════════════════════════════ */}
+      <SocialProof />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 6: Final Conversion
