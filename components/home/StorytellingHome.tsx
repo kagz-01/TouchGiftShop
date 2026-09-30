@@ -249,16 +249,16 @@ export function HeroCinematic() {
         <div className="flex flex-col items-start max-w-3xl text-left">
           
           {/* Eyebrow */}
-          <div className={`flex items-center gap-3 mb-4 md:mb-6 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+          <div className={`flex items-center gap-3 mb-3 md:mb-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <div className="h-[1px] w-8 md:w-12 bg-gold"></div>
             <span className="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-gold font-bold">
-              TouchGift Signature
+              {moodMeta.id === "default" ? "TouchGift Signature" : moodMeta.tagline || "TouchGift Signature"}
             </span>
           </div>
 
           {/* Main headline */}
-          <div className="flex items-center mb-6">
-            <h1 className={`font-display font-bold text-white leading-[1.1] transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+          <div className="flex items-center mb-4 md:mb-5 max-w-[600px]">
+            <h1 className={`font-display font-bold text-white leading-[1.05] md:leading-[1.1] transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
             >
               <span className="relative inline-block py-1 drop-shadow-xl">
@@ -295,7 +295,7 @@ export function HeroCinematic() {
           </div>
 
           {/* Subheadline */}
-          <p key={`sub-${moodMeta.id}`} className={`text-white/90 max-w-xl mb-10 leading-relaxed transition-all duration-1000 delay-400 animate-fade-in drop-shadow-lg font-medium ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} text-base md:text-lg`}
+          <p key={`sub-${moodMeta.id}`} className={`text-white/90 max-w-lg mb-6 md:mb-8 leading-relaxed transition-all duration-1000 delay-400 animate-fade-in drop-shadow-lg font-medium ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} text-base md:text-lg`}
           >
             {moodMeta.id === "default"
               ? "Beautifully curated gifts for every occasion. Thoughtful, elegant and delivered with impeccable care."
@@ -305,7 +305,7 @@ export function HeroCinematic() {
 
           {/* CTA & Features */}
           <div className={`flex flex-col items-start transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-4 md:mb-6 w-full sm:w-auto">
               <Link
                 href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
                 className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px]"
@@ -333,18 +333,40 @@ export function HeroCinematic() {
                   </span>
                 </Link>
               )}
+
+              {(moodMeta.id === "romantic" || moodMeta.id === "flowers") && (
+                <button
+                  className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px] bg-white text-[#5d1725] border border-white hover:bg-white/90 shadow-lg"
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    <Gift className="w-5 h-5" />
+                    Send anonymously
+                  </span>
+                </button>
+              )}
             </div>
 
-            {/* Typewriter delivery note (replaces the checkmarks with live data) */}
-            <div className="flex items-center gap-2 text-[13px] md:text-sm text-white/80 font-medium tracking-tight">
-              <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
-              <span className="whitespace-normal">
-                {highlightDeliveryCopy(deliveryMessage)}
-                <span className="inline-block w-[1px] h-3.5 align-middle bg-white/70 ml-0.5 animate-pulse" />
-              </span>
-            </div>
+            {/* Features / Typewriter */}
+            {moodMeta.id === "corporate" ? (
+              <div className="flex items-center gap-2 text-xs md:text-sm text-white/90 font-medium tracking-tight">
+                <span className="text-[#34A853]">✓</span> Professional gifts. On time. Every time. 🏢
+              </div>
+            ) : moodMeta.id === "romantic" || moodMeta.id === "flowers" ? (
+              <div className="flex items-center gap-4 text-xs md:text-sm text-white/90 font-medium tracking-tight">
+                <span className="flex items-center gap-1"><span className="text-[#34A853]">✓</span> Same-day Nairobi</span>
+                <span className="flex items-center gap-1"><span className="text-[#34A853]">✓</span> Photo proof</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 text-[13px] md:text-sm text-white/80 font-medium tracking-tight">
+                <svg className="w-4 h-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="whitespace-normal">
+                  {highlightDeliveryCopy(deliveryMessage)}
+                  <span className="inline-block w-[1px] h-3.5 align-middle bg-white/70 ml-0.5 animate-pulse" />
+                </span>
+              </div>
+            )}
           </div>
 
         </div>
@@ -755,24 +777,26 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
 
-        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-start">
-
-        {/* LEFT — routes and text */}
-        <div className="flex flex-col pt-4 lg:pt-8">
-          {/* Headline */}
-          <Reveal delay={100}>
+        {/* Header spans the full container so the headline holds one line.
+            Inside the 40% column it wrapped to "…in their / hands." */}
+        <Reveal delay={100}>
+          <div className="mb-8 lg:mb-10">
             <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
             <h2
-              className="font-display font-bold text-theme-heading leading-[1.08] mb-5"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
+              className="font-display font-bold text-theme-heading leading-[1.08]"
+              style={{ fontSize: "clamp(1.9rem, 3.4vw, 3rem)" }}
             >
               Your brand, in their hands.
             </h2>
             <p className="text-base md:text-lg text-theme-body leading-relaxed mb-9 max-w-xl">
               Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
             </p>
-          </Reveal>
+          </div>
+        </Reveal>
 
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-start">
+        {/* LEFT — routes */}
+        <div className="flex flex-col">
           <Reveal delay={200}>
             <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
             <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
