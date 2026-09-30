@@ -7,17 +7,17 @@ import {
   ProblemSection,
   SolutionSection,
   SocialProof,
-  StoryHowItWorks,
 } from "@/components/home/StorytellingHome";
 import FeaturedRow from "@/components/home/FeaturedRow";
 import VerticalProductColumns from "@/components/home/VerticalProductColumns";
+import CategoryRail from "@/components/home/CategoryRail";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
 import VisitUs from "@/components/home/VisitUs";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
-import { optimizeProductImagesList } from "@/lib/image-url";
+import { optimizeProductImagesList, optimizeImageUrl } from "@/lib/image-url";
 import { formatKsh } from "@/lib/utils";
 import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
 
@@ -116,13 +116,82 @@ function buildCorporateShots(rows: CorpRow[]): CorporateShot[] {
   ];
 }
 
+type CategoryTile = {
+  slug: string;
+  name: string;
+  count: number;
+  heroImage: string | null;
+  heroName: string;
+};
+
+/** The homepage shows perfumes and gift sets but nothing else, leaving ~266
+ *  in-stock SKUs across seven categories invisible. This powers a scrolling
+ *  rail of category tiles. The hero image is each category's highest-priced
+ *  product so the rail reads as the premium end of the range. */
+async function getCategoryTiles(): Promise<CategoryTile[]> {
+  const wanted = [
+    "drinkware",
+    "awards-trophies",
+    "stationery-office",
+    "accessories",
+    "bags",
+    "clocks",
+  ];
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const { data } = await supabase
+    .from("products")
+    .select("name, price, image_url, product_categories!inner(categories!inner(slug,name))")
+    .eq("in_stock", true)
+    .in("product_categories.categories.slug", wanted);
+
+  type Row = {
+    name: string;
+    price: number;
+    image_url: string | null;
+    product_categories: { categories: { slug: string; name: string } | null }[];
+  };
+
+  const byslug = new Map<string, { name: string; rows: Row[] }>();
+  for (const row of ((data ?? []) as unknown as Row[]) ?? []) {
+    for (const link of row.product_categories ?? []) {
+      const cat = link.categories;
+      if (!cat || !wanted.includes(cat.slug)) continue;
+      const entry = byslug.get(cat.slug) ?? { name: cat.name, rows: [] };
+      entry.rows.push(row);
+      byslug.set(cat.slug, entry);
+    }
+  }
+
+  return wanted
+    .map((slug) => {
+      const entry = byslug.get(slug);
+      if (!entry?.rows.length) return null;
+      const hero = entry.rows.reduce((best, r) =>
+        r.price > best.price ? r : best
+      );
+      return {
+        slug,
+        name: entry.name,
+        count: entry.rows.length,
+        heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
+        heroName: hero.name,
+      };
+    })
+    .filter(Boolean) as CategoryTile[];
+}
+
 async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const [trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats] =
+  const [trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats, categoryTiles] =
     await Promise.all([
       supabase
         .from("products")
@@ -173,17 +242,19 @@ async function getFeaturedProducts() {
             from: prices.length ? Math.min(...prices) : 0,
           };
         }),
+
+      getCategoryTiles(),
     ]);
 
   [trending, lastMinute, perfume, giftSets].forEach((list) =>
     optimizeProductImagesList(list)
   );
 
-  return { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats };
+  return { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats, categoryTiles };
 }
 
 export default async function HomePage() {
-  const { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats } =
+  const { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats, categoryTiles } =
     await getFeaturedProducts();
 
   return (
@@ -238,10 +309,20 @@ export default async function HomePage() {
           CHAPTER 2: Corporate — second door for B2B buyers,
           immediately after the product showcase.
           ═══════════════════════════════════════════ */}
-      <SolutionSection />
+      <SolutionSection shots={corporateShots} />
 
       {/* The gifting dilemma — emotional hook for consumer buyers */}
       <ProblemSection />
+
+      {/* Category breadth */}
+      {/* Category breadth. Placed between the dilemma and what-we-do: name the
+          problem, give them something real to look at, then explain why they can
+          trust us to deliver it. Surfaces the ~259 SKUs in categories the rest of
+          the page never shows, instead of adding a fourth product marquee. */}
+      <CategoryRail
+        tiles={categoryTiles}
+        totalCount={categoryTiles.reduce((n, t) => n + t.count, 0)}
+      />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1.5: TouchGift Superpowers (USPs)
@@ -341,7 +422,6 @@ export default async function HomePage() {
       {/* ═══════════════════════════════════════════
           CHAPTER 6: Final Conversion
           ═══════════════════════════════════════════ */}
-      <StoryHowItWorks />
 
       {/* Visit us — shop location map */}
       <VisitUs />

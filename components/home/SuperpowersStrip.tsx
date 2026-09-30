@@ -301,7 +301,7 @@ export default function SuperpowersStrip() {
 
   return (
     <section className="py-10 md:py-14 section-theme-c">
-      <div className="w-full page-container-capped">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         <div className="text-center mb-6">
           <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-3">
             TouchGift Exclusives

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Gift, Sparkles,
   MapPin,
@@ -10,6 +11,8 @@ import {
   Camera
 } from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
+import { formatKsh } from "@/lib/utils";
+import type { CorporateShot } from "@/app/page";
 import { useMood, MOODS } from "@/context/MoodContext";
 
 /* ─── Scroll-triggered animation hook ─── */
@@ -680,23 +683,15 @@ export function ProblemSection() {
 /* ══════════════════════════════════════════════════════════
    SECTION 3: THE SOLUTION — Brand reveal
    ══════════════════════════════════════════════════════════ */
-export function SolutionSection() {
+export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
   const [activeTab, setActiveTab] = useState<string | null>(null);
 
-  // Column A: alternates square → tall → square → tall
-  const A = [
-    { src: "https://images.unsplash.com/photo-1577903259929-79a61f2372d8?auto=format&fit=crop&q=80&w=800", label: "Client hamper", t: "corporate", tall: false },
-    { src: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800", label: "Branded jerseys", t: "bulk", tall: true },
-    { src: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&q=80&w=800", label: "Team welcome set", t: "corporate", tall: false },
-    { src: "https://images.unsplash.com/photo-1582214959049-74d7561fbaac?auto=format&fit=crop&q=80&w=800", label: "Engraved desk piece", t: "solo", tall: true },
-  ];
-  // Column B: offset — tall → square → tall → square
-  const B = [
-    { src: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=800", label: "Staff appreciation boxes", t: "bulk", tall: true },
-    { src: "https://images.unsplash.com/photo-1507960664917-8178e2eb0e57?auto=format&fit=crop&q=80&w=800", label: "Logo notebook & pen", t: "solo", tall: false },
-    { src: "https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&q=80&w=800", label: "Executive gift set", t: "corporate", tall: true },
-    { src: "https://images.unsplash.com/photo-1511268559489-34b624fbfcf5?auto=format&fit=crop&q=80&w=800", label: "Event giveaways", t: "bulk", tall: false },
-  ];
+  // Real in-stock catalogue photography rather than hotlinked stock: the
+  // Unsplash set was returning 16/16 broken, and a failed <img> renders its alt
+  // text at the tile origin, which spilled outside the rounded frame.
+  const A = shots.filter((_, i) => i % 2 === 0).map((g) => ({ ...g, tall: false }));
+  const B = shots.filter((_, i) => i % 2 === 1).map((g) => ({ ...g, tall: true }));
+
   const N: Record<string, string> = { corporate: "Corporate gifting", bulk: "Bulk order", solo: "Solo branding" };
 
   // Pixel heights drive the alternation — aspect-ratio doesn't work inside a fixed-height scroll column
@@ -711,11 +706,17 @@ export function SolutionSection() {
         className="relative w-full overflow-hidden bg-gradient-to-br from-brand/10 to-brand/20"
         style={{ height: g.tall ? "280px" : "190px" }}
       >
-        <img src={g.src} alt={g.label} className="absolute inset-0 w-full h-full object-cover" />
+        <Image
+          src={g.image}
+          alt={g.label}
+          fill
+          sizes="(max-width: 1024px) 45vw, 320px"
+          className="object-cover"
+        />
       </div>
-      <div className="bg-white dark:bg-surface-elevated px-3 py-2.5 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
-        <p className="font-display font-semibold text-sm text-theme-heading">{g.label}</p>
-        <span className="text-[12px] text-brand font-medium">{N[g.t]}</span>
+      <div className="bg-white dark:bg-[#1A1A22] px-3 py-2.5 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
+        <p className="font-display font-semibold text-sm text-theme-heading leading-tight line-clamp-1">{g.label}</p>
+        <span className="text-[12px] text-brand font-medium">{N[g.t]} · {formatKsh(g.price)}</span>
       </div>
     </div>
   );
@@ -724,20 +725,29 @@ export function SolutionSection() {
     <section className="section-theme-c relative overflow-hidden py-10 md:py-14 min-h-[55vh] lg:min-h-[65vh] flex flex-col justify-center" id="corporate">
       <div className="absolute inset-0 bg-gradient-to-br from-brand/3 via-transparent to-gold/3 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto w-full px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-12 items-center relative z-10">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
 
-        {/* LEFT — copy */}
+        {/* Header spans full width. Inside a 45% column the vw-based size kept
+            growing while the column stayed fixed, so the headline broke to two
+            lines on wide screens. Full width also gives the lede a comfortable
+            measure instead of the 384px rag it had in the column. */}
+        <Reveal delay={100}>
+          <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
+          <h2
+            className="font-display font-bold text-theme-heading leading-[1.08] mb-5"
+            style={{ fontSize: "clamp(2rem, 3.6vw, 3.25rem)" }}
+          >
+            Your brand, in their hands.
+          </h2>
+          <p className="text-base md:text-lg text-theme-body leading-relaxed mb-9 max-w-xl">
+            Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
+          </p>
+        </Reveal>
+
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-center">
+
+        {/* LEFT — routes */}
         <div>
-          <Reveal delay={100}>
-            <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
-            <h2 className="font-display font-bold text-theme-heading leading-tight mb-5" style={{ fontSize: "clamp(2rem, 3.2vw, 3rem)" }}>
-              Your brand,<br />in their hands.
-            </h2>
-            <p className="text-base text-theme-body leading-relaxed mb-7 max-w-sm">
-              Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
-            </p>
-          </Reveal>
-
           <Reveal delay={200}>
             <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
             <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
@@ -785,7 +795,7 @@ export function SolutionSection() {
 
         {/* RIGHT — marquee, NO Reveal wrapper (Reveal's opacity animation fights CSS transform and causes the glitch)
             Exactly 2× content matches the translateY(-50%) keyframe loop point perfectly */}
-        <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "78vh", maxHeight: "720px" }}>
+        <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "min(72vh, 760px)" }}>
           {/* Col 1 scrolls down */}
           <div className="overflow-hidden h-full">
             <div className="animate-marquee-vertical-reverse" style={{ willChange: "transform" }}>
@@ -800,123 +810,6 @@ export function SolutionSection() {
           </div>
         </div>
 
-      </div>
-    </section>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════
-   SECTION 4: HOW IT WORKS — 3-step process
-   ══════════════════════════════════════════════════════════ */
-export function StoryHowItWorks() {
-  const steps = [
-    {
-      num: "01",
-      icon: <ShoppingBag className="w-9 h-9 text-gold" />,
-      title: "Curate the Perfect Gift",
-      desc: "Explore our exquisite collections by occasion or mood, or let our intelligent concierge find the ideal match in seconds.",
-      accent: "from-gold/20 to-gold/5",
-      borderHover: "hover:border-gold/50",
-      numColor: "text-gold",
-    },
-    {
-      num: "02",
-      icon: <CreditCard className="w-9 h-9 text-brand-light" />,
-      title: "Effortless Checkout",
-      desc: "A frictionless experience. Securely complete your order and add a bespoke, heartfelt message—no account required.",
-      accent: "from-brand-light/20 to-brand-light/5",
-      borderHover: "hover:border-brand-light/40",
-      numColor: "text-brand-light",
-    },
-    {
-      num: "03",
-      icon: <Rocket className="w-9 h-9 text-success" />,
-      title: "The Grand Reveal",
-      desc: "We meticulously wrap and dispatch your gift. You receive a final photograph before it departs, ensuring absolute perfection.",
-      accent: "from-success/20 to-success/5",
-      borderHover: "hover:border-success/40",
-      numColor: "text-success",
-    },
-  ];
-
-  return (
-    <section className="py-10 md:py-14 section-theme-b relative overflow-hidden">
-      {/* Subtle dot grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: "radial-gradient(circle, currentColor 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand/15 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      <div className="absolute bottom-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-
-      <div className="w-full px-4 md:px-12 lg:px-16 relative z-10">
-        {/* Heading */}
-        <div className="text-center mb-4">
-          <Reveal>
-            <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
-              Effortless Gifting
-            </p>
-          </Reveal>
-          <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold italic tracking-wide text-theme-heading">
-              The Journey of a{" "}
-              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                Gift
-              </span>
-            </h2>
-          </Reveal>
-        </div>
-
-        {/* Steps */}
-        <div className="relative">
-          {/* Desktop connector line */}
-          <div className="hidden md:block absolute top-[3.5rem] left-[16.67%] right-[16.67%] h-[1px] bg-gradient-to-r from-gold/30 via-brand-light/30 to-success/30 z-0" />
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 relative z-10">
-            {steps.map((step, i) => (
-              <Reveal key={i} delay={200 + i * 180} direction="up">
-                <div
-                  className={`group relative h-full shape-premium-card p-6 md:p-8 border border-brand/10 dark:border-white/10 ${step.borderHover} bg-gradient-to-br ${step.accent} backdrop-blur-sm card-theme transition-all duration-500 hover:shadow-[0_8px_40px_rgba(0,0,0,0.15)] hover:-translate-y-2 overflow-hidden`}
-                >
-                  {/* Shimmer on hover */}
-                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                  {/* Large background step number */}
-                  <span className={`absolute -top-2 -right-2 font-display text-[7rem] font-black leading-none opacity-[0.06] ${step.numColor} select-none pointer-events-none`}>
-                    {step.num}
-                  </span>
-
-                  <div className="relative z-10">
-                    {/* Small numbered badge */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className={`font-display text-xs font-black uppercase tracking-[0.2em] ${step.numColor}`}>
-                        Step {step.num}
-                      </span>
-                    </div>
-
-                    {/* Icon */}
-                    <div className="w-16 h-16 shape-premium-button bg-brand/10 dark:bg-white/10 backdrop-blur-md flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
-                      {step.icon}
-                    </div>
-
-                    <h3 className="font-display text-2xl font-bold text-theme-heading mb-3 heading-elegant group-hover:text-gold transition-colors duration-300">
-                      {step.title}
-                    </h3>
-                    <p className="text-theme-body leading-relaxed text-elegant group-hover:text-theme-heading transition-colors duration-300">
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </div>
     </section>
