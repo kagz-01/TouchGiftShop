@@ -571,7 +571,7 @@ function DilemmaCard({
 
 export function ProblemSection() {
   return (
-    <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
+    <section className="py-8 md:py-10 section-theme-a relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
         <div className="text-center max-w-2xl mx-auto mb-6">
           <Reveal>
@@ -772,7 +772,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
   );
 
   return (
-    <section className="section-theme-c relative overflow-hidden py-10 md:py-14 min-h-[55vh] lg:min-h-[65vh] flex flex-col justify-center" id="corporate">
+    <section className="section-theme-c relative overflow-hidden py-10 md:py-12 flex flex-col justify-center" id="corporate">
       <div className="absolute inset-0 bg-gradient-to-br from-brand/3 via-transparent to-gold/3 pointer-events-none" />
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
@@ -894,7 +894,7 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-10 md:py-16 bg-white dark:bg-[#121216] border-y border-surface-border">
+    <section className="py-8 md:py-12 bg-white dark:bg-[#121216] border-y border-surface-border">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
         
         {/* Top Split: Headings & Stats */}

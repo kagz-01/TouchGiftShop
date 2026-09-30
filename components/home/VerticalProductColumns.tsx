@@ -72,7 +72,7 @@ export default function VerticalProductColumns({
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <section className="py-10 md:py-12 section-theme-a relative overflow-hidden">
+    <section className="py-8 md:py-10 section-theme-a relative overflow-hidden">
       {/* Subtle warm gradient top */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/20 via-transparent to-blush/10 pointer-events-none" />
 

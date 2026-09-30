@@ -36,7 +36,7 @@ export default function VisitUs() {
   return (
     <section className="bg-gradient-to-b from-surface-warm to-brand/5 dark:from-[#121216] dark:to-brand/10 border-t border-surface-border">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 px-6 lg:px-12 py-12 lg:py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 px-6 lg:px-12 py-8 lg:py-12">
           
           {/* Left Column: Concierge & Info */}
           <div className="flex flex-col h-full">
@@ -195,7 +195,7 @@ export default function VisitUs() {
       </div>
       
       {/* Bottom Newsletter Bar */}
-      <div className="bg-[#FAF7F5] dark:bg-[#15151A] border-t border-gray-200 dark:border-white/10 py-10 px-6 lg:px-12">
+      <div className="bg-[#FAF7F5] dark:bg-[#15151A] border-t border-gray-200 dark:border-white/10 py-8 px-6 lg:px-12">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center shrink-0">

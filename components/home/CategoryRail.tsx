@@ -67,7 +67,7 @@ export default function CategoryRail({
   const loop = [...tiles, ...tiles];
 
   return (
-    <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
+    <section className="py-8 md:py-10 section-theme-a relative overflow-hidden">
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         <div className="flex items-end justify-between gap-6 mb-6 md:mb-8">
           <div>
