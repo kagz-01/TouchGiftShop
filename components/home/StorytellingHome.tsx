@@ -727,27 +727,24 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
 
-        {/* Header spans full width. Inside a 45% column the vw-based size kept
-            growing while the column stayed fixed, so the headline broke to two
-            lines on wide screens. Full width also gives the lede a comfortable
-            measure instead of the 384px rag it had in the column. */}
-        <Reveal delay={100}>
-          <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
-          <h2
-            className="font-display font-bold text-theme-heading leading-[1.08] mb-5"
-            style={{ fontSize: "clamp(2rem, 3.6vw, 3.25rem)" }}
-          >
-            Your brand, in their hands.
-          </h2>
-          <p className="text-base md:text-lg text-theme-body leading-relaxed mb-9 max-w-xl">
-            Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
-          </p>
-        </Reveal>
+        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-start">
 
-        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-center">
+        {/* LEFT — routes and text */}
+        <div className="flex flex-col pt-4 lg:pt-8">
+          {/* Headline */}
+          <Reveal delay={100}>
+            <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
+            <h2
+              className="font-display font-bold text-theme-heading leading-[1.08] mb-5"
+              style={{ fontSize: "clamp(2rem, 3.6vw, 3.25rem)" }}
+            >
+              Your brand, in their hands.
+            </h2>
+            <p className="text-base md:text-lg text-theme-body leading-relaxed mb-9 max-w-xl">
+              Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
+            </p>
+          </Reveal>
 
-        {/* LEFT — routes */}
-        <div>
           <Reveal delay={200}>
             <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
             <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
