@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import {
   HeroCinematic,
   ProblemSection,
+  SolutionSection,
   SocialProof,
   StoryHowItWorks,
 } from "@/components/home/StorytellingHome";
@@ -237,6 +238,9 @@ export default async function HomePage() {
           narrative starts. Also where the hero's corporate mood tab lands. */}
 
       <ProblemSection />
+
+      {/* Corporate gifting section — second door for B2B buyers */}
+      <SolutionSection />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1.5: TouchGift Superpowers (USPs)
