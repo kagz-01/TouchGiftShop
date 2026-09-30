@@ -162,7 +162,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
                 <NotificationBell user={user} />
               ) : (
                 <div className="group relative flex flex-col items-center justify-center">
-                  <Link href="/login?next=/reminders" aria-label="Gift reminders" className="w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200">
+                  <Link href="/login?next=/reminders" aria-label="Gift reminders" className="w-11 h-11 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200">
                     <Bell className="w-4 h-4" />
                   </Link>
                   <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">Reminders</span>
@@ -173,7 +173,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
             <div className="w-px h-5 bg-surface-border mx-1" />
             <ThemeToggle />
             {user && !user.is_anonymous ? (
-              <Link href="/account" className="w-8 h-8 shape-premium-button bg-gradient-to-br from-brand to-brand-light flex items-center justify-center text-white text-xs font-bold hover:shadow-glow hover:scale-105 transition-all duration-200 flex-shrink-0" aria-label="My account">
+              <Link href="/account" className="w-11 h-11 shape-premium-button bg-gradient-to-br from-brand to-brand-light flex items-center justify-center text-white text-xs font-bold hover:shadow-glow hover:scale-105 transition-all duration-200 flex-shrink-0" aria-label="My account">
                 {(user.email?.[0] ?? user.phone?.[3] ?? "G").toUpperCase()}
               </Link>
             ) : (guest || user?.is_anonymous) ? (

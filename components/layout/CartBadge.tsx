@@ -13,7 +13,7 @@ export default function CartBadge() {
       <Link
         href="/cart"
         aria-label="Shopping cart"
-        className="relative w-9 h-9 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
+        className="relative w-11 h-11 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200"
       >
         <ShoppingBag className="w-4 h-4" />
         {count > 0 && (

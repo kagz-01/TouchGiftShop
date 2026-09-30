@@ -86,7 +86,7 @@ export default function NotificationBell({ user }: { user: any }) {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Notifications"
         className={cn(
-          "relative w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200",
+          "relative w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200",
           isOpen ? "bg-brand/10 text-brand" : "text-brand-muted hover:text-brand hover:bg-brand/5"
         )}
       >
