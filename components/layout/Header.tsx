@@ -10,6 +10,7 @@ import { Bell, Search, X, UserRound, MessageCircle, ChevronRight, Briefcase } fr
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import VibeSelector from "@/components/ui/VibeSelector";
+import MoodChip from "@/components/ui/MoodChip";
 import CartBadge from "@/components/layout/CartBadge";
 import SplashReveal from "@/components/ui/SplashReveal";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
@@ -164,6 +165,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
                 </div>
               )}
             </div>
+            <MoodChip />
             <div className="w-px h-5 bg-surface-border mx-1" />
             <ThemeToggle />
             {user && !user.is_anonymous ? (

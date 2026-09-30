@@ -174,7 +174,12 @@ interface MoodContextValue {
   customMood: CustomVibeMeta | null;
   customMoods: CustomVibeMeta[];
   activeCustomId: string | null;
-  setMood: (mood: Mood) => void;
+  /** selectedByUser distinguishes a deliberate tap from hero auto-rotation.
+   *  Only deliberate selections persist and recolour the site — otherwise simply
+   *  visiting the homepage would pin a palette for the whole session. */
+  selectedByUser: boolean;
+  setMood: (mood: Mood, selectedByUser?: boolean) => void;
+  clearMood: () => void;
   setCustomMood: (label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => void;
   setActiveCustomId: (id: string) => void;
   removeCustomMood: (id: string) => void;
@@ -186,7 +191,9 @@ const MoodContext = createContext<MoodContextValue>({
   customMood: null,
   customMoods: [],
   activeCustomId: null,
+  selectedByUser: false,
   setMood: () => {},
+  clearMood: () => {},
   setCustomMood: () => {},
   setActiveCustomId: () => {},
   removeCustomMood: () => {},
@@ -197,6 +204,7 @@ const STORAGE_CUSTOM_KEY = "tg_mood_custom";
 
 export function MoodProvider({ children }: { children: React.ReactNode }) {
   const [mood, setMoodState] = useState<Mood>("default");
+  const [selectedByUser, setSelectedByUser] = useState(false);
   const [customMoods, setCustomMoods] = useState<CustomVibeMeta[]>([]);
   const [activeCustomId, setActiveCustomIdState] = useState<string | null>(null);
 
@@ -211,6 +219,7 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
 
       if (saved && (MOODS.find((m) => m.id === saved) || saved === "custom")) {
         setMoodState(saved);
+        setSelectedByUser(true);
       }
       
       if (savedCustom) {
@@ -254,12 +263,30 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
         root.style.removeProperty("--mood-glow");
       }
     }
+    // Auto-rotation must never stick. Leaving the hero should not leave the
+    // visitor with a palette they did not choose.
     try {
-      localStorage.setItem(STORAGE_KEY, mood);
+      if (selectedByUser) localStorage.setItem(STORAGE_KEY, mood);
     } catch {}
-  }, [mood, customMood]);
+  }, [mood, customMood, selectedByUser]);
 
-  const setMood = useCallback((m: Mood) => setMoodState(m), []);
+  const setMood = useCallback((m: Mood, byUser = false) => {
+    setMoodState(m);
+    if (byUser) setSelectedByUser(true);
+    if (!byUser) {
+      try { localStorage.removeItem(STORAGE_KEY); } catch {}
+    }
+  }, []);
+
+  const clearMood = useCallback(() => {
+    setMoodState("default");
+    setSelectedByUser(false);
+    setActiveCustomIdState(null);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem("tg_active_custom_id");
+    } catch {}
+  }, []);
 
   const setCustomMood = useCallback((label: string, emoji: string, tagline?: string, gradient?: string, glow?: string) => {
     const newId = "custom_" + Date.now();
@@ -273,6 +300,7 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
     
     setActiveCustomIdState(newId);
     setMoodState("custom");
+    setSelectedByUser(true);
     try { localStorage.setItem("tg_active_custom_id", newId); } catch {}
   }, []);
 
@@ -290,6 +318,7 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
     });
     if (activeCustomId === id) {
       setMoodState("default");
+      setSelectedByUser(false);
       setActiveCustomIdState(null);
       try { localStorage.removeItem("tg_active_custom_id"); } catch {}
     }
@@ -311,7 +340,7 @@ export function MoodProvider({ children }: { children: React.ReactNode }) {
     : (MOODS.find((m) => m.id === mood) || MOODS[0]);
 
   return (
-    <MoodContext.Provider value={{ mood, moodMeta, customMood, customMoods, activeCustomId, setMood, setCustomMood, setActiveCustomId, removeCustomMood }}>
+    <MoodContext.Provider value={{ mood, moodMeta, customMood, customMoods, activeCustomId, selectedByUser, setMood, clearMood, setCustomMood, setActiveCustomId, removeCustomMood }}>
       {children}
     </MoodContext.Provider>
   );

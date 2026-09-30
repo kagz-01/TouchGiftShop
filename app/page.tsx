@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { ShoppingBag, Target } from "lucide-react";
+import type { Metadata } from "next";
 import {
   HeroCinematic,
   ProblemSection,
@@ -25,6 +26,45 @@ import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
  * 60s keeps the edge copy fresh while still absorbing bursts of traffic.
  */
 export const revalidate = 60;
+
+/**
+ * Homepage SEO metadata.
+ * Strategy: title = Kenya (broad reach) + description anchors Nairobi (high-intent local).
+ * Covers: "gift delivery Kenya", "gifts in Nairobi", "same-day gift delivery Nairobi",
+ *         "gift hampers Kenya", "birthday gifts Nairobi", "corporate gifts Kenya".
+ */
+export const metadata: Metadata = {
+  title: "TouchGift — Kenya's Premium Gift Delivery | Same-Day Nairobi",
+  description:
+    "Order curated gifts, hampers & perfumes online. Same-day delivery in Nairobi, next-day across Kenya. Free gift wrapping, corporate gifting & group orders. Trusted by 5,000+ happy customers.",
+  openGraph: {
+    title: "TouchGift — Kenya's Premium Gift Delivery",
+    description:
+      "Curated gifts & hampers delivered same-day in Nairobi and nationwide across Kenya. Beautiful wrapping included. Order in minutes.",
+    images: [{ url: "/logo/logo.webp", width: 1200, height: 630, alt: "TouchGift — Gift Delivery Kenya" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TouchGift — Kenya's Premium Gift Delivery",
+    description:
+      "Same-day gift delivery in Nairobi, next-day across Kenya. Beautiful wrapping. Group gifting. Corporate orders.",
+    images: ["/logo/logo.webp"],
+  },
+  keywords: [
+    "gift delivery Kenya",
+    "gifts in Nairobi",
+    "same-day gift delivery Nairobi",
+    "gift hampers Kenya",
+    "birthday gifts Nairobi",
+    "anniversary gifts Kenya",
+    "corporate gifts Nairobi",
+    "perfume gifts Kenya",
+    "gift shop Nairobi",
+    "online gift shop Kenya",
+    "group gifting Kenya",
+    "gift wrapping Nairobi",
+  ],
+};
 
 async function getByCategory(categorySlug: string, limit = 10): Promise<Product[]> {
   const supabase = createClient(

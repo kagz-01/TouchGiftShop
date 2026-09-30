@@ -972,7 +972,7 @@ export function SocialProof() {
             </Reveal>
             <Reveal delay={200}>
               <p className="text-theme-body text-base lg:text-lg">
-                The details matter most when the gift needs to represent you well.
+                Same-day delivery across Nairobi. Next-day, anywhere in Kenya. The details are always handled.
               </p>
             </Reveal>
           </div>
