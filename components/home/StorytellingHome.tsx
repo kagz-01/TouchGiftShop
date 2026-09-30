@@ -212,7 +212,7 @@ export function HeroCinematic() {
 
   return (
     <section 
-      className="relative min-h-[70vh] md:min-h-[85vh] flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-[92vh] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* ── CINEMATIC BACKGROUND IMAGES ── */}
       {HERO_MOODS.map((m) => (
@@ -721,7 +721,7 @@ export function SolutionSection() {
   );
 
   return (
-    <section className="section-theme-c relative overflow-hidden py-16 md:py-20 min-h-[70vh] lg:min-h-[80vh] flex flex-col justify-center" id="corporate">
+    <section className="section-theme-c relative overflow-hidden py-10 md:py-14 min-h-[55vh] lg:min-h-[65vh] flex flex-col justify-center" id="corporate">
       <div className="absolute inset-0 bg-gradient-to-br from-brand/3 via-transparent to-gold/3 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto w-full px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[45%_55%] gap-10 lg:gap-12 items-center relative z-10">
@@ -952,11 +952,11 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-20 md:py-32 bg-white dark:bg-[#121216] border-y border-surface-border">
+    <section className="py-10 md:py-16 bg-white dark:bg-[#121216] border-y border-surface-border">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
         
         {/* Top Split: Headings & Stats */}
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 items-start justify-between mb-20">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-8 items-start justify-between mb-10">
           
           {/* Left: Heading block */}
           <div className="max-w-md">
@@ -1035,7 +1035,7 @@ export function SocialProof() {
 
         {/* Google reviews CTA */}
         <Reveal delay={600}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-16 pt-8 border-t border-surface-border/50">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8 pt-6 border-t border-surface-border/50">
             <p className="text-sm text-theme-body">
               Gifted with us? Your review helps others give better.
             </p>

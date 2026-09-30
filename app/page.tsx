@@ -249,7 +249,7 @@ export default async function HomePage() {
           Perfumes floor at KSh 6,075, so the old "Under KSh 2,000" row
           could never carry them; the keyring edit went to /shop only.
           ═══════════════════════════════════════════ */}
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-4 space-y-0">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 space-y-0">
         <FeaturedRow
           title="Gift Sets & Hampers"
           subtitle="Hand-packed hampers & curated sets"
@@ -275,7 +275,7 @@ export default async function HomePage() {
       </div>
 
       {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
-      <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
+      <div className="w-full mx-auto flex flex-col sm:flex-row gap-3 px-0">
         <div className="flex-1"><SmartReorderBanner /></div>
       </div>
 
@@ -310,7 +310,7 @@ export default async function HomePage() {
       </ScrollReveal>
 
       {/* Browse All CTA */}
-      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-4 pb-10" delay={0}>
+      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-2 pb-6" delay={0}>
         <Link
           href="/shop"
           className="group block bg-white dark:bg-white/[0.04] border-2 border-surface-border dark:border-white/10 hover:border-brand/30 rounded-3xl p-6 text-center transition-all duration-300 hover:shadow-card"

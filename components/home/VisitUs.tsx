@@ -36,7 +36,7 @@ export default function VisitUs() {
   return (
     <section className="bg-gradient-to-b from-surface-warm to-brand/5 dark:from-[#121216] dark:to-brand/10 border-t border-surface-border">
       <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 px-6 lg:px-12 py-20 lg:py-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 px-6 lg:px-12 py-12 lg:py-16">
           
           {/* Left Column: Concierge & Info */}
           <div className="flex flex-col h-full">
