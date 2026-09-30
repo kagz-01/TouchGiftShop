@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUpcomingEvents, formatCountdown, type SeasonalEvent } from "@/lib/seasonal-events";
+import { X, ArrowRight, Gift } from "lucide-react";
 
 export default function SeasonalPromptBar() {
   const router = useRouter();
@@ -36,68 +37,49 @@ export default function SeasonalPromptBar() {
     }
   }
 
-  function handleNext() {
-    setCurrent((c) => c + 1);
-  }
-
   function handleShop() {
-    // Category filtering is unavailable while product_categories is empty —
-    // /shop?category=<slug> would render an empty grid.
     router.push("/shop");
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-pink-500 p-4 text-white shadow-lg">
-      {/* Background decoration */}
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 text-6xl opacity-20 select-none">
-        {event.icon}
-      </div>
-
-      <div className="relative z-10">
-        {/* Header */}
-        <div className="mb-2 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">{event.icon}</span>
-            <span className="text-xs font-medium uppercase tracking-wide text-white/70">
-              {formatCountdown(event.daysBefore)}
-            </span>
-          </div>
-          <div className="flex items-center gap-1">
-            {events.length > 1 && (
-              <>
-                <button
-                  onClick={handleDismiss}
-                  className="rounded-full p-1 text-white/50 hover:text-white/80"
-                  title="Dismiss"
-                >
-                  ✕
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="rounded-full p-1 text-white/50 hover:text-white/80"
-                  title="Next event"
-                >
-                  →
-                </button>
-              </>
-            )}
-          </div>
+    <div className="relative bg-gradient-to-r from-[#9B1B5A] to-[#6D1340] text-white">
+      {/* Subtle Pattern Overlay */}
+      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] [background-size:16px_16px]" />
+      
+      <div className="relative max-w-7xl mx-auto px-4 py-2.5 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+        {/* Left: Icon & Label */}
+        <div className="flex items-center gap-3 shrink-0">
+          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm text-sm">
+            {event.icon}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
+            {formatCountdown(event.daysBefore)}
+          </span>
         </div>
 
-        {/* Content */}
-        <h3 className="text-lg font-bold">{event.name}</h3>
-        {event.nameSw && (
-          <p className="text-xs text-white/60">{event.nameSw}</p>
-        )}
-        <p className="mt-1 text-sm text-white/80">{event.message}</p>
+        {/* Center: Message & CTA */}
+        <div className="flex-1 flex flex-wrap items-center justify-center gap-2 text-center text-sm font-medium">
+          <span className="font-bold">{event.name}:</span>
+          <span className="text-white/90">{event.message}</span>
+          <button
+            onClick={handleShop}
+            className="group ml-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-white hover:text-gold transition-colors"
+          >
+            Shop the Edit
+            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
 
-        {/* CTA */}
-        <button
-          onClick={handleShop}
-          className="mt-3 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-purple-700 shadow-sm hover:bg-white/90"
-        >
-          Shop Now →
-        </button>
+        {/* Right: Dismiss */}
+        <div className="shrink-0 flex items-center justify-end">
+          <button
+            onClick={handleDismiss}
+            className="p-1.5 -mr-1.5 rounded-full hover:bg-white/10 transition-colors focus:outline-none"
+            aria-label="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );

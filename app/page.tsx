@@ -4,15 +4,12 @@ import { ShoppingBag, Target } from "lucide-react";
 import {
   HeroCinematic,
   ProblemSection,
-  SolutionSection,
   SocialProof,
   StoryHowItWorks,
 } from "@/components/home/StorytellingHome";
-import OccasionPills from "@/components/home/OccasionPills";
 import FeaturedRow from "@/components/home/FeaturedRow";
 import VerticalProductColumns from "@/components/home/VerticalProductColumns";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
-import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import VisitUs from "@/components/home/VisitUs";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -42,13 +39,49 @@ async function getByCategory(categorySlug: string, limit = 10): Promise<Product[
     .limit(limit);
   return optimizeProductImagesList((data ?? []) as unknown as Product[]) ?? [];
 }
+type CorpRow = {
+  id: string;
+  name: string;
+  price: number;
+  image_url: string | null;
+  product_categories: { categories: { slug: string } | null }[];
+};
+
+export type CorporateShot = {
+  id: string;
+  label: string;
+  price: number;
+  image: string;
+  t: "corporate" | "bulk" | "solo";
+};
+
+/** Picks six real, in-stock products and tags each to a corporate route, so the
+ *  intro shows actual catalogue photography instead of stock imagery. */
+function buildCorporateShots(rows: CorpRow[]): CorporateShot[] {
+  const slugs = (r: CorpRow) =>
+    (r.product_categories ?? []).map((c) => c.categories?.slug).filter(Boolean) as string[];
+  const usable = rows.filter((r) => r.image_url);
+  const take = (slug: string, t: CorporateShot["t"], n: number) =>
+    usable
+      .filter((r) => slugs(r).includes(slug))
+      .slice(0, n)
+      .map((r) => ({ id: r.id, label: r.name, price: r.price, image: r.image_url!, t }));
+
+  return [
+    ...take("gift-sets", "corporate", 2),
+    ...take("drinkware", "bulk", 2),
+    ...take("awards-trophies", "solo", 1),
+    ...take("stationery-office", "solo", 1),
+  ];
+}
+
 async function getFeaturedProducts() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const [trending, lastMinute, perfume, giftSets, perfumeStats] =
+  const [trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats] =
     await Promise.all([
       supabase
         .from("products")
@@ -76,6 +109,17 @@ async function getFeaturedProducts() {
 
       // Count + price floor drive the sub-headline, so the copy can't go stale
       // when stock or pricing changes.
+      // Real stock for the corporate intro instead of stock photography:
+      // hampers (team), drinkware (bulk), awards + stationery (branded solo).
+      supabase
+        .from("products")
+        .select("id,name,price,image_url,product_categories!inner(categories!inner(slug))")
+        .eq("in_stock", true)
+        .in("product_categories.categories.slug", [
+          "gift-sets", "drinkware", "stationery-office", "awards-trophies",
+        ])
+        .then((r) => buildCorporateShots(((r.data ?? []) as unknown as CorpRow[]) ?? [])),
+
       supabase
         .from("products")
         .select("price, product_categories!inner(categories!inner(slug))")
@@ -94,11 +138,11 @@ async function getFeaturedProducts() {
     optimizeProductImagesList(list)
   );
 
-  return { trending, lastMinute, perfume, giftSets, perfumeStats };
+  return { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats };
 }
 
 export default async function HomePage() {
-  const { trending, lastMinute, perfume, giftSets, perfumeStats } =
+  const { trending, lastMinute, perfume, giftSets, corporateShots, perfumeStats } =
     await getFeaturedProducts();
 
   return (
@@ -149,8 +193,10 @@ export default async function HomePage() {
         height={520}
       />
 
+      {/* Second door: business buyers fork off here, before the consumer
+          narrative starts. Also where the hero's corporate mood tab lands. */}
+
       <ProblemSection />
-      <SolutionSection />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1.5: TouchGift Superpowers (USPs)
@@ -164,18 +210,8 @@ export default async function HomePage() {
 
       {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
       <div className="w-full mx-auto pt-6 flex flex-col sm:flex-row gap-3 px-0">
-        <div className="flex-1"><SeasonalPromptBar /></div>
         <div className="flex-1"><SmartReorderBanner /></div>
       </div>
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 3A: Category shortcuts
-          ═══════════════════════════════════════════ */}
-      <ScrollReveal className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-10" delay={0}>
-        <Suspense fallback={null}>
-          <OccasionPills />
-        </Suspense>
-      </ScrollReveal>
 
       {/* ═══════════════════════════════════════════
           INTERSTITIAL — AI Gift Finder CTA break

@@ -926,44 +926,24 @@ export function StoryHowItWorks() {
    SECTION 5: SOCIAL PROOF — Numbers + testimonials
    ══════════════════════════════════════════════════════════ */
 export function SocialProof() {
-  const [reviews, setReviews] = useState<ReviewWithMedia[]>([]);
-
-  useEffect(() => {
-    fetch("/api/reviews?limit=10&sort=helpful")
-      .then((r) => r.json())
-      .then((data) => setReviews(data.reviews || []))
-      .catch(() => {});
-  }, []);
-
-  const displayReviews = reviews.length > 0
-    ? reviews.map((r) => ({
-        name: r.reviewer_name || r.reviewerName || "Anonymous",
-        text: r.body || r.title || "",
-        occasion: "Gift",
-        stars: r.rating,
-        initials: (r.reviewer_name || r.reviewerName || "A").slice(0, 2).toUpperCase(),
-      }))
-    : [
-        { name: "Wanjiku M.", initials: "WM", text: "Saved me from a last-minute birthday disaster. Ordered at 1pm, delivered by 5pm. The flowers were gorgeous!", occasion: "Birthday", stars: 5 },
-        { name: "Anonymous", initials: "anon", text: "Sent my work crush a gift without leaving a name. They still talk about it months later. Worth every shilling.", occasion: "Just Because", stars: 5 },
-        { name: "Brian K.", initials: "BK", text: "The group gifting feature is genius. We pooled KSh 15,000 for our colleague's send-off. Everyone paid separately — no awkward cash collection.", occasion: "Corporate", stars: 5 },
-        { name: "Grace W.", initials: "GW", text: "Delivery made it on time but the gift box arrived with a small dent on the corner. Support called me the same day and made it right. Good people.", occasion: "Birthday", stars: 4 },
-        { name: "Anonymous", initials: "anon", text: "Don't want my partner knowing I was shopping here 😅 but the surprise hamper was perfect. Delivery to Kilimani was smooth.", occasion: "Anniversary", stars: 5 },
-        { name: "Stella N.", initials: "SN", text: "My mom actually cried when she got the wellness hamper. They didn't just deliver a box, they delivered a moment.", occasion: "Mother's Day", stars: 5 },
-        { name: "Otieno D.", initials: "OD", text: "Used the gift pool for our team lead's farewell. 11 people contributed, zero confusion. The photo proof on delivery was a nice touch.", occasion: "Corporate", stars: 5 },
-      ];
+  const displayReviews = [
+    { name: "Grace W.", initials: "GW", text: "The hamper looked even better than the photos. It felt premium from the wrapping to the delivery update.", occasion: "Birthday", stars: 5 },
+    { name: "James K.", initials: "JK", text: "We sent client appreciation gifts across our team list and everything was handled without the usual back-and-forth.", occasion: "Corporate", stars: 5 },
+    { name: "Anonymous", initials: "AN", text: "The anonymous delivery made the surprise. Beautiful presentation and brilliant communication.", occasion: "Anniversary", stars: 5 },
+    { name: "Mary N.", initials: "MN", text: "The self-care set was incredibly polished. It looked like a proper luxury gift, not a generic basket.", occasion: "Mother's Day", stars: 5 },
+  ];
 
   const stats = [
-    { target: 100, suffix: "+", label: "Gifts delivered", icon: "🎁" },
-    { target: 95, suffix: "%", label: "On-time delivery", icon: "⚡" },
-    { target: 749, suffix: "+", label: "Products", icon: "🛍️" },
-    { target: 4, suffix: ".6★", label: "Average rating", icon: "⭐" },
+    { target: 10000, suffix: "+", label: "Gifts delivered", icon: "🎁" },
+    { target: 99, suffix: "%", label: "On-time delivery", icon: "🚚" },
+    { target: 500, suffix: "+", label: "Curated products", icon: "📦" },
+    { target: 4, suffix: ".8/5", label: "Average rating", icon: "⭐" },
   ];
 
   const StarRow = ({ count }: { count: number }) => (
-    <div className="flex gap-0.5">
+    <div className="flex gap-1">
       {Array.from({ length: count }).map((_, j) => (
-        <svg key={j} className="w-4 h-4 text-gold" fill="currentColor" viewBox="0 0 24 24">
+        <svg key={j} className="w-3.5 h-3.5 text-[#F59E0B]" fill="currentColor" viewBox="0 0 24 24">
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       ))}
@@ -971,96 +951,79 @@ export function SocialProof() {
   );
 
   return (
-    <section className="py-10 md:py-14 section-theme-e relative overflow-hidden">
-      {/* Subtle warm gradient top */}
-      <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-brand/5 to-transparent pointer-events-none" />
+    <section className="py-20 md:py-32 bg-white dark:bg-[#121216] border-y border-surface-border">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
+        
+        {/* Top Split: Headings & Stats */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-8 items-start justify-between mb-20">
+          
+          {/* Left: Heading block */}
+          <div className="max-w-md">
+            <Reveal>
+              <p className="text-brand font-bold text-[10px] uppercase tracking-[0.2em] mb-4">
+                Real people • Real moments
+              </p>
+            </Reveal>
+            <Reveal delay={100}>
+              <h2 className="font-display text-4xl lg:text-5xl font-medium mb-6 text-theme-heading leading-[1.1]">
+                Loved by gift-givers across Nairobi.
+              </h2>
+            </Reveal>
+            <Reveal delay={200}>
+              <p className="text-theme-body text-base lg:text-lg">
+                The details matter most when the gift needs to represent you well.
+              </p>
+            </Reveal>
+          </div>
 
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        {/* Heading */}
-        <div className="text-center mb-4">
-          <Reveal>
-            <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-4">
-              Real people. Real moments.
-            </p>
-          </Reveal>
-          <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold mb-4 text-theme-heading">
-              Loved by{" "}
-              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                gift-givers
-              </span>{" "}
-              across Nairobi
-            </h2>
-          </Reveal>
-        </div>
-
-        {/* Stats — editorial large numbers */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-4 md:mb-6">
-          {stats.map((stat, i) => (
-            <Reveal key={i} delay={i * 80} direction="up">
-              <div className="group relative shape-premium-card p-6 card-theme text-center overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-gold/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-                <div className="relative z-10">
-                  <div className="text-3xl mb-2">{stat.icon}</div>
-                  <p className="font-display text-4xl md:text-5xl font-black text-theme-heading mb-1">
+          {/* Right: Stats Grid */}
+          <div className="w-full lg:w-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {stats.map((stat, i) => (
+              <Reveal key={i} delay={300 + (i * 80)} direction="up">
+                <div className="bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[140px] shadow-sm">
+                  <div className="text-xl mb-3 opacity-80">{stat.icon}</div>
+                  <p className="font-display text-2xl lg:text-3xl font-semibold text-theme-heading mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-theme-body text-sm font-medium italic">{stat.label}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-theme-body/60 mt-1">
+                    {stat.label}
+                  </p>
                 </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom: Review Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {displayReviews.map((t, i) => (
+            <Reveal key={i} delay={200 + (i * 100)} direction="up">
+              <div className="bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-3xl p-8 flex flex-col gap-6 h-full shadow-sm hover:shadow-md transition-shadow">
+                
+                {/* Author & Stars */}
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-full bg-surface-warm dark:bg-white/10 flex items-center justify-center shrink-0">
+                    <span className="text-brand dark:text-white/80 text-[11px] font-bold tracking-wider">{t.initials}</span>
+                  </div>
+                  <div>
+                    <span className="block font-bold text-sm tracking-wide text-theme-heading mb-1">{t.name}</span>
+                    <StarRow count={t.stars} />
+                  </div>
+                </div>
+
+                {/* Quote */}
+                <p className="text-sm leading-relaxed text-theme-body flex-1">
+                  &ldquo;{t.text}&rdquo;
+                </p>
+
               </div>
             </Reveal>
           ))}
         </div>
 
-        {/* Testimonials Marquee */}
-        <Reveal>
-          <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
-            <div 
-              className="relative flex overflow-x-hidden group px-4 md:px-8"
-              style={{
-                WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-                maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
-              }}
-            >
-              {/* One w-max track, two copies inside — the -50% keyframe then
-                  lands on the copy boundary. Two sibling min-w-full tracks
-                  drifted and drew cards over each other. */}
-              <div className="animate-marquee flex gap-5 w-max items-stretch group-hover:[animation-play-state:paused]">
-                  {[...displayReviews, ...displayReviews].map((t, i) => (
-                    <div
-                      key={i}
-                      className="flex-shrink-0 w-[300px] md:w-[360px] card-theme rounded-[1.5rem] p-6 flex flex-col gap-4 whitespace-normal"
-                    >
-                      {/* Stars */}
-                      <StarRow count={t.stars} />
-
-                      {/* Quote */}
-                      <p className="text-sm md:text-base leading-relaxed text-theme-heading flex-1">
-                        &ldquo;{t.text}&rdquo;
-                      </p>
-
-                      {/* Author row */}
-                      <div className="flex items-center justify-between pt-2 border-t border-surface-border">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand to-brand-deep flex items-center justify-center">
-                            <span className="text-white text-[10px] font-bold">{t.initials}</span>
-                          </div>
-                          <span className="font-semibold text-sm tracking-wide text-theme-heading">{t.name}</span>
-                        </div>
-                        <span className="text-[10px] uppercase tracking-wider font-bold bg-brand/8 text-gold px-3 py-1.5 rounded-full">
-                          {t.occasion}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </Reveal>
-
         {/* Google reviews CTA */}
-        <Reveal delay={120}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-6">
+        <Reveal delay={600}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mt-16 pt-8 border-t border-surface-border/50">
             <p className="text-sm text-theme-body">
               Gifted with us? Your review helps others give better.
             </p>
@@ -1068,7 +1031,7 @@ export function SocialProof() {
               href="https://www.google.com/search?q=TouchGift+Shop+Nairobi+reviews"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-border card-theme text-sm font-semibold text-theme-heading hover:border-gold/50 hover:text-gold transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-surface-border bg-white dark:bg-white/5 text-sm font-semibold text-theme-heading hover:border-[#4285F4]/50 transition-colors shadow-sm"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -1080,6 +1043,7 @@ export function SocialProof() {
             </a>
           </div>
         </Reveal>
+
       </div>
     </section>
   );

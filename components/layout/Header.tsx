@@ -12,6 +12,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 import VibeSelector from "@/components/ui/VibeSelector";
 import CartBadge from "@/components/layout/CartBadge";
 import SplashReveal from "@/components/ui/SplashReveal";
+import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import type { SessionUser } from "@/components/layout/LayoutWrapper";
 
 const ANNOUNCEMENTS = [
@@ -67,6 +68,9 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
 
   return (
     <>
+      {/* ── SEASONAL PROMPT BAR ── */}
+      <SeasonalPromptBar />
+
       {/* ── ANNOUNCEMENT BAR ── */}
       <div className="hidden md:block bg-brand text-white text-center text-[11px] font-medium tracking-wide py-2 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
