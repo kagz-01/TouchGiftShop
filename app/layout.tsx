@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
 import AmbientBackground from "@/components/ui/AmbientBackground";
@@ -14,17 +14,28 @@ const ReferralCapture = dynamic(() => import("@/components/referrals/ReferralCap
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+/* Self-hosted rather than next/font/google. The Google fetch happened on every
+   build with no cache, and this machine's route to fonts.gstatic.com is
+   unreliable, so builds failed at random. These also remove the same risk from
+   production deploys. Variable fonts, latin subset, 300-700. */
+const cormorant = localFont({
+  src: "./../public/fonts/CormorantGaramond-Variable.woff2",
+  weight: "300 700",
+  style: "normal",
   variable: "--font-display",
   display: "swap",
+  fallback: ["Georgia", "serif"],
+  adjustFontFallback: false,
 });
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: "./../public/fonts/Inter-Variable.woff2",
+  weight: "300 700",
+  style: "normal",
   variable: "--font-sans",
   display: "swap",
+  fallback: ["system-ui", "sans-serif"],
+  adjustFontFallback: false,
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
