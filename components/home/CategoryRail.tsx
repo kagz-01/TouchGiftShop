@@ -68,7 +68,7 @@ export default function CategoryRail({
 
   return (
     <section className="py-10 md:py-14 section-theme-a relative overflow-hidden">
-      <div className="w-full page-container-capped relative z-10">
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         <div className="flex items-end justify-between gap-6 mb-6 md:mb-8">
           <div>
             <p className="text-brand font-bold text-xs uppercase tracking-[0.2em] mb-2">

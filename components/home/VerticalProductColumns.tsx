@@ -85,7 +85,7 @@ export default function VerticalProductColumns({
                 {sectionEyebrow}
               </p>
             )}
-            <h2 className="font-display text-3xl md:text-4xl font-bold leading-tight text-theme-heading">
+            <h2 className="font-display text-2xl md:text-3xl font-bold leading-tight text-theme-heading">
               {sectionTitle}
             </h2>
             {sectionSub && (
@@ -111,7 +111,7 @@ export default function VerticalProductColumns({
               <div key={colIdx} className="flex flex-col gap-4 card-theme shape-premium-card p-5 md:p-6">
                 {/* Column header */}
                 <div className="flex items-center justify-between">
-                  <span className="font-display font-bold text-base md:text-xl text-theme-heading">
+                  <span className="font-display font-bold text-base md:text-lg text-theme-heading">
                     {col.title}
                   </span>
                   <Link

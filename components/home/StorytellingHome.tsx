@@ -764,7 +764,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
             <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
             <h2
               className="font-display font-bold text-theme-heading leading-[1.08] mb-5"
-              style={{ fontSize: "clamp(2rem, 3.6vw, 3.25rem)" }}
+              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
             >
               Your brand, in their hands.
             </h2>
@@ -884,7 +884,7 @@ export function SocialProof() {
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="font-display text-4xl lg:text-5xl font-medium mb-6 text-theme-heading leading-[1.1]">
+              <h2 className="font-display text-2xl md:text-3xl font-medium mb-6 text-theme-heading leading-[1.15]">
                 Loved by gift givers across Kenya.
               </h2>
             </Reveal>
@@ -901,7 +901,7 @@ export function SocialProof() {
               <Reveal key={i} delay={300 + (i * 80)} direction="up">
                 <div className="bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-2xl p-6 text-center flex flex-col items-center justify-center min-h-[140px] shadow-sm">
                   <div className="text-xl mb-3 opacity-80">{stat.icon}</div>
-                  <p className="font-display text-2xl lg:text-3xl font-semibold text-theme-heading mb-1">
+                  <p className="font-display text-xl lg:text-2xl font-semibold text-theme-heading mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-theme-body/60 mt-1">
