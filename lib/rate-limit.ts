@@ -31,7 +31,6 @@ const LIMITS: Record<string, { max: number; windowMs: number }> = {
   // Moderate limits for write operations
   "/api/orders": { max: 30, windowMs: 60_000 },
   "/api/gift-cards": { max: 20, windowMs: 60_000 },
-  "/api/gift-cards/redeem": { max: 10, windowMs: 60_000 },
   "/api/reviews": { max: 15, windowMs: 60_000 },
   "/api/wishlist": { max: 30, windowMs: 60_000 },
 };

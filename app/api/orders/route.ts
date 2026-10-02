@@ -169,6 +169,55 @@ export async function POST(req: Request) {
     pointsDiscount = pointsDiscountKsh(requested);
   }
 
+  // ── Gift card validation ──
+  // The discount is derived here from the live card, never taken from the
+  // request body. A client could otherwise POST any gift_card_discount it liked
+  // (including one larger than the balance or the order total) and have it
+  // applied to the order total.
+  let giftCardDiscount = 0;
+  let giftCardCode: string | null = null;
+
+  if (input.giftCardCode && input.giftCardCode.trim().length >= 5) {
+    const code = input.giftCardCode.trim().toUpperCase();
+
+    const { data: gc, error: gcError } = await supabaseAdmin
+      .from("gift_cards")
+      .select("id, balance, status, expires_at")
+      .eq("code", code)
+      .maybeSingle();
+
+    if (gcError) {
+      return NextResponse.json({ error: "Could not verify gift card" }, { status: 500 });
+    }
+    if (!gc) {
+      return NextResponse.json({ error: "Gift card not found" }, { status: 400 });
+    }
+    if (gc.status !== "active") {
+      return NextResponse.json({ error: "Gift card is not active" }, { status: 400 });
+    }
+    if (gc.expires_at && new Date(gc.expires_at) < new Date()) {
+      return NextResponse.json({ error: "Gift card has expired" }, { status: 400 });
+    }
+
+    const balance = Number(gc.balance);
+    if (balance <= 0) {
+      return NextResponse.json({ error: "Gift card has no balance" }, { status: 400 });
+    }
+
+    // Never discount more than the balance, nor more than the order is worth.
+    // `input.giftCardDiscount` is the client's *intent* — it is only ever used
+    // as an upper bound here, never trusted as the amount. A multi-item cart
+    // creates several orders before any of them is paid, so without this cap a
+    // single card could be credited once per order.
+    const requested = Number(input.giftCardDiscount) || 0;
+    giftCardDiscount = Math.min(balance, Number(input.totalAmount), requested);
+
+    if (giftCardDiscount <= 0) {
+      return NextResponse.json({ error: "Gift card cannot cover this order" }, { status: 400 });
+    }
+    giftCardCode = code;
+  }
+
   const { data: order, error: insertError } = await supabaseAdmin
     .from("orders")
     .insert({
@@ -193,8 +242,8 @@ export async function POST(req: Request) {
       shipping_fee: input.shippingFee,
       points_redeemed: pointsRedeemed,
       points_discount: pointsDiscount,
-      gift_card_code: input.giftCardCode ?? null,
-      gift_card_discount: input.giftCardDiscount || 0,
+      gift_card_code: giftCardCode,
+      gift_card_discount: giftCardDiscount,
     })
     .select()
     .single();
@@ -261,6 +310,16 @@ export async function POST(req: Request) {
         .select()
         .single();
 
+      if (giftCardCode) {
+        // Fail-closed: this minimal insert has no gift card columns, so the
+        // validated discount is not persisted. Surface it rather than letting
+        // the customer think it was applied.
+        console.warn(
+          `[orders] gift card ${giftCardCode} (validated ${giftCardDiscount}) dropped by ` +
+            `minimal-insert fallback for order ${minimalOrder?.id ?? "unknown"}`
+        );
+      }
+
       if (minimalError || !minimalOrder) {
         return NextResponse.json({ error: insertError?.message ?? minimalError?.message ?? msg }, { status: 500 });
       }
@@ -271,5 +330,7 @@ export async function POST(req: Request) {
     }
   }
 
-  return NextResponse.json({ order, pointsDiscount });
+  // giftCardDiscount is authoritative and server-derived — the client must
+  // reconcile its local figure against this rather than trusting its own.
+  return NextResponse.json({ order, pointsDiscount, giftCardDiscount });
 }

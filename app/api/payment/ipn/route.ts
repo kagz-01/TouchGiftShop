@@ -122,6 +122,76 @@ async function handleGiftCardFailure(reference: string) {
     .eq("status", "pending_payment");
 }
 
+/**
+ * Deducts a gift card balance after payment is confirmed.
+ *
+ * Runs for guest orders too — it depends only on the order, never on the user.
+ * Uses an optimistic compare-and-set (`.eq("balance", <value we read>)`) plus a
+ * `.gte()` floor so two concurrent orders can never overdraw the same card,
+ * and re-reads with `.select()` so a deduction that matched zero rows is
+ * reported as a failure instead of silently vanishing.
+ */
+async function redeemGiftCardBalance(
+  code: string,
+  orderId: string,
+  requestedAmount: number
+): Promise<{ ok: boolean; redeemed: number; remaining: number; reason?: string }> {
+  const fail = (reason: string) => ({ ok: false, redeemed: 0, remaining: 0, reason });
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { data: card, error: fetchError } = await supabaseAdmin
+      .from("gift_cards")
+      .select("id, code, balance, status, expires_at")
+      .eq("code", code.toUpperCase())
+      .maybeSingle();
+
+    if (fetchError) return fail(fetchError.message);
+    if (!card) return fail("Gift card not found");
+    if (card.status !== "active") return fail(`Gift card is ${card.status}`);
+    if (card.expires_at && new Date(card.expires_at) < new Date()) {
+      return fail("Gift card has expired");
+    }
+
+    const balance = Number(card.balance);
+    const redeemAmount = Math.min(requestedAmount, balance);
+    if (redeemAmount <= 0) return fail("Gift card has no balance");
+
+    // Optimistic lock: only applies while the balance is still what we read.
+    const { data: updated, error: updateError } = await supabaseAdmin
+      .from("gift_cards")
+      .update({ balance: balance - redeemAmount })
+      .eq("id", card.id)
+      .eq("balance", balance)
+      .gte("balance", redeemAmount)
+      .select("id, balance")
+      .maybeSingle();
+
+    if (updateError) return fail(updateError.message);
+    if (!updated) continue; // balance moved under us — re-read and retry
+
+    const remaining = Number(updated.balance);
+
+    // Audit trail. A failure here must not undo a completed deduction, but it
+    // has to be visible rather than swallowed.
+    const { error: logError } = await supabaseAdmin.from("gift_card_redemptions").insert({
+      gift_card_id: card.id,
+      order_id: orderId,
+      amount: redeemAmount,
+    });
+    if (logError) {
+      console.error(
+        `[gift-cards] redemption of ${code} for order ${orderId} was deducted ` +
+          `(${redeemAmount}) but NOT logged to gift_card_redemptions:`,
+        logError.message
+      );
+    }
+
+    return { ok: true, redeemed: redeemAmount, remaining };
+  }
+
+  return fail("Could not deduct balance (concurrent redemption)");
+}
+
 async function handleOrderPayment(
   orderId: string,
   receiptNumber: string | undefined
@@ -143,34 +213,36 @@ async function handleOrderPayment(
     .eq("id", orderId)
     .single();
 
-  if (!order?.user_id) return;
+  if (!order) return;
 
-  // Redeem gift card AFTER payment is confirmed (prevents balance loss on abandoned checkouts)
-  if (order.gift_card_code && order.gift_card_discount && Number(order.gift_card_discount) > 0) {
-    try {
-      const { data: card } = await supabaseAdmin
-        .from("gift_cards")
-        .select("id, balance")
-        .eq("code", (order.gift_card_code as string).toUpperCase())
-        .eq("status", "active")
-        .single();
+  // Redeem gift card AFTER payment is confirmed (prevents balance loss on
+  // abandoned checkouts). This deliberately runs before the user_id guard:
+  // guest orders are real orders and their discount was already applied to the
+  // total, so skipping them let a single card be redeemed repeatedly.
+  if (order.gift_card_code && Number(order.gift_card_discount) > 0) {
+    const result = await redeemGiftCardBalance(
+      order.gift_card_code as string,
+      orderId,
+      Number(order.gift_card_discount)
+    );
 
-      if (card && Number(card.balance) >= Number(order.gift_card_discount)) {
-        const redeemAmount = Math.min(Number(order.gift_card_discount), Number(card.balance));
-        await supabaseAdmin
-          .from("gift_cards")
-          .update({ balance: Number(card.balance) - redeemAmount })
-          .eq("id", card.id)
-          .gte("balance", redeemAmount);
-
-        await supabaseAdmin.from("gift_card_redemptions").insert({
-          gift_card_id: card.id,
-          order_id: orderId,
-          amount: redeemAmount,
-        });
-      }
-    } catch { /* gift card redemption best-effort */ }
+    if (!result.ok) {
+      // The customer received a discount that we could not debit. Surface it
+      // loudly so it can be reconciled rather than quietly lost.
+      console.error(
+        `[gift-cards] FAILED to debit ${order.gift_card_code} for order ${orderId} ` +
+          `(discount ${order.gift_card_discount}): ${result.reason}`
+      );
+    } else {
+      console.log(
+        `[gift-cards] debited ${result.redeemed} from ${order.gift_card_code} ` +
+          `for order ${orderId}; remaining ${result.remaining}`
+      );
+    }
   }
+
+  // Everything below this point is members-only.
+  if (!order.user_id) return;
 
   const points = Math.floor(Number(order.total_amount) / 10);
   if (points > 0) {

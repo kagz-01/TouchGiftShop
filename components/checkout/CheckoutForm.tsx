@@ -338,9 +338,11 @@ export default function CheckoutForm({
             recipientPinRequested: usePinDrop,
             // Points redemption applies to the first order only
             pointsToRedeem: orderIds.length === 0 && effectivePoints > 0 ? effectivePoints : undefined,
-            // Gift card info stored on order for server-side redemption after payment
-            giftCardCode: giftCardCode || undefined,
-            giftCardDiscount: giftCardDiscount > 0 ? Math.round(giftCardDiscount / itemsToOrder.length) : 0,
+            // Gift card applies to the first order only — the server derives and caps the
+            // real amount from the live balance, so splitting it across orders
+            // would credit one card more than once.
+            giftCardCode: orderIds.length === 0 ? giftCardCode || undefined : undefined,
+            giftCardDiscount: orderIds.length === 0 ? Math.round(giftCardDiscount) : 0,
           }),
         });
 
