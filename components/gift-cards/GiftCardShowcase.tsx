@@ -7,6 +7,21 @@ import type { GiftCardStyle } from "@/components/gift-cards/GiftCardPreview";
 const PRESET_AMOUNTS = [1000, 2000, 3000, 5000, 10000, 15000];
 const money = (v: number) => new Intl.NumberFormat("en-KE").format(v);
 
+/** Must match the zod schema in app/api/gift-cards/route.ts */
+const MIN_AMOUNT = 500;
+const MAX_MESSAGE = 160;
+
+/** yyyy-mm-dd for tomorrow, the earliest schedulable send date. */
+const tomorrow = (() => {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+})();
+
+/** Fixed card width used to scale the mini previews down uniformly. */
+const CARD_W = 400;
+const THUMB_W = 150;
+
 const SNAP_VIEWS = [
   { label: "FRONT VIEW", rotX: 0, rotY: 0, flipped: false },
   { label: "BACK VIEW", rotX: 0, rotY: 0, flipped: true },
@@ -25,8 +40,14 @@ export default function GiftCardShowcase() {
   const [amount, setAmount] = useState(2000);
   const [customAmount, setCustomAmount] = useState("");
   const [recipientName, setRecipientName] = useState("");
+  const [senderName, setSenderName] = useState("");
+  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [recipientPhone, setRecipientPhone] = useState("");
+  const [sendDate, setSendDate] = useState("");
   const [message, setMessage] = useState("");
   const [delivery, setDelivery] = useState<"instant" | "schedule" | "send">("instant");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   // 3D viewer state
   const stageRef = useRef<HTMLDivElement>(null);
@@ -39,7 +60,67 @@ export default function GiftCardShowcase() {
 
   const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
-  const finalAmount = customAmount ? Math.max(500, parseInt(customAmount) || 0) : amount;
+  const finalAmount = customAmount
+    ? Math.max(MIN_AMOUNT, parseInt(customAmount, 10) || 0)
+    : amount;
+
+  /** What the card itself should display for the sender line. */
+  const senderLabel = isAnonymous ? "Anonymous" : senderName.trim() || "A friend";
+
+  const validate = (): string => {
+    if (finalAmount < MIN_AMOUNT) return `Minimum amount is KSh ${MIN_AMOUNT}`;
+    if (!recipientName.trim()) return "Recipient name is required";
+    if (!isAnonymous && !senderName.trim()) return "Your name is required";
+    if (message.length > MAX_MESSAGE) return `Message cannot exceed ${MAX_MESSAGE} characters`;
+    if (delivery === "schedule") {
+      if (!sendDate) return "Choose a date to send on";
+      if (new Date(sendDate) <= new Date()) return "Pick a date in the future";
+    }
+    if (delivery === "send" && recipientPhone && !/^(\+?254|0)(7|1)\d{8}$/.test(recipientPhone.trim())) {
+      return "Enter a valid Kenyan phone number, e.g. 0712345678";
+    }
+    return "";
+  };
+
+  const handleCheckout = async () => {
+    const problem = validate();
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setError("");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/gift-cards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: finalAmount,
+          recipientName: recipientName.trim(),
+          senderName: isAnonymous ? undefined : senderName.trim(),
+          recipientPhone: delivery === "send" ? recipientPhone.trim() : undefined,
+          message: message.trim() || undefined,
+          isAnonymous,
+          sendDate: delivery === "schedule" ? sendDate : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(typeof data?.error === "string" ? data.error : "Could not start checkout. Please try again.");
+        setSubmitting(false);
+        return;
+      }
+      if (data?.redirectUrl) {
+        window.location.assign(data.redirectUrl);
+      } else {
+        setError("Checkout did not return a payment link.");
+        setSubmitting(false);
+      }
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setSubmitting(false);
+    }
+  };
 
   // Mouse hover tilt
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
@@ -92,7 +173,9 @@ export default function GiftCardShowcase() {
     setHasPointer(false);
   };
 
-  const cardTransform = `rotateX(${rotation.x}deg) rotateY(${rotation.y + (flipped ? 180 : 0)}deg)`;
+  // The flip itself is driven by the `flipped` prop on GiftCardPreview
+  // (it rotates its own face wrapper), so no extra 180deg here.
+  const cardTransform = `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`;
 
   return (
     <div className="gc-showcase">
@@ -134,25 +217,78 @@ export default function GiftCardShowcase() {
             </div>
           </div>
 
+          {/* Who is it for? */}
+          <div className="gc-step">
+            <h3 className="gc-step-title">2. Who is it for?</h3>
+            <p className="gc-step-sub">Add the names to print on the card</p>
+
+            <div className="gc-field">
+              <label className="gc-field-label" htmlFor="gc-recipient">
+                Recipient name <span className="gc-req">*</span>
+              </label>
+              <input
+                id="gc-recipient"
+                type="text"
+                value={recipientName}
+                onChange={(e) => setRecipientName(e.target.value)}
+                placeholder="Who are you gifting?"
+                className="gc-input"
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="gc-field">
+              <label className="gc-field-label" htmlFor="gc-sender">
+                Your name {!isAnonymous && <span className="gc-req">*</span>}
+              </label>
+              <input
+                id="gc-sender"
+                type="text"
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                placeholder={isAnonymous ? "Hidden on the card" : "Your name"}
+                className="gc-input"
+                autoComplete="name"
+                disabled={isAnonymous}
+              />
+            </div>
+
+            <label className={`gc-toggle ${isAnonymous ? "on" : ""}`}>
+              <input
+                type="checkbox"
+                checked={isAnonymous}
+                onChange={(e) => setIsAnonymous(e.target.checked)}
+                className="gc-toggle-input"
+              />
+              <span className="gc-toggle-track" aria-hidden="true">
+                <span className="gc-toggle-knob" />
+              </span>
+              <span className="gc-toggle-text">
+                <strong>Send anonymously</strong>
+                <span>Your name will not appear on the card</span>
+              </span>
+            </label>
+          </div>
+
           {/* Personal message */}
           <div className="gc-step">
-            <h3 className="gc-step-title">2. Add a personal touch</h3>
+            <h3 className="gc-step-title">3. Add a personal touch</h3>
             <p className="gc-step-sub">Add a message to make it special</p>
             <div className="gc-textarea-wrap">
               <textarea
-                maxLength={200}
+                maxLength={MAX_MESSAGE}
                 placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="gc-textarea"
               />
-              <span className="gc-char-count">{message.length} / 200</span>
+              <span className="gc-char-count">{message.length} / {MAX_MESSAGE}</span>
             </div>
           </div>
 
           {/* Delivery options */}
           <div className="gc-step">
-            <h3 className="gc-step-title">3. Delivery option</h3>
+            <h3 className="gc-step-title">4. Delivery option</h3>
             <div className="gc-delivery-grid">
               {[
                 { key: "instant" as const, icon: "⚡", title: "Instant delivery", sub: "To your email" },
@@ -172,11 +308,58 @@ export default function GiftCardShowcase() {
                 </button>
               ))}
             </div>
+
+            {delivery === "schedule" && (
+            <div className="gc-field gc-field-inline">
+              <label className="gc-field-label" htmlFor="gc-senddate">
+                Send on <span className="gc-req">*</span>
+              </label>
+              <input
+                id="gc-senddate"
+                type="date"
+                value={sendDate}
+                min={tomorrow}
+                onChange={(e) => setSendDate(e.target.value)}
+                className="gc-input"
+              />
+              <p className="gc-field-hint">Valid for 3 months from the send date.</p>
+            </div>
+          )}
+
+          {delivery === "send" && (
+            <div className="gc-field gc-field-inline">
+              <label className="gc-field-label" htmlFor="gc-phone">
+                Recipient&rsquo;s phone
+              </label>
+              <input
+                id="gc-phone"
+                type="tel"
+                inputMode="tel"
+                value={recipientPhone}
+                onChange={(e) => setRecipientPhone(e.target.value)}
+                placeholder="0712345678"
+                className="gc-input"
+                autoComplete="tel"
+              />
+              <p className="gc-field-hint">We&rsquo;ll text them the claim link after payment.</p>
+            </div>
+          )}
           </div>
 
+          {error && (
+            <p className="gc-error" role="alert">
+              {error}
+            </p>
+          )}
+
           {/* Checkout button */}
-          <button type="button" className="gc-checkout-btn">
-            Continue to checkout →
+          <button
+            type="button"
+            className="gc-checkout-btn"
+            onClick={handleCheckout}
+            disabled={submitting}
+          >
+            {submitting ? "Starting checkout…" : `Continue to checkout — KSh ${money(finalAmount)} →`}
           </button>
         </div>
 
@@ -210,7 +393,7 @@ export default function GiftCardShowcase() {
               <GiftCardPreview
                 amount={finalAmount}
                 recipientName={recipientName || "Recipient Name"}
-                senderName="A friend"
+                senderName={senderLabel}
                 message={message || "A gift, their choice."}
                 flipped={flipped}
               />
@@ -228,24 +411,31 @@ export default function GiftCardShowcase() {
                 className={`gc-thumb ${activeView === v.label ? "active" : ""}`}
                 onClick={() => snapTo(v)}
               >
-                <div className="gc-thumb-card">
+                <div className="gc-thumb-card" style={{ width: THUMB_W, height: THUMB_W / 1.72 }}>
                   <div
                     style={{
-                      width: "100%",
-                      height: "100%",
-                      position: "relative",
-                      transformStyle: "preserve-3d" as const,
-                      transform: `rotateX(${v.rotX}deg) rotateY(${v.rotY + (v.flipped ? 180 : 0)}deg)`,
-                      transition: "transform 0.5s ease",
+                      width: CARD_W,
+                      transformOrigin: "top left",
+                      transform: `scale(${THUMB_W / CARD_W})`,
                     }}
                   >
-                    <GiftCardPreview
-                      amount={finalAmount}
-                      recipientName={recipientName || "Recipient Name"}
-                      senderName="A friend"
-                      message={message || "A gift, their choice."}
-                      flipped={v.flipped}
-                    />
+                    <div
+                      style={{
+                        width: "100%",
+                        position: "relative",
+                        transformStyle: "preserve-3d" as const,
+                        transform: `rotateX(${v.rotX}deg) rotateY(${v.rotY}deg)`,
+                        transition: "transform 0.5s ease",
+                      }}
+                    >
+                      <GiftCardPreview
+                        amount={finalAmount}
+                        recipientName={recipientName || "Recipient Name"}
+                        senderName={senderLabel}
+                        message={message || "A gift, their choice."}
+                        flipped={v.flipped}
+                      />
+                    </div>
                   </div>
                 </div>
                 <span className="gc-thumb-label">{v.label}</span>
@@ -513,8 +703,9 @@ export default function GiftCardShowcase() {
 
         /* Thumbnails */
         .gc-thumbnails {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
           gap: 8px;
         }
         .gc-thumb {
@@ -536,7 +727,8 @@ export default function GiftCardShowcase() {
           background: rgba(142,18,71,0.06);
         }
         .gc-thumb-card {
-          width: 100%;
+          overflow: hidden;
+          border-radius: 6px;
           perspective: 500px;
         }
         .gc-thumb-label {
@@ -547,6 +739,108 @@ export default function GiftCardShowcase() {
           color: var(--text-muted, #8b8b9e);
         }
         .gc-thumb.active .gc-thumb-label { color: var(--accent-color, #a51b58); }
+
+        /* ── Form fields ── */
+        .gc-field { margin-top: 16px; }
+        .gc-field-inline {
+          margin-top: 14px;
+          padding: 14px;
+          border-radius: 12px;
+          background: var(--surface-subtle, rgba(142,18,71,0.05));
+          border: 1px solid var(--surface-border, #e5e7eb);
+        }
+        .gc-field-label {
+          display: block;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: var(--text-muted, #8b8b9e);
+          margin-bottom: 7px;
+        }
+        .gc-req { color: var(--accent-color, #a51b58); }
+        .gc-input {
+          width: 100%;
+          padding: 12px 14px;
+          font-size: 15px;
+          font-family: inherit;
+          color: var(--text-primary, #1a1a2e);
+          background: var(--surface-primary, #fff);
+          border: 1px solid var(--surface-border, #e5e7eb);
+          border-radius: 10px;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .gc-input:focus {
+          outline: none;
+          border-color: var(--accent-color, #a51b58);
+          box-shadow: 0 0 0 3px rgba(165,27,88,0.14);
+        }
+        .gc-input:disabled { opacity: 0.55; cursor: not-allowed; }
+        .gc-field-hint {
+          margin: 8px 0 0;
+          font-size: 12px;
+          color: var(--text-muted, #8b8b9e);
+        }
+
+        /* Anonymity toggle */
+        .gc-toggle {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-top: 16px;
+          padding: 12px 14px;
+          border-radius: 12px;
+          border: 1px solid var(--surface-border, #e5e7eb);
+          background: var(--surface-subtle, rgba(142,18,71,0.05));
+          cursor: pointer;
+          transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .gc-toggle.on {
+          border-color: var(--accent-color, #a51b58);
+          background: rgba(165,27,88,0.08);
+        }
+        .gc-toggle-input { position: absolute; opacity: 0; pointer-events: none; }
+        .gc-toggle-track {
+          flex: 0 0 auto;
+          width: 44px;
+          height: 25px;
+          border-radius: 999px;
+          background: var(--surface-border, #d5d5de);
+          position: relative;
+          transition: background 0.22s ease;
+        }
+        .gc-toggle.on .gc-toggle-track { background: var(--accent-color, #a51b58); }
+        .gc-toggle-knob {
+          position: absolute;
+          top: 3px;
+          left: 3px;
+          width: 19px;
+          height: 19px;
+          border-radius: 50%;
+          background: #fff;
+          box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+          transition: transform 0.22s ease;
+        }
+        .gc-toggle.on .gc-toggle-knob { transform: translateX(19px); }
+        .gc-toggle-text { display: flex; flex-direction: column; gap: 2px; }
+        .gc-toggle-text strong { font-size: 14px; color: var(--text-primary, #1a1a2e); }
+        .gc-toggle-text span { font-size: 12px; color: var(--text-muted, #8b8b9e); }
+
+        .gc-error {
+          margin: 4px 0 12px;
+          padding: 11px 14px;
+          font-size: 13.5px;
+          font-weight: 600;
+          color: #b3261e;
+          background: rgba(179,38,30,0.08);
+          border: 1px solid rgba(179,38,30,0.25);
+          border-radius: 10px;
+        }
+        .gc-checkout-btn:disabled {
+          opacity: 0.6;
+          cursor: progress;
+          transform: none;
+        }
 
         /* ── Features ── */
         .gc-features {

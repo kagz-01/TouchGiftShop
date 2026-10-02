@@ -145,16 +145,6 @@ export default function GiftCardPreview({
             </span>
           </div>
 
-          <div className="gc-gift-icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64" fill="none">
-              <rect x="8" y="25" width="48" height="31" rx="4" stroke="currentColor" strokeWidth="3" />
-              <path d="M32 25V56" stroke="currentColor" strokeWidth="3" />
-              <path d="M8 35H56" stroke="currentColor" strokeWidth="3" />
-              <path d="M32 25C25 25 16 22 16 15C16 11 19 9 23 10C28 11 32 18 32 25Z" stroke="currentColor" strokeWidth="3" />
-              <path d="M32 25C39 25 48 22 48 15C48 11 45 9 41 10C36 11 32 18 32 25Z" stroke="currentColor" strokeWidth="3" />
-            </svg>
-          </div>
-
           {/* Bow: either provided SVG/image or CSS fallback */}
           {bowSvg ? (
             typeof bowSvg === 'string' ? (
@@ -429,11 +419,13 @@ export default function GiftCardPreview({
         /* Bow (richer metallic look) */
         .gc-bow {
           position: absolute;
-          right: 4%;
-          top: -4%;
-          width: 120px;
-          height: 120px;
-          z-index: 6;
+          right: 3%;
+          bottom: 3%;
+          top: auto;
+          width: 26%;
+          aspect-ratio: 1;
+          height: auto;
+          z-index: 3;
           pointer-events: none;
         }
         .gc-bow-loop {
@@ -506,8 +498,8 @@ export default function GiftCardPreview({
         @keyframes conf5 { to { opacity: 1; transform: translateY(-205px) rotate(330deg); } }
 
         /* Bow SVG wrapper */
-        .gc-bow-svg { position: absolute; right: 4%; top: -6%; width: 120px; height: auto; z-index: 6; pointer-events: none; }
-        .gc-bow-svg-wrapper { position: absolute; right: 4%; top: -6%; width: 120px; height: 120px; z-index: 6; pointer-events: none; }
+        .gc-bow-svg { position: absolute; right: 3%; bottom: 3%; width: 26%; height: auto; z-index: 3; pointer-events: none; }
+        .gc-bow-svg-wrapper { position: absolute; right: 3%; bottom: 3%; width: 26%; aspect-ratio: 1; z-index: 3; pointer-events: none; }
         .has-bow-svg .gc-bow { display: none; }
 
         /* Back face */

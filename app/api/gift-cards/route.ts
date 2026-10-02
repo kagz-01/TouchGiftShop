@@ -66,58 +66,62 @@ export async function POST(req: Request) {
 
   const isScheduled = sendDate && new Date(sendDate) > new Date();
 
-  let { data: card, error } = await supabaseAdmin
-    .from("gift_cards")
-    .insert({
-      code,
-      initial_amount: amount,
-      balance: 0,
-      sender_name: effectiveSenderName,
-      recipient_name: recipientName,
-      recipient_phone: recipientPhone || null,
-      message: message || null,
-      expires_at: expiresAt.toISOString(),
-      send_date: sendDate || null,
-      style: style || null,
-      status: isScheduled ? "scheduled" : "pending_payment",
-    })
-    .select()
-    .single();
+  // The live gift_cards table is missing some optional columns (e.g. `style`,
+  // and on older deployments `send_date`). Build the fullest payload we can and
+  // progressively drop any column PostgREST reports as absent, so a purchase is
+  // never blocked by an optional column that was never migrated.
+  const insertPayload: Record<string, unknown> = {
+    code,
+    initial_amount: amount,
+    balance: 0,
+    sender_name: effectiveSenderName,
+    recipient_name: recipientName,
+    recipient_phone: recipientPhone || null,
+    message: message || null,
+    expires_at: expiresAt.toISOString(),
+    send_date: sendDate || null,
+    style: style || null,
+    status: isScheduled ? "scheduled" : "pending_payment",
+  };
 
-  if (error || !card) {
-    const msg = error?.message ?? "Failed to create gift card";
-    if (msg.includes("send_date") || msg.includes("Could not find the 'send_date'") || msg.includes("column \"send_date\"")) {
-      try {
-        const { data: fallbackCard, error: fallbackErr } = await supabaseAdmin
-          .from("gift_cards")
-          .insert({
-            code,
-            initial_amount: amount,
-            balance: 0,
-            sender_name: effectiveSenderName,
-            recipient_name: recipientName,
-            recipient_phone: recipientPhone || null,
-            message: message || null,
-            expires_at: expiresAt.toISOString(),
-            status: isScheduled ? "scheduled" : "pending_payment",
-          })
-          .select()
-          .single();
+  /** Pulls the column name out of a PostgREST "missing column" error. */
+  const missingColumn = (msg: string): string | null => {
+    const m =
+      msg.match(/Could not find the '([^']+)' column/i) ??
+      msg.match(/column "([^"]+)" does not exist/i) ??
+      msg.match(/column ([a-z_]+) does not exist/i);
+    return m ? m[1] : null;
+  };
 
-        if (fallbackErr || !fallbackCard) {
-          return NextResponse.json({ error: fallbackErr?.message ?? msg }, { status: 500 });
-        }
+  let card: any = null;
+  let lastError = "Failed to create gift card";
+  try {
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const { data, error } = await supabaseAdmin
+        .from("gift_cards")
+        .insert(insertPayload)
+        .select()
+        .single();
 
-        card = fallbackCard;
-      } catch (e: any) {
-        return NextResponse.json({ error: e?.message ?? msg }, { status: 500 });
+      if (!error && data) {
+        card = data;
+        break;
       }
-    } else {
-      return NextResponse.json(
-        { error: msg },
-        { status: 500 }
-      );
+
+      lastError = error?.message ?? lastError;
+      const col = error?.message ? missingColumn(error.message) : null;
+      if (!col || !(col in insertPayload)) {
+        return NextResponse.json({ error: lastError }, { status: 500 });
+      }
+      // Column isn't in the deployed schema — drop it and retry.
+      delete insertPayload[col];
     }
+  } catch (e: any) {
+    return NextResponse.json({ error: e?.message ?? lastError }, { status: 500 });
+  }
+
+  if (!card) {
+    return NextResponse.json({ error: lastError }, { status: 500 });
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
