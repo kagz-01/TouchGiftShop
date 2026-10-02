@@ -777,89 +777,91 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
 
-        {/* Header spans the full container so the headline holds one line.
-            Inside the 40% column it wrapped to "…in their / hands." */}
-        <Reveal delay={100}>
-          <div className="mb-8 lg:mb-10">
-            <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
-            <h2
-              className="font-display font-bold text-theme-heading leading-[1.08]"
-              style={{ fontSize: "clamp(1.9rem, 3.4vw, 3rem)" }}
-            >
-              Your brand, in their hands.
-            </h2>
-            <p className="text-base md:text-lg text-theme-body leading-relaxed mb-9 max-w-xl">
-              Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
-            </p>
-          </div>
-        </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-start">
-        {/* LEFT — routes */}
-        <div className="flex flex-col">
-          <Reveal delay={200}>
-            <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
-            <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
-              {[
-                { id: "corporate", title: "Gifting a team or clients", desc: "Hampers and gift sets, wrapped and delivered to each person." },
-                { id: "bulk", title: "Sending the same gift to many", desc: "From 10 units, one M-Pesa payment." },
-                { id: "solo", title: "Need it to carry your name", desc: "Your logo or name on a single piece." },
-              ].map((way) => (
-                <li
-                  key={way.id}
-                  onMouseEnter={() => setActiveTab(way.id)}
-                  onMouseLeave={() => setActiveTab(null)}
-                  onFocus={() => setActiveTab(way.id)}
-                  onBlur={() => setActiveTab(null)}
-                  tabIndex={0}
-                  className={`group relative pl-5 py-4 border-b border-brand/10 dark:border-white/10 cursor-pointer transition-all rounded-lg outline-none ${
-                    activeTab === way.id ? "bg-white/70 dark:bg-white/5 shadow-sm" : "hover:bg-white/50 dark:hover:bg-white/5"
-                  }`}
+
+
+          {/* LEFT — headline + routes + CTAs (full left column) */}
+          <div className="flex flex-col">
+            <Reveal delay={100}>
+              <div className="mb-8 lg:mb-10">
+                <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
+                <h2
+                  className="font-display font-bold text-theme-heading leading-[1.08] mb-4"
+                  style={{ fontSize: "clamp(1.9rem, 3.4vw, 3rem)" }}
                 >
-                  <div className={`absolute left-0 top-[20px] w-2 h-2 rounded-full transition-all ${
-                    activeTab === way.id ? "bg-brand scale-125" : "bg-gold/70"
-                  }`} />
-                  <b className="block font-display font-bold text-base text-theme-heading group-hover:text-brand transition-colors">{way.title}</b>
-                  <em className="not-italic text-xs text-theme-body block mt-0.5 leading-relaxed">{way.desc}</em>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+                  Your brand, in their hands.
+                </h2>
+                <p className="text-base md:text-lg text-theme-body leading-relaxed mb-6 max-w-xl">
+                  Every gift your business sends says something about you. We make it say the right thing — your name on it, wrapped and delivered.
+                </p>
+              </div>
+            </Reveal>
 
-          <Reveal delay={280}>
-            <p className="text-xs text-theme-body opacity-60 mb-5">
-              Gifts for people you love are on the rest of this page. Gifts your business depends on have their own home.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Link href="/corporate" className="px-6 py-3 rounded-xl bg-brand text-white font-semibold text-sm hover:brightness-110 hover:shadow-lg transition-all">
-                Enter the corporate platform
-              </Link>
-              <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting."
-                className="px-6 py-3 rounded-xl border-2 border-brand/20 text-theme-heading font-semibold text-sm hover:border-brand hover:text-brand transition-all">
-                Talk to us first
-              </a>
+            <Reveal delay={200}>
+              <p className="text-brand font-semibold text-xs uppercase tracking-widest mb-2">Which sounds like you?</p>
+              <ul className="border-t border-brand/10 dark:border-white/10 mb-7">
+                {[
+                  { id: "corporate", title: "Gifting a team or clients", desc: "Hampers and gift sets, wrapped and delivered to each person." },
+                  { id: "bulk", title: "Sending the same gift to many", desc: "From 10 units, one M-Pesa payment." },
+                  { id: "solo", title: "Need it to carry your name", desc: "Your logo or name on a single piece." },
+                ].map((way) => (
+                  <li
+                    key={way.id}
+                    onMouseEnter={() => setActiveTab(way.id)}
+                    onMouseLeave={() => setActiveTab(null)}
+                    onFocus={() => setActiveTab(way.id)}
+                    onBlur={() => setActiveTab(null)}
+                    tabIndex={0}
+                    className={`group relative pl-5 py-4 border-b border-brand/10 dark:border-white/10 cursor-pointer transition-all rounded-lg outline-none ${
+                      activeTab === way.id ? "bg-white/70 dark:bg-white/5 shadow-sm" : "hover:bg-white/50 dark:hover:bg-white/5"
+                    }`}
+                  >
+                    <div className={`absolute left-0 top-[20px] w-2 h-2 rounded-full transition-all ${
+                      activeTab === way.id ? "bg-brand scale-125" : "bg-gold/70"
+                    }`} />
+                    <b className="block font-display font-bold text-base text-theme-heading group-hover:text-brand transition-colors">{way.title}</b>
+                    <em className="not-italic text-xs text-theme-body block mt-0.5 leading-relaxed">{way.desc}</em>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal delay={280}>
+              <p className="text-xs text-theme-body opacity-60 mb-5">
+                Gifts for people you love are on the rest of this page. Gifts your business depends on have their own home.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/corporate" className="px-6 py-3 rounded-xl bg-brand text-white font-semibold text-sm hover:brightness-110 hover:shadow-lg transition-all">
+                  Enter the corporate platform
+                </Link>
+                <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting."
+                  className="px-6 py-3 rounded-xl border-2 border-brand/20 text-theme-heading font-semibold text-sm hover:border-brand hover:text-brand transition-all">
+                  Talk to us first
+                </a>
+              </div>
+            </Reveal>
+          </div>
+
+          {/* RIGHT — marquee, NO Reveal wrapper (Reveal's opacity animation fights CSS transform and causes the glitch)
+              Exactly 2× content matches the translateY(-50%) keyframe loop point perfectly */}
+          <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "min(72vh, 760px)" }}>
+            {/* Col 1 scrolls down */}
+            <div className="overflow-hidden h-full">
+              <div className="animate-marquee-vertical-reverse" style={{ willChange: "transform" }}>
+                {[...A, ...A].map((g, i) => renderCard(g, i))}
+              </div>
             </div>
-          </Reveal>
-        </div>
-
-        {/* RIGHT — marquee, NO Reveal wrapper (Reveal's opacity animation fights CSS transform and causes the glitch)
-            Exactly 2× content matches the translateY(-50%) keyframe loop point perfectly */}
-        <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "min(72vh, 760px)" }}>
-          {/* Col 1 scrolls down */}
-          <div className="overflow-hidden h-full">
-            <div className="animate-marquee-vertical-reverse" style={{ willChange: "transform" }}>
-              {[...A, ...A].map((g, i) => renderCard(g, i))}
+            {/* Col 2 scrolls up, offset by padding-top so columns feel staggered */}
+            <div className="overflow-hidden h-full pt-16">
+              <div className="animate-marquee-vertical" style={{ willChange: "transform" }}>
+                {[...B, ...B].map((g, i) => renderCard(g, i))}
+              </div>
             </div>
           </div>
-          {/* Col 2 scrolls up, offset by padding-top so columns feel staggered */}
-          <div className="overflow-hidden h-full pt-16">
-            <div className="animate-marquee-vertical" style={{ willChange: "transform" }}>
-              {[...B, ...B].map((g, i) => renderCard(g, i))}
-            </div>
-          </div>
-        </div>
 
         </div>
+
       </div>
     </section>
   );
