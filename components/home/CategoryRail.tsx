@@ -63,8 +63,12 @@ export default function CategoryRail({
   totalCount: number;
 }) {
   if (!tiles.length) return null;
-  // Two copies so the -50% translate loops seamlessly.
-  const loop = [...tiles, ...tiles];
+  // One set is ~1660px, which is almost exactly one 1600px viewport. With only
+  // two copies the track was 3340px against a 3328px minimum, so a viewport a
+  // few pixels wider ran the track out mid-loop: the rail visibly ran dry,
+  // then snapped back. Three copies put the track at 3x the viewport, so the
+  // -50% loop point can never fall past the end of the content.
+  const loop = [...tiles, ...tiles, ...tiles];
 
   return (
     <section className="py-8 md:py-10 section-theme-a relative overflow-hidden">

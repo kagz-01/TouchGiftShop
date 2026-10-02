@@ -898,7 +898,7 @@ export function SocialProof() {
 
   return (
     <section className="py-8 md:py-12 bg-white dark:bg-[#121216] border-y border-surface-border">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12 lg:px-16">
+      <div className="page-container-capped">
         
         {/* Top Split: Headings & Stats */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-8 items-start justify-between mb-10">
@@ -944,14 +944,10 @@ export function SocialProof() {
         <Reveal>
           <div className="relative w-[calc(100%+2rem)] md:w-[calc(100%+4rem)] -ml-4 md:-ml-8 py-4">
             <div
-              className="relative flex overflow-x-hidden group px-4 md:px-8"
-              style={{
-                WebkitMaskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-                maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)"
-              }}
+              className="relative flex overflow-x-hidden group w-[calc(100%+3rem)] md:w-[calc(100%+4rem)] -ml-6 md:-ml-8 px-6 md:px-8 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
             >
               <div className="animate-marquee flex gap-5 w-max items-stretch group-hover:[animation-play-state:paused]">
-                {[...displayReviews, ...displayReviews].map((t, i) => (
+                {[...displayReviews, ...displayReviews, ...displayReviews].map((t, i) => (
                   <div 
                     key={i} 
                     className="flex-shrink-0 w-[300px] md:w-[360px] bg-white dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-3xl p-8 flex flex-col gap-6 h-full shadow-sm hover:shadow-md transition-shadow whitespace-normal"
