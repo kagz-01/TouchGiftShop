@@ -78,7 +78,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
     >
       <div className={cn("gift-card transition-all duration-300", isSelectedForSubscription && "ring-2 ring-brand ring-offset-2")}>
         {/* Image */}
-        <div className="relative aspect-square bg-blush overflow-hidden">
+        <div className="relative aspect-square bg-transparent overflow-hidden rounded-t-[2.5rem]">
           {product.image_url ? (
             <Image
               src={product.image_url}
@@ -86,8 +86,8 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={cn(
-                "object-cover transition-transform duration-700 ease-out",
-                isHovered && "scale-110"
+                "object-contain transition-transform duration-700 ease-out",
+                isHovered && "scale-105"
               )}
               unoptimized
             />
