@@ -86,8 +86,8 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
               fill
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
               className={cn(
-                "object-cover transition-transform duration-700 ease-out",
-                isHovered && "scale-110"
+                "object-contain transition-transform duration-700 ease-out",
+                isHovered && "scale-105" // Reduced scale slightly for contain so it doesn't clip the edges as much
               )}
               unoptimized
             />
