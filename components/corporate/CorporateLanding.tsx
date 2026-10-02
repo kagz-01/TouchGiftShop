@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import BackToHome from "@/components/ui/BackToHome";
 import { useMood } from "@/context/MoodContext";
+import { optimizeImageUrl } from "@/lib/image-url";
+import { formatKsh } from "@/lib/utils";
 
 /* ─── Scroll reveal hook ─── */
 function useInView(threshold = 0.2) {
@@ -124,18 +126,29 @@ function CorporateHero() {
   }, []);
 
   useEffect(() => {
-    fetch("/api/products?limit=6")
-      .then(r => r.json())
-      .then(d => {
-        const products = (d.products || []).slice(0, 6).map((p: any) => ({
-          name: p.name,
-          image_url: p.image_url || "",
-          price: p.price,
-          slug: p.slug,
-        }));
-        setOrbitProducts(products);
-      })
-      .catch(() => {});
+    // Every non-perfume SKU can carry a logo; no perfume can. So the hero shows
+    // real corporate-eligible stock instead of whatever the catalogue returns
+    // first, which was six arbitrary products.
+    const load = () =>
+      // personalizable=1 is the existing server-side filter. Filtering client-side
+      // did not work: /api/products returns newest-first and all 255 perfumes
+      // were imported last, so a limit of 48 returned nothing brandable.
+      fetch("/api/products?personalizable=1&limit=8")
+        .then((r) => r.json())
+        .then((d) => {
+          const brandable = (d.products || [])
+            .filter((p: any) => p.in_stock && p.image_url)
+            .slice(0, 8)
+            .map((p: any) => ({
+              name: p.name,
+              image_url: optimizeImageUrl(p.image_url, 560) || "",
+              price: p.price,
+              slug: p.slug,
+            }));
+          setOrbitProducts(brandable);
+        })
+        .catch(() => {});
+    load();
   }, []);
 
 
@@ -234,9 +247,60 @@ function CorporateHero() {
 
           </div>
 
-          {/* Right: Background Auto-scroller (Placeholder for future feature) */}
-          <div className={`hidden lg:flex items-center justify-center transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
-            {/* Auto-scroller will go here in the future */}
+          {/* Right: live catalogue. This column was an empty placeholder, so the
+              hero was half-empty on every desktop screen — and the products were
+              already being fetched for exactly this slot, then never rendered.
+              Same marquee mechanics as the homepage: one track, content doubled,
+              translateY(-50%). */}
+          <div className={`hidden lg:flex items-stretch gap-4 transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
+            {[0, 1].map((col) => {
+              const items = orbitProducts.length
+                ? [...orbitProducts, ...orbitProducts]
+                : Array.from({ length: 4 }).map(() => null);
+              return (
+                <div key={col} className="w-[248px] xl:w-[288px] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
+                  <div
+                    className={`flex flex-col gap-3 p-3 ${
+                      col === 0 ? "animate-marquee-vertical" : "animate-marquee-vertical-reverse"
+                    } group-hover:[animation-play-state:paused]`}
+                    style={{ animationDuration: "38s" }}
+                  >
+                    {items.map((p, i) =>
+                      p ? (
+                        <Link
+                          key={`${p.slug}-${i}`}
+                          href={`/product/${p.slug}`}
+                          className="group/card relative block overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-gold/40 transition-colors"
+                        >
+                          <div className="relative aspect-square overflow-hidden">
+                            <Image
+                              src={p.image_url}
+                              alt={p.name}
+                              fill
+                              sizes="288px"
+                              className="object-cover transition-transform duration-700 group-hover/card:scale-105"
+                            />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/55 backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider text-gold border border-gold/30">
+                              Logo-ready
+                            </span>
+                          </div>
+                          <div className="px-3 py-2">
+                            <p className="text-[11px] font-semibold text-white/90 leading-tight line-clamp-2 min-h-[28px]">
+                              {p.name}
+                            </p>
+                            <p className="text-[11px] text-gold font-bold mt-1">
+                              {formatKsh(p.price)}
+                            </p>
+                          </div>
+                        </Link>
+                      ) : (
+                        <div key={`sk-${i}`} className="rounded-2xl bg-white/5 border border-white/5 animate-pulse aspect-[4/5]" />
+                      )
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
