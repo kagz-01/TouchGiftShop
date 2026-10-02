@@ -25,6 +25,8 @@ const STATUS_FILTERS = [
   "dispatched",
   "delivered",
   "failed",
+  "cancelled",
+  "refunded",
 ];
 
 interface Order {

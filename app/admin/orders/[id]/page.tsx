@@ -7,7 +7,7 @@ import { formatKsh } from "@/lib/utils";
 import {
   ArrowLeft, Package, Truck, CheckCircle, Clock,
   MapPin, Phone, User, Gift, Copy, CheckCircle2,
-  Share2, AlertCircle, Send,
+  Share2, AlertCircle, Send, RotateCcw, XCircle, Undo2,
 } from "lucide-react";
 
 const STATUSES = [
@@ -27,6 +27,27 @@ const STATUS_INDEX: Record<string, number> = {
   failed: -1,
 };
 
+// Reversals are not a forward step in the timeline, so they live in their own
+// group below it. Each one credits back any gift card balance the order used.
+const REVERSAL_ACTIONS = [
+  {
+    value: "refunded",
+    label: "Mark refunded",
+    hint: "Payment returned to the customer",
+    icon: <RotateCcw className="w-4 h-4" />,
+    color: "bg-amber-600",
+  },
+  {
+    value: "cancelled",
+    label: "Cancel order",
+    hint: "Called off before fulfilment",
+    icon: <XCircle className="w-4 h-4" />,
+    color: "bg-gray-700",
+  },
+];
+
+const REVERSIBLE_STATUSES = ["processing", "wrapped", "dispatched", "delivered"];
+
 interface Order {
   id: string;
   status: string;
@@ -36,6 +57,8 @@ interface Order {
   shipping_fee: number;
   created_at: string;
   gift_note: string | null;
+  gift_card_code?: string | null;
+  gift_card_discount?: number | null;
   recipient_pin_requested: boolean;
   delivery_lat: number | null;
   delivery_lng: number | null;
@@ -57,6 +80,7 @@ export default function AdminOrderDetailPage() {
   const [riderUrl, setRiderUrl] = useState("");
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   const fetchOrder = useCallback(async () => {
     try {
@@ -87,6 +111,14 @@ export default function AdminOrderDetailPage() {
         const data = await res.json();
         setError(data.error || "Failed to update");
         return;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (data.giftCardRestored > 0) {
+        setNotice(
+          `Gift card credited back KSh ${Number(data.giftCardRestored).toLocaleString()}.`
+        );
+      } else if (REVERSAL_ACTIONS.some((a) => a.value === newStatus)) {
+        setNotice("Order reversed. This order used no gift card balance.");
       }
       setOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
     } catch {
@@ -195,6 +227,8 @@ export default function AdminOrderDetailPage() {
             order.status === "delivered" ? "bg-green-100 text-green-700" :
             order.status === "dispatched" ? "bg-orange-100 text-orange-700" :
             order.status === "failed" ? "bg-red-100 text-red-700" :
+            order.status === "refunded" ? "bg-amber-100 text-amber-700" :
+            order.status === "cancelled" ? "bg-gray-200 text-gray-700" :
             "bg-blue-100 text-blue-700"
           }`}>
             {order.status.replace("_", " ")}
@@ -204,6 +238,12 @@ export default function AdminOrderDetailPage() {
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
             {error}
+          </div>
+        )}
+        {notice && (
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 flex items-center gap-2">
+            <Undo2 className="w-4 h-4 shrink-0" />
+            {notice}
           </div>
         )}
 
@@ -248,6 +288,47 @@ export default function AdminOrderDetailPage() {
                   );
                 })}
               </div>
+
+              {/* Reversals — separate from the forward timeline because a
+                  refund is not a step forward, and it credits gift card value back. */}
+              {REVERSIBLE_STATUSES.includes(order.status) && (
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                    Reverse this order
+                  </h3>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Reversing credits back any gift card balance this order used
+                    {order.gift_card_code
+                      ? ` (${order.gift_card_code}, KSh ${Number(order.gift_card_discount ?? 0).toLocaleString()}).`
+                      : ". This order did not use a gift card."}
+                  </p>
+                  <div className="space-y-2">
+                    {REVERSAL_ACTIONS.map((a) => (
+                      <button
+                        key={a.value}
+                        onClick={() => {
+                          const warn =
+                            `Reverse order ${order.id.slice(0, 8)}?\n\n` +
+                            `Status becomes "${a.value}".` +
+                            (order.gift_card_code
+                              ? `\nGift card ${order.gift_card_code} will be credited back KSh ${Number(order.gift_card_discount ?? 0).toLocaleString()}.`
+                              : "") +
+                            "\n\nThis cannot be undone from here.";
+                          if (window.confirm(warn)) updateStatus(a.value);
+                        }}
+                        disabled={updating}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl ${a.color} text-white hover:opacity-90 disabled:opacity-50 transition-opacity text-left`}
+                      >
+                        {a.icon}
+                        <span className="flex flex-col">
+                          <span className="font-semibold text-sm">{a.label}</span>
+                          <span className="text-xs opacity-80">{a.hint}</span>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Rider Dispatch */}
