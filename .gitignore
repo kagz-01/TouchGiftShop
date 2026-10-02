@@ -10,3 +10,4 @@ __pycache__/
 # local db artifacts
 db/sqlite.db
 promohub-pictures
+catalog/
