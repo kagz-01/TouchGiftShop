@@ -731,8 +731,9 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
   // Real in-stock catalogue photography rather than hotlinked stock: the
   // Unsplash set was returning 16/16 broken, and a failed <img> renders its alt
   // text at the tile origin, which spilled outside the rounded frame.
-  const A = shots.filter((_, i) => i % 2 === 0).map((g) => ({ ...g, tall: false }));
-  const B = shots.filter((_, i) => i % 2 === 1).map((g) => ({ ...g, tall: true }));
+  // Alternate tall/short within the same column for a masonry effect (rectangle, square, rectangle)
+  const A = shots.filter((_, i) => i % 2 === 0).map((g, idx) => ({ ...g, tall: idx % 2 === 0 }));
+  const B = shots.filter((_, i) => i % 2 === 1).map((g, idx) => ({ ...g, tall: idx % 2 === 1 }));
 
   const N: Record<string, string> = { corporate: "Corporate gifting", bulk: "Bulk order", solo: "Solo branding" };
 
@@ -754,7 +755,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
     >
       <div
         className="relative w-full overflow-hidden bg-gradient-to-br from-brand/10 to-brand/20"
-        style={{ height: g.tall ? "200px" : "140px" }}
+        style={{ height: g.tall ? "260px" : "150px" }}
       >
         <Image
           src={g.image}
@@ -778,7 +779,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
 
 
-        <div className="grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[45%_50%] justify-between gap-10 lg:gap-14 items-start">
 
 
           {/* LEFT — headline + routes + CTAs (full left column) */}
