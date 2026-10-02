@@ -11,3 +11,4 @@ __pycache__/
 db/sqlite.db
 promohub-pictures
 catalog/
+public/products/
