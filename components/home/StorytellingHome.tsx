@@ -754,7 +754,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
     >
       <div
         className="relative w-full overflow-hidden bg-gradient-to-br from-brand/10 to-brand/20"
-        style={{ height: g.tall ? "280px" : "190px" }}
+        style={{ height: g.tall ? "200px" : "140px" }}
       >
         <Image
           src={g.image}
@@ -764,9 +764,9 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
           className="object-cover"
         />
       </div>
-      <div className="bg-white dark:bg-[#1A1A22] px-3 py-2.5 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
-        <p className="font-display font-semibold text-sm text-theme-heading leading-tight line-clamp-1">{g.label}</p>
-        <span className="text-[12px] text-brand font-medium">{N[g.t]} · {formatKsh(g.price)}</span>
+      <div className="bg-white dark:bg-[#1A1A22] px-2.5 py-2 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
+        <p className="font-display font-semibold text-xs text-theme-heading leading-tight line-clamp-1">{g.label}</p>
+        <span className="text-[11px] text-brand font-medium">{N[g.t]} · {formatKsh(g.price)}</span>
       </div>
     </div>
   );
@@ -845,15 +845,15 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
 
           {/* RIGHT — marquee, NO Reveal wrapper (Reveal's opacity animation fights CSS transform and causes the glitch)
               Exactly 2× content matches the translateY(-50%) keyframe loop point perfectly */}
-          <div className="hidden lg:grid grid-cols-2 gap-3 overflow-hidden rounded-2xl" style={{ height: "min(72vh, 760px)" }}>
+          <div className="hidden lg:grid grid-cols-2 gap-2 overflow-hidden rounded-2xl" style={{ height: "min(60vh, 600px)" }}>
             {/* Col 1 scrolls down */}
             <div className="overflow-hidden h-full">
               <div className="animate-marquee-vertical-reverse" style={{ willChange: "transform" }}>
                 {[...A, ...A].map((g, i) => renderCard(g, i))}
               </div>
             </div>
-            {/* Col 2 scrolls up, offset by padding-top so columns feel staggered */}
-            <div className="overflow-hidden h-full pt-16">
+            {/* Col 2 scrolls up, offset slightly so columns feel naturally staggered */}
+            <div className="overflow-hidden h-full" style={{ paddingTop: "60px" }}>
               <div className="animate-marquee-vertical" style={{ willChange: "transform" }}>
                 {[...B, ...B].map((g, i) => renderCard(g, i))}
               </div>
