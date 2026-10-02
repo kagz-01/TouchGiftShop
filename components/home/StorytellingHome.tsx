@@ -196,6 +196,13 @@ export function HeroCinematic() {
     hampers: "/hero/hero-fruits.webp"
   };
 
+  // Mount only the current mood's backdrop and the one it cross-fades into.
+  const activeHeroIndex = HERO_MOODS.findIndex((m) => m.id === moodMeta.id);
+  const VISIBLE_HERO_INDICES = new Set([
+    activeHeroIndex < 0 ? 0 : activeHeroIndex,
+    (activeHeroIndex + 1) % HERO_MOODS.length,
+  ]);
+
   // Auto-rotate logic — every 7 seconds, so each mood lands before we move on
   useEffect(() => {
     if (isPaused) return;
@@ -217,18 +224,24 @@ export function HeroCinematic() {
     <section 
       className="relative min-h-screen -mt-[130px] flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* ── CINEMATIC BACKGROUND IMAGES ── */}
-      {HERO_MOODS.map((m) => (
+      {/* ── CINEMATIC BACKGROUND IMAGES ──
+          Only the active mood and the one we're about to cross-fade into are
+          mounted. Rendering all six stacked at opacity 0/1 made the browser
+          download every 1920x1080 hero (842KB) to show one, and apply a blur
+          filter to five of them. Two is enough for the crossfade. */}
+      {HERO_MOODS.map((m, i) => VISIBLE_HERO_INDICES.has(i) && (
         <div
           key={m.id}
           className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${moodMeta.id === m.id ? "opacity-100 z-10" : "opacity-0 z-0"}`}
         >
-          <img 
-            src={heroBackgrounds[m.id]} 
-            alt={`${m.label} mood background`} 
+          <img
+            src={heroBackgrounds[m.id]}
+            alt={`${m.label} mood background`}
+            decoding="async"
+            fetchPriority={moodMeta.id === m.id ? "high" : "auto"}
             className={`w-full h-full object-cover object-center transition-all ease-out ${
-              moodMeta.id === m.id 
-                ? "duration-[5000ms] scale-105 blur-0" 
+              moodMeta.id === m.id
+                ? "duration-[5000ms] scale-105 blur-0"
                 : "duration-[2000ms] scale-100 blur-sm"
             }`}
           />
