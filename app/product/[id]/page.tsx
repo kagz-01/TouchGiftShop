@@ -13,7 +13,32 @@ import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
 import { optimizeImageUrl, optimizeImageArray } from "@/lib/image-url";
 
+/* generateMetadata() and the page body both need the product, and without this
+   each one issued its own Supabase round-trip — two identical queries per
+   product page view. React 18.3.1 in this build does not export cache(), so a
+   short-TTL memo collapses them to one. 60s matches the homepage revalidate;
+   admin edits go through revalidatePath, and the worst case is a product edit
+   appearing within a minute. */
+const productMemo = new Map<string, { at: number; product: Product | null }>();
+const MEMO_TTL_MS = 60_000;
+const MEMO_MAX = 500;
+
 async function getProduct(id: string): Promise<Product | null> {
+  const hit = productMemo.get(id);
+  if (hit && Date.now() - hit.at < MEMO_TTL_MS) return hit.product;
+
+  const product = await fetchProduct(id);
+
+  if (productMemo.size >= MEMO_MAX) {
+    // cheap eviction: drop the oldest entry
+    const oldest = productMemo.keys().next().value;
+    if (oldest !== undefined) productMemo.delete(oldest);
+  }
+  productMemo.set(id, { at: Date.now(), product });
+  return product;
+}
+
+async function fetchProduct(id: string): Promise<Product | null> {
   try {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     let query = supabaseAdmin.from("products").select("*").eq("status", "published");

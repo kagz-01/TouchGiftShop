@@ -106,7 +106,7 @@ function buildCorporateShots(rows: CorpRow[]): CorporateShot[] {
     usable
       .filter((r) => slugs(r).includes(slug))
       .slice(0, n)
-      .map((r) => ({ id: r.id, label: r.name, price: r.price, image: r.image_url!, t }));
+      .map((r) => ({ id: r.id, label: r.name, price: r.price, image: optimizeImageUrl(r.image_url, 560) ?? "", t }));
 
   return [
     ...take("gift-sets", "corporate", 2),
