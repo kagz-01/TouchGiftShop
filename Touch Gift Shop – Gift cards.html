@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Touch Gift Shop – Gift cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Serif:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fcf6f2;--card:#fff;--ink:#43102a;--body:#5d4150;--brand:#8a1650;--soft:#fbe3ea;--gold:#e2bd66;--line:#ecd9d3;--tile:#f4e6e0;--err:#b3261e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#150a10;--card:#241320;--ink:#f7dde8;--body:#d8bfca;--brand:#e0589a;--soft:#3d1a2c;--line:#4a2634;--tile:#2a1620;--err:#ff8a80}}
+:root[data-theme="dark"]{--bg:#150a10;--card:#241320;--ink:#f7dde8;--body:#d8bfca;--brand:#e0589a;--soft:#3d1a2c;--line:#4a2634;--tile:#2a1620;--err:#ff8a80}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--body);font:400 16px/1.6 "Noto Serif",Georgia,serif}
+h1,h2,.pf{font-family:"Playfair Display",Georgia,serif;color:var(--ink)}
+.page{max-width:1240px;margin:0 auto;padding:40px 24px 80px}
+h1{font-size:clamp(30px,4vw,44px);line-height:1.1;margin:0 0 6px}.top{margin-bottom:28px}.top p{margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:40px;align-items:start}
+.formcard{background:var(--card);border-radius:28px;padding:32px 30px 30px;box-shadow:0 20px 50px rgba(94,15,51,.09)}
+h2{font-size:22px;margin:0 0 4px;font-weight:600}h2.s{margin-top:28px;padding-top:26px;border-top:1px dotted var(--line)}
+.hint{margin:0 0 14px;font-size:14px}
+.chip{margin-left:8px;padding:2px 10px;border-radius:99px;background:var(--tile);font-size:12px;white-space:nowrap}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt{position:relative;font:500 15px "Noto Serif",Georgia,serif;padding:16px 6px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-align:center}
+.opt[aria-pressed="true"]{background:var(--soft);border-color:var(--brand);color:var(--brand)}
+.opt[aria-pressed="true"]::after{content:"✓";position:absolute;top:-8px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;font-size:11px;line-height:20px}
+.fld{display:flex;align-items:center;gap:10px;margin-top:14px;padding:6px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card)}
+.fld b{color:var(--brand);font-weight:600}
+input[type=number],input[type=text],input[type=date],textarea{width:100%;font:400 16px "Noto Serif",Georgia,serif;border:0;background:transparent;color:var(--ink);padding:10px 0}
+.box{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:14px;background:var(--card)}
+input:focus-visible,textarea:focus-visible{outline:none}.fld:focus-within,.box:focus-within{border-color:var(--brand)}
+input:disabled{opacity:.45}textarea{min-height:92px;resize:vertical;padding:0}
+label.l{display:block;font-size:13px;margin:14px 0 6px;color:var(--ink)}
+.cnt{text-align:right;font-size:12px;margin-top:2px}
+.err{color:var(--err);font-size:14px;margin:6px 0 0;min-height:1.2em}
+.sw{display:flex;align-items:center;gap:14px;margin-top:16px;padding:14px 16px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer}
+.sw input{position:absolute;opacity:0}
+.knob{flex:none;width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.knob::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.sw input:checked+.knob{background:var(--brand)}.sw input:checked+.knob::after{transform:translateX(20px)}
+.sw input:focus-visible+.knob{outline:3px solid var(--gold);outline-offset:3px}
+.sw b{display:block;color:var(--ink);font-weight:500}.sw small{font-size:13px}
+.del{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.del .opt{padding:14px 4px}.del small{display:block;font-weight:400;font-size:12px;opacity:.85}
+.go{margin-top:26px;width:100%;padding:18px;border-radius:99px;border:0;background:linear-gradient(135deg,#a3195c,#5e0f33);color:#fff;font:500 17px "Noto Serif",Georgia,serif;cursor:pointer;box-shadow:0 12px 26px rgba(138,22,80,.3)}
+.go:hover{filter:brightness(1.12)}
+.opt:focus-visible,.go:focus-visible,.tile:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.done{margin-top:18px;padding:18px 20px;border:1.5px solid var(--brand);border-radius:16px;color:var(--ink)}.done p{margin:0}.done[hidden]{display:none}
+.right{position:sticky;top:20px;min-width:0}
+.stage{position:relative;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.scene{position:absolute;left:50%;top:calc(50% - 14px);width:560px;height:322px;margin:-161px 0 0 -280px;transform:scale(var(--s,1));filter:drop-shadow(0 30px 28px rgba(94,15,51,.38))}
+.float{width:100%;height:100%;perspective:1600px}
+.card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.8,.2,1)}.card.drag{transition:none}
+.pod{position:absolute;left:18%;right:18%;bottom:6px;height:34px;border-radius:50%;background:radial-gradient(#fff,var(--tile));opacity:0;transition:opacity .5s;box-shadow:0 10px 24px rgba(94,15,51,.2)}
+.stage.tilt .pod{opacity:1}
+.face{position:absolute;inset:0;border-radius:24px;overflow:hidden;color:#fff3ea;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='none' stroke='%23e2bd66' stroke-opacity='.1' stroke-width='1.2'%3E%3Crect x='10' y='26' width='24' height='16'/%3E%3Cpath d='M10 31h24M22 26v16M22 26c-3-7-10-4-7 0M22 26c3-7 10-4 7 0'/%3E%3Crect x='60' y='64' width='20' height='14'/%3E%3Cpath d='M60 69h20M70 64v14'/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(circle at 14% 8%,rgba(255,255,255,.2),transparent 42%),linear-gradient(135deg,#b3174f,#7a1146 48%,#4d0b2a)}
+.front{transform:translateZ(5px)}.back{transform:rotateY(180deg) translateZ(5px)}
+.wm{position:absolute;left:32px;top:30px;font:600 14px "Noto Serif",serif;letter-spacing:.22em}.wm small{display:block;font-size:13px;font-weight:500;letter-spacing:.26em;color:var(--gold);margin-top:7px}
+.amt{position:absolute;right:175px;top:22px;text-align:right;font:700 60px/1 "Playfair Display",Georgia,serif;color:var(--gold);text-shadow:0 2px 12px rgba(0,0,0,.25)}
+.amt.s{font-size:50px}.amt small{display:block;font:500 11px "Noto Serif",serif;letter-spacing:.3em;margin-bottom:6px}
+.bow{position:absolute;left:360px;top:0;width:200px;height:200px;filter:drop-shadow(2px 5px 5px rgba(0,0,0,.4))}
+.tg{position:absolute;left:32px;top:116px;font:600 33px/1.15 "Playfair Display",Georgia,serif}.tg span{display:block;font-size:22px;font-weight:400;color:var(--gold);margin-top:6px}
+.rc{position:absolute;left:32px;bottom:26px;width:62%}.rc small{display:block;font-size:12px;letter-spacing:.24em;color:var(--gold)}
+.rn{display:block;font:italic 600 34px/1.25 "Playfair Display",Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-bottom:1.5px solid rgba(226,189,102,.7);padding-bottom:2px}
+.fr{margin-top:6px;font-size:14px;color:var(--gold)}.ph{opacity:.6}
+.gi{position:absolute;right:34px;bottom:28px;width:62px;height:62px}
+.dm{position:absolute;width:9px;height:9px;background:var(--gold);transform:rotate(45deg);opacity:.75}
+.bk{position:absolute;left:32px;top:92px;right:32px}.bk small{font-size:12px;letter-spacing:.24em;color:var(--gold)}
+.bk p{margin:6px 0 0;font:italic 600 21px/1.4 "Playfair Display",Georgia,serif;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.gc{position:absolute;right:32px;top:30px;font-size:13px;letter-spacing:.26em;color:var(--gold)}
+.pill{position:absolute;left:32px;bottom:58px;background:#fff;color:#43102a;font:600 17px "Noto Serif",serif;letter-spacing:.14em;padding:8px 26px;border-radius:99px}
+.pin{position:absolute;left:34px;bottom:30px;font-size:13px;letter-spacing:.1em}
+.terms{position:absolute;right:32px;bottom:30px;text-align:right;font-size:11px;line-height:1.5;max-width:210px}
+.edge{position:absolute;background:linear-gradient(#ecca78,#94722a)}
+.er,.el{width:10px;height:100%;left:calc(50% - 5px)}.er{transform:rotateY(90deg) translateZ(280px)}.el{transform:rotateY(-90deg) translateZ(280px)}
+.et,.eb{height:10px;width:100%;top:calc(50% - 5px)}.et{transform:rotateX(90deg) translateZ(161px)}.eb{transform:rotateX(-90deg) translateZ(161px)}
+.cf{position:absolute;opacity:0;color:var(--gold);pointer-events:none}.party .cf{opacity:1;animation:fl 3.4s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-16px) rotate(24deg)}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-top:6px}
+.tile{background:var(--tile);border:2px solid transparent;border-radius:18px;padding:12px 10px 10px;cursor:pointer;font:600 11px "Noto Serif",serif;letter-spacing:.14em;color:var(--body);position:relative;text-align:center}
+.tile[aria-pressed="true"]{border-color:var(--brand)}
+.mini{position:relative;width:100%;aspect-ratio:560/322;margin-bottom:10px;pointer-events:none}
+.mini .in{position:absolute;left:0;top:0;width:560px;height:322px;transform-origin:0 0;transform:scale(var(--k,.2))}
+.mini .in .back{transform:none}.mini .in .front{transform:none}
+.tile.t .mini{transform:perspective(420px) rotateY(-26deg) rotateX(8deg)}.tile.sd .mini{transform:perspective(420px) rotateY(-68deg)}
+.tile.pt::before{content:"✦ ◆ 🎁";position:absolute;top:6px;left:0;right:0;color:var(--gold);font-size:12px;letter-spacing:6px}
+.note{text-align:center;font-size:13px;margin:14px 0 0}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:20px;background:var(--tile);border-radius:20px;padding:16px 6px}
+.feat div{padding:4px 18px;border-left:1px solid var(--line);font-size:13px;line-height:1.45}.feat div:first-child{border:0}
+.feat b{display:block;color:var(--ink);font-size:12px;letter-spacing:.1em;margin-bottom:2px}
+@media (max-width:980px){.grid{grid-template-columns:1fr}.right{position:static;order:-1}.page{padding:28px 16px 64px}.feat div{border:0}}
+@media (max-width:520px){.del{grid-template-columns:1fr}.formcard{padding:26px 20px}}
+@media (prefers-reduced-motion:reduce){.card,.pod,.knob,.knob::after{transition:none}.cf{animation:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<linearGradient id="gs" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e3a4"/><stop offset=".25" stop-color="#c9962f"/><stop offset=".5" stop-color="#f2d57e"/><stop offset=".75" stop-color="#b07f22"/><stop offset="1" stop-color="#e7c667"/></linearGradient>
+<linearGradient id="gb" gradientUnits="userSpaceOnUse" x1="394" y1="16" x2="430" y2="-16"><stop offset="0" stop-color="#8f6218"/><stop offset=".18" stop-color="#e3be5c"/><stop offset=".36" stop-color="#fff0b0"/><stop offset=".52" stop-color="#e0b44c"/><stop offset=".8" stop-color="#b07b22"/><stop offset="1" stop-color="#85580f"/></linearGradient><linearGradient id="gt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a87a25"/><stop offset=".45" stop-color="#f1d37a"/><stop offset="1" stop-color="#946818"/></linearGradient><linearGradient id="gd2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6d4a0e"/><stop offset="1" stop-color="#b98a2e"/></linearGradient>
+<symbol id="gift" viewBox="0 0 64 64"><g fill="none" stroke="#e2bd66" stroke-width="2" stroke-linejoin="round"><rect x="7" y="24" width="50" height="10" rx="2"/><rect x="10" y="34" width="44" height="24" rx="2"/><path d="M28 24v34M36 24v34M32 24C24 6 10 10 16 20c3 4 10 4 16 4zM32 24C40 6 54 10 48 20c-3 4-10 4-16 4z"/></g><path d="M57 6l1.3 3 3 1.3-3 1.3L57 14.6l-1.3-3-3-1.3 3-1.3z" fill="#e2bd66"/></symbol>
+</defs></svg>
+<main class="page">
+  <header class="top"><h1>Give the gift of choice</h1><p>A Touch Gift Shop gift card lets them pick exactly what they love.</p></header>
+  <div class="grid">
+    <div class="formcard">
+      <h2>1. Choose amount</h2>
+      <p class="hint">Select a preset or enter a custom amount <span class="chip">✓ Min. KSh 500</span></p>
+      <div class="presets" id="presets"></div>
+      <div class="fld"><b>KSh</b><input type="number" id="custom" min="500" step="100" inputmode="numeric" placeholder="Enter custom amount" aria-label="Custom amount in KSh"></div>
+      <p class="err" id="e-amt" role="alert"></p>
+
+      <h2 class="s">2. Who is it for?</h2>
+      <p class="hint">Names appear live on the card.</p>
+      <label class="l" for="rec">Recipient's name</label><div class="fld" style="margin-top:0"><input type="text" id="rec" maxlength="30" placeholder="e.g. Wanjiku" autocomplete="off"></div>
+      <label class="l" for="from">Your name</label><div class="fld" style="margin-top:0"><input type="text" id="from" maxlength="30" placeholder="e.g. Brian" autocomplete="name"></div>
+      <label class="sw"><input type="checkbox" id="anon" role="switch"><span class="knob"></span><span><b>Send anonymously</b><small>Your name stays off the card and the message we send.</small></span></label>
+
+      <h2 class="s">3. Add a personal touch</h2>
+      <p class="hint">Add a message to make it special. It shows on the back.</p>
+      <div class="box"><textarea id="msg" maxlength="200" aria-label="Personal message" placeholder="Type your message here..."></textarea><div class="cnt"><span id="cnt">0</span> / 200</div></div>
+
+      <h2 class="s">4. Delivery option</h2>
+      <div class="del" id="del" style="margin-top:12px">
+        <button type="button" class="opt" data-d="instant" aria-pressed="true">⚡<br>Instant delivery<small>To your email</small></button>
+        <button type="button" class="opt" data-d="schedule" aria-pressed="false">📅<br>Schedule<small>Pick a date</small></button>
+        <button type="button" class="opt" data-d="send" aria-pressed="false">✉️<br>Send to recipient<small>They get it</small></button>
+      </div>
+      <div id="extra"></div><p class="err" id="e-del" role="alert"></p>
+      <button type="button" class="go" id="go">Continue to checkout →</button>
+      <div class="done" id="done" hidden></div>
+    </div>
+
+    <section class="right" aria-label="Gift card preview">
+      <div class="stage" id="stage"><div class="pod"></div><div class="scene" id="scene"><div class="float"><div class="card" id="card">
+        <div class="face front">
+          <span class="dm" style="right:150px;top:20px"></span><span class="dm" style="right:46px;top:170px;width:6px;height:6px"></span><span class="dm" style="left:300px;top:150px;width:6px;height:6px"></span>
+          <svg class="bow" viewBox="360 0 200 200" aria-hidden="true"><polygon points="430,-16 578,152 542,184 394,16" fill="url(#gb)" stroke="#7a5214" stroke-opacity=".5"/><polygon points="471,82 497,98 449,180 443,160 423,164" fill="url(#gt)" stroke="#7a5214" stroke-opacity=".6"/><polygon points="470,95 498,85 526,163 507,155 498,173" fill="url(#gt)" stroke="#7a5214" stroke-opacity=".6"/><path d="M484 82C448 22 380 40 394 78C404 106 456 108 484 90Z" fill="url(#gs)" stroke="#7a5214" stroke-width="1.2"/><path d="M478 82C452 46 408 54 414 76C420 92 452 94 478 88Z" fill="url(#gd2)"/><path d="M484 82C510 28 556 38 548 74C542 98 508 100 484 90Z" fill="url(#gs)" stroke="#7a5214" stroke-width="1.2"/><path d="M490 82C506 52 534 52 534 70C532 86 510 90 490 88Z" fill="url(#gd2)"/><path d="M468 52C440 36 408 46 410 62M500 50C520 36 540 42 542 56" fill="none" stroke="#fff3c4" stroke-opacity=".7" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="484" cy="87" rx="15" ry="13" fill="url(#gs)" stroke="#7a5214" stroke-width="1.2"/><path d="M476 82c4-5 10-6 16-3" fill="none" stroke="#fff6cf" stroke-opacity=".8" stroke-width="2" stroke-linecap="round"/></svg>
+          <div class="wm">TOUCH GIFT SHOP<small>GIFT CARD</small></div>
+          <div class="amt"><small>KSH</small><span class="js-amt">2,000</span></div>
+          <div class="tg">A gift, their choice.<span>Endless joy, one card.</span></div>
+          <div class="rc"><small>RECIPIENT</small><span class="rn ph js-rec">Recipient Name</span><div class="fr js-from">From a friend</div></div>
+          <svg class="gi" aria-hidden="true"><use href="#gift"/></svg>
+        </div>
+        <div class="face back">
+          <div class="wm">TOUCH GIFT SHOP</div><div class="gc">GIFT CARD</div>
+          <div class="bk"><small>MESSAGE</small><p class="ph js-msg">Your message will appear here.</p></div>
+          <div class="pill">•••• •••• •••• ••••</div><div class="pin">PIN &nbsp;••••••</div>
+          <div class="terms">Code and PIN are shown on delivery.<br>Redeem at touchgiftshop.co.ke. Valid for 3 months.</div>
+        </div>
+        <div class="edge er"></div><div class="edge el"></div><div class="edge et"></div><div class="edge eb"></div>
+      </div></div></div></div>
+      <p class="note">Drag the card to rotate it. Double-click to flip.</p>
+      <div class="tiles" id="tiles" role="group" aria-label="Card views">
+        <button type="button" class="tile" data-v="front" aria-pressed="true" aria-label="Front view"><div class="mini"><div class="in" data-k="front"></div></div>FRONT VIEW</button>
+        <button type="button" class="tile" data-v="back" aria-pressed="false" aria-label="Back view"><div class="mini"><div class="in" data-k="back"></div></div>BACK VIEW</button>
+        <button type="button" class="tile t" data-v="tilt" aria-pressed="false" aria-label="Tilted view"><div class="mini"><div class="in" data-k="front"></div></div>TILTED VIEW</button>
+        <button type="button" class="tile sd" data-v="side" aria-pressed="false" aria-label="Side view"><div class="mini"><div class="in" data-k="front"></div></div>SIDE VIEW</button>
+        <button type="button" class="tile pt" data-v="party" aria-pressed="false" aria-label="Usage animation"><div class="mini" style="margin-top:12px"><div class="in" data-k="front"></div></div>USAGE ANIMATION</button>
+      </div>
+      <div class="feat"><div><b>⚡ INSTANT DELIVERY</b>Delivered to your email straight after payment.</div><div><b>🛡️ SECURE &amp; SAFE</b>Pay securely with M-PESA or card.</div><div><b>📅 3-MONTH VALIDITY</b>Use anytime within 3 months.</div><div><b>🛍️ FLEXIBLE REDEMPTION</b>Redeem across all products.</div></div>
+    </section>
+  </div>
+</main>
+<script>
+var $=function(i){return document.getElementById(i)},st={amt:2000,del:"instant"},rx=0,ry=0,card=$("card"),stg=$("stage");
+var V={front:[0,0],back:[0,180],tilt:[10,-30],side:[6,-74],party:[-4,-12]};
+function fmt(n){return n>0?n.toLocaleString("en-KE"):"—"}
+function all(c,t,ph){[].forEach.call(document.querySelectorAll(c),function(e){e.textContent=t;if(ph!==undefined)e.classList.toggle("ph",ph)})}
+/* build mini previews from the real faces */
+[].forEach.call(document.querySelectorAll(".in"),function(m){var f=document.querySelector(".face."+m.dataset.k).cloneNode(true);m.appendChild(f)});
+/* party confetti */
+["🎁","✦","◆","🎁","✦","◆","✦","🎁","◆","✦"].forEach(function(c,i){var s=document.createElement("span");s.className="cf";s.textContent=c;s.style.cssText="left:"+(4+i*10)+"%;top:"+(i%2?8:70)+"%;animation-delay:"+(i*.3)+"s;font-size:"+(14+i%3*6)+"px";stg.appendChild(s)});
+function fit(){var s=Math.min(1,(stg.clientWidth-8)/560);$("scene").style.setProperty("--s",s);stg.style.height=Math.round(322*s+80)+"px";[].forEach.call(document.querySelectorAll(".mini"),function(m){m.style.setProperty("--k",(m.clientWidth/560).toFixed(4))})}
+new ResizeObserver(fit).observe(stg);fit();
+function turn(){card.style.transform="rotateX("+rx+"deg) rotateY("+ry+"deg)"}
+function pr(k){[].forEach.call($("tiles").children,function(b){b.setAttribute("aria-pressed",b.dataset.v===k)});stg.classList.toggle("tilt",k==="tilt");stg.classList.toggle("party",k==="party")}
+function view(v){var a=V[v];rx=a[0];ry=a[1];turn();pr(v)}
+$("tiles").onclick=function(e){var b=e.target.closest(".tile");if(b)view(b.dataset.v)};
+var d=null;
+stg.addEventListener("pointerdown",function(e){d={x:e.clientX,y:e.clientY,rx:rx,ry:ry};stg.setPointerCapture(e.pointerId);card.classList.add("drag");stg.style.cursor="grabbing"});
+stg.addEventListener("pointermove",function(e){if(!d)return;ry=d.ry+(e.clientX-d.x)*.6;rx=Math.max(-30,Math.min(30,d.rx-(e.clientY-d.y)*.4));turn();pr("")});
+function end(){d=null;card.classList.remove("drag");stg.style.cursor="grab"}
+stg.addEventListener("pointerup",end);stg.addEventListener("pointercancel",end);
+stg.addEventListener("dblclick",function(){rx=0;ry=Math.round(ry/180)*180+180;turn();pr("")});
+[1000,2000,3000,5000,10000,15000].forEach(function(n){var b=document.createElement("button");b.type="button";b.className="opt";b.textContent="KSh "+n.toLocaleString("en-KE");b.dataset.n=n;b.setAttribute("aria-pressed",n===2000);$("presets").appendChild(b)});
+function sync(){[].forEach.call($("presets").children,function(b){b.setAttribute("aria-pressed",+b.dataset.n===st.amt&&!$("custom").value)});all(".js-amt",fmt(st.amt));[].forEach.call(document.querySelectorAll(".amt"),function(e){e.classList.toggle("s",fmt(st.amt).length>5)})}
+$("presets").onclick=function(e){if(!e.target.dataset.n)return;st.amt=+e.target.dataset.n;$("custom").value="";$("e-amt").textContent="";sync();view("front")};
+$("custom").oninput=function(){st.amt=parseInt(this.value,10)||0;$("e-amt").textContent=st.amt&&st.amt<500?"Minimum amount is KSh 500.":"";sync()};
+$("custom").onfocus=function(){view("front")};
+function names(){var r=$("rec").value.trim(),f=$("from").value.trim(),a=$("anon").checked;all(".js-rec",r||"Recipient Name",!r);all(".js-from",a?"From Anonymous":(f?"From "+f:"From a friend"));$("from").disabled=a}
+["rec","from"].forEach(function(i){$(i).oninput=names;$(i).onfocus=function(){view("front")}});
+$("anon").onchange=function(){names();view("front")};
+$("msg").oninput=function(){var m=this.value.trim();all(".js-msg",m||"Your message will appear here.",!m);$("cnt").textContent=this.value.length};
+$("msg").onfocus=function(){view("back")};
+function extra(){var h="";if(st.del==="schedule")h='<label class="l" for="date">Delivery date</label><div class="fld" style="margin-top:0"><input type="date" id="date"></div>';
+if(st.del==="send")h='<label class="l" for="contact">Recipient\'s email or phone</label><div class="fld" style="margin-top:0"><input type="text" id="contact" placeholder="name@email.com or 07xx xxx xxx"></div>';
+$("extra").innerHTML=h;if($("date")){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffset());$("date").min=t.toISOString().slice(0,10)}$("e-del").textContent=""}
+$("del").onclick=function(e){var b=e.target.closest(".opt");if(!b)return;st.del=b.dataset.d;[].forEach.call($("del").children,function(x){x.setAttribute("aria-pressed",x===b)});extra()};
+/* wire your real checkout into window.TG_checkout(order) */
+$("go").onclick=function(){var r=$("rec").value.trim(),a=$("anon").checked,f=$("from").value.trim(),ok=true;$("e-amt").textContent="";$("e-del").textContent="";
+if(st.amt<500){$("e-amt").textContent="Choose an amount of at least KSh 500.";ok=false}
+if(st.del==="schedule"&&!($("date")&&$("date").value)){$("e-del").textContent="Pick a delivery date.";ok=false}
+if(st.del==="send"&&!($("contact")&&$("contact").value.trim())){$("e-del").textContent="Add the recipient's email or phone.";ok=false}
+if(!ok)return;
+var o={amount:st.amt,recipient:r,sender:a?null:f,anonymous:a,message:$("msg").value.trim(),delivery:st.del,date:$("date")?$("date").value:null,contact:$("contact")?$("contact").value.trim():null};
+if(window.TG_checkout)window.TG_checkout(o);
+var dn=$("done");dn.hidden=false;dn.innerHTML='<p class="pf" style="font-size:19px;margin-bottom:6px">Your card is ready for checkout</p><p>KSh '+fmt(o.amount)+' for '+(r||"your recipient")+', '+(a?"sent anonymously":"from "+(f||"you"))+'. Delivery: '+({instant:"instant, to your email",schedule:"scheduled for "+o.date,send:"sent to "+o.contact})[o.delivery]+'.</p>';dn.scrollIntoView({behavior:"smooth",block:"nearest"})};
+sync();names();extra();
+</script>
+</body>
+</html>
