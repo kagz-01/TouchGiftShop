@@ -335,7 +335,7 @@ export function HeroCinematic() {
               
               {moodMeta.id === "default" && (
                 <Link
-                  href="/build-a-hamper"
+                  href="/gift-lab/build-hamper"
                   className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px] bg-white/10 backdrop-blur-md border border-white/30 text-white hover:bg-white/20"
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">

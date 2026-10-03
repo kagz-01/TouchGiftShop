@@ -9,12 +9,21 @@ interface SurpriseToggleProps {
   defaultDontCall?: boolean;
 }
 
-function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
+function Toggle({
+  on,
+  onToggle,
+  label,
+}: {
+  on: boolean;
+  onToggle: () => void;
+  label: string;
+}) {
   return (
     <button
       type="button"
       onClick={onToggle}
       aria-pressed={on}
+      aria-label={label}
       className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ${on ? "bg-brand" : "bg-gray-200"}`}
     >
       <span
@@ -30,6 +39,8 @@ function InfoPopover({ text, open, onToggle }: { text: string; open: boolean; on
       <button
         type="button"
         onClick={(e) => { e.preventDefault(); onToggle(); }}
+        aria-label="What does this do?"
+        aria-expanded={open}
         className="w-4 h-4 text-brand-muted hover:text-brand transition-colors"
       >
         <Info className="w-4 h-4" />
@@ -94,7 +105,7 @@ export default function SurpriseToggle({
               Rider uses landmarks or guards — no calls to the recipient.
             </p>
           </div>
-          <Toggle on={dontCall} onToggle={() => updateDontCall(!dontCall)} />
+          <Toggle on={dontCall} onToggle={() => updateDontCall(!dontCall)} label="Don't call the recipient" />
         </div>
 
         <div className="border-t border-black/5" />
@@ -115,7 +126,7 @@ export default function SurpriseToggle({
               Your name and the price are completely hidden.
             </p>
           </div>
-          <Toggle on={anonymous} onToggle={() => updateAnonymous(!anonymous)} />
+          <Toggle on={anonymous} onToggle={() => updateAnonymous(!anonymous)} label="Anonymous Mode" />
         </div>
 
         {/* Active badges */}

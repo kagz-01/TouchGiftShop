@@ -310,6 +310,7 @@ export default function GiftCardShowcase() {
                   type="number"
                   min={500}
                   step={500}
+                  aria-label="Custom amount in KSh"
                   placeholder="Enter amount"
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}

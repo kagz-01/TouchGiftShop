@@ -117,11 +117,12 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === "Escape" && setSearchQuery("")}
+                  aria-label="Search products"
                   placeholder="Search gifts, hampers, occasions..."
                   className="flex-1 bg-transparent text-theme-heading placeholder:text-theme-body/60 text-sm focus:outline-none min-w-0"
                 />
                 {searchQuery && (
-                  <button type="button" onClick={() => setSearchQuery("")} className="text-theme-body hover:text-theme-heading transition-colors">
+                  <button type="button" onClick={() => setSearchQuery("")} aria-label="Clear search" className="text-theme-body hover:text-theme-heading transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 )}

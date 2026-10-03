@@ -70,6 +70,11 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
   const ADMIN_LOGIN = "/admin-access-2026";
+  // The login endpoint itself must be reachable without a session — it is how
+  // one is obtained. It sat behind the session check below, so the login page's
+  // POST was bounced straight back to the login page and the admin panel could
+  // never be opened. Still IP-restricted above and rate-limited to 5/min.
+  const ADMIN_AUTH_API = "/api/admin/auth";
 
   if (pathname.startsWith("/admin") || pathname.startsWith("/api/admin")) {
     const ip = getClientIp(request);
@@ -80,7 +85,7 @@ export async function middleware(request: NextRequest) {
       );
     }
 
-    if (pathname !== ADMIN_LOGIN) {
+    if (pathname !== ADMIN_LOGIN && pathname !== ADMIN_AUTH_API) {
       const adminSession = request.cookies.get("tg_admin_session")?.value;
       if (!adminSession) {
         const loginUrl = new URL(ADMIN_LOGIN, request.url);

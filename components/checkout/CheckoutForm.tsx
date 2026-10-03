@@ -523,16 +523,17 @@ export default function CheckoutForm({
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-4">
             <h2 className="font-display font-bold text-brand-deep">Your details</h2>
             <div>
-              <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Your name</label>
-              <input name="senderName" required placeholder="e.g. Amina Wanjiku" className={INPUT} />
+              <label htmlFor="co-sender-name" className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Your name</label>
+              <input id="co-sender-name" name="senderName" required placeholder="e.g. Amina Wanjiku" className={INPUT} />
             </div>
             <div>
-              <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Your phone number</label>
+              <label htmlFor="co-sender-phone" className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Your phone number</label>
               <div className="flex items-center gap-3">
                 <div className="shrink-0">
                   <CountrySelect value={senderCountry} onChange={setSenderCountry} className="!w-28" ariaLabel="sender country code" />
                 </div>
                 <input
+                  id="co-sender-phone"
                   name="senderPhone" required type="tel"
                   value={senderPhone}
                   onChange={(e) => setSenderPhone(e.target.value)}
@@ -553,8 +554,9 @@ export default function CheckoutForm({
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-4">
             <h2 className="font-display font-bold text-brand-deep">Recipient details</h2>
             <div>
-              <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Their name</label>
+              <label htmlFor="co-recipient-name" className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Their name</label>
               <input
+                id="co-recipient-name"
                 name="recipientName" required
                 placeholder="e.g. Brian Kamau"
                 value={recipientName}
@@ -563,12 +565,13 @@ export default function CheckoutForm({
               />
             </div>
             <div>
-              <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Their phone number</label>
+              <label htmlFor="co-recipient-phone" className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">Their phone number</label>
               <div className="flex items-center gap-3">
                 <div className="shrink-0">
                   <CountrySelect value={recipientCountry} onChange={setRecipientCountry} className="!w-28" ariaLabel="recipient country code" />
                 </div>
                 <input
+                  id="co-recipient-phone"
                   name="recipientPhone" required type="tel"
                   value={recipientPhone}
                   onChange={(e) => setRecipientPhone(e.target.value)}
@@ -623,10 +626,11 @@ export default function CheckoutForm({
 
             {!usePinDrop && (
               <div>
-                <label className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">
+                <label htmlFor="co-landmark" className="text-xs font-semibold text-brand-muted uppercase tracking-wider block mb-1.5">
                   Delivery area / landmark
                 </label>
                 <input
+                  id="co-landmark"
                   name="deliveryLandmark"
                   placeholder="e.g. Karen, near Shell station"
                   value={landmark}
@@ -748,7 +752,9 @@ export default function CheckoutForm({
               <h2 className="font-display font-bold text-brand-deep">Gift note</h2>
               <p className="text-xs text-brand-muted mt-0.5">Optional — printed and attached to the gift</p>
             </div>
+            <label htmlFor="co-giftnote" className="sr-only">Gift note</label>
             <textarea
+              id="co-giftnote"
               name="giftNote"
               defaultValue={giftNote}
               rows={3}
@@ -875,7 +881,9 @@ export default function CheckoutForm({
             </div>
             <div className="flex gap-2">
               <input
+                id="co-giftcard"
                 type="text"
+                aria-label="Gift card code"
                 placeholder="TG-XXXXXXXX"
                 value={giftCardCode}
                 onChange={(e) => setGiftCardCode(e.target.value.toUpperCase())}
@@ -913,7 +921,9 @@ export default function CheckoutForm({
               </p>
               <div className="flex items-center gap-2">
                 <input
+                  id="co-points"
                   type="number"
+                  aria-label="Loyalty points to redeem"
                   min={0}
                   step={POINTS_PER_KSH_REDEEM * 50}
                   value={pointsToRedeem || ""}
