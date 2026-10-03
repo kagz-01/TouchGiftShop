@@ -776,6 +776,11 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
           fill
           sizes="(max-width: 1024px) 45vw, 320px"
           className="object-cover"
+          // These sit inside a CSS-transform marquee. A lazily-loaded image in
+          // a transformed container is judged against the wrong position, so
+          // most of them never loaded at all and the tiles flashed empty as the
+          // column scrolled. There are only six, so load them outright.
+          loading="eager"
         />
       </div>
       <div className="bg-white dark:bg-[#1A1A22] px-2.5 py-2 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">

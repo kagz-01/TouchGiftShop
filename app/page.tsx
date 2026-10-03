@@ -97,23 +97,64 @@ export type CorporateShot = {
 };
 
 /** Picks six real, in-stock products and tags each to a corporate route, so the
- *  intro shows actual catalogue photography instead of stock imagery. */
+ *  intro shows actual catalogue photography instead of stock imagery.
+ *
+ *  A product can sit in more than one of these categories — "Verdant Eco Pen
+ *  Ensemble" is both a gift set and stationery — so taking each category
+ *  independently rendered the same product twice under two different labels.
+ *  Claim ids as they are used and top back up to six, since skipping a
+ *  duplicate would otherwise leave a column short. */
 function buildCorporateShots(rows: CorpRow[]): CorporateShot[] {
   const slugs = (r: CorpRow) =>
     (r.product_categories ?? []).map((c) => c.categories?.slug).filter(Boolean) as string[];
   const usable = rows.filter((r) => r.image_url);
-  const take = (slug: string, t: CorporateShot["t"], n: number) =>
-    usable
-      .filter((r) => slugs(r).includes(slug))
-      .slice(0, n)
-      .map((r) => ({ id: r.id, label: r.name, price: r.price, image: optimizeImageUrl(r.image_url, 560) ?? "", t }));
 
-  return [
-    ...take("gift-sets", "corporate", 2),
-    ...take("drinkware", "bulk", 2),
-    ...take("awards-trophies", "solo", 1),
-    ...take("stationery-office", "solo", 1),
+  const claimed = new Set<string>();
+  const out: CorporateShot[] = [];
+
+  const claim = (r: CorpRow, t: CorporateShot["t"]): boolean => {
+    if (claimed.has(r.id)) return false;
+    claimed.add(r.id);
+    out.push({
+      id: r.id,
+      label: r.name,
+      price: r.price,
+      image: optimizeImageUrl(r.image_url, 560) ?? "",
+      t,
+    });
+    return true;
+  };
+
+  const plan: Array<[string, CorporateShot["t"], number]> = [
+    ["gift-sets", "corporate", 2],
+    ["drinkware", "bulk", 2],
+    ["awards-trophies", "solo", 1],
+    ["stationery-office", "solo", 1],
   ];
+
+  for (const [slug, t, n] of plan) {
+    let added = 0;
+    for (const r of usable) {
+      if (added >= n) break;
+      if (!slugs(r).includes(slug)) continue;
+      if (claim(r, t)) added++;
+    }
+  }
+
+  // Backfill to six so both marquee columns stay full. Route the filler by
+  // category so the tab highlighting still means something.
+  const routeFor = (r: CorpRow): CorporateShot["t"] => {
+    const s = slugs(r);
+    if (s.includes("drinkware")) return "bulk";
+    if (s.includes("awards-trophies") || s.includes("stationery-office")) return "solo";
+    return "corporate";
+  };
+  for (const r of usable) {
+    if (out.length >= 6) break;
+    claim(r, routeFor(r));
+  }
+
+  return out;
 }
 
 type CategoryTile = {
