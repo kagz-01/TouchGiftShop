@@ -637,7 +637,7 @@ export default function GiftCardShowcase() {
           .gc-preview { position: static; }
         }
         .gc-step-title {
-          font-family: "Playfair Display", Georgia, serif;
+          font-family: var(--font-playfair), Georgia, serif;
           font-size: 22px;
           font-weight: 600;
           color: var(--heading-color, #1a1a2e);

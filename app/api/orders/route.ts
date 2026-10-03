@@ -122,6 +122,15 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    // A zero-priced product would otherwise sail through the check above, since
+    // |0 - 0| is 0. There is nothing to pay, so refuse the order outright rather
+    // than create one that can never be settled.
+    if (expectedAmount < 1) {
+      return NextResponse.json(
+        { error: "This item is not available for purchase." },
+        { status: 400 }
+      );
+    }
   }
 
   // Normalize and validate phone numbers on the server-side as a safety net.

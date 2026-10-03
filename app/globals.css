@@ -1355,7 +1355,7 @@ letter-spacing: .26em; color: var(--gcface-gold, #e2bd66); margin-top: 7px;
 }
 .gcface-amt {
 position: absolute; right: 175px; top: 22px; text-align: right;
-font: 700 60px/1 "Playfair Display", Georgia, serif;
+font: 700 60px/1 var(--font-playfair), Georgia, serif;
 color: var(--gcface-gold, #e2bd66);
 text-shadow: 0 2px 12px rgba(0,0,0,.25);
 }
@@ -1366,7 +1366,7 @@ letter-spacing: .3em; margin-bottom: 6px;
 }
 .gcface-tag {
 position: absolute; left: 32px; top: 116px;
-font: 600 33px/1.15 "Playfair Display", Georgia, serif;
+font: 600 33px/1.15 var(--font-playfair), Georgia, serif;
 }
 .gcface-tag span {
 display: block; font-size: 22px; font-weight: 400;
@@ -1378,7 +1378,7 @@ display: block; font-size: 12px; letter-spacing: .24em; color: var(--gcface-gold
 }
 .gcface-rn {
 display: block;
-font: italic 600 34px/1.25 "Playfair Display", Georgia, serif;
+font: italic 600 34px/1.25 var(--font-playfair), Georgia, serif;
 white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 border-bottom: 1.5px solid var(--gcface-accent, #e2bd66)66; padding-bottom: 2px;
 }
@@ -1398,7 +1398,7 @@ font-size: 13px; letter-spacing: .26em; color: var(--gcface-gold, #e2bd66);
 .gcface-bk small { font-size: 12px; letter-spacing: .24em; color: var(--gcface-gold, #e2bd66); }
 .gcface-bk p {
 margin: 6px 0 0;
-font: italic 600 21px/1.4 "Playfair Display", Georgia, serif;
+font: italic 600 21px/1.4 var(--font-playfair), Georgia, serif;
 display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
 overflow: hidden; overflow-wrap: anywhere;
 }

@@ -38,6 +38,30 @@ const inter = localFont({
   adjustFontFallback: false,
 });
 
+/* Playfair Display, for the gift card. The card leans on it hard — the amount
+   and the recipient's name are set in it — so the Georgia fallback is very
+   visible. Weights 400-900 cover the card's 600 and 700. The italic face is
+   static: the recipient name is set in italic 600, and a single static italic
+   is synthesised up to 600 rather than dropping to a upright fallback. */
+const playfair = localFont({
+  src: [
+    {
+      path: "./../public/fonts/PlayfairDisplay-Variable.woff2",
+      weight: "400 900",
+      style: "normal",
+    },
+    {
+      path: "./../public/fonts/PlayfairDisplay-Italic.woff2",
+      weight: "400",
+      style: "italic",
+    },
+  ],
+  variable: "--font-playfair",
+  display: "swap",
+  fallback: ["Georgia", "serif"],
+  adjustFontFallback: false,
+});
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 
 export const metadata: Metadata = {
@@ -99,7 +123,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen flex flex-col font-sans overflow-x-hidden" style={{ background: "var(--bg-base)", color: "var(--text-primary)", transition: "background 0.4s ease, color 0.4s ease" }}>
         <ThemeProvider>
           <MoodProvider>
