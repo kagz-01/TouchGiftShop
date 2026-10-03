@@ -1287,3 +1287,138 @@ html {
 .preserve-3d { transform-style: preserve-3d; }
 .backface-hidden { backface-visibility: hidden; }
 .rotate-y-180 { transform: rotateY(180deg); }
+/* ── Gift card face (ported from the Touch Gift Shop reference) ── */
+.gcface-box {
+container-type: inline-size;
+width: 100%;
+aspect-ratio: 560 / 322;
+position: relative;
+}
+.gcface-fit {
+position: absolute;
+top: 0; left: 0;
+width: 560px;
+height: 322px;
+transform-origin: 0 0;
+perspective: 1600px;
+}
+.gcface-card {
+position: relative;
+width: 100%; height: 100%;
+transform-style: preserve-3d;
+transition: transform .9s cubic-bezier(.2,.8,.2,1);
+}
+.gcface-card.drag { transition: none; }
+.gcface-flip {
+position: absolute; inset: 0;
+transform-style: preserve-3d;
+transition: transform .9s cubic-bezier(.2,.8,.2,1);
+cursor: pointer;
+}
+.gcface-flip.flipped { transform: rotateY(180deg); }
+.gcface-face {
+position: absolute; inset: 0;
+border-radius: 24px;
+overflow: hidden;
+color: var(--gcface-ink, #fff3ea);
+backface-visibility: hidden;
+-webkit-backface-visibility: hidden;
+box-shadow: 0 25px 60px rgba(79,12,43,.25), 0 8px 18px rgba(79,12,43,.15), inset 0 1px 0 rgba(255,255,255,.35);
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cg fill='none' stroke='%23e2bd66' stroke-opacity='.1' stroke-width='1.2'%3E%3Crect x='10' y='26' width='24' height='16'/%3E%3Cpath d='M10 31h24M22 26v16M22 26c-3-7-10-4-7 0M22 26c3-7 10-4 7 0'/%3E%3Crect x='60' y='64' width='20' height='14'/%3E%3Cpath d='M60 69h20M70 64v14'/%3E%3C/g%3E%3C/svg%3E"),
+radial-gradient(circle at 14% 8%, rgba(255,255,255,.2), transparent 42%),
+var(--gcface-bg, linear-gradient(135deg,#b3174f,#7a1146 48%,#4d0b2a));
+}
+.gcface-front { transform: translateZ(5px); }
+.gcface-back { transform: rotateY(180deg) translateZ(5px); }
+/* Gold card edges */
+.gcface-edge {
+position: absolute;
+background: linear-gradient(#ecca78, #94722a);
+border-radius: 2px;
+}
+.gcface-er, .gcface-el { width: 10px; height: 100%; left: calc(50% - 5px); }
+.gcface-er { transform: rotateY(90deg) translateZ(280px); }
+.gcface-el { transform: rotateY(-90deg) translateZ(280px); }
+.gcface-et, .gcface-eb { height: 10px; width: 100%; top: calc(50% - 5px); }
+.gcface-et { transform: rotateX(90deg) translateZ(161px); }
+.gcface-eb { transform: rotateX(-90deg) translateZ(161px); }
+/* Front */
+.gcface-wm {
+position: absolute; left: 32px; top: 30px;
+font: 600 14px "Noto Serif", Georgia, serif;
+letter-spacing: .22em;
+}
+.gcface-wm small {
+display: block; font-size: 13px; font-weight: 500;
+letter-spacing: .26em; color: var(--gcface-gold, #e2bd66); margin-top: 7px;
+}
+.gcface-amt {
+position: absolute; right: 175px; top: 22px; text-align: right;
+font: 700 60px/1 "Playfair Display", Georgia, serif;
+color: var(--gcface-gold, #e2bd66);
+text-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
+.gcface-amt.sm { font-size: 50px; }
+.gcface-amt small {
+display: block; font: 500 11px "Noto Serif", Georgia, serif;
+letter-spacing: .3em; margin-bottom: 6px;
+}
+.gcface-tag {
+position: absolute; left: 32px; top: 116px;
+font: 600 33px/1.15 "Playfair Display", Georgia, serif;
+}
+.gcface-tag span {
+display: block; font-size: 22px; font-weight: 400;
+color: var(--gcface-gold, #e2bd66); margin-top: 6px;
+}
+.gcface-rc { position: absolute; left: 32px; bottom: 26px; width: 62%; }
+.gcface-rc small {
+display: block; font-size: 12px; letter-spacing: .24em; color: var(--gcface-gold, #e2bd66);
+}
+.gcface-rn {
+display: block;
+font: italic 600 34px/1.25 "Playfair Display", Georgia, serif;
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+border-bottom: 1.5px solid var(--gcface-accent, #e2bd66)66; padding-bottom: 2px;
+}
+.gcface-from { margin-top: 6px; font-size: 14px; color: var(--gcface-gold, #e2bd66); }
+.gcface-gi { position: absolute; right: 34px; bottom: 28px; width: 62px; height: 62px; }
+.gcface-dm {
+position: absolute; width: 9px; height: 9px;
+background: var(--gcface-accent, #e2bd66); transform: rotate(45deg); opacity: .75;
+}
+.gcface-ph { opacity: .6; }
+/* Back */
+.gcface-gc {
+position: absolute; right: 32px; top: 30px;
+font-size: 13px; letter-spacing: .26em; color: var(--gcface-gold, #e2bd66);
+}
+.gcface-bk { position: absolute; left: 32px; top: 92px; right: 32px; }
+.gcface-bk small { font-size: 12px; letter-spacing: .24em; color: var(--gcface-gold, #e2bd66); }
+.gcface-bk p {
+margin: 6px 0 0;
+font: italic 600 21px/1.4 "Playfair Display", Georgia, serif;
+display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
+overflow: hidden; overflow-wrap: anywhere;
+}
+.gcface-pill {
+position: absolute; left: 32px; bottom: 58px;
+background: #fff; color: #43102a;
+font: 600 17px "Noto Serif", Georgia, serif;
+letter-spacing: .14em; padding: 8px 26px; border-radius: 99px;
+}
+.gcface-pin { position: absolute; left: 34px; bottom: 30px; font-size: 13px; letter-spacing: .1em; }
+.gcface-terms {
+position: absolute; right: 32px; bottom: 30px; text-align: right;
+font-size: 11px; line-height: 1.5; max-width: 210px;
+}
+/* Usage animation confetti */
+.gcface-cf {
+position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-events: none;
+}
+.gcface-cf.on { opacity: 1; animation: gcFloat 3.4s ease-in-out infinite; }
+@keyframes gcFloat { 50% { transform: translateY(-16px) rotate(24deg); } }
+@media (prefers-reduced-motion: reduce) {
+.gcface-cf.on { animation: none; }
+.gcface-card, .gcface-flip { transition: none; }
+}

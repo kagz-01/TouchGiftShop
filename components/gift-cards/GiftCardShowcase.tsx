@@ -9,7 +9,9 @@ const money = (v: number) => new Intl.NumberFormat("en-KE").format(v);
 
 /** Must match the zod schema in app/api/gift-cards/route.ts */
 const MIN_AMOUNT = 500;
-const MAX_MESSAGE = 160;
+const MAX_MESSAGE = 200;
+
+const isEmailContact = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
 /** yyyy-mm-dd for tomorrow, the earliest schedulable send date. */
 const tomorrow = (() => {
@@ -23,11 +25,15 @@ const CARD_W = 400;
 const THUMB_W = 150;
 
 const SNAP_VIEWS = [
-  { label: "FRONT VIEW", rotX: 0, rotY: 0, flipped: false },
-  { label: "BACK VIEW", rotX: 0, rotY: 0, flipped: true },
-  { label: "TILTED VIEW", rotX: 14, rotY: -28, flipped: false },
-  { label: "USAGE ANGLE", rotX: 8, rotY: -50, flipped: false },
-];
+  { key: "front", label: "FRONT VIEW", rotX: 0, rotY: 0, flipped: false, tilt: "", note: "" },
+  // The preview owns the flip (its wrapper rotates and the back face is
+  // pre-flipped), so the back view must not add a second 180deg here — that
+  // would render the back mirrored.
+  { key: "back", label: "BACK VIEW", rotX: 0, rotY: 0, flipped: true, tilt: "", note: "" },
+  { key: "tilt", label: "TILTED VIEW", rotX: 10, rotY: -30, flipped: false, tilt: " t", note: "" },
+  { key: "side", label: "SIDE VIEW", rotX: 6, rotY: -74, flipped: false, tilt: " sd", note: "" },
+  { key: "party", label: "USAGE ANIMATION", rotX: -4, rotY: -12, flipped: false, tilt: " pt", note: "✦ ◆ 🎁" },
+] as const;
 
 const FEATURES = [
   { icon: "⚡", title: "INSTANT DELIVERY", desc: "Delivered to your email in seconds" },
@@ -42,7 +48,7 @@ export default function GiftCardShowcase() {
   const [recipientName, setRecipientName] = useState("");
   const [senderName, setSenderName] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
-  const [recipientPhone, setRecipientPhone] = useState("");
+  const [recipientContact, setRecipientContact] = useState("");
   const [sendDate, setSendDate] = useState("");
   const [message, setMessage] = useState("");
   const [delivery, setDelivery] = useState<"instant" | "schedule" | "send">("instant");
@@ -56,7 +62,7 @@ export default function GiftCardShowcase() {
   const [dragging, setDragging] = useState(false);
   const [flipped, setFlipped] = useState(false);
   const [hasPointer, setHasPointer] = useState(false);
-  const [activeView, setActiveView] = useState("FRONT VIEW");
+  const [activeView, setActiveView] = useState("front");
 
   const clamp = (v: number, min: number, max: number) => Math.min(Math.max(v, min), max);
 
@@ -76,8 +82,14 @@ export default function GiftCardShowcase() {
       if (!sendDate) return "Choose a date to send on";
       if (new Date(sendDate) <= new Date()) return "Pick a date in the future";
     }
-    if (delivery === "send" && recipientPhone && !/^(\+?254|0)(7|1)\d{8}$/.test(recipientPhone.trim())) {
-      return "Enter a valid Kenyan phone number, e.g. 0712345678";
+    if (delivery === "send") {
+      const c = recipientContact.trim();
+      const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c);
+      const isPhone = /^(\+?254|0)(7|1)\d{8}$/.test(c.replace(/[\s-]/g, ""));
+      if (!c) return "Add the recipient's email or phone";
+      if (!isEmail && !isPhone) {
+        return "Enter a valid email (name@example.com) or Kenyan phone (0712345678)";
+      }
     }
     return "";
   };
@@ -98,7 +110,11 @@ export default function GiftCardShowcase() {
           amount: finalAmount,
           recipientName: recipientName.trim(),
           senderName: isAnonymous ? undefined : senderName.trim(),
-          recipientPhone: delivery === "send" ? recipientPhone.trim() : undefined,
+          ...(delivery === "send"
+            ? isEmailContact(recipientContact)
+              ? { recipientEmail: recipientContact.trim() }
+              : { recipientPhone: recipientContact.trim().replace(/[\s-]/g, "") }
+            : {}),
           message: message.trim() || undefined,
           isAnonymous,
           sendDate: delivery === "schedule" ? sendDate : undefined,
@@ -162,14 +178,14 @@ export default function GiftCardShowcase() {
     if (Math.sqrt(dx * dx + dy * dy) < 8) {
       setFlipped((v) => !v);
       setRotation({ x: 0, y: 0 });
-      setActiveView((prev) => prev === "FRONT VIEW" ? "BACK VIEW" : "FRONT VIEW");
+      setActiveView((prev) => (prev === "back" ? "front" : "back"));
     }
   }, [dragging]);
 
   const snapTo = (view: typeof SNAP_VIEWS[number]) => {
     setFlipped(view.flipped);
     setRotation({ x: view.rotX, y: view.rotY });
-    setActiveView(view.label);
+    setActiveView(view.key);
     setHasPointer(false);
   };
 
@@ -328,20 +344,21 @@ export default function GiftCardShowcase() {
 
           {delivery === "send" && (
             <div className="gc-field gc-field-inline">
-              <label className="gc-field-label" htmlFor="gc-phone">
-                Recipient&rsquo;s phone
+              <label className="gc-field-label" htmlFor="gc-contact">
+                Recipient&rsquo;s email or phone
               </label>
               <input
-                id="gc-phone"
-                type="tel"
-                inputMode="tel"
-                value={recipientPhone}
-                onChange={(e) => setRecipientPhone(e.target.value)}
-                placeholder="0712345678"
+                id="gc-contact"
+                type="text"
+                value={recipientContact}
+                onChange={(e) => setRecipientContact(e.target.value)}
+                placeholder="name@email.com or 07xx xxx xxx"
                 className="gc-input"
-                autoComplete="tel"
+                autoComplete="off"
               />
-              <p className="gc-field-hint">We&rsquo;ll text them the claim link after payment.</p>
+              <p className="gc-field-hint">
+                We&rsquo;ll send them the claim link after payment.
+              </p>
             </div>
           )}
           </div>
@@ -400,43 +417,28 @@ export default function GiftCardShowcase() {
             </div>
             <div className="gc-shadow" />
           </div>
-          <p className="gc-hint">Drag to explore · Click to flip</p>
+          <p className="gc-hint">Drag the card to rotate it. Click to flip.</p>
 
-          {/* 4 thumbnail views */}
-          <div className="gc-thumbnails">
+          {/* Card views — the card stays flat inside the tile and the tile
+              itself carries the tilt, so each one is a true miniature. */}
+          <div className="gc-thumbnails" role="group" aria-label="Card views">
             {SNAP_VIEWS.map((v) => (
               <button
-                key={v.label}
+                key={v.key}
                 type="button"
-                className={`gc-thumb ${activeView === v.label ? "active" : ""}`}
+                aria-label={v.label}
+                aria-pressed={activeView === v.key}
+                className={`gc-thumb${v.tilt}${activeView === v.key ? " active" : ""}`}
                 onClick={() => snapTo(v)}
               >
-                <div className="gc-thumb-card" style={{ width: THUMB_W, height: THUMB_W / 1.72 }}>
-                  <div
-                    style={{
-                      width: CARD_W,
-                      transformOrigin: "top left",
-                      transform: `scale(${THUMB_W / CARD_W})`,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        position: "relative",
-                        transformStyle: "preserve-3d" as const,
-                        transform: `rotateX(${v.rotX}deg) rotateY(${v.rotY}deg)`,
-                        transition: "transform 0.5s ease",
-                      }}
-                    >
-                      <GiftCardPreview
-                        amount={finalAmount}
-                        recipientName={recipientName || "Recipient Name"}
-                        senderName={senderLabel}
-                        message={message || "A gift, their choice."}
-                        flipped={v.flipped}
-                      />
-                    </div>
-                  </div>
+                <div className="gc-thumb-card">
+                  <GiftCardPreview
+                    amount={finalAmount}
+                    recipientName={recipientName || "Recipient Name"}
+                    senderName={senderLabel}
+                    message={message}
+                    flipped={v.flipped}
+                  />
                 </div>
                 <span className="gc-thumb-label">{v.label}</span>
               </button>
@@ -466,26 +468,46 @@ export default function GiftCardShowcase() {
         }
         .gc-layout {
           display: grid;
-          grid-template-columns: 1fr 1.3fr;
+          grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
           gap: 40px;
           align-items: start;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 980px) {
           .gc-layout { grid-template-columns: 1fr; }
+          .gc-preview { order: -1; }
         }
 
-        /* ── Form ── */
+        /* ── Form: white rounded card, as in the reference ── */
         .gc-form {
           display: flex;
           flex-direction: column;
-          gap: 28px;
+          gap: 4px;
+          padding: 32px 30px 30px;
+          border-radius: 28px;
+          background: var(--surface-primary, #fff);
+          box-shadow: 0 20px 50px rgba(94, 15, 51, .09);
+          border: 1px solid var(--surface-border, rgba(236, 217, 211, .9));
+        }
+        .gc-preview {
+          position: sticky;
+          top: 20px;
+          min-width: 0;
+        }
+        @media (max-width: 980px) {
+          .gc-preview { position: static; }
         }
         .gc-step-title {
-          font-family: Georgia, serif;
-          font-size: 18px;
+          font-family: "Playfair Display", Georgia, serif;
+          font-size: 22px;
           font-weight: 600;
           color: var(--heading-color, #1a1a2e);
           margin: 0 0 4px;
+        }
+        /* Reference uses a dotted rule between sections. */
+        .gc-step + .gc-step {
+          margin-top: 28px;
+          padding-top: 26px;
+          border-top: 1px dotted var(--surface-border, #ecd9d3);
         }
         .gc-step-sub {
           font-size: 13px;
@@ -673,11 +695,11 @@ export default function GiftCardShowcase() {
         .gc-preview { display: flex; flex-direction: column; gap: 16px; }
         .gc-stage {
           width: 100%;
-          aspect-ratio: 1.72 / 1;
+          aspect-ratio: 560 / 322;
           position: relative;
           perspective: 1600px;
-          cursor: grabbing;
-          touch-action: none;
+          cursor: grab;
+          touch-action: pan-y;
           user-select: none;
           outline: none;
         }
@@ -703,39 +725,45 @@ export default function GiftCardShowcase() {
 
         /* Thumbnails */
         .gc-thumbnails {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 8px;
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          gap: 12px;
+          margin-top: 6px;
         }
         .gc-thumb {
+          position: relative;
           display: flex;
           flex-direction: column;
-          align-items: center;
           gap: 6px;
-          padding: 8px;
+          padding: 12px 10px 10px;
           border: 2px solid transparent;
-          border-radius: 14px;
-          background: rgba(255,255,255,0.5);
-          backdrop-filter: blur(4px);
+          border-radius: 18px;
+          background: var(--gc-tile, rgba(142,18,71,0.06));
           cursor: pointer;
-          transition: all 0.2s ease;
+          text-align: center;
+          transition: border-color .2s ease;
         }
-        .gc-thumb:hover { border-color: rgba(142,18,71,0.3); }
-        .gc-thumb.active {
-          border-color: rgba(142,18,71,0.6);
-          background: rgba(142,18,71,0.06);
-        }
+        .gc-thumb:hover { border-color: rgba(165,27,88,.35); }
+        .gc-thumb.active { border-color: var(--accent-color, #a51b58); }
         .gc-thumb-card {
-          overflow: hidden;
-          border-radius: 6px;
-          perspective: 500px;
+          position: relative;
+          width: 100%;
+          pointer-events: none;
+        }
+        /* The card renders flat; the tile supplies the perspective. */
+        .gc-thumb.t .gc-thumb-card { transform: perspective(420px) rotateY(-26deg) rotateX(8deg); }
+        .gc-thumb.sd .gc-thumb-card { transform: perspective(420px) rotateY(-68deg); }
+        .gc-thumb.pt .gc-thumb-card { margin-top: 12px; }
+        .gc-thumb.pt::before {
+          content: "\\2606  \\25C6  \\1F381";
+          position: absolute; top: 6px; left: 0; right: 0;
+          color: var(--gc-gold, #d8a744);
+          font-size: 12px; letter-spacing: 6px;
         }
         .gc-thumb-label {
-          font-size: 9px;
+          font-size: 11px;
           font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
+          letter-spacing: .14em;
           color: var(--text-muted, #8b8b9e);
         }
         .gc-thumb.active .gc-thumb-label { color: var(--accent-color, #a51b58); }

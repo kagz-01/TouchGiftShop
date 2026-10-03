@@ -22,7 +22,8 @@ const PurchaseInput = z.object({
     .regex(/^(\+?254|0)(7|1)\d{8}$/, "Invalid Kenyan phone number")
     .optional()
     .or(z.literal("")),
-  message: z.string().max(160, "Message cannot exceed 160 characters").optional(),
+  recipientEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
+  message: z.string().max(200, "Message cannot exceed 200 characters").optional(),
   isAnonymous: z.boolean().optional(),
   sendDate: z.string().optional(),
   style: z.object({
@@ -41,8 +42,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const { amount, senderName, recipientName, recipientPhone, message, isAnonymous, sendDate, style } =
+  const { amount, senderName, recipientName, recipientPhone, recipientEmail, message, isAnonymous, sendDate, style } =
     parsed.data;
+
+  // "Send to recipient" accepts an email or a phone; store each in its own column.
+  const trimmedEmail = (recipientEmail ?? "").trim();
+  const trimmedPhone = (recipientPhone ?? "").trim();
 
   const effectiveSenderName = isAnonymous ? null : senderName ?? null;
 
@@ -76,7 +81,8 @@ export async function POST(req: Request) {
     balance: 0,
     sender_name: effectiveSenderName,
     recipient_name: recipientName,
-    recipient_phone: recipientPhone || null,
+    recipient_phone: trimmedPhone || null,
+    recipient_email: trimmedEmail || null,
     message: message || null,
     expires_at: expiresAt.toISOString(),
     send_date: sendDate || null,
