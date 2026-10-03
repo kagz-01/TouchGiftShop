@@ -119,11 +119,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
     }
 
-    // Update vendor product count
-    await supabaseAdmin.rpc("increment_column", {
-      table_name: "marketplace_vendors",
-      column_name: "total_products",
-      row_id: data.vendorId,
+    // Update vendor product count. Was a generic increment_column(table, column,
+    // row) RPC that never existed in the database, so the count silently stayed
+    // at zero. A function scoped to this one counter avoids building SQL from a
+    // caller-supplied table and column name.
+    await supabaseAdmin.rpc("increment_vendor_products", {
+      vendor_id: data.vendorId,
     });
 
     return NextResponse.json({ product }, { status: 201 });

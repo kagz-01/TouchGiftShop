@@ -48,6 +48,35 @@ const REVERSAL_ACTIONS = [
 
 const REVERSIBLE_STATUSES = ["processing", "wrapped", "dispatched", "delivered"];
 
+/**
+ * Reversal does two independent things: credits any gift card balance back,
+ * and asks PesaPal to return the money. They can succeed separately, so spell
+ * out both rather than implying the customer has been made whole.
+ */
+function describeReversal(data: {
+  giftCardRestored?: number;
+  payment?: { state: string; message: string };
+}): string {
+  const parts: string[] = [];
+
+  if (Number(data.giftCardRestored) > 0) {
+    parts.push(`Gift card credited back KSh ${Number(data.giftCardRestored).toLocaleString()}`);
+  }
+
+  const pay = data.payment;
+  if (pay?.state === "completed") {
+    parts.push("PesaPal refund submitted");
+  } else if (pay?.state === "failed") {
+    parts.push(`PesaPal refund FAILED — ${pay.message}. Reconcile manually.`);
+  } else if (pay?.state === "not_supported") {
+    parts.push(`Money not refunded — ${pay.message}`);
+  } else if (pay?.state === "skipped") {
+    parts.push(pay.message);
+  }
+
+  return parts.join(". ") || "Order reversed.";
+}
+
 interface Order {
   id: string;
   status: string;
@@ -113,12 +142,8 @@ export default function AdminOrderDetailPage() {
         return;
       }
       const data = await res.json().catch(() => ({}));
-      if (data.giftCardRestored > 0) {
-        setNotice(
-          `Gift card credited back KSh ${Number(data.giftCardRestored).toLocaleString()}.`
-        );
-      } else if (REVERSAL_ACTIONS.some((a) => a.value === newStatus)) {
-        setNotice("Order reversed. This order used no gift card balance.");
+      if (REVERSAL_ACTIONS.some((a) => a.value === newStatus)) {
+        setNotice(describeReversal(data));
       }
       setOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
     } catch {
@@ -241,9 +266,15 @@ export default function AdminOrderDetailPage() {
           </div>
         )}
         {notice && (
-          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 flex items-center gap-2">
-            <Undo2 className="w-4 h-4 shrink-0" />
-            {notice}
+          <div
+            className={`mb-4 p-3 rounded-xl text-sm flex items-start gap-2 border ${
+              /FAILED|not refunded/i.test(notice)
+                ? "bg-amber-50 border-amber-200 text-amber-800"
+                : "bg-green-50 border-green-200 text-green-700"
+            }`}
+          >
+            <Undo2 className="w-4 h-4 shrink-0 mt-0.5" />
+            <span>{notice}</span>
           </div>
         )}
 
