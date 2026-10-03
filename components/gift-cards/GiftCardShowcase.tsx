@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import GiftCardPreview from "@/components/gift-cards/GiftCardPreview";
 import type { GiftCardStyle } from "@/components/gift-cards/GiftCardPreview";
 
@@ -12,6 +12,70 @@ const MIN_AMOUNT = 500;
 const MAX_MESSAGE = 200;
 
 const isEmailContact = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+
+/* ── Card colours ── */
+
+/** Ready-made colourways. `bg` is the flat colour a gradient is built from. */
+const COLOR_PRESETS = [
+  { key: "berry", label: "Berry", bg: "#b3174f", accent: "#e2bd66" },
+  { key: "blush", label: "Blush", bg: "#d98aa4", accent: "#7a1146" },
+  { key: "forest", label: "Forest", bg: "#1f4d3d", accent: "#e6c86a" },
+  { key: "midnight", label: "Midnight", bg: "#1b2340", accent: "#d8b25e" },
+  { key: "sunset", label: "Sunset", bg: "#c2410c", accent: "#fde68a" },
+  { key: "cocoa", label: "Cocoa", bg: "#3f2a1d", accent: "#e0b980" },
+] as const;
+
+const clampChannel = (n: number) => Math.max(0, Math.min(255, Math.round(n)));
+
+const toRgb = (hex: string): [number, number, number] => {
+  let h = hex.replace("#", "");
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  const n = parseInt(h, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+
+const toHex = (rgb: [number, number, number]) =>
+  "#" + rgb.map((c) => clampChannel(c).toString(16).padStart(2, "0")).join("");
+
+/** Mixes a colour toward `target` by `amount` (0–1). */
+const mix = (hex: string, target: [number, number, number], amount: number) => {
+  const a = toRgb(hex);
+  return toHex([
+    a[0] + (target[0] - a[0]) * amount,
+    a[1] + (target[1] - a[1]) * amount,
+    a[2] + (target[2] - a[2]) * amount,
+  ]);
+};
+
+/** Gives a flat colour the same depth as the reference gradient. */
+const shade = (hex: string) =>
+  `linear-gradient(135deg, ${mix(hex, [255, 255, 255], 0.16)} 0%, ${hex} 45%, ${mix(hex, [0, 0, 0], 0.34)} 100%)`;
+
+/** Relative luminance, to keep the card readable whatever colour is chosen. */
+const isDark = (hex: string) => {
+  const [r, g, b] = toRgb(hex).map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.4;
+};
+
+/**
+ * Builds the card style from the chosen colours. Text colour follows the
+ * background so a pale card does not end up with pale text on it, and the
+ * accent is nudged for contrast against the ink.
+ */
+const buildCardStyle = (bg: string, accent: string): GiftCardStyle => {
+  const dark = isDark(bg);
+  return {
+    theme: "custom",
+    bg: shade(bg),
+    bgcolor: bg,
+    accent,
+    textPrimary: dark ? "#fff3ea" : "#43102a",
+    textSecondary: dark ? accent : mix(accent, [0, 0, 0], 0.25),
+  };
+};
 
 /** yyyy-mm-dd for tomorrow, the earliest schedulable send date. */
 const tomorrow = (() => {
@@ -52,6 +116,9 @@ export default function GiftCardShowcase() {
   const [sendDate, setSendDate] = useState("");
   const [message, setMessage] = useState("");
   const [delivery, setDelivery] = useState<"instant" | "schedule" | "send">("instant");
+  const [presetKey, setPresetKey] = useState<string>(COLOR_PRESETS[0].key);
+  const [cardBg, setCardBg] = useState<string>(COLOR_PRESETS[0].bg);
+  const [cardAccent, setCardAccent] = useState<string>(COLOR_PRESETS[0].accent);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -72,6 +139,18 @@ export default function GiftCardShowcase() {
 
   /** What the card itself should display for the sender line. */
   const senderLabel = isAnonymous ? "Anonymous" : senderName.trim() || "A friend";
+
+  /** Keeps the API payload to validated hex colours. */
+  const cardStyle = useMemo(
+    () => buildCardStyle(cardBg, cardAccent),
+    [cardBg, cardAccent]
+  );
+
+  const applyPreset = (p: (typeof COLOR_PRESETS)[number]) => {
+    setPresetKey(p.key);
+    setCardBg(p.bg);
+    setCardAccent(p.accent);
+  };
 
   const validate = (): string => {
     if (finalAmount < MIN_AMOUNT) return `Minimum amount is KSh ${MIN_AMOUNT}`;
@@ -118,6 +197,13 @@ export default function GiftCardShowcase() {
           message: message.trim() || undefined,
           isAnonymous,
           sendDate: delivery === "schedule" ? sendDate : undefined,
+          style: {
+            theme: cardStyle.theme,
+            bg: cardBg,
+            accent: cardAccent,
+            textPrimary: cardStyle.textPrimary,
+            textSecondary: cardStyle.textSecondary,
+          },
         }),
       });
       const data = await res.json();
@@ -360,7 +446,60 @@ export default function GiftCardShowcase() {
                 We&rsquo;ll send them the claim link after payment.
               </p>
             </div>
-          )}
+)}
+          </div>
+
+          {/* Card colours */}
+          <div className="gc-step">
+            <h3 className="gc-step-title">5. Card colours</h3>
+            <p className="gc-step-sub">
+              Pick a colourway, or choose your own. Text colour adjusts so it stays readable.
+            </p>
+
+            <div className="gc-swatches" role="group" aria-label="Card colour presets">
+              {COLOR_PRESETS.map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  aria-label={p.label}
+                  aria-pressed={presetKey === p.key}
+                  className={`gc-swatch ${presetKey === p.key ? "active" : ""}`}
+                  onClick={() => applyPreset(p)}
+                  style={{ background: shade(p.bg) }}
+                >
+                  <span className="gc-swatch-dot" style={{ background: p.accent }} />
+                  <span className="gc-swatch-label">{p.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="gc-pickers">
+              <label className="gc-picker">
+                <span className="gc-field-label">Card colour</span>
+                <span className="gc-picker-row">
+                  <input
+                    type="color"
+                    value={cardBg}
+                    onChange={(e) => { setCardBg(e.target.value); setPresetKey("custom"); }}
+                    aria-label="Card colour"
+                  />
+                  <code>{cardBg}</code>
+                </span>
+              </label>
+
+              <label className="gc-picker">
+                <span className="gc-field-label">Accent</span>
+                <span className="gc-picker-row">
+                  <input
+                    type="color"
+                    value={cardAccent}
+                    onChange={(e) => { setCardAccent(e.target.value); setPresetKey("custom"); }}
+                    aria-label="Accent colour"
+                  />
+                  <code>{cardAccent}</code>
+                </span>
+              </label>
+            </div>
           </div>
 
           {error && (
@@ -413,6 +552,7 @@ export default function GiftCardShowcase() {
                 senderName={senderLabel}
                 message={message || "A gift, their choice."}
                 flipped={flipped}
+                style={cardStyle}
               />
             </div>
             <div className="gc-shadow" />
@@ -853,6 +993,69 @@ export default function GiftCardShowcase() {
         .gc-toggle-text { display: flex; flex-direction: column; gap: 2px; }
         .gc-toggle-text strong { font-size: 14px; color: var(--text-primary, #1a1a2e); }
         .gc-toggle-text span { font-size: 12px; color: var(--text-muted, #8b8b9e); }
+
+        /* ── Card colour picker ── */
+        .gc-swatches {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 10px;
+          margin: 4px 0 16px;
+        }
+        .gc-swatch {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 7px;
+          padding: 12px 8px 10px;
+          border: 2px solid var(--surface-border, #e5e7eb);
+          border-radius: 14px;
+          cursor: pointer;
+          transition: border-color .2s ease, transform .2s ease;
+        }
+        .gc-swatch:hover { transform: translateY(-1px); }
+        .gc-swatch.active { border-color: var(--accent-color, #a51b58); }
+        .gc-swatch-dot {
+          width: 22px; height: 22px;
+          border-radius: 50%;
+          box-shadow: inset 0 0 0 1px rgba(0,0,0,.15);
+        }
+        .gc-swatch-label {
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: .04em;
+          color: var(--text-muted, #8b8b9e);
+        }
+        .gc-swatch.active .gc-swatch-label { color: var(--text-primary, #1a1a2e); }
+        .gc-pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 520px) {
+          .gc-swatches { grid-template-columns: repeat(2, 1fr); }
+          .gc-pickers { grid-template-columns: 1fr; }
+        }
+        .gc-picker { display: block; }
+        .gc-picker .gc-field-label { margin-bottom: 8px; }
+        .gc-picker-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 6px 10px;
+          border: 1px solid var(--surface-border, #e5e7eb);
+          border-radius: 10px;
+        }
+        .gc-picker input[type="color"] {
+          width: 34px; height: 30px;
+          padding: 0;
+          border: 1px solid var(--surface-border, #e5e7eb);
+          border-radius: 7px;
+          background: none;
+          cursor: pointer;
+        }
+        .gc-picker code {
+          font-size: 12px;
+          letter-spacing: .04em;
+          color: var(--text-muted, #8b8b9e);
+          text-transform: uppercase;
+        }
 
         .gc-error {
           margin: 4px 0 12px;

@@ -3,7 +3,12 @@
 import { useEffect, useId, useRef, useState } from "react";
 
 export type GiftCardStyle = {
+  /** Preset name, kept for display and stored with the card. */
+  theme?: string;
   bg?: string;
+  /** Flat colour behind the gradient. Needed because a solid hex is invalid
+   *  inside `background-image`. */
+  bgcolor?: string;
   accent?: string;
   textPrimary?: string;
   textSecondary?: string;
@@ -163,6 +168,7 @@ export default function GiftCardPreview({
                     "--gcface-gold": s.textSecondary,
                     "--gcface-accent": s.accent,
                     "--gcface-bg": s.bg,
+                    "--gcface-bgcolor": s.bgcolor ?? "transparent",
                   } as React.CSSProperties
                 }
               >
@@ -256,6 +262,7 @@ export default function GiftCardPreview({
                     "--gcface-gold": s.textSecondary,
                     "--gcface-accent": s.accent,
                     "--gcface-bg": s.bg,
+                    "--gcface-bgcolor": s.bgcolor ?? "transparent",
                   } as React.CSSProperties
                 }
               >

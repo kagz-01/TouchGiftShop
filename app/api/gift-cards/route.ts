@@ -13,6 +13,11 @@ function generateCode(): string {
   return `TG-${part1}-${part2}`;
 }
 
+/** 3- or 6-digit hex colour. */
+const HEX = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Invalid hex colour");
+
 const PurchaseInput = z.object({
   amount: z.number().min(500, "Minimum amount is KSh 500"),
   senderName: z.string().min(1).optional(),
@@ -26,10 +31,18 @@ const PurchaseInput = z.object({
   message: z.string().max(200, "Message cannot exceed 200 characters").optional(),
   isAnonymous: z.boolean().optional(),
   sendDate: z.string().optional(),
-  style: z.object({
-    theme: z.string(),
-    font: z.string(),
-  }).optional(),
+  // Card appearance. Colours are validated so a crafted payload cannot inject
+  // arbitrary CSS (the values are inlined into the card's style attribute).
+  style: z
+    .object({
+      theme: z.string().max(40).optional(),
+      bg: HEX.optional(),
+      accent: HEX.optional(),
+      textPrimary: HEX.optional(),
+      textSecondary: HEX.optional(),
+    })
+    .strict()
+    .optional(),
 });
 
 // POST /api/gift-cards — purchase a gift card (creates pending card + PesaPal payment)
