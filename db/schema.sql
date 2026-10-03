@@ -8,6 +8,10 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TYPE order_status_enum AS ENUM (
   'pending_payment', 'processing', 'wrapped', 'dispatched', 'delivered', 'failed'
 );
+-- Added for the admin reversal flow, which credits a gift card back. Kept as
+-- separate statements so this file matches what is applied in production.
+ALTER TYPE order_status_enum ADD VALUE IF NOT EXISTS 'refunded';
+ALTER TYPE order_status_enum ADD VALUE IF NOT EXISTS 'cancelled';
 CREATE TYPE pool_status_enum AS ENUM ('active', 'completed', 'expired', 'fulfilled', 'cancelled', 'refunded');
 
 CREATE TABLE orders (
@@ -44,6 +48,16 @@ CREATE TABLE orders (
     points_discount DECIMAL(10,2) DEFAULT 0,
     mpesa_checkout_request_id VARCHAR(50) UNIQUE,
     mpesa_receipt_number VARCHAR(50),
+    -- Gift cards: the discount is derived server-side and debited after payment
+    -- by the IPN. Reversing an order credits it back via gift_card_redemptions.
+    gift_card_code VARCHAR(50),
+    gift_card_discount DECIMAL(12,2) DEFAULT 0,
+    -- PesaPal needs this as the confirmation code to refund a payment, so it is
+    -- recorded when the checkout session is created rather than only on IPN.
+    pesapal_tracking_id TEXT,
+    refund_status TEXT,
+    refund_message TEXT,
+    refunded_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -1253,11 +1267,23 @@ CREATE INDEX idx_loyalty_points_user ON loyalty_points(user_id);
 -- Gift card redemptions log
 CREATE TABLE gift_card_redemptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    gift_card_id UUID REFERENCES gift_cards(id) ON DELETE CASCADE,
+    gift_card_id UUID NOT NULL REFERENCES gift_cards(id) ON DELETE CASCADE,
     order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    amount DECIMAL(12,2) NOT NULL CHECK (amount > 0),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    -- Set when the order is reversed. Claimed with a compare-and-set on
+    -- reversed_at IS NULL so one reversal cannot credit the card twice.
+    reversed_at TIMESTAMPTZ,
+    reversal_reason TEXT
 );
+
+-- At most one redemption per order, so an order cannot be debited twice.
+CREATE UNIQUE INDEX IF NOT EXISTS gift_card_redemptions_order_id_uniq
+    ON gift_card_redemptions (order_id)
+    WHERE order_id IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS gift_card_redemptions_gift_card_id_idx
+    ON gift_card_redemptions (gift_card_id, created_at DESC);
 
 CREATE INDEX idx_gift_card_redemptions_card ON gift_card_redemptions(gift_card_id);
 
@@ -1412,6 +1438,43 @@ CREATE TRIGGER on_auth_user_created
 CREATE TRIGGER update_profiles_updated_at
     BEFORE UPDATE ON profiles
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Applied by migration — objects added after this file was first written.
+-- Kept here so a fresh database matches production. See db/migrations/.
+-- ─────────────────────────────────────────────────────────────────────────────
+
+-- Vendor product counter. app/api/corporate/marketplace/products increments this
+-- when a listing is created; it previously called a generic increment_column
+-- RPC that did not exist, so counts stayed at zero.
+CREATE OR REPLACE FUNCTION public.increment_vendor_products(vendor_id UUID)
+RETURNS VOID
+LANGUAGE sql
+AS $$
+  UPDATE public.marketplace_vendors
+     SET total_products = COALESCE(total_products, 0) + 1
+   WHERE id = vendor_id;
+$$;
+
+-- Storage buckets. Only products and reviews originally existed, so avatar
+-- upload failed for everyone (nothing provisions that bucket at runtime).
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES
+  ('avatars', 'avatars', true, 2097152,
+   ARRAY['image/png','image/jpeg','image/webp','image/gif']),
+  ('customizations', 'customizations', true, 5242880,
+   ARRAY['image/png','image/jpeg','image/webp'])
+ON CONFLICT (id) DO UPDATE
+  SET public = EXCLUDED.public,
+      file_size_limit = EXCLUDED.file_size_limit,
+      allowed_mime_types = EXCLUDED.allowed_mime_types;
+
+CREATE POLICY "avatars public read" ON storage.objects
+  FOR SELECT USING (bucket_id = 'avatars');
+
+CREATE POLICY "customizations public read" ON storage.objects
+  FOR SELECT USING (bucket_id = 'customizations');
 
 -- ---------------------------------------------------------------------
 -- Admin Sessions — persistent auth across serverless instances
