@@ -69,6 +69,23 @@ PREFIX_TO_SLUG = {
     "BAG": ["bags"],
     "CLK": ["clocks"],
     "TCH": ["tech-gadgets"],
+    # Liquor catalog prefixes
+    "BRD": ["drinks"],   # Brandy
+    "CDR": ["drinks"],   # Cider
+    "COG": ["drinks"],   # Cognac
+    "GIN": ["drinks"],   # Gin
+    "LIQ": ["drinks"],   # Liqueur
+    "NAL": ["drinks"],   # Non-Alcoholic
+    "RUM": ["drinks"],   # Rum
+    "SPK": ["drinks"],   # Sparkling
+    "SPR": ["drinks"],   # Spirits
+    "TEQ": ["drinks"],   # Tequila
+    "VOD": ["drinks"],   # Vodka
+    "WHS": ["drinks"],   # Whiskey/Whisky
+    "WIN": ["drinks"],   # Wine
+    "WRD": ["drinks"],   # Red Wine
+    "WRO": ["drinks"],   # Rosé Wine
+    "WWH": ["drinks"],   # White Wine
 }
 
 # Product tag → slug. Used in addition to the SKU prefix so products pick
@@ -145,8 +162,27 @@ TAG_TO_SLUG = {
     "perfume": "perfumes",
     "fragrance": "perfumes",
     "drinks": "drinks",
+    "liquor": "drinks",
+    "beverage": "drinks",
     "wine": "drinks",
+    "red-wine": "drinks",
+    "white-wine": "drinks",
+    "rosé-wine": "drinks",
+    "rose-wine": "drinks",
     "whiskey": "drinks",
+    "whisky": "drinks",
+    "vodka": "drinks",
+    "gin": "drinks",
+    "rum": "drinks",
+    "tequila": "drinks",
+    "brandy": "drinks",
+    "cognac": "drinks",
+    "liqueur": "drinks",
+    "cider": "drinks",
+    "sparkling": "drinks",
+    "spirits": "drinks",
+    "non-alcoholic": "drinks",
+    "beer": "drinks",
     "alcohol": "drinks",
     "edible": "fruits",
     "fruit": "fruits",

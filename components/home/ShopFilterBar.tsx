@@ -187,21 +187,20 @@ export default function ShopFilterBar() {
             { slug: "fruits", name: "Fruit Hampers", count: categories.find(c => c.slug === "fruits")?.count || 0 },
             { slug: "apparel", name: "Wearables", count: categories.find(c => c.slug === "apparel")?.count || 0 },
             ...categories.filter(c => !["perfumes", "gift-sets", "flowers", "drinks", "fruits", "apparel"].includes(c.slug)),
-          ].map((cat) => {
-            const isComingSoon = cat.count === 0 && cat.slug !== "";
+          ]
+            .filter(cat => cat.slug === "" || cat.count > 0)
+            .map((cat) => {
             const isActive = activeCategory === cat.slug;
             
             return (
               <button
                 key={cat.slug || 'all'}
-                onClick={() => !isComingSoon && setCategory(cat.slug)}
-                disabled={isComingSoon}
+                onClick={() => setCategory(cat.slug)}
                 className={cn(
                   "relative flex flex-col items-center justify-center gap-2 w-[100px] h-[90px] rounded-2xl text-sm font-semibold transition-all duration-300 shrink-0 border",
                   isActive ? "bg-brand border-brand text-white shadow-ribbon scale-105" : "bg-white/50 hover:bg-white dark:bg-black/20 dark:hover:bg-black/40 border-black/10 dark:border-white/10 hover:border-brand/40",
-                  isComingSoon ? "opacity-60 grayscale cursor-not-allowed" : ""
                 )}
-                style={(!isActive && !isComingSoon) ? {
+                style={!isActive ? {
                   color: "var(--heading-color)",
                 } : undefined}
               >
@@ -214,12 +213,6 @@ export default function ShopFilterBar() {
                 <span className="text-[11px] text-center leading-tight px-1">
                   {cat.name}
                 </span>
-                
-                {isComingSoon && (
-                  <span className="absolute -top-2 bg-black text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded-full shadow-sm whitespace-nowrap">
-                    Soon
-                  </span>
-                )}
               </button>
             );
           })}
