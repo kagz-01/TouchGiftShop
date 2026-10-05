@@ -171,12 +171,14 @@ type CategoryTile = {
  *  product so the rail reads as the premium end of the range. */
 async function getCategoryTiles(): Promise<CategoryTile[]> {
   const wanted = [
+    "drinks",
     "drinkware",
     "awards-trophies",
     "stationery-office",
     "accessories",
     "bags",
     "clocks",
+    "tech-gadgets",
   ];
 
   const supabase = createClient(
@@ -186,7 +188,7 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
 
   const { data } = await supabase
     .from("products")
-    .select("name, price, image_url, product_categories!inner(categories!inner(slug,name))")
+    .select("name, price, image_url, sku, product_categories!inner(categories!inner(slug,name))")
     .eq("in_stock", true)
     .in("product_categories.categories.slug", wanted);
 
@@ -194,6 +196,7 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
     name: string;
     price: number;
     image_url: string | null;
+    sku: string | null;
     product_categories: { categories: { slug: string; name: string } | null }[];
   };
 
@@ -208,7 +211,9 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
     }
   }
 
-  return wanted
+  // ── General category tiles ──────────────────────────────────────────
+  const generalTiles = wanted
+    .filter((slug) => slug !== "drinks") // drinks gets split into sub-tiles below
     .map((slug) => {
       const entry = byslug.get(slug);
       if (!entry?.rows.length) return null;
@@ -221,10 +226,51 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
         count: entry.rows.length,
         heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
         heroName: hero.name,
+        href: `/shop?category=${slug}`,
       };
     })
-    .filter(Boolean) as CategoryTile[];
+    .filter(Boolean) as (CategoryTile & { href: string })[];
+
+  // ── Liquor subcategory tiles (grouped by SKU prefix) ───────────────
+  const drinkRows = (byslug.get("drinks")?.rows ?? []) as Row[];
+
+  const liquorGroups: { prefix: string[]; name: string; icon: string }[] = [
+    { prefix: ["WIN", "WRD", "WWH", "WRO"], name: "Wines",             icon: "🍷" },
+    { prefix: ["WHS"],                       name: "Whiskies",          icon: "🥃" },
+    { prefix: ["VOD"],                       name: "Vodka",             icon: "🍸" },
+    { prefix: ["GIN"],                       name: "Gin",               icon: "🍃" },
+    { prefix: ["RUM"],                       name: "Rum",               icon: "🌊" },
+    { prefix: ["SPK"],                       name: "Champagne & Sparkling", icon: "🍾" },
+    { prefix: ["BRD", "COG"],               name: "Brandy & Cognac",   icon: "🥂" },
+    { prefix: ["TEQ"],                       name: "Tequila",           icon: "🌵" },
+    { prefix: ["LIQ"],                       name: "Liqueurs",          icon: "🍬" },
+    { prefix: ["CDR"],                       name: "Ciders",            icon: "🍏" },
+    { prefix: ["SPR"],                       name: "Spirits",           icon: "🔥" },
+    { prefix: ["NAL"],                       name: "Non-Alcoholic",     icon: "🧃" },
+  ];
+
+  const liquorTiles = liquorGroups
+    .map(({ prefix, name }) => {
+      const rows = drinkRows.filter((r) => {
+        const skuPrefix = (r.sku ?? "").split("-")[0].toUpperCase();
+        return prefix.includes(skuPrefix);
+      });
+      if (!rows.length) return null;
+      const hero = rows.reduce((best, r) => (r.price > best.price ? r : best));
+      return {
+        slug: `drinks-${prefix[0].toLowerCase()}`,
+        name,
+        count: rows.length,
+        heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
+        heroName: hero.name,
+        href: `/shop?category=drinks&q=${encodeURIComponent(name.toLowerCase())}`,
+      };
+    })
+    .filter(Boolean) as (CategoryTile & { href: string })[];
+
+  return [...liquorTiles, ...generalTiles];
 }
+
 
 async function getFeaturedProducts() {
   const supabase = createClient(

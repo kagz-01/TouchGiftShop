@@ -19,12 +19,13 @@ export type CategoryTileData = {
   count: number;
   heroImage: string | null;
   heroName: string;
+  href?: string;
 };
 
 function Tile({ tile }: { tile: CategoryTileData }) {
   return (
     <Link
-      href={`/shop?category=${tile.slug}`}
+      href={tile.href ?? `/shop?category=${tile.slug}`}
       className={cn(
         "group relative w-[230px] sm:w-[260px] shrink-0 overflow-hidden rounded-[1.5rem]",
         "border border-surface-border card-theme transition-all duration-500 hover:-translate-y-1.5",
