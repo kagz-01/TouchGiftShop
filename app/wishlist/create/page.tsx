@@ -3,190 +3,234 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  ArrowLeft, ArrowRight, Check, Sparkles, Gift, Heart
+} from "lucide-react";
 
 const OCCASIONS = [
-  { id: "birthday", label: "Birthday", emoji: "🎂" },
-  { id: "wedding", label: "Wedding", emoji: "💒" },
-  { id: "baby", label: "New Baby", emoji: "👶" },
-  { id: "anniversary", label: "Anniversary", emoji: "💕" },
-  { id: "graduation", label: "Graduation", emoji: "🎓" },
-  { id: "christmas", label: "Christmas", emoji: "🎄" },
-  { id: "just because", label: "Just Because", emoji: "💝" },
-  { id: "other", label: "Other", emoji: "🎁" },
+  { id: "birthday",       label: "Birthday",       emoji: "🎂" },
+  { id: "wedding",        label: "Wedding",        emoji: "💒" },
+  { id: "baby",           label: "New Baby",       emoji: "👶" },
+  { id: "anniversary",    label: "Anniversary",    emoji: "💕" },
+  { id: "graduation",     label: "Graduation",     emoji: "🎓" },
+  { id: "christmas",      label: "Christmas",      emoji: "🎄" },
+  { id: "just because",   label: "Just Because",   emoji: "💝" },
+  { id: "other",          label: "Other",          emoji: "🎁" },
 ];
+
+const WISHLIST_SLUG_KEY = "touchgift_wishlist_slug";
+const WISHLIST_NAME_KEY = "touchgift_wishlist_name";
 
 export default function CreateWishlistPage() {
   const router = useRouter();
+  const [step, setStep] = useState(1);
   const [ownerName, setOwnerName] = useState("");
   const [occasion, setOccasion] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
+  const [createdSlug, setCreatedSlug] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleCreate() {
     setLoading(true);
-
     const res = await fetch("/api/wishlist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ownerName, occasion, message }),
     });
-
     const data = await res.json();
     if (data.wishlist) {
-      router.push(`/wishlist/${data.wishlist.slug}`);
-    } else {
-      setLoading(false);
+      localStorage.setItem(WISHLIST_SLUG_KEY, data.wishlist.slug);
+      localStorage.setItem(WISHLIST_NAME_KEY, data.wishlist.owner_name);
+      setCreatedSlug(data.wishlist.slug);
+      setStep(3);
     }
+    setLoading(false);
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
-      <div className="page-container py-12">
-        {/* Back link */}
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-8">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </Link>
-
-        {/* Header */}
-        <div className="text-center mb-10">
-          <span className="text-5xl block mb-4">📝</span>
-          <h1 className="font-display text-3xl font-bold mb-3">
-            Create Your Wishlist
-          </h1>
-          <p className="text-brand-muted max-w-md mx-auto">
-            Add things you&apos;d actually love to receive. Share the link with
-            friends and family so they never have to guess.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Link>
+          <div className="flex items-center gap-1.5 text-rose-500">
+            <Heart className="w-4 h-4 fill-rose-500" />
+            <span className="text-sm font-bold">TouchGift</span>
+          </div>
+          {step < 3 && (
+            <span className="text-xs text-gray-400">Step {step} of 2</span>
+          )}
         </div>
+      </div>
 
-        {/* Progress */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {[1, 2].map((s) => (
-            <div key={s} className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                step >= s ? "bg-brand text-white" : "bg-gray-200 text-brand-muted"
-              }`}>
-                {step > s ? "✓" : s}
+      <div className="max-w-lg mx-auto px-4 py-10">
+        {/* Progress dots */}
+        {step < 3 && (
+          <div className="flex items-center justify-center gap-3 mb-10">
+            {[1, 2].map((s) => (
+              <div key={s} className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
+                  step > s
+                    ? "bg-emerald-500 text-white"
+                    : step === s
+                    ? "bg-gradient-to-br from-rose-500 to-pink-500 text-white shadow-lg shadow-rose-200"
+                    : "bg-gray-100 text-gray-400"
+                }`}>
+                  {step > s ? <Check className="w-4 h-4" /> : s}
+                </div>
+                {s < 2 && (
+                  <div className={`w-16 h-0.5 rounded-full transition-all ${step > s ? "bg-emerald-400" : "bg-gray-200"}`} />
+                )}
               </div>
-              {s < 2 && <div className={`w-12 h-0.5 ${step > s ? "bg-brand" : "bg-gray-200"}`} />}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Step 1: Name */}
-          {step === 1 && (
-            <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-4 animate-fade-in">
+        {/* ═══ STEP 1: Name & Occasion ═══ */}
+        {step === 1 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <span className="text-5xl block mb-3">🌟</span>
+              <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Create Your Wishlist</h1>
+              <p className="text-gray-500 text-sm max-w-sm mx-auto">
+                Tell friends & family exactly what you&apos;d love — no more guessing!
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 space-y-5">
               <div>
-                <label className="block text-sm font-semibold mb-2">What&apos;s your name?</label>
-                <p className="text-xs text-brand-muted mb-3">This appears as the wishlist owner</p>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Your Name *</label>
                 <input
-                  required
+                  type="text"
+                  placeholder="e.g. Sarah"
                   value={ownerName}
                   onChange={(e) => setOwnerName(e.target.value)}
-                  placeholder="e.g. Grace"
-                  className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors"
+                  className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 placeholder-gray-300 transition-all"
                 />
               </div>
-              <button
-                type="button"
-                onClick={() => ownerName.trim() && setStep(2)}
-                disabled={!ownerName.trim()}
-                className="w-full py-3 bg-brand text-white rounded-xl font-semibold text-sm hover:bg-brand-dark transition-colors disabled:opacity-50"
-              >
-                Next →
-              </button>
-            </div>
-          )}
 
-          {/* Step 2: Occasion + Message */}
-          {step === 2 && (
-            <div className="bg-white rounded-2xl p-6 border border-surface-border space-y-6 animate-fade-in">
-              {/* Occasion */}
               <div>
-                <label className="block text-sm font-semibold mb-3">What&apos;s the occasion?</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">What&apos;s the occasion? *</label>
                 <div className="grid grid-cols-4 gap-2">
                   {OCCASIONS.map((occ) => (
                     <button
                       key={occ.id}
-                      type="button"
                       onClick={() => setOccasion(occ.id)}
-                      className={`p-3 rounded-xl border-2 text-center transition-all ${
+                      className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border-2 text-center transition-all ${
                         occasion === occ.id
-                          ? "border-brand bg-brand/5 shadow-ribbon"
-                          : "border-surface-border hover:border-brand/30"
+                          ? "border-rose-400 bg-rose-50 shadow-sm"
+                          : "border-gray-100 bg-white hover:border-rose-200 hover:bg-rose-50/50"
                       }`}
                     >
-                      <span className="text-xl block mb-1">{occ.emoji}</span>
-                      <span className="text-[10px] font-medium text-brand-muted">{occ.label}</span>
+                      <span className="text-2xl">{occ.emoji}</span>
+                      <span className="text-[10px] font-semibold text-gray-600 leading-tight">{occ.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-sm font-semibold mb-2">Add a message (optional)</label>
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="e.g. Here are some things I&apos;d love for my birthday! No pressure though 🎁"
-                  rows={3}
-                  maxLength={200}
-                  className="w-full bg-gray-50 border border-surface-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand transition-colors resize-none"
-                />
-                <p className="text-xs text-brand-muted text-right">{message.length}/200</p>
-              </div>
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="px-4 py-3 bg-gray-100 text-brand-muted rounded-xl font-semibold text-sm hover:bg-gray-200 transition-colors"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 py-3 bg-gradient-to-r from-gold to-gold-light text-brand-deep rounded-xl font-semibold text-sm hover:shadow-gold transition-all disabled:opacity-50"
-                >
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="w-4 h-4 border-2 border-brand-deep/30 border-t-brand-deep rounded-full animate-spin" />
-                      Creating...
-                    </span>
-                  ) : (
-                    "Create Wishlist ✨"
-                  )}
-                </button>
-              </div>
             </div>
-          )}
-        </form>
 
-        {/* How it works */}
-        <div className="mt-12 text-center">
-          <p className="text-xs text-brand-muted uppercase tracking-wider mb-4">How it works</p>
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { icon: "📝", text: "Create your wishlist" },
-              { icon: "🔗", text: "Share the link" },
-              { icon: "🎁", text: "Friends send gifts" },
-            ].map((step, i) => (
-              <div key={i} className="text-center">
-                <span className="text-2xl block mb-2">{step.icon}</span>
-                <p className="text-xs text-brand-muted">{step.text}</p>
-              </div>
-            ))}
+            <button
+              onClick={() => setStep(2)}
+              disabled={!ownerName.trim() || !occasion}
+              className="w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-rose-600 hover:to-pink-600 transition-all shadow-lg shadow-rose-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              Next <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
-        </div>
+        )}
+
+        {/* ═══ STEP 2: Message ═══ */}
+        {step === 2 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <span className="text-5xl block mb-3">💌</span>
+              <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Add a Message</h1>
+              <p className="text-gray-500 text-sm max-w-xs mx-auto">
+                Give your gifters some context — totally optional but adds a personal touch!
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">A note for your gifters</label>
+              <textarea
+                placeholder={`e.g. "I'd love anything from my birthday list — thanks so much! 🥰"`}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={4}
+                maxLength={200}
+                className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-800 focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100 placeholder-gray-300 resize-none transition-all"
+              />
+              <p className="text-xs text-gray-300 mt-1 text-right">{message.length}/200</p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setStep(1)}
+                className="flex-1 py-4 bg-white border border-gray-200 text-gray-600 rounded-2xl font-semibold text-sm hover:border-gray-300 hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+              <button
+                onClick={handleCreate}
+                disabled={loading}
+                className="flex-1 py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-rose-600 hover:to-pink-600 transition-all shadow-lg shadow-rose-200 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" /> Create Wishlist!
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ STEP 3: Success ═══ */}
+        {step === 3 && (
+          <div className="text-center space-y-6">
+            <div className="w-24 h-24 mx-auto bg-gradient-to-br from-rose-400 to-pink-500 rounded-3xl flex items-center justify-center shadow-xl shadow-rose-200">
+              <Check className="w-12 h-12 text-white" />
+            </div>
+
+            <div>
+              <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Wishlist Created! 🎉</h1>
+              <p className="text-gray-500 text-sm max-w-xs mx-auto">
+                Now browse the shop and heart anything you love. Your registry is ready to share!
+              </p>
+            </div>
+
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 space-y-3">
+              <Link
+                href="/shop"
+                className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-rose-600 hover:to-pink-600 transition-all shadow-lg shadow-rose-200"
+              >
+                <Gift className="w-4 h-4" /> Browse & Add Gifts
+              </Link>
+              <Link
+                href={`/wishlist/${createdSlug}`}
+                target="_blank"
+                className="flex items-center justify-center gap-2 w-full py-3.5 bg-white border border-gray-200 text-gray-600 rounded-2xl font-semibold text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
+              >
+                <Heart className="w-4 h-4" /> View My Registry
+              </Link>
+              <Link
+                href="/wishlist"
+                className="block w-full py-3 text-xs text-gray-400 hover:text-gray-600 transition-colors text-center"
+              >
+                Manage wishlist →
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

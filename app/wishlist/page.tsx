@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
-import BackToHome from "@/components/ui/BackToHome";
+import {
+  Heart, Share2, Copy, Check, Trash2, ExternalLink,
+  Plus, Gift, Sparkles, ShoppingBag
+} from "lucide-react";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
 const WISHLIST_SLUG_KEY = "touchgift_wishlist_slug";
-const WISHLIST_NAME_KEY = "touchgift_wishlist_name";
 
 type WishlistItem = {
   id: string;
@@ -29,20 +31,29 @@ type Wishlist = {
   occasion: string | null;
 };
 
+const OCCASION_CONFIG: Record<string, { emoji: string; gradient: string }> = {
+  birthday:       { emoji: "🎂", gradient: "from-pink-400 to-rose-500" },
+  wedding:        { emoji: "💒", gradient: "from-rose-400 to-red-500" },
+  baby:           { emoji: "👶", gradient: "from-sky-400 to-blue-500" },
+  anniversary:    { emoji: "💕", gradient: "from-red-400 to-pink-500" },
+  graduation:     { emoji: "🎓", gradient: "from-violet-400 to-purple-500" },
+  christmas:      { emoji: "🎄", gradient: "from-emerald-400 to-green-500" },
+  "just because": { emoji: "💝", gradient: "from-pink-400 to-fuchsia-500" },
+  other:          { emoji: "🎁", gradient: "from-amber-400 to-orange-500" },
+};
+
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState<Wishlist | null>(null);
   const [items, setItems] = useState<WishlistItem[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [copied, setCopied] = useState(false);
   const [noWishlist, setNoWishlist] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [removing, setRemoving] = useState<string | null>(null);
 
   useEffect(() => {
     const slug = localStorage.getItem(WISHLIST_SLUG_KEY);
-    if (!slug) {
-      setNoWishlist(true);
-      setLoaded(true);
-      return;
-    }
+    if (!slug) { setNoWishlist(true); setLoaded(true); return; }
+
     fetch(`/api/wishlist/${slug}`)
       .then((r) => r.json())
       .then((data) => {
@@ -50,33 +61,27 @@ export default function WishlistPage() {
           setWishlist(data.wishlist);
           setItems(data.items ?? []);
         } else {
-          // Stale slug in storage
           localStorage.removeItem(WISHLIST_SLUG_KEY);
-          localStorage.removeItem(WISHLIST_NAME_KEY);
           setNoWishlist(true);
         }
         setLoaded(true);
       })
-      .catch(() => {
-        setNoWishlist(true);
-        setLoaded(true);
-      });
+      .catch(() => { setNoWishlist(true); setLoaded(true); });
   }, []);
 
   const removeItem = async (itemId: string) => {
     if (!wishlist) return;
+    setRemoving(itemId);
     const res = await fetch(`/api/wishlist/${wishlist.slug}?itemId=${itemId}`, { method: "DELETE" });
-    if (res.ok) {
-      setItems(items.filter((i) => i.id !== itemId));
-    }
+    if (res.ok) setItems(items.filter((i) => i.id !== itemId));
+    setRemoving(null);
   };
 
   const copyLink = async () => {
     if (!wishlist) return;
     const url = `${SITE_URL}/wishlist/${wishlist.slug}`;
-    try {
-      await navigator.clipboard?.writeText(url);
-    } catch {
+    try { await navigator.clipboard.writeText(url); }
+    catch {
       const el = document.createElement("input");
       el.value = url;
       document.body.appendChild(el);
@@ -91,106 +96,143 @@ export default function WishlistPage() {
   const shareWhatsApp = () => {
     if (!wishlist) return;
     const url = `${SITE_URL}/wishlist/${wishlist.slug}`;
-    const text = `Hey! Check out ${wishlist.owner_name}'s wishlist on TouchGift 🎁\n${url}`;
+    const text = `Hey! 🎁 Check out my gift wishlist — pick something you'd love to send me!\n${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   if (!loaded) {
     return (
-      <div className="min-h-screen section-theme-d flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-brand/20 border-t-brand rounded-full animate-spin" />
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 to-pink-50 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
       </div>
     );
   }
 
   if (noWishlist) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex items-center justify-center">
-        <div className="text-center px-4 max-w-sm">
-          <div className="flex justify-center mb-4">
-            <svg className="w-16 h-16 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="text-center px-6 max-w-sm">
+          <div className="w-20 h-20 mx-auto mb-5 bg-rose-100 rounded-3xl flex items-center justify-center">
+            <Heart className="w-10 h-10 text-rose-400" />
           </div>
-          <h1 className="font-display text-2xl font-bold mb-2">No wishlist yet</h1>
-          <p className="text-brand-muted text-sm mb-6">
-            Browse our gifts and tap the heart icon on any product to create your wishlist and add items!
+          <h1 className="font-display text-2xl font-bold mb-2 text-gray-900">No wishlist yet</h1>
+          <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+            Create your gift registry so friends & family always know exactly what to get you.
           </p>
-          <Link
-            href="/shop"
-            className="inline-flex items-center gap-2 rounded-2xl bg-brand px-6 py-3 text-sm font-bold text-white hover:bg-brand-dark transition-colors shadow-button"
-          >
-            Browse Gifts →
-          </Link>
+          <div className="flex flex-col gap-3">
+            <Link
+              href="/wishlist/create"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl font-bold text-sm shadow-lg hover:from-rose-600 hover:to-pink-600 transition-all"
+            >
+              <Sparkles className="w-4 h-4" /> Create My Wishlist
+            </Link>
+            <Link
+              href="/shop"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 text-gray-600 rounded-2xl font-semibold text-sm hover:border-rose-300 hover:text-rose-600 transition-all"
+            >
+              <ShoppingBag className="w-4 h-4" /> Browse Gifts
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   const shareUrl = wishlist ? `${SITE_URL}/wishlist/${wishlist.slug}` : "";
+  const occasion = wishlist?.occasion?.toLowerCase() ?? "other";
+  const cfg = OCCASION_CONFIG[occasion] ?? OCCASION_CONFIG.other;
+  const fulfilled = items.filter((i) => i.is_fulfilled);
+  const pending = items.filter((i) => !i.is_fulfilled);
+  const progress = items.length > 0 ? (fulfilled.length / items.length) * 100 : 0;
 
   return (
-    <div className="min-h-screen section-theme-d">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <BackToHome />
-          <Link
-            href={shareUrl}
-            target="_blank"
-            className="text-xs text-brand-muted hover:text-brand transition-colors"
-          >
-            Public view →
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-md border-b border-black/5 sticky top-0 z-30">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800">
+            <Gift className="w-4 h-4 text-rose-500" />
+            <span className="font-semibold">My Wishlist</span>
           </Link>
-        </div>
-
-        {/* Wishlist Header Card */}
-        <div className="bg-white rounded-3xl shadow-card p-6 mb-6 text-center border border-surface-border">
-          <div className="flex justify-center mb-2">
-            <svg className="w-10 h-10 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+          <div className="flex items-center gap-2">
+            <Link
+              href={shareUrl}
+              target="_blank"
+              className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-rose-600 transition-colors"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Public view
+            </Link>
           </div>
-          <h1 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s Wishlist</h1>
-          {wishlist?.occasion && (
-            <p className="text-brand-muted text-sm mt-1 capitalize flex items-center justify-center gap-1">
-              <svg className="w-4 h-4 text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-              {wishlist.occasion}
+        </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-5">
+        {/* ── Registry Card ── */}
+        <div className="bg-white rounded-3xl shadow-lg border border-white/80 overflow-hidden">
+          {/* gradient header */}
+          <div className={`bg-gradient-to-r ${cfg.gradient} p-6 text-white text-center`}>
+            <span className="text-4xl block mb-2">{cfg.emoji}</span>
+            <h1 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s</h1>
+            <p className="text-white/80 text-sm capitalize mt-0.5">
+              {wishlist?.occasion ? `${wishlist.occasion} Wishlist` : "Gift Registry"}
             </p>
+          </div>
+
+          {/* Progress */}
+          {items.length > 0 && (
+            <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+              <div className="flex justify-between text-xs text-gray-500 mb-2">
+                <span>{fulfilled.length} of {items.length} items fulfilled</span>
+                <span className="font-bold text-rose-500">{Math.round(progress)}%</span>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-rose-400 to-pink-500 rounded-full transition-all duration-700"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
           )}
-          <p className="text-sm text-brand-muted mt-2">
-            {items.length} item{items.length !== 1 ? "s" : ""} saved
-          </p>
 
           {/* Share strip */}
-          <div className="mt-4 bg-surface rounded-2xl p-3 flex items-center gap-2">
-            <p className="flex-1 text-xs text-brand-muted font-mono truncate text-left">{shareUrl}</p>
+          <div className="px-6 py-4 flex items-center gap-3">
+            <div className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 font-mono text-xs text-gray-400 truncate">
+              {shareUrl}
+            </div>
             <button
               onClick={copyLink}
-              className="shrink-0 text-xs px-3 py-2 bg-brand text-white rounded-xl font-semibold hover:bg-brand-dark transition-colors"
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                copied ? "bg-emerald-500 text-white" : "bg-rose-50 text-rose-600 hover:bg-rose-100"
+              }`}
             >
-              {copied ? "Copied! ✓" : "Copy"}
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? "Copied!" : "Copy"}
             </button>
             <button
               onClick={shareWhatsApp}
-              className="shrink-0 p-2 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 rounded-xl transition-colors"
+              className="p-2 bg-[#25D366]/10 text-[#128C7E] hover:bg-[#25D366]/20 rounded-xl transition-colors"
               title="Share on WhatsApp"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
+              <Share2 className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Items */}
+        {/* ── Items ── */}
         {items.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-3xl border border-surface-border">
-            <div className="flex justify-center mb-3">
-              <svg className="w-12 h-12 text-brand/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+          <div className="text-center py-14 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="w-16 h-16 mx-auto mb-4 bg-rose-50 rounded-3xl flex items-center justify-center">
+              <Heart className="w-8 h-8 text-rose-300" />
             </div>
-            <p className="font-display font-semibold mb-2">Your wishlist is empty</p>
-            <p className="text-sm text-brand-muted mb-6">
+            <p className="font-display font-bold text-lg text-gray-700 mb-2">Your wishlist is empty</p>
+            <p className="text-sm text-gray-400 mb-6 max-w-xs mx-auto">
               Tap the heart icon on any gift to add it here!
             </p>
-            <Link href="/shop" className="btn-brand px-6 py-3 rounded-xl font-bold text-sm shadow-button">
-              Browse Gifts
+            <Link
+              href="/shop"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-rose-500 text-white rounded-2xl font-bold text-sm hover:bg-rose-600 transition-colors"
+            >
+              <ShoppingBag className="w-4 h-4" /> Browse Gifts
             </Link>
           </div>
         ) : (
@@ -198,57 +240,55 @@ export default function WishlistPage() {
             {items.map((item) => (
               <div
                 key={item.id}
-                className={`bg-white rounded-2xl p-4 border border-surface-border flex items-center gap-4 group transition-all hover:shadow-card ${item.is_fulfilled ? "opacity-50" : ""}`}
+                className={`bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md ${
+                  item.is_fulfilled ? "opacity-50" : ""
+                }`}
               >
-                {/* Image */}
-                <div className="w-16 h-16 bg-blush rounded-xl overflow-hidden relative flex-shrink-0">
+                <div className="w-16 h-16 bg-rose-50 rounded-xl overflow-hidden relative flex-shrink-0">
                   {item.products?.image_url ? (
                     <Image
                       src={item.products.image_url}
                       alt={item.products.name}
-                      fill
-                      sizes="64px"
-                      className="object-contain p-1"
+                      fill sizes="64px"
+                      className={`object-cover ${item.is_fulfilled ? "grayscale" : ""}`}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <svg className="w-8 h-8 text-brand/30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                    </div>
+                    <div className="w-full h-full flex items-center justify-center text-2xl">🎁</div>
                   )}
                 </div>
 
-                {/* Details */}
                 <div className="flex-1 min-w-0">
-                  <Link
-                    href={`/product/${item.product_id}`}
-                    className="text-sm font-semibold hover:text-brand transition-colors line-clamp-1"
-                  >
+                  <Link href={`/product/${item.product_id}`} className="text-sm font-semibold text-gray-800 hover:text-rose-600 transition-colors line-clamp-1">
                     {item.products?.name}
                   </Link>
-                  <p className="text-brand font-bold text-sm mt-0.5">
+                  <p className="text-rose-600 font-bold text-sm mt-0.5">
                     {formatKsh(item.products?.price || 0)}
                   </p>
                   {item.is_fulfilled && (
-                    <span className="text-xs text-green-600 font-semibold">✓ Fulfilled</span>
+                    <span className="text-xs font-semibold text-emerald-600">✓ Fulfilled</span>
                   )}
                 </div>
 
-                {/* Actions */}
                 <div className="flex items-center gap-2 shrink-0">
-                  <Link
-                    href={`/checkout?productId=${item.product_id}`}
-                    className="text-xs px-3 py-2 bg-brand text-white rounded-xl font-semibold hover:bg-brand-dark transition-colors"
-                  >
-                    Send Now
-                  </Link>
+                  {!item.is_fulfilled && (
+                    <Link
+                      href={`/checkout?productId=${item.product_id}`}
+                      className="text-xs px-3 py-2 bg-rose-500 text-white rounded-xl font-semibold hover:bg-rose-600 transition-colors"
+                    >
+                      Send Now
+                    </Link>
+                  )}
                   <button
                     onClick={() => removeItem(item.id)}
-                    className="p-2 text-brand-muted hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                    disabled={removing === item.id}
+                    className="p-2 text-gray-300 hover:text-red-400 transition-colors"
                     title="Remove"
                   >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    {removing === item.id ? (
+                      <div className="w-4 h-4 border-2 border-gray-200 border-t-red-400 rounded-full animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -256,16 +296,14 @@ export default function WishlistPage() {
           </div>
         )}
 
-        {/* Add more */}
+        {/* ── Add more ── */}
         {items.length > 0 && (
-          <div className="mt-6 text-center">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-surface-border rounded-2xl text-sm font-semibold text-brand hover:border-brand/30 hover:shadow-soft transition-all"
-            >
-              + Browse more gifts
-            </Link>
-          </div>
+          <Link
+            href="/shop"
+            className="flex items-center justify-center gap-2 w-full py-4 bg-white border-2 border-dashed border-rose-200 rounded-2xl text-sm font-semibold text-rose-500 hover:border-rose-400 hover:bg-rose-50 transition-all"
+          >
+            <Plus className="w-4 h-4" /> Add more gifts
+          </Link>
         )}
       </div>
     </div>
