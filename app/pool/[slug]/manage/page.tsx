@@ -1,289 +1,517 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft, Target, Users, Clock, TrendingUp, CheckCircle2,
-  AlertCircle, RefreshCw, ShoppingBag, CalendarPlus, DollarSign, Gift, QrCode
+  ArrowLeft, Users, TrendingUp, Share2, Copy, Check,
+  Clock, Target, Zap, Crown, Gift, MessageSquare,
+  RefreshCw, CheckCircle, AlertCircle, ExternalLink,
+  Trophy, Flame, Heart, Lock
 } from "lucide-react";
-import QRCode from "react-qr-code";
+
+type Contribution = {
+  id: string;
+  contributor_name?: string;
+  amount: number;
+  is_verified: boolean;
+  is_anonymous: boolean;
+  is_ghost: boolean;
+  message?: string;
+  created_at: string;
+};
 
 type Pool = {
-  id: string; slug: string; title: string; recipient_name: string;
-  target_amount: number; current_balance: number; min_contribution: number;
-  status: string; expires_at: string; privacy_mode: string;
-  over_target_behaviour: string; gift_name: string | null; gift_price: number | null;
-  organiser_user_id: string; created_at: string; closed_at: string | null;
+  id: string;
+  title: string;
+  slug: string;
+  recipient_name: string;
+  occasion?: string;
+  target_amount: number;
+  current_balance: number;
+  min_contribution: number;
+  expires_at?: string;
+  status: string;
+  privacy_mode: string;
+  surprise_mode: boolean;
+  gift_name?: string;
+  gift_price?: number;
+  is_corporate: boolean;
 };
-type Contribution = {
-  id: string; contributor_name: string | null; amount: number;
-  is_verified: boolean; is_anonymous: boolean; message: string | null; created_at: string;
-};
 
-type Action = "idle" | "refund" | "extend" | "downgrade" | "place_order";
+const MILESTONE_THRESHOLDS = [25, 50, 75, 100];
 
-export default function ManagePoolPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const router = useRouter();
-  const [pool, setPool] = useState<Pool | null>(null);
-  const [contributions, setContributions] = useState<Contribution[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [actionMsg, setActionMsg] = useState("");
-  const [activeAction, setActiveAction] = useState<Action>("idle");
-  const [newDeadline, setNewDeadline] = useState("");
-  const [error, setError] = useState("");
+function MilestoneRing({ pct }: { pct: number }) {
+  const r = 52;
+  const circ = 2 * Math.PI * r;
+  const filled = (Math.min(pct, 100) / 100) * circ;
 
-  const fetchPool = useCallback(async () => {
-    const res = await fetch(`/api/pools/${slug}`);
-    if (!res.ok) { setError("Pool not found"); return; }
-    const data = await res.json();
-    setPool(data.pool);
-    setContributions(data.contributions ?? []);
-    setLoading(false);
-  }, [slug]);
-
-  useEffect(() => { fetchPool(); }, [fetchPool]);
-
-  const doAction = async (action: string, extra?: object) => {
-    setActionLoading(true);
-    setActionMsg("");
-    try {
-      const res = await fetch(`/api/pools/${slug}/action`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action, ...extra }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setActionMsg(data.message);
-      await fetchPool();
-      setActiveAction("idle");
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-10 h-10 rounded-full border-4 border-brand/20 border-t-brand animate-spin" />
-    </div>
-  );
-
-  if (!pool) return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="text-center">
-        <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-        <p className="text-brand-deep/60">Pool not found or not authorised</p>
-        <Link href="/" className="mt-4 text-brand font-semibold text-sm inline-block">Go Home</Link>
+  return (
+    <div className="relative w-36 h-36 mx-auto">
+      <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+        <circle
+          cx="60" cy="60" r={r} fill="none"
+          stroke="url(#poolGrad)" strokeWidth="10"
+          strokeLinecap="round"
+          strokeDasharray={`${filled} ${circ}`}
+          className="transition-all duration-1000"
+        />
+        <defs>
+          <linearGradient id="poolGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#d946ef" />
+            <stop offset="100%" stopColor="#ec4899" />
+          </linearGradient>
+        </defs>
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <span className="text-3xl font-black text-white">{Math.round(Math.min(pct, 100))}%</span>
+        <span className="text-[10px] text-white/40 font-medium">funded</span>
       </div>
     </div>
   );
+}
 
-  const pct = Math.min(100, Math.round((pool.current_balance / pool.target_amount) * 100));
+function TimeLeft({ expiresAt }: { expiresAt?: string }) {
+  const [label, setLabel] = useState("");
+  useEffect(() => {
+    if (!expiresAt) { setLabel("No deadline"); return; }
+    const update = () => {
+      const diff = new Date(expiresAt).getTime() - Date.now();
+      if (diff <= 0) { setLabel("Expired"); return; }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      setLabel(d > 0 ? `${d}d ${h}h left` : `${h}h ${m}m left`);
+    };
+    update();
+    const t = setInterval(update, 60000);
+    return () => clearInterval(t);
+  }, [expiresAt]);
+  return <span>{label}</span>;
+}
+
+export default function PoolManagePage() {
+  const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
+
+  const [pool, setPool] = useState<Pool | null>(null);
+  const [contributions, setContributions] = useState<Contribution[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState<"overview" | "leaderboard" | "messages">("overview");
+  const [unlockedMilestones, setUnlockedMilestones] = useState<number[]>([]);
+
+  const load = useCallback(async (quiet = false) => {
+    if (!quiet) setLoading(true); else setRefreshing(true);
+    try {
+      const res = await fetch(`/api/pools/${slug}`);
+      if (res.ok) {
+        const data = await res.json();
+        setPool(data.pool);
+        setContributions(data.contributions ?? []);
+        const pct = data.progressPercent ?? 0;
+        setUnlockedMilestones(MILESTONE_THRESHOLDS.filter((t) => pct >= t));
+      } else {
+        router.push("/");
+      }
+    } catch { /* noop */ }
+    setLoading(false);
+    setRefreshing(false);
+  }, [slug, router]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const copyLink = async () => {
+    const url = `${window.location.origin}/pool/${slug}`;
+    try { await navigator.clipboard.writeText(url); }
+    catch {
+      const el = document.createElement("input");
+      el.value = url; document.body.appendChild(el); el.select();
+      document.execCommand("copy"); document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareWhatsApp = () => {
+    const url = `${window.location.origin}/pool/${slug}`;
+    const text = `🎁 ${pool?.title}\n\nHelp us reach the goal! Contribute here:\n${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#14080D] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-fuchsia-500/20 border-t-fuchsia-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!pool) return null;
+
+  const pct = pool.target_amount > 0 ? (pool.current_balance / pool.target_amount) * 100 : 0;
   const isActive = pool.status === "active";
   const isCompleted = pool.status === "completed";
-  const isExpired = pool.status === "expired";
-  const isFulfilled = pool.status === "fulfilled";
-  const totalVerified = contributions.filter(c => c.is_verified).reduce((s, c) => s + c.amount, 0);
-  const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/pool/${pool.slug}`;
+  const totalRaised = pool.current_balance;
+  const remaining = Math.max(0, pool.target_amount - totalRaised);
+
+  // Leaderboard (named contributors, sorted by amount)
+  const named = contributions
+    .filter((c) => !c.is_anonymous && !c.is_ghost && c.contributor_name)
+    .reduce<Record<string, { name: string; total: number; count: number }>>((acc, c) => {
+      const n = c.contributor_name!;
+      if (!acc[n]) acc[n] = { name: n, total: 0, count: 0 };
+      acc[n].total += c.amount;
+      acc[n].count += 1;
+      return acc;
+    }, {});
+  const leaderboard = Object.values(named).sort((a, b) => b.total - a.total);
+
+  // Messages wall
+  const messages = contributions.filter((c) => c.message?.trim());
+
+  // Stats
+  const verified = contributions.filter((c) => c.is_verified);
+  const avgContrib = verified.length > 0
+    ? Math.round(verified.reduce((s, c) => s + c.amount, 0) / verified.length)
+    : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-white pb-24">
-      <div className="max-w-2xl mx-auto px-4 pt-6">
-        <Link href={`/pool/${slug}`} className="flex items-center gap-2 text-brand-deep/60 text-sm mb-6 hover:text-brand-deep">
-          <ArrowLeft className="w-4 h-4" /> Back to pool
-        </Link>
-
-        {/* Pool header */}
-        <div className="bg-gradient-to-br from-brand-deep to-brand rounded-3xl p-6 text-white mb-5 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gold/15 rounded-full blur-3xl" />
-          <div className="relative z-10">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">Organiser Dashboard</p>
-                <h1 className="font-display text-2xl font-bold italic">{pool.title}</h1>
-                <p className="text-white/60 text-sm mt-1">For {pool.recipient_name}</p>
-              </div>
-              <div className={`px-3 py-1.5 rounded-full text-xs font-bold ${
-                isActive ? "bg-success/20 text-green-300" :
-                isCompleted ? "bg-gold/20 text-gold" :
-                isFulfilled ? "bg-brand-light/20 text-brand-light" :
-                "bg-white/10 text-white/60"
-              }`}>
-                {pool.status.toUpperCase()}
-              </div>
+    <div className="min-h-screen bg-[#14080D] text-white pb-24">
+      {/* ── Sticky Header ── */}
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
+        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.back()} className="text-white/40 hover:text-white transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="font-display italic font-bold text-white text-lg leading-tight">{pool.title}</h1>
+              <p className="text-xs text-fuchsia-400">Organizer Dashboard</p>
             </div>
-            {/* Progress */}
-            <div className="h-3 rounded-full bg-white/20 mb-2">
-              <div className="h-full rounded-full bg-gradient-to-r from-gold to-gold-light transition-all" style={{ width: `${pct}%` }} />
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="font-bold">KES {pool.current_balance.toLocaleString()} <span className="text-white/50 font-normal">raised</span></span>
-              <span className="text-white/50">{pct}% of KES {pool.target_amount.toLocaleString()}</span>
-            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => load(true)}
+              className="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-fuchsia-400/30 transition-colors"
+            >
+              <RefreshCw className={`w-4 h-4 text-white/60 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+            <Link
+              href={`/pool/${slug}`}
+              target="_blank"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold text-white/60 hover:border-fuchsia-400/30 hover:text-white transition-all"
+            >
+              <ExternalLink className="w-3.5 h-3.5" /> Public View
+            </Link>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-          {[
-            { label: "Contributors", value: contributions.length, icon: Users, color: "text-brand" },
-            { label: "Verified Funds", value: `KES ${totalVerified.toLocaleString()}`, icon: DollarSign, color: "text-success" },
-            { label: "Progress", value: `${pct}%`, icon: TrendingUp, color: "text-gold" },
-            { label: "Deadline", value: new Date(pool.expires_at).toLocaleDateString("en-KE", { day: "numeric", month: "short" }), icon: Clock, color: "text-coral" },
-          ].map(stat => (
-            <div key={stat.label} className="bg-white rounded-2xl p-4 shadow-sm text-center">
-              <stat.icon className={`w-5 h-5 ${stat.color} mx-auto mb-1`} />
-              <p className="text-lg font-bold text-brand-deep">{stat.value}</p>
-              <p className="text-xs text-brand-deep/40">{stat.label}</p>
-            </div>
-          ))}
+        {/* Status banner */}
+        <div className="max-w-2xl mx-auto px-4 pb-3">
+          <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl font-semibold ${
+            isCompleted ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
+            isActive    ? "bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/20" :
+                          "bg-red-500/10 text-red-400 border border-red-500/20"
+          }`}>
+            {isCompleted ? <CheckCircle className="w-3.5 h-3.5" /> :
+             isActive    ? <Flame className="w-3.5 h-3.5" />       :
+                           <AlertCircle className="w-3.5 h-3.5" />}
+            {isCompleted ? "🎉 Goal reached! Ready to order the gift." :
+             isActive    ? <span>Live · <TimeLeft expiresAt={pool.expires_at} /></span> :
+                           "Pool closed"}
+          </div>
         </div>
 
-        {/* Action Messages */}
-        {actionMsg && <div className="mb-4 p-4 rounded-2xl bg-success/10 border border-success/20 text-success text-sm font-medium">{actionMsg}</div>}
-        {error && <div className="mb-4 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>}
-
-        {/* Actions */}
-        <div className="bg-white rounded-3xl shadow-card p-5 mb-5">
-          <h3 className="font-semibold text-brand-deep mb-4 flex items-center gap-2">
-            <Target className="w-4 h-4 text-brand" /> Pool Actions
-          </h3>
-
-          {isActive && (
-            <div className="space-y-3">
-              <div className="p-4 rounded-2xl bg-brand/5 border border-brand/10">
-                <p className="text-sm font-semibold text-brand-deep mb-4">Share Pool Link</p>
-                <div className="flex gap-4">
-                  <div className="bg-white p-2 rounded-xl border border-brand/10 shrink-0">
-                    <QRCode value={shareUrl} size={80} level="M" fgColor="#312217" />
-                  </div>
-                  <div className="flex-1 flex flex-col justify-center space-y-2">
-                    <div className="flex gap-2">
-                      <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
-                      <button onClick={() => navigator.clipboard?.writeText(shareUrl)} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">Copy</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <a href={`https://wa.me/?text=${encodeURIComponent(`🎁 ${pool.title}\n${shareUrl}`)}`} target="_blank" rel="noreferrer"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm">
-                📱 Share on WhatsApp
-              </a>
-            </div>
-          )}
-
-          {isCompleted && (
-            <div className="space-y-3">
-              <div className="p-4 rounded-2xl bg-success/10 border border-success/20 flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-success mt-0.5" />
-                <div>
-                  <p className="font-semibold text-brand-deep text-sm">🎉 Target Reached!</p>
-                  <p className="text-xs text-brand-deep/60 mt-1">Your pool has hit the goal. Place the order below to dispatch the gift.</p>
-                </div>
-              </div>
+        {/* Tabs */}
+        <div className="max-w-2xl mx-auto px-4">
+          <div className="flex gap-1 border-b border-white/10">
+            {[
+              { id: "overview",    label: "Overview",    icon: <TrendingUp className="w-3.5 h-3.5" /> },
+              { id: "leaderboard", label: "Leaderboard", icon: <Trophy className="w-3.5 h-3.5" /> },
+              { id: "messages",    label: "Messages",    icon: <MessageSquare className="w-3.5 h-3.5" /> },
+            ].map((tab) => (
               <button
-                onClick={() => doAction("place_order")}
-                disabled={actionLoading}
-                className="flex items-center justify-center gap-2 w-full py-4 bg-gradient-to-r from-brand to-gold text-white rounded-2xl font-bold hover:shadow-lg transition-all disabled:opacity-50"
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-all ${
+                  activeTab === tab.id
+                    ? "border-fuchsia-400 text-fuchsia-400"
+                    : "border-transparent text-white/40 hover:text-white/70"
+                }`}
               >
-                <ShoppingBag className="w-5 h-5" />
-                {actionLoading ? "Placing order…" : "Place Order & Dispatch 🎁"}
+                {tab.icon} {tab.label}
+                {tab.id === "messages" && messages.length > 0 && (
+                  <span className="ml-1 text-[10px] bg-fuchsia-500/20 text-fuchsia-300 px-1.5 py-0.5 rounded-full">{messages.length}</span>
+                )}
               </button>
-            </div>
-          )}
+            ))}
+          </div>
+        </div>
+      </div>
 
-          {isExpired && (
-            <div className="space-y-3">
-              <div className="p-4 rounded-2xl bg-orange-50 border border-orange-200">
-                <p className="font-semibold text-orange-700 text-sm flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" /> Pool expired at {pct}% of target
-                </p>
-                <p className="text-xs text-orange-600/70 mt-1">KES {pool.current_balance.toLocaleString()} collected. Choose what to do next:</p>
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+
+        {/* ═══ OVERVIEW ═══ */}
+        {activeTab === "overview" && (
+          <>
+            {/* Progress ring + stats */}
+            <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6">
+              <MilestoneRing pct={pct} />
+
+              <div className="grid grid-cols-3 gap-3 mt-6">
+                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-lg font-bold text-fuchsia-400">KES {totalRaised.toLocaleString()}</p>
+                  <p className="text-[10px] text-white/40">Raised</p>
+                </div>
+                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-lg font-bold text-white">{contributions.length}</p>
+                  <p className="text-[10px] text-white/40">Contributors</p>
+                </div>
+                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-lg font-bold text-amber-400">KES {remaining.toLocaleString()}</p>
+                  <p className="text-[10px] text-white/40">To Go</p>
+                </div>
               </div>
 
-              {activeAction === "idle" && (
-                <div className="grid grid-cols-1 gap-2">
-                  <button onClick={() => setActiveAction("extend")}
-                    className="flex items-center gap-3 p-4 rounded-2xl border-2 border-brand/15 hover:border-brand/40 text-left transition-all">
-                    <CalendarPlus className="w-5 h-5 text-brand" />
-                    <div><p className="font-semibold text-brand-deep text-sm">Extend Deadline</p><p className="text-xs text-brand-deep/50">Keep collecting with a new date</p></div>
-                  </button>
-                  <button onClick={() => doAction("downgrade")} disabled={actionLoading}
-                    className="flex items-center gap-3 p-4 rounded-2xl border-2 border-gold/20 hover:border-gold/50 text-left transition-all disabled:opacity-50">
-                    <Gift className="w-5 h-5 text-gold" />
-                    <div><p className="font-semibold text-brand-deep text-sm">Downgrade Gift</p><p className="text-xs text-brand-deep/50">Proceed with a smaller gift from collected funds</p></div>
-                  </button>
-                  <button onClick={() => doAction("refund")} disabled={actionLoading}
-                    className="flex items-center gap-3 p-4 rounded-2xl border-2 border-red-200 hover:border-red-400 text-left transition-all disabled:opacity-50">
-                    <RefreshCw className="w-5 h-5 text-red-500" />
-                    <div><p className="font-semibold text-red-600 text-sm">Refund All</p><p className="text-xs text-red-400/70">Return funds to each contributor</p></div>
-                  </button>
+              <div className="grid grid-cols-2 gap-3 mt-3">
+                <div className="p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-xs text-white/40 mb-0.5">Goal</p>
+                  <p className="text-sm font-bold text-white">KES {pool.target_amount.toLocaleString()}</p>
                 </div>
-              )}
-
-              {activeAction === "extend" && (
-                <div className="p-4 rounded-2xl bg-brand/5 border border-brand/15 space-y-3">
-                  <p className="text-sm font-semibold text-brand-deep">New Deadline</p>
-                  <input type="date" value={newDeadline} min={new Date().toISOString().split("T")[0]}
-                    onChange={e => setNewDeadline(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none text-brand-deep" />
-                  <div className="flex gap-2">
-                    <button onClick={() => setActiveAction("idle")} className="flex-1 py-2.5 border border-brand/15 rounded-xl text-sm font-semibold text-brand-deep">Cancel</button>
-                    <button onClick={() => doAction("extend", { newDeadline: new Date(newDeadline + "T23:59:59").toISOString() })}
-                      disabled={!newDeadline || actionLoading}
-                      className="flex-1 py-2.5 bg-brand text-white rounded-xl text-sm font-semibold disabled:opacity-50">
-                      {actionLoading ? "Extending…" : "Confirm"}
-                    </button>
-                  </div>
+                <div className="p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-xs text-white/40 mb-0.5">Avg Contribution</p>
+                  <p className="text-sm font-bold text-emerald-400">KES {avgContrib.toLocaleString()}</p>
                 </div>
-              )}
+              </div>
             </div>
-          )}
 
-          {isFulfilled && (
-            <div className="p-4 rounded-2xl bg-brand/5 border border-brand/10 text-center">
-              <CheckCircle2 className="w-8 h-8 text-success mx-auto mb-2" />
-              <p className="font-semibold text-brand-deep">Order placed! Your gift is on its way 🎁</p>
+            {/* Milestone unlocks */}
+            <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-bold text-white">Milestone Unlocks</h3>
+              </div>
+              <div className="space-y-3">
+                {[
+                  { pct: 25, label: "Quarter way!", reward: "First shout-out unlocked 🎉", icon: "🌱" },
+                  { pct: 50, label: "Halfway there!", reward: "Share badge unlocked 🏅", icon: "⚡" },
+                  { pct: 75, label: "Almost there!", reward: "Express delivery eligible 🚀", icon: "🔥" },
+                  { pct: 100, label: "Goal reached!", reward: "Order the gift now! 🎁", icon: "🏆" },
+                ].map((m) => {
+                  const unlocked = unlockedMilestones.includes(m.pct);
+                  return (
+                    <div
+                      key={m.pct}
+                      className={`flex items-center gap-4 p-3 rounded-2xl border transition-all ${
+                        unlocked
+                          ? "bg-fuchsia-500/10 border-fuchsia-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)]"
+                          : "bg-black/20 border-white/5 opacity-60"
+                      }`}
+                    >
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
+                        unlocked ? "bg-fuchsia-500/20" : "bg-white/5"
+                      }`}>
+                        {unlocked ? m.icon : <Lock className="w-4 h-4 text-white/20" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-sm font-semibold ${unlocked ? "text-white" : "text-white/40"}`}>
+                          {m.pct}% — {m.label}
+                        </p>
+                        <p className={`text-xs ${unlocked ? "text-fuchsia-300" : "text-white/20"}`}>
+                          {m.reward}
+                        </p>
+                      </div>
+                      {unlocked && <CheckCircle className="w-5 h-5 text-fuchsia-400 shrink-0" />}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Contributions list */}
-        <div className="bg-white rounded-3xl shadow-card p-5">
-          <h3 className="font-semibold text-brand-deep mb-4 flex items-center gap-2">
-            <Users className="w-4 h-4 text-brand" /> Contributions ({contributions.length})
-          </h3>
-          {contributions.length === 0 ? (
-            <p className="text-center text-brand-deep/40 text-sm py-6">No contributions yet. Share your pool link!</p>
-          ) : (
-            <div className="space-y-2">
-              {contributions.map(c => (
-                <div key={c.id} className="flex items-center gap-3 p-3 rounded-2xl hover:bg-brand/3 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center text-sm font-bold text-brand flex-shrink-0">
-                    {c.is_anonymous || c.contributor_name === null ? "👤" : (c.contributor_name[0] ?? "?")}
+            {/* Share & Action strip */}
+            <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5 space-y-3">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <Share2 className="w-4 h-4 text-fuchsia-400" /> Spread the word
+              </h3>
+              <div className="flex gap-3">
+                <button
+                  onClick={copyLink}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold transition-all ${
+                    copied
+                      ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                      : "bg-white/5 border border-white/10 text-white hover:border-fuchsia-400/30"
+                  }`}
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  {copied ? "Copied!" : "Copy Link"}
+                </button>
+                <button
+                  onClick={shareWhatsApp}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#25D366] text-white text-sm font-semibold hover:bg-[#20B858] transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" /> WhatsApp
+                </button>
+              </div>
+            </div>
+
+            {/* Order CTA when completed */}
+            {isCompleted && (
+              <div className="bg-gradient-to-r from-fuchsia-600/20 to-pink-500/20 border border-fuchsia-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
+                <div className="text-4xl mb-3">🎉</div>
+                <h3 className="font-display italic text-xl font-bold text-white mb-1">Goal Reached!</h3>
+                <p className="text-white/60 text-sm mb-4">
+                  KES {totalRaised.toLocaleString()} collected from {contributions.length} contributors.
+                  Time to order the gift!
+                </p>
+                <Link
+                  href={`/corporate/pool/${slug}/order`}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-fuchsia-600 hover:to-pink-600 transition-all shadow-lg"
+                >
+                  <Gift className="w-4 h-4" /> Order the Gift
+                </Link>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ═══ LEADERBOARD ═══ */}
+        {activeTab === "leaderboard" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Contributor Leaderboard</h2>
+              <span className="text-xs text-white/40">{contributions.length} total</span>
+            </div>
+
+            {leaderboard.length === 0 && (
+              <div className="bg-white/5 rounded-3xl border border-white/10 p-12 text-center">
+                <Users className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                <p className="text-sm text-white/40">No named contributions yet.</p>
+                <p className="text-xs text-white/20 mt-1">
+                  {pool.privacy_mode === "anonymous" ? "This pool is anonymous." : "Share the link to get contributors!"}
+                </p>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {leaderboard.map((c, i) => (
+                <div
+                  key={c.name}
+                  className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${
+                    i === 0 ? "bg-amber-500/10 border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]" :
+                    i === 1 ? "bg-white/5 border-white/10" :
+                    i === 2 ? "bg-orange-500/5 border-orange-500/10" :
+                              "bg-black/20 border-white/5"
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${
+                    i === 0 ? "bg-amber-400/20 text-amber-400" :
+                    i === 1 ? "bg-white/10 text-white/60" :
+                    i === 2 ? "bg-orange-500/20 text-orange-400" :
+                              "bg-white/5 text-white/30"
+                  }`}>
+                    {i < 3 ? <Trophy className="w-5 h-5" /> : `#${i + 1}`}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-brand-deep">{c.is_anonymous ? "Anonymous" : c.contributor_name ?? "Unknown"}</p>
-                    {c.message && <p className="text-xs text-brand-deep/50 italic truncate">&ldquo;{c.message}&rdquo;</p>}
+                    <p className="text-sm font-semibold text-white">{c.name}</p>
+                    <p className="text-xs text-white/40">
+                      {c.count} contribution{c.count !== 1 ? "s" : ""}
+                    </p>
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <p className="font-bold text-brand text-sm">KES {c.amount.toLocaleString()}</p>
-                    <p className="text-xs flex items-center gap-1 justify-end">
-                      {c.is_verified
-                        ? <><CheckCircle2 className="w-3 h-3 text-success" /><span className="text-success">Verified</span></>
-                        : <span className="text-brand-deep/30">Pending</span>}
+                  <div className="text-right shrink-0">
+                    <p className="text-sm font-bold text-fuchsia-400">KES {c.total.toLocaleString()}</p>
+                    <p className="text-[10px] text-white/30">
+                      {pool.target_amount > 0 ? `${Math.round((c.total / pool.target_amount) * 100)}% of goal` : ""}
                     </p>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
+
+            {/* Anonymous + ghost count */}
+            {contributions.filter((c) => c.is_anonymous || c.is_ghost).length > 0 && (
+              <div className="flex items-center gap-3 p-4 bg-white/5 rounded-2xl border border-white/10">
+                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-white/30" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white/60">
+                    + {contributions.filter((c) => c.is_anonymous || c.is_ghost).length} anonymous supporter{contributions.filter((c) => c.is_anonymous || c.is_ghost).length !== 1 ? "s" : ""}
+                  </p>
+                  <p className="text-xs text-white/30">Hidden to respect privacy settings</p>
+                </div>
+              </div>
+            )}
+
+            {/* Quick stat */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
+                <p className="text-xl font-bold text-fuchsia-400">
+                  {leaderboard.length > 0 ? `KES ${leaderboard[0].total.toLocaleString()}` : "—"}
+                </p>
+                <p className="text-xs text-white/40 mt-0.5">Top contribution</p>
+              </div>
+              <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
+                <p className="text-xl font-bold text-emerald-400">
+                  KES {contributions.length > 0 ? Math.round(contributions.reduce((s,c) => s+c.amount,0)/contributions.length).toLocaleString() : 0}
+                </p>
+                <p className="text-xs text-white/40 mt-0.5">Average gift</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ═══ MESSAGES ═══ */}
+        {activeTab === "messages" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Wall of Love 💌</h2>
+              <span className="text-xs text-white/40">{messages.length} messages</span>
+            </div>
+
+            {messages.length === 0 && (
+              <div className="bg-white/5 rounded-3xl border border-white/10 p-12 text-center">
+                <MessageSquare className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                <p className="text-sm text-white/40">No messages yet.</p>
+                <p className="text-xs text-white/20 mt-1">Contributors can leave a message when they contribute.</p>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {messages.map((c) => {
+                const name = c.is_anonymous || c.is_ghost ? "Someone special" : (c.contributor_name ?? "Anonymous");
+                const initials = name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+                const timeAgo = (() => {
+                  const diff = Date.now() - new Date(c.created_at).getTime();
+                  const h = Math.floor(diff / 3600000);
+                  const d = Math.floor(h / 24);
+                  return d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : "Just now";
+                })();
+                return (
+                  <div key={c.id} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-600 to-pink-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                        {c.is_anonymous || c.is_ghost ? "♥" : initials}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <p className="text-xs font-semibold text-white">{name}</p>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-xs text-fuchsia-400 font-bold">KES {c.amount.toLocaleString()}</span>
+                            <span className="text-[10px] text-white/30">{timeAgo}</span>
+                          </div>
+                        </div>
+                        <p className="text-sm text-white/70 italic leading-relaxed">&ldquo;{c.message}&rdquo;</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

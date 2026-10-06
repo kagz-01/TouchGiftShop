@@ -354,6 +354,17 @@ export default function PoolLandingPage() {
           </a>
         </div>
 
+        {/* Organizer link */}
+        <div className="text-center">
+          <Link
+            href={`/pool/${slug}/manage`}
+            className="inline-flex items-center gap-1.5 text-xs text-white/20 hover:text-fuchsia-400 transition-colors"
+          >
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+            Organizer? Manage this pool
+          </Link>
+        </div>
+
         {/* Contribution Feed */}
         <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-4">
