@@ -298,6 +298,49 @@ export default function ProductGridClient({
           </span>
         </h2>
 
+        {/* Drinks subcategory pills */}
+        {category === "drinks" && (
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+            {[
+              { name: "Wines", icon: "🍷" },
+              { name: "Whiskies", icon: "🥃" },
+              { name: "Vodka", icon: "🍸" },
+              { name: "Gin", icon: "🍃" },
+              { name: "Rum", icon: "🌊" },
+              { name: "Champagne & Sparkling", icon: "🍾" },
+              { name: "Brandy & Cognac", icon: "🥂" },
+              { name: "Tequila", icon: "🌵" },
+              { name: "Liqueurs", icon: "🍬" },
+              { name: "Ciders", icon: "🍏" },
+              { name: "Spirits", icon: "🔥" },
+              { name: "Non-Alcoholic", icon: "🧃" },
+            ].map((g) => {
+              const isActive = search?.toLowerCase() === g.name.toLowerCase();
+              return (
+                <button
+                  key={g.name}
+                  onClick={() => {
+                    const url = new URL(window.location.href);
+                    if (isActive) {
+                      url.searchParams.delete("q");
+                    } else {
+                      url.searchParams.set("q", g.name.toLowerCase());
+                    }
+                    router.push(`${url.pathname}${url.search}`);
+                  }}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
+                    isActive
+                      ? "bg-brand text-white border-brand shadow-brand/20"
+                      : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
+                  }`}
+                >
+                  <span>{g.icon}</span> {g.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* Active filter chips */}
         {activeFilters.length > 0 && (
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
