@@ -281,138 +281,271 @@ function CorporateProblem() {
 /* ══════════════════════════════════════════════════════════
    SECTION 3: THE SOLUTION — Why TouchGift for corporate
    ══════════════════════════════════════════════════════════ */
-function CorporateSolution() {
-  const solutions = [
-    {
-      icon: <Target className="w-6 h-6 text-gold" />,
-      title: "Bespoke Curation",
-      desc: "Every hamper is hand-picked to match your brand, budget, and occasion. No generic bundles.",
-      span: "md:col-span-2",
-      href: "/corporate/build",
-    },
-    {
-      icon: <Zap className="w-6 h-6 text-coral" />,
-      title: "Same-Day Delivery",
-      desc: "Order by noon, delivered by evening across Nairobi. Perfect for last-minute events.",
-      span: "md:col-span-1",
-      href: "/corporate/build",
-    },
-    {
-      icon: <Upload className="w-6 h-6 text-brand-light" />,
-      title: "Frictionless Bulk Ordering",
-      desc: "Upload a CSV with 10 or 1,000 recipients. We handle the logistics, addresses, and tracking transparently.",
-      span: "md:col-span-1",
-      href: "/corporate/build",
-    },
-    {
-      icon: <Palette className="w-6 h-6 text-success" />,
-      title: "Template Library",
-      desc: "20+ pre-built templates for onboarding, holidays, milestones. Customize in 2 minutes.",
-      span: "md:col-span-1",
-      href: "/corporate/build",
-    },
-    {
-      icon: <MessageSquare className="w-6 h-6 text-emerald-400" />,
-      title: "WhatsApp Bot",
-      desc: "Recipients reply with delivery instructions via WhatsApp. No app install required.",
-      span: "md:col-span-1",
-      href: "/corporate/whatsapp",
-    },
-    {
-      icon: <Briefcase className="w-6 h-6 text-cyan-400" />,
-      title: "White-Label Portal",
-      desc: "Your team sends gifts from your branded portal. Fully customizable with your logo.",
-      span: "md:col-span-1",
-      href: "/corporate/whitelabel",
-    },
-    {
-      icon: <Tent className="w-6 h-6 text-orange-400" />,
-      title: "Virtual Showroom",
-      desc: "Browse hampers in 3D. Recipients choose their own gift. Zero returns.",
-      span: "md:col-span-1",
-      href: "/corporate/showroom",
-    },
-    {
-      icon: <Trophy className="w-6 h-6 text-gold" />,
-      title: "Automated Milestones",
-      desc: "Set it and forget it. Auto-send gifts on work anniversaries, birthdays, and promotions.",
-      span: "md:col-span-2",
-      href: "/corporate/milestones",
-    },
-    {
-      icon: <HeartHandshake className="w-6 h-6 text-brand-light" />,
-      title: "Client Appreciation",
-      desc: "VIP client tracking, CRM integration, and personalized follow-ups. Strengthen relationships.",
-      span: "md:col-span-1",
-      href: "/corporate/clients",
-    },
-    {
-      icon: <EyeOff className="w-6 h-6 text-brand-light" />,
-      title: "Absolute Discretion",
-      desc: "Anonymous gifting options. No branding unless you want it. Respect for every recipient.",
-      span: "md:col-span-1",
-      href: "/corporate/build",
-    },
+function WhatsAppMockup() {
+  const [step, setStep] = useState(0);
+  const messages = [
+    { from: "bot", text: "👋 Hi Sarah! Your gift from Acme Corp is ready. Where should we deliver?" },
+    { from: "user", text: "Please send to my office — Westlands, 2nd floor." },
+    { from: "bot", text: "✅ Confirmed for today 2–5 PM. Track: touchgift.co/T1234" },
   ];
+  useEffect(() => {
+    if (step >= messages.length) return;
+    const t = setTimeout(() => setStep((s) => s + 1), 1600);
+    return () => clearTimeout(t);
+  }, [step]);
+  return (
+    <div className="flex flex-col gap-2 p-4">
+      <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
+        <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">TG</div>
+        <div>
+          <p className="text-white text-[11px] font-semibold">TouchGift Bot</p>
+          <p className="text-emerald-400 text-[9px]">● Online</p>
+        </div>
+      </div>
+      {messages.slice(0, step).map((m, i) => (
+        <div key={i} className={`flex ${m.from === "user" ? "justify-end" : "justify-start"}`}>
+          <div className={`max-w-[82%] px-3 py-1.5 rounded-2xl text-[10px] leading-relaxed ${m.from === "user" ? "bg-emerald-500 text-white rounded-br-sm" : "bg-white/10 text-white/90 rounded-bl-sm"}`}>{m.text}</div>
+        </div>
+      ))}
+      {step < messages.length && (
+        <div className="flex gap-1 items-center bg-white/10 rounded-2xl rounded-bl-sm w-fit px-3 py-2">
+          {[0,1,2].map(i => <span key={i} className="w-1.5 h-1.5 bg-white/50 rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />)}
+        </div>
+      )}
+    </div>
+  );
+}
 
+function CsvMockup() {
+  const [phase, setPhase] = useState<"idle"|"uploading"|"done">("idle");
+  useEffect(() => {
+    const t1 = setTimeout(() => setPhase("uploading"), 1200);
+    const t2 = setTimeout(() => setPhase("done"), 2800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+  const rows = ["Sarah K. · 0712 · Westlands", "James M. · 0723 · CBD", "Aisha O. · 0734 · Karen"];
+  return (
+    <div className="p-4 flex flex-col gap-3">
+      <div className={`border-2 border-dashed rounded-xl p-4 text-center transition-all duration-500 ${phase === "idle" ? "border-white/20" : phase === "uploading" ? "border-gold/60 bg-gold/5" : "border-emerald-400/60 bg-emerald-400/5"}`}>
+        {phase === "idle" && <p className="text-white/40 text-[10px]">📂 Drop recipients.csv here</p>}
+        {phase === "uploading" && <div className="flex flex-col items-center gap-1"><div className="w-4 h-4 border-2 border-gold border-t-transparent rounded-full animate-spin" /><p className="text-gold text-[9px]">Parsing 3 recipients…</p></div>}
+        {phase === "done" && <p className="text-emerald-400 text-[10px] font-semibold">✓ 3 recipients imported</p>}
+      </div>
+      {phase === "done" && (
+        <div className="space-y-1.5">
+          {rows.map((r, i) => (
+            <div key={i} className="flex items-center gap-2 bg-white/5 rounded-lg px-3 py-1.5">
+              <span className="w-4 h-4 bg-emerald-400/20 text-emerald-400 text-[8px] font-bold rounded-full flex items-center justify-center">{i+1}</span>
+              <span className="text-white/70 text-[9px] truncate">{r}</span>
+            </div>
+          ))}
+          <div className="w-full mt-1 py-1.5 bg-gradient-to-r from-gold to-gold-light text-brand-deep text-[10px] font-bold rounded-lg text-center">Send All Gifts →</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MilestoneMockup() {
+  const events = [
+    { label: "Work Anniversary", date: "Oct 12", emoji: "🎂", done: true },
+    { label: "Birthday – James M.", date: "Oct 18", emoji: "🎉", done: true },
+    { label: "Q4 Team Bonus", date: "Dec 1", emoji: "🏆", done: false },
+    { label: "Holiday Hampers", date: "Dec 20", emoji: "🎄", done: false },
+  ];
+  return (
+    <div className="p-4 space-y-2">
+      {events.map((e, i) => (
+        <div key={i} className={`flex items-center gap-3 p-2 rounded-xl ${!e.done ? "bg-white/5" : "opacity-40"}`}>
+          <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-sm">{e.emoji}</div>
+          <div className="flex-1 min-w-0">
+            <p className={`text-[10px] font-semibold truncate ${e.done ? "text-white/40 line-through" : "text-white"}`}>{e.label}</p>
+            <p className="text-[9px] text-white/40">{e.date}</p>
+          </div>
+          <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${e.done ? "bg-emerald-400 border-emerald-400" : "border-white/20"}`}>
+            {e.done && <span className="text-[7px] text-white font-bold">✓</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function WhitelabelMockup() {
+  const brands = [
+    { name: "ACME Corp", hex: "#D4AF37" },
+    { name: "Nexus Ltd", hex: "#60A5FA" },
+    { name: "ZaraCo.", hex: "#F472B6" },
+    { name: "PearlBiz", hex: "#34D399" },
+  ];
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setIdx(x => (x + 1) % brands.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+  const b = brands[idx];
+  return (
+    <div className="p-3">
+      <div className="rounded-xl overflow-hidden border border-white/10">
+        <div className="bg-white/5 px-2 py-1 flex items-center gap-1.5 border-b border-white/10">
+          {["bg-red-400","bg-yellow-400","bg-green-400"].map(c => <span key={c} className={`w-1.5 h-1.5 ${c} rounded-full`} />)}
+          <div className="flex-1 bg-white/5 rounded text-[8px] text-white/30 px-1.5 py-0.5 truncate">gifts.{b.name.toLowerCase().replace(/[^a-z]/g,"")}.com</div>
+        </div>
+        <div className="p-2" style={{ background: `color-mix(in srgb, ${b.hex} 8%, #111)` }}>
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="w-4 h-4 rounded transition-colors duration-500" style={{ background: b.hex }} />
+            <span className="text-white text-[11px] font-bold">{b.name}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            {["Birthday","Welcome","Client","Event"].map(n => (
+              <div key={n} className="bg-white/5 rounded-lg p-1.5">
+                <div className="w-full aspect-square rounded-md mb-1 transition-colors duration-500" style={{ background: `color-mix(in srgb, ${b.hex} 18%, transparent)` }} />
+                <p className="text-white/50 text-[8px]">{n}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CorporateSolution() {
   return (
     <section className="py-20 md:py-28 section-theme-c relative overflow-hidden">
-      {/* Ambient orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-gold/10 rounded-full blur-[120px] animate-pulse-soft" />
         <div className="absolute bottom-1/3 left-1/4 w-96 h-96 bg-brand/10 rounded-full blur-[100px] animate-pulse-soft" style={{ animationDelay: "1s" }} />
       </div>
-
-      {/* Gold gradient rules */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
-        <div className="text-center max-w-2xl mx-auto mb-12">
+        <div className="text-center max-w-2xl mx-auto mb-14">
           <Reveal direction="scale">
-            <div className="w-16 h-16 bg-gradient-to-br from-gold to-gold-light shape-premium-card flex items-center justify-center mx-auto mb-6 shadow-gold animate-float">
-              <Building2 className="w-8 h-8 text-brand-deep" />
-            </div>
+            <p className="text-gold font-bold text-[11px] uppercase tracking-[0.2em] mb-4">How we do it</p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="font-display section-heading font-bold italic tracking-wide mb-6 text-theme-heading">
+            <h2 className="font-display section-heading font-bold italic tracking-wide mb-4 text-theme-heading">
               The Art of{" "}
-              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                Corporate Gifting
-              </span>
+              <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">Corporate Gifting</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>
             <p className="text-theme-body text-lg leading-relaxed">
-              We don&apos;t just deliver gifts. We architect professional gestures that strengthen
-              relationships, celebrate milestones, and represent your brand beautifully.
+              We don&apos;t just deliver gifts. We architect professional gestures that strengthen relationships, celebrate milestones, and represent your brand beautifully.
             </p>
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {solutions.map((s, i) => (
-            <Reveal key={i} delay={300 + i * 100} direction="up">
-              <Link href={s.href} className={`h-full p-6 shape-premium-card card-theme border border-surface-border hover:shadow-card-hover transition-all duration-500 group hover:-translate-y-2 relative overflow-hidden ${s.span} block`}>
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-brand/10 dark:bg-white/10 shape-premium-button flex items-center justify-center mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-500">
-                    {s.icon}
-                  </div>
-                  <h3 className="font-display text-xl md:text-2xl font-bold italic mb-2 text-theme-heading group-hover:text-gold transition-colors duration-300">{s.title}</h3>
-                  <p className="text-theme-body leading-relaxed text-sm">{s.desc}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-gold mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    Explore <ArrowRight className="w-3 h-3" />
-                  </span>
+        {/* ── BENTO GRID ── */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+          {/* 1. WhatsApp Bot — tall left (spans 1 col, 2 rows) */}
+          <Reveal direction="left" delay={0}>
+            <Link href="/corporate/whatsapp" className="group flex flex-col rounded-3xl border border-white/10 bg-white/[0.03] hover:border-emerald-400/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative md:row-span-2 h-full">
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="p-5 pb-2">
+                <div className="w-10 h-10 bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-3"><MessageSquare className="w-5 h-5 text-emerald-400" /></div>
+                <h3 className="font-display text-[17px] font-bold text-white mb-1">WhatsApp Bot</h3>
+                <p className="text-white/50 text-[11px] leading-relaxed">Recipients confirm delivery via WhatsApp. Zero app installs required.</p>
+              </div>
+              <div className="flex-1"><WhatsAppMockup /></div>
+              <div className="px-5 pb-4"><span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity">See how it works <ArrowRight className="w-3 h-3" /></span></div>
+            </Link>
+          </Reveal>
+
+          {/* 2. CSV Bulk Upload — top, spans 2 cols */}
+          <Reveal direction="up" delay={100}>
+            <Link href="/corporate/build" className="group block md:col-span-2 rounded-3xl border border-white/10 bg-white/[0.03] hover:border-gold/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex flex-col sm:flex-row">
+                <div className="p-5 flex-1">
+                  <div className="w-10 h-10 bg-gold/20 rounded-2xl flex items-center justify-center mb-3"><Upload className="w-5 h-5 text-gold" /></div>
+                  <h3 className="font-display text-[17px] font-bold text-white mb-1">Bulk CSV Upload</h3>
+                  <p className="text-white/50 text-[11px] leading-relaxed">10 or 1,000 recipients — one file, one payment. We handle every delivery address.</p>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-gold mt-4 opacity-0 group-hover:opacity-100 transition-opacity">Try it now <ArrowRight className="w-3 h-3" /></span>
                 </div>
-              </Link>
-            </Reveal>
-          ))}
+                <div className="sm:w-52 flex-shrink-0 border-t sm:border-t-0 sm:border-l border-white/10"><CsvMockup /></div>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* 3. Bespoke Curation — top right */}
+          <Reveal direction="right" delay={200}>
+            <Link href="/corporate/build" className="group block rounded-3xl border border-white/10 bg-white/[0.03] hover:border-brand/30 hover:bg-white/[0.05] transition-all duration-500 p-5 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="relative z-10">
+                <div className="w-10 h-10 bg-brand/20 rounded-2xl flex items-center justify-center mb-3"><Target className="w-5 h-5 text-brand-light" /></div>
+                <h3 className="font-display text-[17px] font-bold text-white mb-2">Bespoke Curation</h3>
+                <p className="text-white/50 text-[11px] leading-relaxed mb-4">Every hamper hand-picked to match your brand, budget, and occasion. No generic bundles.</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["🎁 Hampers","🍷 Spirits","💐 Florals","🧴 Wellness","🏆 Trophies"].map(tag => (
+                    <span key={tag} className="text-[9px] font-semibold px-2 py-1 bg-white/5 border border-white/10 rounded-full text-white/60">{tag}</span>
+                  ))}
+                </div>
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-light mt-4 opacity-0 group-hover:opacity-100 transition-opacity">Build yours <ArrowRight className="w-3 h-3" /></span>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* 4. Automated Milestones — bottom, spans 2 cols */}
+          <Reveal direction="up" delay={300}>
+            <Link href="/corporate/milestones" className="group block md:col-span-2 rounded-3xl border border-white/10 bg-white/[0.03] hover:border-amber-400/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex flex-col sm:flex-row-reverse">
+                <div className="p-5 flex-1">
+                  <div className="w-10 h-10 bg-amber-400/20 rounded-2xl flex items-center justify-center mb-3"><Trophy className="w-5 h-5 text-amber-400" /></div>
+                  <h3 className="font-display text-[17px] font-bold text-white mb-1">Automated Milestones</h3>
+                  <p className="text-white/50 text-[11px] leading-relaxed">Set it and forget it. Auto-send gifts on work anniversaries, birthdays and promotions.</p>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400 mt-4 opacity-0 group-hover:opacity-100 transition-opacity">Set up calendar <ArrowRight className="w-3 h-3" /></span>
+                </div>
+                <div className="sm:w-52 flex-shrink-0 border-t sm:border-t-0 sm:border-r border-white/10"><MilestoneMockup /></div>
+              </div>
+            </Link>
+          </Reveal>
+
+          {/* 5. White-Label Portal — bottom right */}
+          <Reveal direction="right" delay={400}>
+            <Link href="/corporate/whitelabel" className="group block rounded-3xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="p-5 pb-1">
+                <div className="w-10 h-10 bg-cyan-400/20 rounded-2xl flex items-center justify-center mb-3"><Briefcase className="w-5 h-5 text-cyan-400" /></div>
+                <h3 className="font-display text-[17px] font-bold text-white mb-1">White-Label Portal</h3>
+                <p className="text-white/50 text-[11px] leading-relaxed">Your logo. Your colours. Your branded gift portal.</p>
+              </div>
+              <WhitelabelMockup />
+            </Link>
+          </Reveal>
+
+          {/* 6. Utility strip — 4 small tiles across full width */}
+          <Reveal direction="up" delay={500}>
+            <div className="md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: <Zap className="w-5 h-5 text-coral" />, title: "Same-Day Delivery", desc: "Order by noon, delivered by evening across Nairobi.", href: "/corporate/build", bg: "bg-coral/10 group-hover:border-coral/30" },
+                { icon: <EyeOff className="w-5 h-5 text-brand-light" />, title: "Absolute Discretion", desc: "Anonymous gifting, zero branding unless you want it.", href: "/corporate/build", bg: "bg-brand/10 group-hover:border-brand/30" },
+                { icon: <HeartHandshake className="w-5 h-5 text-rose-400" />, title: "Client Appreciation", desc: "VIP tracking and personalised CRM follow-ups.", href: "/corporate/clients", bg: "bg-rose-400/10 group-hover:border-rose-400/30" },
+                { icon: <Camera className="w-5 h-5 text-success" />, title: "Photo Proof", desc: "Every delivery photographed. Full accountability.", href: "/corporate/dashboard", bg: "bg-success/10 group-hover:border-success/30" },
+              ].map((c, i) => (
+                <Link key={i} href={c.href} className={`group flex items-start gap-3 p-4 rounded-2xl border border-white/10 ${c.bg} transition-all duration-300`}>
+                  <div className="w-9 h-9 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">{c.icon}</div>
+                  <div>
+                    <h4 className="text-white text-[12px] font-bold mb-0.5">{c.title}</h4>
+                    <p className="text-white/40 text-[10px] leading-relaxed">{c.desc}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </Reveal>
+
         </div>
       </div>
     </section>
   );
 }
+
+
+
 
 /* ══════════════════════════════════════════════════════════
    SECTION 4: USE CASES — Corporate gifting occasions
