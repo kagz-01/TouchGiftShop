@@ -21,17 +21,17 @@ type CalendarEvent = {
 };
 
 const TYPE_CONFIG = {
-  birthday: { icon: <Cake className="w-4 h-4" />, color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-500/10" },
-  anniversary: { icon: <Trophy className="w-4 h-4" />, color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-500/10" },
-  holiday: { icon: <PartyPopper className="w-4 h-4" />, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
-  custom: { icon: <Gift className="w-4 h-4" />, color: "text-brand", bg: "bg-brand/5" },
+  birthday: { icon: <Cake className="w-4 h-4" />, color: "text-pink-400", bg: "bg-pink-500/10" },
+  anniversary: { icon: <Trophy className="w-4 h-4" />, color: "text-violet-400", bg: "bg-violet-500/10" },
+  holiday: { icon: <PartyPopper className="w-4 h-4" />, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  custom: { icon: <Gift className="w-4 h-4" />, color: "text-violet-400", bg: "bg-violet-500/10" },
 };
 
 const STATUS_CONFIG = {
-  scheduled: { label: "Scheduled", color: "bg-brand/10 text-brand" },
-  sent: { label: "Sent", color: "bg-blue-50 text-blue-500" },
-  delivered: { label: "Delivered", color: "bg-success/10 text-success" },
-  pending_pool: { label: "Pool Active", color: "bg-amber-50 text-amber-600" },
+  scheduled: { label: "Scheduled", color: "bg-violet-500/20 text-violet-400" },
+  sent: { label: "Sent", color: "bg-blue-500/20 text-blue-400" },
+  delivered: { label: "Delivered", color: "bg-emerald-500/20 text-emerald-400" },
+  pending_pool: { label: "Pool Active", color: "bg-fuchsia-500/20 text-fuchsia-400" },
 };
 
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -108,25 +108,25 @@ export default function CorporateCalendar() {
   const totalBudget = events.reduce((sum, e) => sum + e.giftBudget, 0);
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display italic text-2xl font-bold">Gifting Calendar</h1>
-              <p className="text-theme-muted text-sm">Never miss an occasion. Schedule and automate corporate gifts.</p>
+              <h1 className="font-display italic text-2xl font-bold text-violet-400">Gifting Calendar</h1>
+              <p className="text-white/60 text-sm">Never miss an occasion. Schedule and automate corporate gifts.</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setView(view === "calendar" ? "list" : "calendar")}
-                className="px-4 py-2 shape-premium-card text-sm font-medium border border-surface-border text-theme-muted hover:border-brand/30 transition-all"
+                className="px-4 py-2 shape-premium-card text-sm font-medium border border-white/10 text-white/50 hover:border-violet-400/30 hover:text-white transition-all"
               >
                 {view === "calendar" ? "List View" : "Calendar View"}
               </button>
               <Link
                 href="/corporate/calendar/add"
-                className="px-4 py-2 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-violet-500 text-white shape-premium-card font-semibold text-sm hover:bg-violet-600 transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
               >
                 <Plus className="w-4 h-4" /> Add Event
               </Link>
@@ -136,19 +136,19 @@ export default function CorporateCalendar() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: "This Month", value: events.filter((e) => { const d = new Date(e.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; }).length, icon: <Calendar className="w-5 h-5" />, color: "text-brand" },
-              { label: "Upcoming", value: upcomingEvents.length, icon: <Clock className="w-5 h-5" />, color: "text-violet-500" },
-              { label: "Auto-Order", value: events.filter((e) => e.autoOrder).length, icon: <Gift className="w-5 h-5" />, color: "text-success" },
-              { label: "Total Budget", value: `KSh ${totalBudget.toLocaleString()}`, icon: <Bell className="w-5 h-5" />, color: "text-gold" },
+              { label: "This Month", value: events.filter((e) => { const d = new Date(e.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; }).length, icon: <Calendar className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Upcoming", value: upcomingEvents.length, icon: <Clock className="w-5 h-5" />, color: "text-pink-400" },
+              { label: "Auto-Order", value: events.filter((e) => e.autoOrder).length, icon: <Gift className="w-5 h-5" />, color: "text-emerald-400" },
+              { label: "Total Budget", value: `KSh ${totalBudget.toLocaleString()}`, icon: <Bell className="w-5 h-5" />, color: "text-fuchsia-400" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm">
+              <div key={stat.label} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 shape-premium-card flex items-center justify-center bg-gray-50 dark:bg-white/5 ${stat.color}`}>
+                  <div className={`w-10 h-10 shape-premium-card flex items-center justify-center bg-white/5 ${stat.color}`}>
                     {stat.icon}
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-theme-heading">{stat.value}</p>
-                    <p className="text-xs text-theme-muted">{stat.label}</p>
+                    <p className="text-xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xs text-white/60">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -162,24 +162,24 @@ export default function CorporateCalendar() {
           {/* Main: Calendar or List */}
           <div className="lg:col-span-2">
             {view === "calendar" ? (
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card border border-surface-border shadow-sm">
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card border border-white/10 shadow-lg">
                 {/* Month nav */}
-                <div className="flex items-center justify-between p-4 border-b border-surface-border">
-                  <button onClick={prevMonth} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 shape-premium-card transition-colors">
-                    <ChevronLeft className="w-5 h-5 text-theme-muted" />
+                <div className="flex items-center justify-between p-4 border-b border-white/10">
+                  <button onClick={prevMonth} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
+                    <ChevronLeft className="w-5 h-5 text-white/60" />
                   </button>
-                  <h2 className="font-display italic text-lg font-bold text-theme-heading">
+                  <h2 className="font-display italic text-lg font-bold text-white">
                     {MONTHS[currentMonth]} {currentYear}
                   </h2>
-                  <button onClick={nextMonth} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 shape-premium-card transition-colors">
-                    <ChevronRight className="w-5 h-5 text-theme-muted" />
+                  <button onClick={nextMonth} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
+                    <ChevronRight className="w-5 h-5 text-white/60" />
                   </button>
                 </div>
 
                 {/* Day headers */}
-                <div className="grid grid-cols-7 border-b border-surface-border">
+                <div className="grid grid-cols-7 border-b border-white/10 bg-black/20">
                   {DAYS.map((day) => (
-                    <div key={day} className="p-3 text-center text-xs font-semibold text-theme-muted">
+                    <div key={day} className="p-3 text-center text-xs font-semibold text-white/50">
                       {day}
                     </div>
                   ))}
@@ -188,7 +188,7 @@ export default function CorporateCalendar() {
                 {/* Calendar grid */}
                 <div className="grid grid-cols-7">
                   {Array.from({ length: firstDay }).map((_, i) => (
-                    <div key={`empty-${i}`} className="p-2 min-h-[80px] border-b border-r border-surface-border/50" />
+                    <div key={`empty-${i}`} className="p-2 min-h-[80px] border-b border-r border-white/5" />
                   ))}
                   {Array.from({ length: daysInMonth }).map((_, i) => {
                     const day = i + 1;
@@ -201,11 +201,11 @@ export default function CorporateCalendar() {
                       <div
                         key={day}
                         onClick={() => setSelectedDate(dateStr)}
-                        className={`p-2 min-h-[80px] border-b border-r border-surface-border/50 cursor-pointer transition-all hover:bg-brand/5 ${
-                          isSelected ? "bg-brand/10" : ""
+                        className={`p-2 min-h-[80px] border-b border-r border-white/5 cursor-pointer transition-all hover:bg-white/5 ${
+                          isSelected ? "bg-violet-500/10 shadow-[inset_0_0_10px_rgba(139,92,246,0.1)]" : ""
                         }`}
                       >
-                        <div className={`text-sm font-semibold mb-1 ${isToday ? "w-6 h-6 bg-brand text-white shape-premium-button flex items-center justify-center" : "text-theme-heading"}`}>
+                        <div className={`text-sm font-semibold mb-1 ${isToday ? "w-6 h-6 bg-violet-500 text-white shape-premium-button flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5)]" : "text-white/80"}`}>
                           {day}
                         </div>
                         <div className="space-y-1">
@@ -221,7 +221,7 @@ export default function CorporateCalendar() {
                             );
                           })}
                           {dayEvents.length > 2 && (
-                            <div className="text-[10px] text-theme-muted">+{dayEvents.length - 2} more</div>
+                            <div className="text-[10px] text-white/40">+{dayEvents.length - 2} more</div>
                           )}
                         </div>
                       </div>
@@ -240,23 +240,23 @@ export default function CorporateCalendar() {
                     return (
                       <div
                         key={event.id}
-                        className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm flex items-center justify-between hover:shadow-card-hover transition-all"
+                        className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg flex items-center justify-between hover:border-violet-400/50 transition-all"
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 shape-premium-card flex items-center justify-center ${typeCfg.bg} ${typeCfg.color}`}>
                             {typeCfg.icon}
                           </div>
                           <div>
-                            <p className="text-sm font-bold text-theme-heading">{event.title}</p>
-                            <p className="text-xs text-theme-muted">
+                            <p className="text-sm font-bold text-white">{event.title}</p>
+                            <p className="text-xs text-white/60">
                               {new Date(event.date).toLocaleDateString("en-KE", { weekday: "short", month: "short", day: "numeric" })} · {event.department}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="text-right hidden sm:block">
-                            <p className="text-sm font-semibold text-theme-heading">KSh {event.giftBudget.toLocaleString()}</p>
-                            <p className="text-[10px] text-theme-muted">{event.autoOrder ? "Auto-order" : "Manual"}</p>
+                            <p className="text-sm font-semibold text-white">KSh {event.giftBudget.toLocaleString()}</p>
+                            <p className="text-[10px] text-white/60">{event.autoOrder ? "Auto-order" : "Manual"}</p>
                           </div>
                           <span className={`px-2 py-0.5 text-[10px] font-semibold shape-premium-button ${statusCfg.color}`}>
                             {statusCfg.label}
@@ -273,8 +273,8 @@ export default function CorporateCalendar() {
           <div className="space-y-4">
             {/* Selected date */}
             {selectedDate && (
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-                <h3 className="text-sm font-semibold text-theme-heading mb-3">
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+                <h3 className="text-sm font-semibold text-white mb-3">
                   {new Date(selectedDate + "T00:00:00").toLocaleDateString("en-KE", { weekday: "long", month: "long", day: "numeric" })}
                 </h3>
                 {selectedEvents.length > 0 ? (
@@ -282,27 +282,27 @@ export default function CorporateCalendar() {
                     {selectedEvents.map((event) => {
                       const typeCfg = TYPE_CONFIG[event.type];
                       return (
-                        <div key={event.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+                        <div key={event.id} className="flex items-center gap-3 p-3 bg-black/30 border border-white/5 rounded-xl">
                           <div className={`w-8 h-8 shape-premium-card flex items-center justify-center ${typeCfg.bg} ${typeCfg.color}`}>
                             {typeCfg.icon}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-semibold text-theme-heading truncate">{event.recipientName}</p>
-                            <p className="text-xs text-theme-muted">KSh {event.giftBudget.toLocaleString()}</p>
+                            <p className="text-sm font-semibold text-white truncate">{event.recipientName}</p>
+                            <p className="text-xs text-white/60">KSh {event.giftBudget.toLocaleString()}</p>
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 ) : (
-                  <p className="text-sm text-theme-muted">No events on this date.</p>
+                  <p className="text-sm text-white/40">No events on this date.</p>
                 )}
               </div>
             )}
 
             {/* Upcoming events */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-3">Upcoming Events</h3>
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-3">Upcoming Events</h3>
               <div className="space-y-3">
                 {upcomingEvents.map((event) => {
                   const typeCfg = TYPE_CONFIG[event.type];
@@ -313,13 +313,13 @@ export default function CorporateCalendar() {
                         {typeCfg.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-theme-heading truncate">{event.recipientName}</p>
-                        <p className="text-xs text-theme-muted">
+                        <p className="text-sm font-semibold text-white truncate">{event.recipientName}</p>
+                        <p className="text-xs text-white/60">
                           {daysUntil <= 0 ? "Today" : daysUntil === 1 ? "Tomorrow" : `In ${daysUntil} days`}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-semibold text-brand">KSh {event.giftBudget.toLocaleString()}</p>
+                        <p className="text-xs font-semibold text-violet-400">KSh {event.giftBudget.toLocaleString()}</p>
                       </div>
                     </div>
                   );
@@ -328,24 +328,24 @@ export default function CorporateCalendar() {
             </div>
 
             {/* Quick actions */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-3">Quick Actions</h3>
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-3">Quick Actions</h3>
               <div className="space-y-2">
                 <Link
                   href="/corporate/calendar/add"
-                  className="flex items-center gap-3 p-3 bg-brand/5 hover:bg-brand/10 shape-premium-card transition-colors text-sm font-medium text-brand"
+                  className="flex items-center gap-3 p-3 bg-violet-400/10 hover:bg-violet-400/20 border border-transparent hover:border-violet-400/30 shape-premium-card transition-colors text-sm font-medium text-violet-400"
                 >
-                  <Plus className="w-4 h-4" /> Add Birthday
+                  <Plus className="w-4 h-4" /> Add Event
                 </Link>
                 <Link
                   href="/corporate/pool/create"
-                  className="flex items-center gap-3 p-3 bg-violet-50 dark:bg-violet-500/10 hover:bg-violet-100 dark:hover:bg-violet-500/20 shape-premium-card transition-colors text-sm font-medium text-violet-600"
+                  className="flex items-center gap-3 p-3 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-transparent hover:border-fuchsia-500/30 shape-premium-card transition-colors text-sm font-medium text-fuchsia-400"
                 >
                   <Users className="w-4 h-4" /> Create Gift Pool
                 </Link>
                 <Link
                   href="/corporate/build"
-                  className="flex items-center gap-3 p-3 bg-gold/10 hover:bg-gold/20 shape-premium-card transition-colors text-sm font-medium text-gold"
+                  className="flex items-center gap-3 p-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-transparent hover:border-emerald-500/30 shape-premium-card transition-colors text-sm font-medium text-emerald-400"
                 >
                   <Gift className="w-4 h-4" /> Build Hamper
                 </Link>
