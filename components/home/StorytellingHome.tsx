@@ -166,7 +166,7 @@ const HERO_MOODS = MOODS.filter((m) =>
 );
 
 const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
-  default:      ["TouchGift makes gifting feel thoughtful.", "Order now for fast same-day gift delivery in Nairobi.", "Wrapped beautifully. Delivered with care."],
+  default:      ["Your ultimate gifting concierge.", "We curate the best gifts across Nairobi.", "Checkout securely on our partner stores.", "Wrapped beautifully. Delivered with care."],
   corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
   flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
   liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],

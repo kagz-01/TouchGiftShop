@@ -29,7 +29,7 @@ export const MOODS: MoodMeta[] = [
     label: "I Want to Wow Them",
     tagline: "The Full TouchGift Experience",
     heroTitle: "Elevate the art of gifting",
-    heroSub: "Beautifully curated gifts for every occasion. Thoughtful, elegant and delivered with impeccable care.",
+    heroSub: "Beautifully curated gifts for every occasion. Find the perfect gift here, and we'll route you to the official partner stores for a seamless checkout.",
     cta: "Shop All Gifts",
   },
   {
