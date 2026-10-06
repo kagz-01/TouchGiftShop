@@ -170,8 +170,8 @@ const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
   corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
   flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
   liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
-  perfumes:     ["Authentic designer fragrances. ✨", "A memory in a bottle.", "The ultimate sensory gift delivered today."],
-  hampers:      ["Generosity, beautifully packaged. 🧺", "Overflowing hampers of fresh fruits.", "Artisan treats and bespoke gifts."],
+  perfumes:     ["A sensory journey in every spray. ✨", "Authentic fragrances, delivered today.", "Leave a scent they'll never forget."],
+  hampers:      ["Because one gift is never enough. 🧺", "Artisan treats and fresh fruit baskets.", "Overflowing abundance delivered to their door."],
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -392,9 +392,18 @@ export function HeroCinematic() {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Hint text */}
-        <div className="text-center mb-3">
-          <span className="text-white/50 text-[10px] uppercase tracking-widest font-semibold drop-shadow-md">
-            Pick a mood to pin it · Auto-cycles every 7s
+        <div className="flex flex-col items-center mb-3 animate-pulse">
+          <span className="text-white/80 text-[11px] md:text-xs uppercase tracking-[0.2em] font-bold drop-shadow-md mb-1">
+            HOW DO YOU WANT THEM TO FEEL?
+          </span>
+          <span className="text-gold/90 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold drop-shadow-md flex items-center gap-2">
+            <svg className="w-3 h-3 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+            Choose your gifting mood below
+            <svg className="w-3 h-3 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
           </span>
         </div>
 

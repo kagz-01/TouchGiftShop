@@ -30,7 +30,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "The Full TouchGift Experience",
     heroTitle: "Elevate the art of gifting",
     heroSub: "Beautifully curated gifts for every occasion. Find the perfect gift here, and we'll route you to the official partner stores for a seamless checkout.",
-    cta: "Shop All Gifts",
+    cta: "Explore the Collection",
   },
   {
     id: "corporate",
@@ -39,7 +39,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "For Corporate & Teams",
     heroTitle: "Make business feel personal",
     heroSub: "Executive gifting and branded merchandise that leaves a lasting impression on clients and teams alike.",
-    cta: "View Corporate",
+    cta: "Explore Corporate Gifting",
   },
   {
     id: "flowers",
@@ -48,7 +48,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "When only flowers will do",
     heroTitle: "Say more without saying more",
     heroSub: "Breathtaking floral arrangements designed to feel intimate, intentional and completely unforgettable.",
-    cta: "Send Flowers",
+    cta: "Send a Bouquet Today",
   },
   {
     id: "liquor",
@@ -57,7 +57,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "Pop the champagne",
     heroTitle: "Raise a glass to the milestone",
     heroSub: "Premium spirits, champagne, and curated boxes to mark the moments that truly matter.",
-    cta: "Shop Spirits",
+    cta: "Find the Perfect Bottle",
   },
   {
     id: "perfumes",
@@ -66,7 +66,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "A scent they'll never forget",
     heroTitle: "A memory in a bottle",
     heroSub: "Authentic designer fragrances and beauty curations for the ultimate, deeply personal sensory gift.",
-    cta: "Shop Fragrances",
+    cta: "Find Their Signature Scent",
   },
   {
     id: "hampers",
@@ -75,7 +75,7 @@ export const MOODS: MoodMeta[] = [
     tagline: "Generosity, beautifully packed",
     heroTitle: "Generosity, beautifully packaged",
     heroSub: "Overflowing hampers of fresh fruits, artisan treats, and bespoke gifts they'll unbox in pure delight.",
-    cta: "Shop Hampers",
+    cta: "Send an Abundant Hamper",
   },
   // ── EMOTIONAL SITUATION MOODS ────────────────────────────────────────────
   {
