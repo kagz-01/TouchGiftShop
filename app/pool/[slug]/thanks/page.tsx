@@ -12,7 +12,7 @@ export default function ThanksPage() {
   const [copied, setCopied] = useState(false);
   const [splitCopied, setSplitCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  
+
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}` : `/pool/${slug}`;
   const splitUrl = typeof window !== "undefined" ? `${window.location.origin}/pool/${slug}/contribute?split=${contributionId}` : `/pool/${slug}/contribute?split=${contributionId}`;
 
@@ -26,7 +26,11 @@ export default function ThanksPage() {
   const copySplit = () => { navigator.clipboard?.writeText(splitUrl); setSplitCopied(true); setTimeout(() => setSplitCopied(false), 2000); };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-white flex items-center justify-center px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#14080D] flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Ambient glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-fuchsia-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[200px] bg-pink-500/5 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Confetti layer */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none z-0">
@@ -42,7 +46,7 @@ export default function ThanksPage() {
                 fontSize: `${12 + Math.random() * 16}px`,
               }}
             >
-              {["🎉", "🎊", "💛", "🌸", "⭐", "💝"][Math.floor(Math.random() * 6)]}
+              {["🎉", "🎊", "💜", "🌸", "⭐", "💝"][Math.floor(Math.random() * 6)]}
             </div>
           ))}
         </div>
@@ -50,39 +54,39 @@ export default function ThanksPage() {
 
       <div className="relative z-10 max-w-sm w-full text-center">
         {/* Animated Heart */}
-        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-brand/20 to-gold/20 flex items-center justify-center mx-auto mb-6 animate-pulse-soft">
-          <Heart className="w-12 h-12 text-brand fill-brand" />
+        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-fuchsia-500/20 to-pink-500/10 border border-fuchsia-500/20 flex items-center justify-center mx-auto mb-6 animate-pulse-soft shadow-[0_0_40px_rgba(217,70,239,0.3)]">
+          <Heart className="w-12 h-12 text-fuchsia-400 fill-fuchsia-400" />
         </div>
 
-        <h1 className="font-display text-3xl font-bold italic text-brand-deep mb-3">
-          Thank you! 💛
+        <h1 className="font-display text-3xl font-bold italic text-white mb-3">
+          Thank you! 💜
         </h1>
-        <p className="text-brand-deep/60 leading-relaxed mb-8">
+        <p className="text-white/60 leading-relaxed mb-8">
           Your contribution has been received and is being processed. You&apos;re helping make someone&apos;s day truly special.
         </p>
 
-        {/* Thank you card */}
-        <div className="bg-white rounded-3xl shadow-card p-6 mb-6 text-left">
+        {/* Confirmation card */}
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6 mb-6 text-left">
           <div className="flex items-center gap-2 mb-4">
-            <CheckCircle2 className="w-5 h-5 text-success" />
-            <span className="font-semibold text-brand-deep text-sm">Contribution Confirmed</span>
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            <span className="font-semibold text-white text-sm">Contribution Confirmed</span>
           </div>
-          <p className="text-brand-deep/60 text-sm">
+          <p className="text-white/50 text-sm">
             Once payment is confirmed by PesaPal, your contribution will appear on the pool page. You&apos;ll receive an SMS confirmation shortly.
           </p>
         </div>
 
         {/* Invite friends */}
-        <div className="bg-brand/5 rounded-3xl p-5 mb-6">
-          <p className="text-sm font-semibold text-brand-deep mb-3">🎁 Know others who&apos;d like to contribute?</p>
+        <div className="bg-fuchsia-500/5 border border-fuchsia-500/15 rounded-3xl p-5 mb-6">
+          <p className="text-sm font-semibold text-white mb-3">🎁 Know others who&apos;d like to contribute?</p>
           <div className="flex gap-2">
-            <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{shareUrl}</code>
-            <button onClick={copyShare} className="px-3 py-2 bg-brand text-white rounded-xl text-xs font-semibold">
+            <code className="flex-1 text-xs text-white/60 bg-black/30 px-3 py-2 rounded-xl border border-white/10 truncate">{shareUrl}</code>
+            <button onClick={copyShare} className="px-3 py-2 bg-fuchsia-500 text-white rounded-xl text-xs font-semibold hover:bg-fuchsia-600 transition-colors">
               {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
             </button>
           </div>
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(`🎁 I just contributed to a gift pool!\n\nJoin me and help make their day special 💛\n${shareUrl}`)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(`🎁 I just contributed to a gift pool!\n\nJoin me and help make their day special 💜\n${shareUrl}`)}`}
             target="_blank"
             rel="noreferrer"
             className="mt-3 flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"
@@ -93,14 +97,14 @@ export default function ThanksPage() {
 
         {/* Split with Friend CTA */}
         {contributionId && (
-          <div className="bg-brand-deep/5 rounded-3xl p-5 mb-6 text-left">
-            <p className="text-sm font-semibold text-brand-deep mb-2">👯‍♀️ Split your contribution?</p>
-            <p className="text-xs text-brand-deep/60 mb-3">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-5 mb-6 text-left">
+            <p className="text-sm font-semibold text-white mb-2">👯‍♀️ Split your contribution?</p>
+            <p className="text-xs text-white/40 mb-3">
               Did a friend tell you to pay for both of you? Send them this link to collect their half directly into the pool.
             </p>
             <div className="flex gap-2">
-              <code className="flex-1 text-xs text-brand-deep bg-white px-3 py-2 rounded-xl border border-brand/10 truncate">{splitUrl}</code>
-              <button onClick={copySplit} className="px-3 py-2 bg-brand-deep text-white rounded-xl text-xs font-semibold">
+              <code className="flex-1 text-xs text-white/60 bg-black/30 px-3 py-2 rounded-xl border border-white/10 truncate">{splitUrl}</code>
+              <button onClick={copySplit} className="px-3 py-2 bg-white/10 text-white border border-white/20 rounded-xl text-xs font-semibold hover:bg-white/20 transition-colors">
                 {splitCopied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               </button>
             </div>
@@ -109,7 +113,7 @@ export default function ThanksPage() {
 
         <Link
           href={`/pool/${slug}`}
-          className="flex items-center justify-center gap-2 text-brand font-semibold text-sm hover:underline"
+          className="flex items-center justify-center gap-2 text-fuchsia-400 font-semibold text-sm hover:text-fuchsia-300 transition-colors"
         >
           View pool progress <ChevronRight className="w-4 h-4" />
         </Link>
