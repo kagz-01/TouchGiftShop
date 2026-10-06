@@ -457,7 +457,7 @@ function CorporateSolution() {
 
           {/* 2. CSV Bulk Upload — top, spans 2 cols */}
           <Reveal direction="up" delay={100}>
-            <Link href="/corporate/build" className="group block md:col-span-2 rounded-3xl border border-white/10 bg-white/[0.03] hover:border-gold/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative">
+            <Link href="/corporate/bulk-upload" className="group block md:col-span-2 rounded-3xl border border-white/10 bg-white/[0.03] hover:border-gold/30 hover:bg-white/[0.05] transition-all duration-500 overflow-hidden relative">
               <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="flex flex-col sm:flex-row">
                 <div className="p-5 flex-1">
