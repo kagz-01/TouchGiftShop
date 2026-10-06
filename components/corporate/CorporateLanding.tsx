@@ -110,14 +110,11 @@ const ORBIT_FALLBACK_ITEMS = [
 function CorporateHero() {
   const [loaded, setLoaded] = useState(false);
   const [msgIdx, setMsgIdx] = useState(0);
-  const [orbitProducts, setOrbitProducts] = useState<{ name: string; image_url: string; price: number; slug: string }[]>([]);
   const messages = [
-    "500+ companies trust us with their gifting.",
+    "500+ companies trust us.",
     "Same-day delivery across Nairobi.",
     "Upload a CSV. We handle the rest.",
   ];
-
-  const { moodMeta } = useMood();
 
   useEffect(() => { setLoaded(true); }, []);
   useEffect(() => {
@@ -125,193 +122,86 @@ function CorporateHero() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    // Every non-perfume SKU can carry a logo; no perfume can. So the hero shows
-    // real corporate-eligible stock instead of whatever the catalogue returns
-    // first, which was six arbitrary products.
-    const load = () =>
-      // personalizable=1 is the existing server-side filter. Filtering client-side
-      // did not work: /api/products returns newest-first and all 255 perfumes
-      // were imported last, so a limit of 48 returned nothing brandable.
-      fetch("/api/products?personalizable=1&limit=8")
-        .then((r) => r.json())
-        .then((d) => {
-          const brandable = (d.products || [])
-            .filter((p: any) => p.in_stock && p.image_url)
-            .slice(0, 8)
-            .map((p: any) => ({
-              name: p.name,
-              image_url: optimizeImageUrl(p.image_url, 560) || "",
-              price: p.price,
-              slug: p.slug,
-            }));
-          setOrbitProducts(brandable);
-        })
-        .catch(() => {});
-    load();
-  }, []);
-
-
   return (
     <section 
-      className="dark relative min-h-[80vh] flex items-center overflow-hidden transition-all duration-1000"
-      style={{
-        background: `radial-gradient(ellipse at top, var(--mood-glow, rgba(212,175,55,0.25)) 0%, #1A1A2E 60%, #14080D 100%)`
-      }}
+      className="relative min-h-[90vh] -mt-[130px] flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Ambient orbs */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div 
-          className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full blur-[140px] animate-pulse-soft opacity-30" 
-          style={{ background: "var(--mood-gradient, linear-gradient(135deg, rgba(212,175,55,0.4), rgba(180,60,100,0.3)))" }}
+      {/* ── CINEMATIC BACKGROUND ── */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src="/hero/hero-corporate.webp"
+          alt="Corporate Gifting"
+          decoding="async"
+          fetchPriority="high"
+          className={`w-full h-full object-cover object-center transition-all duration-[5000ms] ease-out ${loaded ? "scale-105" : "scale-100 blur-sm"}`}
         />
-        <div 
-          className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-[120px] animate-pulse-soft opacity-20" 
-          style={{ background: "var(--mood-glow, rgba(212,175,55,0.25))", animationDelay: "1s" }} 
-        />
+        <div className="absolute inset-0 bg-black/60 md:bg-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#14080D]/90 via-transparent to-transparent opacity-90" />
       </div>
 
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-        backgroundSize: "60px 60px",
-      }} />
-
-      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-8 md:py-12 relative z-40">
-        <div className="mb-6">
-          <BackToHome className="text-white/60 hover:text-white transition-colors" />
-        </div>
-        <div className="grid md:grid-cols-2 gap-8 xl:gap-16 items-center max-w-[1800px] mx-auto">
-
-          {/* Left: Copy & CTA */}
-          <div className="w-full text-left">
-            {/* Typewriter promise badge */}
-            <div className={`inline-flex flex-col items-start bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 mb-6 border border-white/10 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
-              <span className="text-[10px] md:text-[11px] uppercase tracking-[0.35em] text-gold/80 mb-1 font-bold">
-                Corporate Gifting
-              </span>
-              <div className="flex items-center gap-2 text-sm md:text-[15px] text-white/90 font-medium tracking-tight min-h-[1.5rem] leading-snug">
-                <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
-                <span className="whitespace-normal tracking-tight">
-                  {messages[msgIdx]}
-                  <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-0.5 animate-pulse" />
-                </span>
-              </div>
-            </div>
-
-            {/* Headline */}
-            <h1 className={`font-display font-bold text-white leading-[0.95] mb-6 transition-all duration-1000 delay-200 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(2.5rem, 5vw + 1rem, 4.5rem)" }}
-            >
-              <span className="relative inline-block py-1">
-                Turn Milestones into Moments That Build
-                <br />
-                <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
-                  Lasting Loyalty.
-                </span>
-              </span>
-            </h1>
-
-            {/* Subheadline */}
-            <p className={`text-white/80 max-w-xl mb-8 leading-relaxed transition-all duration-1000 delay-400 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
-              style={{ fontSize: "clamp(1rem, 1.5vw + 0.25rem, 1.15rem)" }}
-            >
-              Effortlessly recognize your team and appreciate your clients with curated hampers. We handle the logistics—from single sends to bulk CSV uploads.
-            </p>
-
-            {/* CTAs */}
-            <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-              <Link
-                href="/corporate/build"
-                className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-2xl text-lg overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1 w-full sm:w-auto text-center"
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  Build a Corporate Hamper
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </Link>
-              <a
-                href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27m%20interested%20in%20corporate%20gifting"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-2xl text-lg border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  Talk to Us
-                  <MessageSquare className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
-                </span>
-              </a>
-            </div>
-
-
+      {/* ── FOREGROUND CONTENT ── */}
+      <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-[130px] md:pt-[140px] pb-10 relative z-30 flex-1 flex flex-col justify-center">
+        <div className="flex flex-col items-start max-w-3xl text-left">
+          
+          {/* Eyebrow */}
+          <div className={`flex items-center gap-3 mb-4 transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <div className="h-[1px] w-8 md:w-12 bg-gold"></div>
+            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-gold font-bold">
+              Corporate Gifting
+            </span>
           </div>
 
-          {/* Right: live catalogue. This column was an empty placeholder, so the
-              hero was half-empty on every desktop screen — and the products were
-              already being fetched for exactly this slot, then never rendered.
-              Same marquee mechanics as the homepage: one track, content doubled,
-              translateY(-50%). */}
-          <div className={`hidden lg:flex items-stretch gap-4 transition-all duration-1000 delay-300 ${loaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-16"}`}>
-            {[0, 1].map((col) => {
-              const items = orbitProducts.length
-                ? [...orbitProducts, ...orbitProducts]
-                : Array.from({ length: 4 }).map(() => null);
-              return (
-                <div key={col} className="w-[248px] xl:w-[288px] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04]">
-                  <div
-                    className={`flex flex-col gap-3 p-3 ${
-                      col === 0 ? "animate-marquee-vertical" : "animate-marquee-vertical-reverse"
-                    } group-hover:[animation-play-state:paused]`}
-                    style={{ animationDuration: "38s" }}
-                  >
-                    {items.map((p, i) =>
-                      p ? (
-                        <Link
-                          key={`${p.slug}-${i}`}
-                          href={`/product/${p.slug}`}
-                          className="group/card relative block overflow-hidden rounded-2xl bg-white/5 border border-white/10 hover:border-gold/40 transition-colors"
-                        >
-                          <div className="relative aspect-square overflow-hidden">
-                            <Image
-                              src={p.image_url}
-                              alt={p.name}
-                              fill
-                              sizes="288px"
-                              className="object-cover transition-transform duration-700 group-hover/card:scale-105"
-                            />
-                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/55 backdrop-blur-sm text-[9px] font-bold uppercase tracking-wider text-gold border border-gold/30">
-                              Logo-ready
-                            </span>
-                          </div>
-                          <div className="px-3 py-2">
-                            <p className="text-[11px] font-semibold text-white/90 leading-tight line-clamp-2 min-h-[28px]">
-                              {p.name}
-                            </p>
-                            <p className="text-[11px] text-gold font-bold mt-1">
-                              {formatKsh(p.price)}
-                            </p>
-                          </div>
-                        </Link>
-                      ) : (
-                        <div key={`sk-${i}`} className="rounded-2xl bg-white/5 border border-white/5 animate-pulse aspect-[4/5]" />
-                      )
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+          {/* Main headline */}
+          <h1 className={`font-display font-bold text-white leading-[1.05] md:leading-[1.1] mb-6 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
+            style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
+          >
+            <span className="relative inline-block drop-shadow-xl">
+              Make business feel<br />
+              <span className="text-gold italic font-light pr-2">personal.</span>
+            </span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className={`text-white/80 max-w-xl mb-8 leading-relaxed md:text-lg transition-all duration-1000 delay-700 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            Effortlessly recognize your team and appreciate your clients with beautifully curated hampers. We handle the logistics—from single sends to bulk CSV uploads.
+          </p>
+
+          {/* Typewriter Trust Badge */}
+          <div className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 mb-8 border border-white/10 transition-all duration-1000 delay-900 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <span className="w-2 h-2 bg-success rounded-full animate-pulse flex-shrink-0" />
+            <span className="text-sm text-white/90 font-medium tracking-tight whitespace-nowrap min-w-[220px]">
+              {messages[msgIdx]}
+              <span className="inline-block w-[1px] h-4 align-middle bg-white/70 ml-1 animate-pulse" />
+            </span>
           </div>
+
+          {/* CTAs */}
+          <div className={`flex flex-col sm:flex-row items-center gap-4 transition-all duration-1000 delay-1000 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+            <Link
+              href="/corporate/build"
+              className="group relative px-8 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold rounded-full text-[15px] overflow-hidden transition-all duration-300 hover:shadow-gold hover:-translate-y-1 w-full sm:w-auto text-center"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                Build a Corporate Hamper
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            </Link>
+            <a
+              href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27m%20interested%20in%20corporate%20gifting"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group px-8 py-4 bg-black/40 backdrop-blur-sm text-white font-semibold rounded-full text-[15px] border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center"
+            >
+              <span className="flex items-center justify-center gap-2">
+                Talk to Us
+                <MessageSquare className="w-4 h-4 text-gold group-hover:scale-110 transition-transform" />
+              </span>
+            </a>
+          </div>
+
         </div>
       </div>
-
-      {/* Inline keyframes */}
-      <style jsx global>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-      `}</style>
     </section>
   );
 }
@@ -922,10 +812,23 @@ function CorporateCTA() {
 /* ══════════════════════════════════════════════════════════
    EXPORT — Full corporate landing page
    ══════════════════════════════════════════════════════════ */
-export default function CorporateLanding() {
+export default function CorporateLanding({ products }: { products?: React.ReactNode }) {
   return (
     <div>
       <CorporateHero />
+      {products && (
+        <section className="py-20 section-theme-a">
+          <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 mb-8 md:mb-12">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-theme-heading text-center">
+              Curated for Corporate
+            </h2>
+            <p className="text-theme-body text-center mt-4 max-w-2xl mx-auto">
+              A selection of our most loved gifts, ready to be branded, wrapped, and delivered across Kenya.
+            </p>
+          </div>
+          {products}
+        </section>
+      )}
       <CorporateProblem />
       <CorporateSolution />
       <CorporateUseCases />
