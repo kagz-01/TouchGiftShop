@@ -186,9 +186,9 @@ export default function HamperBuilder() {
   };
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border sticky top-0 z-40">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40 sticky top-0 z-40">
         <div className="page-container-capped py-4">
           <div className="flex items-center justify-between mb-4">
             <Link href="/corporate" className="text-brand-muted hover:text-brand text-sm flex items-center gap-1">
@@ -218,8 +218,8 @@ export default function HamperBuilder() {
                     s.id === step
                       ? "bg-brand text-white shadow-ribbon"
                       : s.id < step
-                      ? "bg-success/10 text-success cursor-pointer hover:bg-success/20"
-                      : "bg-white/60 text-brand-muted cursor-not-allowed shadow-sm border border-surface-border/50"
+                      ? "bg-success/10 text-emerald-400 cursor-pointer hover:bg-success/20"
+                      : "bg-white/60 text-brand-muted cursor-not-allowed shadow-sm border border-white/10/50"
                   }`}
                 >
                   <span className="text-base">{s.id < step ? "✓" : s.icon}</span>
@@ -250,7 +250,7 @@ export default function HamperBuilder() {
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   !budgetMode && !selectedTemplate
                     ? "bg-brand text-white"
-                    : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                    : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
                 }`}
               >
                 <Layout className="w-4 h-4" /> Start from Template
@@ -259,9 +259,9 @@ export default function HamperBuilder() {
                 onClick={() => { setSelectedTemplate(null); setBudgetMode(false); }}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   !budgetMode && !selectedTemplate
-                    ? "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted"
+                    ? "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted"
                     : budgetMode
-                    ? "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted"
+                    ? "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted"
                     : "bg-brand text-white"
                 }`}
               >
@@ -272,7 +272,7 @@ export default function HamperBuilder() {
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   budgetMode
                     ? "bg-brand text-white"
-                    : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                    : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
                 }`}
               >
                 <Target className="w-4 h-4" /> Budget Mode
@@ -286,14 +286,14 @@ export default function HamperBuilder() {
 
             {/* Show selected template summary */}
             {selectedTemplate && (
-              <div className="bg-brand/5 border border-brand/20 shape-premium-card p-4 flex items-center justify-between">
+              <div className="bg-violet-500/10 border border-violet-400/20 shape-premium-card p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 bg-gradient-to-br ${selectedTemplate.gradient} shape-premium-card flex items-center justify-center text-white`}>
                     {selectedTemplate.icon}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-theme-heading">{selectedTemplate.name}</p>
-                    <p className="text-xs text-theme-muted">{selectedTemplate.priceRange} · {selectedTemplate.itemCount} items</p>
+                    <p className="text-sm font-semibold text-white">{selectedTemplate.name}</p>
+                    <p className="text-xs text-white/60">{selectedTemplate.priceRange} · {selectedTemplate.itemCount} items</p>
                   </div>
                 </div>
                 <button
@@ -327,7 +327,7 @@ export default function HamperBuilder() {
                       className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
                         selectedCategory === cat.slug
                           ? "bg-brand text-white"
-                          : "bg-white/80 backdrop-blur-sm border border-surface-border text-brand-muted hover:border-brand/30 shadow-sm"
+                          : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
                       }`}
                     >
                       {cat.label}
@@ -339,7 +339,7 @@ export default function HamperBuilder() {
             {loading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm animate-pulse">
+                  <div key={i} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg animate-pulse">
                     <div className="aspect-square bg-gray-100 shape-premium-card mb-3" />
                     <div className="h-4 bg-gray-100 rounded w-3/4 mb-2" />
                     <div className="h-3 bg-gray-100 rounded w-1/2" />
@@ -355,7 +355,7 @@ export default function HamperBuilder() {
                     <div
                       key={product.id}
                       onClick={() => toggleProduct(product)}
-                      className={`relative bg-white/80 backdrop-blur-sm shape-premium-card p-4 border-2 cursor-pointer transition-all duration-300 hover:shadow-card-hover shadow-sm ${
+                      className={`relative bg-white/5 backdrop-blur-md shape-premium-card p-4 border-2 cursor-pointer transition-all duration-300 hover:border-white/20 shadow-sm ${
                         selected ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"
                       }`}
                     >
@@ -376,19 +376,19 @@ export default function HamperBuilder() {
                       <h3 className="font-semibold text-sm mb-1 line-clamp-2">{product.name}</h3>
                       <p className="text-brand font-bold text-sm">KSh {product.price.toLocaleString()}</p>
                       {selected && item && (
-                        <div className="mt-3 flex items-center justify-between bg-brand/5 rounded-lg px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="mt-3 flex items-center justify-between bg-violet-500/10 rounded-lg px-3 py-2" onClick={(e) => e.stopPropagation()}>
                           <span className="text-xs text-brand-muted">Qty per hamper</span>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateQuantity(product.id, item.quantity - 1)}
-                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-brand/10"
+                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-violet-500/20"
                             >
                               -
                             </button>
                             <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(product.id, item.quantity + 1)}
-                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-brand/10"
+                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-violet-500/20"
                             >
                               +
                             </button>
@@ -405,7 +405,7 @@ export default function HamperBuilder() {
 
             {/* Hamper summary */}
             {hamperItems.length > 0 && (
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg sticky bottom-20 md:bottom-4 z-30">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold">{hamperItems.length} item{hamperItems.length !== 1 ? "s" : ""} in hamper</p>
@@ -436,7 +436,7 @@ export default function HamperBuilder() {
               <button
                 onClick={() => setCsvMode(false)}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
-                  !csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
+                  !csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-brand-muted"
                 }`}
               >
                 <PenLine className="w-4 h-4 inline-block mr-1" /> Add Manually
@@ -444,7 +444,7 @@ export default function HamperBuilder() {
               <button
                 onClick={() => setCsvMode(true)}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
-                  csvMode ? "bg-brand text-white" : "bg-white border border-surface-border text-brand-muted"
+                  csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-brand-muted"
                 }`}
               >
                 <ClipboardList className="w-4 h-4 inline-block mr-1" /> Upload CSV
@@ -452,7 +452,7 @@ export default function HamperBuilder() {
             </div>
 
             {csvMode ? (
-              <div className="bg-white shape-premium-card p-6 border border-surface-border space-y-4">
+              <div className="bg-white shape-premium-card p-6 border border-white/10 space-y-4">
                 <div>
                   <p className="text-sm font-semibold mb-2">Paste CSV data</p>
                   <p className="text-xs text-brand-muted mb-3">
@@ -468,7 +468,7 @@ Peter Odhiambo, 0755555555`}
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
                   placeholder={`name, phone, note\nJohn Kamau, 0712345678, Happy birthday!\nJane Wanjiku, 0798765432`}
-                  className="w-full h-40 bg-white/50 border border-surface-border shape-premium-card p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
+                  className="w-full h-40 bg-white/50 border border-white/10 shape-premium-card p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
                 />
                 <button
                   onClick={parseCsv}
@@ -480,7 +480,7 @@ Peter Odhiambo, 0755555555`}
             ) : (
               <div className="space-y-3">
                 {recipients.map((recipient, index) => (
-                  <div key={index} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm">
+                  <div key={index} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm font-semibold">Recipient {index + 1}</span>
                       {recipients.length > 1 && (
@@ -498,14 +498,14 @@ Peter Odhiambo, 0755555555`}
                         placeholder="Full name *"
                         value={recipient.name}
                         onChange={(e) => updateRecipient(index, "name", e.target.value)}
-                        className="bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                       <input
                         type="tel"
                         placeholder="Phone number (07XX) *"
                         value={recipient.phone}
                         onChange={(e) => updateRecipient(index, "phone", e.target.value)}
-                        className="bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                       />
                     </div>
                     <input
@@ -513,7 +513,7 @@ Peter Odhiambo, 0755555555`}
                       placeholder="Personal note (optional)"
                       value={recipient.note}
                       onChange={(e) => updateRecipient(index, "note", e.target.value)}
-                      className="w-full mt-3 bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                      className="w-full mt-3 bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                     />
                   </div>
                 ))}
@@ -521,20 +521,20 @@ Peter Odhiambo, 0755555555`}
             )}
 
             {/* Summary + nav */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{recipients.filter((r) => r.name && r.phone).length} recipient(s)</p>
                   <p className="text-brand-muted text-xs">KSh {hamperTotal.toLocaleString()} × {recipients.filter((r) => r.name && r.phone).length} = KSh {orderTotal.toLocaleString()}</p>
                   {bulkDiscount > 0 && (
-                    <p className="text-success text-xs font-semibold">{bulkDiscount * 100}% bulk discount applied!</p>
+                    <p className="text-emerald-400 text-xs font-semibold">{bulkDiscount * 100}% bulk discount applied!</p>
                   )}
                 </div>
                 <div className="flex gap-2 items-center">
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-brand/20"
+                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-violet-400/20"
                     >
                       + Add Recipient
                     </button>
@@ -548,7 +548,7 @@ Peter Odhiambo, 0755555555`}
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-brand/20"
+                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-violet-400/20"
                       aria-label="Add Recipient"
                     >
                       +
@@ -575,7 +575,7 @@ Peter Odhiambo, 0755555555`}
               <p className="text-brand-muted text-sm">Add your company branding and personal touches.</p>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border space-y-6 shadow-sm">
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 space-y-6 shadow-sm">
               {/* Company name */}
               <div>
                 <label className="block text-sm font-semibold mb-2">Company Name (for gift card)</label>
@@ -584,7 +584,7 @@ Peter Odhiambo, 0755555555`}
                   placeholder="e.g. Acme Technologies Ltd"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  className="w-full bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
                 />
               </div>
 
@@ -596,7 +596,7 @@ Peter Odhiambo, 0755555555`}
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
                   rows={3}
-                  className="w-full bg-white/50 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  className="w-full bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
                 />
                 <p className="text-xs text-brand-muted mt-1">{customMessage.length}/200 characters</p>
               </div>
@@ -615,7 +615,7 @@ Peter Odhiambo, 0755555555`}
                       onClick={() => setGiftWrap(wrap.id)}
                       className={`p-4 shape-premium-card border-2 text-center transition-all ${
                         giftWrap === wrap.id
-                          ? "border-brand bg-brand/5 shadow-ribbon"
+                          ? "border-brand bg-violet-500/10 shadow-ribbon"
                           : "border-surface-border hover:border-brand/30"
                       }`}
                     >
@@ -629,7 +629,7 @@ Peter Odhiambo, 0755555555`}
             </div>
 
             {/* Brand Studio */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
               <BrandStudio
                 companyName={companyName}
                 logo={brandLogo}
@@ -651,7 +651,7 @@ Peter Odhiambo, 0755555555`}
             />
 
             {/* Summary + nav */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm sticky bottom-20 md:bottom-4 z-30">
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg sticky bottom-20 md:bottom-4 z-30">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">Order Summary</p>
@@ -659,7 +659,7 @@ Peter Odhiambo, 0755555555`}
                     {hamperItems.length} item(s) × {recipients.filter((r) => r.name && r.phone).length} recipients
                   </p>
                   {bulkDiscount > 0 && (
-                    <p className="text-success text-xs font-semibold">{bulkDiscount * 100}% bulk discount!</p>
+                    <p className="text-emerald-400 text-xs font-semibold">{bulkDiscount * 100}% bulk discount!</p>
                   )}
                 </div>
                 <div className="flex gap-2">
@@ -690,7 +690,7 @@ Peter Odhiambo, 0755555555`}
             </div>
 
             {/* Order breakdown */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border space-y-6 shadow-sm">
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 space-y-6 shadow-sm">
               {/* Items */}
               <div>
                 <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
@@ -728,7 +728,7 @@ Peter Odhiambo, 0755555555`}
                   <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                     <span className="text-lg">🎨</span> Customization
                   </h3>
-                  <div className="bg-white/50 border border-surface-border shape-premium-card p-4 space-y-2 text-sm">
+                  <div className="bg-white/50 border border-white/10 shape-premium-card p-4 space-y-2 text-sm">
                     {companyName && <p><span className="text-brand-muted">Company:</span> {companyName}</p>}
                     {customMessage && <p><span className="text-brand-muted">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
                     {giftWrap !== "standard" && (
@@ -765,19 +765,19 @@ Peter Odhiambo, 0755555555`}
                   <span>KSh {orderTotal.toLocaleString()}</span>
                 </div>
                 {bulkDiscount > 0 && (
-                  <div className="flex justify-between text-gold">
+                  <div className="flex justify-between text-amber-400">
                     <span>Bulk discount ({bulkDiscount * 100}%)</span>
                     <span>-KSh {(orderTotal * bulkDiscount).toLocaleString()}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span className="text-white/60">Delivery</span>
-                  <span className="text-success">FREE (Nairobi)</span>
+                  <span className="text-emerald-400">FREE (Nairobi)</span>
                 </div>
               </div>
               <div className="flex justify-between items-center pt-4 border-t border-white/10">
                 <p className="text-lg font-bold">Total</p>
-                <p className="text-2xl font-display italic font-bold text-gold">KSh {discountedTotal.toLocaleString()}</p>
+                <p className="text-2xl font-display italic font-bold text-amber-400">KSh {discountedTotal.toLocaleString()}</p>
               </div>
             </div>
 

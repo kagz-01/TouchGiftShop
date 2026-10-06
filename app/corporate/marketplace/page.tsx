@@ -74,19 +74,19 @@ export default function B2B2CMarketplace() {
   });
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="font-display italic text-2xl font-bold">Corporate Gift Marketplace</h1>
-              <p className="text-theme-muted text-sm">Discover curated gifts from verified vendors across Kenya.</p>
+              <p className="text-white/60 text-sm">Discover curated gifts from verified vendors across Kenya.</p>
             </div>
             <button
               onClick={() => setShowVendors(!showVendors)}
               className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
-                showVendors ? "bg-brand text-white" : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
+                showVendors ? "bg-brand text-white" : "bg-white/80 border border-white/10 text-white/60 hover:border-brand/30"
               }`}
             >
               <Store className="w-4 h-4" /> Vendors ({vendors.length})
@@ -96,19 +96,19 @@ export default function B2B2CMarketplace() {
           {/* Search & filters */}
           <div className="flex gap-3 mb-6">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-muted" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" />
               <input
                 type="text"
                 placeholder="Search gifts, vendors, categories..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-white/80 border border-surface-border shape-premium-card text-sm text-theme-heading placeholder:text-theme-muted/50 focus:outline-none focus:border-brand/30"
+                className="w-full pl-10 pr-4 py-3 bg-white/80 border border-white/10 shape-premium-card text-sm text-white placeholder:text-white/60/50 focus:outline-none focus:border-brand/30"
               />
             </div>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-4 py-3 bg-white/80 border border-surface-border shape-premium-card text-sm text-theme-heading"
+              className="px-4 py-3 bg-white/80 border border-white/10 shape-premium-card text-sm text-white"
             >
               <option value="popular">Most Popular</option>
               <option value="price">Price: Low to High</option>
@@ -126,7 +126,7 @@ export default function B2B2CMarketplace() {
                 className={`px-4 py-2 shape-premium-button text-xs font-semibold whitespace-nowrap transition-all ${
                   category === cat
                     ? "bg-brand text-white"
-                    : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
+                    : "bg-white/80 border border-white/10 text-white/60 hover:border-brand/30"
                 }`}
               >
                 {cat}
@@ -140,39 +140,39 @@ export default function B2B2CMarketplace() {
         {/* Vendors section */}
         {showVendors && (
           <div className="mb-8">
-            <h2 className="text-lg font-display font-bold italic text-theme-heading mb-4">Verified Vendors</h2>
+            <h2 className="text-lg font-display font-bold italic text-white mb-4">Verified Vendors</h2>
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-white/80 shape-premium-card p-5 border border-surface-border animate-pulse h-40" />
+                  <div key={i} className="bg-white/80 shape-premium-card p-5 border border-white/10 animate-pulse h-40" />
                 ))}
               </div>
             ) : vendors.length === 0 ? (
-              <div className="bg-white/80 shape-premium-card p-8 border border-surface-border text-center">
+              <div className="bg-white/80 shape-premium-card p-8 border border-white/10 text-center">
                 <Store className="w-10 h-10 text-brand/30 mx-auto mb-3" />
-                <p className="text-theme-muted text-sm">No vendors yet. Vendors can apply to join the marketplace.</p>
+                <p className="text-white/60 text-sm">No vendors yet. Vendors can apply to join the marketplace.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {vendors.map((vendor) => (
-                  <div key={vendor.id} className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm hover:shadow-card transition-all group">
+                  <div key={vendor.id} className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg hover:shadow-lg transition-all group">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="font-semibold text-theme-heading group-hover:text-gold transition-colors">{vendor.business_name}</h3>
-                        <p className="text-xs text-theme-muted flex items-center gap-1 mt-0.5">
+                        <h3 className="font-semibold text-white group-hover:text-gold transition-colors">{vendor.business_name}</h3>
+                        <p className="text-xs text-white/60 flex items-center gap-1 mt-0.5">
                           <MapPin className="w-3 h-3" /> {vendor.location}
                         </p>
                       </div>
-                      <div className="flex items-center gap-1 text-gold">
+                      <div className="flex items-center gap-1 text-amber-400">
                         <Star className="w-3 h-3 fill-current" />
                         <span className="text-xs font-semibold">{vendor.rating?.toFixed(1) || "New"}</span>
                       </div>
                     </div>
-                    <p className="text-xs text-theme-muted mb-3 line-clamp-2">{vendor.description}</p>
-                    <div className="flex items-center gap-3 text-[10px] text-theme-muted">
+                    <p className="text-xs text-white/60 mb-3 line-clamp-2">{vendor.description}</p>
+                    <div className="flex items-center gap-3 text-[10px] text-white/60">
                       <span className="flex items-center gap-1"><Package className="w-3 h-3" /> {vendor.product_count} products</span>
                       <span className="flex items-center gap-1"><Truck className="w-3 h-3" /> {vendor.delivery_time}</span>
-                      <span className="flex items-center gap-1"><Shield className="w-3 h-3 text-success" /> Verified</span>
+                      <span className="flex items-center gap-1"><Shield className="w-3 h-3 text-emerald-400" /> Verified</span>
                     </div>
                   </div>
                 ))}
@@ -182,38 +182,38 @@ export default function B2B2CMarketplace() {
         )}
 
         {/* Products */}
-        <h2 className="text-lg font-display font-bold italic text-theme-heading mb-4">
+        <h2 className="text-lg font-display font-bold italic text-white mb-4">
           {showVendors ? "All Products" : "Marketplace Products"}
-          <span className="text-sm font-normal text-theme-muted ml-2">({filteredProducts.length})</span>
+          <span className="text-sm font-normal text-white/60 ml-2">({filteredProducts.length})</span>
         </h2>
 
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => (
-              <div key={i} className="bg-white/80 shape-premium-card border border-surface-border animate-pulse">
-                <div className="aspect-square bg-gray-200 rounded-t-2xl" />
+              <div key={i} className="bg-white/80 shape-premium-card border border-white/10 animate-pulse">
+                <div className="aspect-square bg-white/10 rounded-t-2xl" />
                 <div className="p-4 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  <div className="h-4 bg-white/10 rounded w-3/4" />
+                  <div className="h-3 bg-white/10 rounded w-1/2" />
                 </div>
               </div>
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="bg-white/80 shape-premium-card p-12 border border-surface-border text-center">
+          <div className="bg-white/80 shape-premium-card p-12 border border-white/10 text-center">
             <Package className="w-12 h-12 text-brand/20 mx-auto mb-4" />
-            <p className="text-theme-heading font-semibold mb-1">No products found</p>
-            <p className="text-sm text-theme-muted">Try a different search or category.</p>
+            <p className="text-white font-semibold mb-1">No products found</p>
+            <p className="text-sm text-white/60">Try a different search or category.</p>
           </div>
         ) : view === "grid" ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-white/80 backdrop-blur-sm shape-premium-card border border-surface-border shadow-sm hover:shadow-card transition-all group overflow-hidden">
-                <div className="relative aspect-square bg-gray-50 dark:bg-white/5 overflow-hidden">
+              <div key={product.id} className="bg-white/5 backdrop-blur-md shape-premium-card border border-white/10 shadow-sm hover:shadow-lg transition-all group overflow-hidden">
+                <div className="relative aspect-square bg-white/5 overflow-hidden">
                   {product.image_url ? (
                     <Image src={product.image_url} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-brand/5">
+                    <div className="w-full h-full flex items-center justify-center bg-violet-500/10">
                       <Package className="w-10 h-10 text-brand/20" />
                     </div>
                   )}
@@ -224,17 +224,17 @@ export default function B2B2CMarketplace() {
                   )}
                 </div>
                 <div className="p-4">
-                  <p className="text-[10px] text-theme-muted mb-1">{product.vendor_name}</p>
-                  <h3 className="text-sm font-semibold text-theme-heading line-clamp-1 group-hover:text-gold transition-colors">{product.name}</h3>
+                  <p className="text-[10px] text-white/60 mb-1">{product.vendor_name}</p>
+                  <h3 className="text-sm font-semibold text-white line-clamp-1 group-hover:text-gold transition-colors">{product.name}</h3>
                   <div className="flex items-center gap-1 text-gold mt-1">
                     <Star className="w-3 h-3 fill-current" />
                     <span className="text-[10px] font-semibold">{product.rating?.toFixed(1) || "New"}</span>
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <p className="text-sm font-bold text-brand">{formatKsh(product.price)}</p>
+                      <p className="text-sm font-bold text-violet-400">{formatKsh(product.price)}</p>
                       {product.bulk_price && (
-                        <p className="text-[10px] text-success">Bulk: {formatKsh(product.bulk_price)} ({product.bulk_min}+)</p>
+                        <p className="text-[10px] text-emerald-400">Bulk: {formatKsh(product.bulk_price)} ({product.bulk_min}+)</p>
                       )}
                     </div>
                     <Link href="/corporate/build" className="p-2 bg-brand/10 shape-premium-button hover:bg-brand hover:text-white text-brand transition-all">
@@ -248,28 +248,28 @@ export default function B2B2CMarketplace() {
         ) : (
           <div className="space-y-3">
             {filteredProducts.map((product) => (
-              <div key={product.id} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm flex gap-4 hover:shadow-card transition-all">
+              <div key={product.id} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg flex gap-4 hover:shadow-lg transition-all">
                 <div className="w-20 h-20 flex-shrink-0 relative rounded-xl overflow-hidden bg-gray-50">
                   {product.image_url ? (
                     <Image src={product.image_url} alt={product.name} fill className="object-cover" sizes="80px" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-brand/5">
+                    <div className="w-full h-full flex items-center justify-center bg-violet-500/10">
                       <Package className="w-6 h-6 text-brand/20" />
                     </div>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[10px] text-theme-muted">{product.vendor_name}</p>
-                  <h3 className="text-sm font-semibold text-theme-heading">{product.name}</h3>
-                  <div className="flex items-center gap-3 mt-1 text-[10px] text-theme-muted">
+                  <p className="text-[10px] text-white/60">{product.vendor_name}</p>
+                  <h3 className="text-sm font-semibold text-white">{product.name}</h3>
+                  <div className="flex items-center gap-3 mt-1 text-[10px] text-white/60">
                     <span className="flex items-center gap-1"><Star className="w-3 h-3 text-gold fill-current" /> {product.rating?.toFixed(1)}</span>
                     <span>{product.category}</span>
-                    {product.free_delivery && <span className="flex items-center gap-1 text-success"><Truck className="w-3 h-3" /> Free</span>}
+                    {product.free_delivery && <span className="flex items-center gap-1 text-emerald-400"><Truck className="w-3 h-3" /> Free</span>}
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-brand">{formatKsh(product.price)}</p>
-                  {product.bulk_price && <p className="text-[10px] text-success">Bulk: {formatKsh(product.bulk_price)}</p>}
+                  <p className="text-sm font-bold text-violet-400">{formatKsh(product.price)}</p>
+                  {product.bulk_price && <p className="text-[10px] text-emerald-400">Bulk: {formatKsh(product.bulk_price)}</p>}
                   <Link href="/corporate/build" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-gold transition-colors">
                     Order <ArrowRight className="w-3 h-3" />
                   </Link>

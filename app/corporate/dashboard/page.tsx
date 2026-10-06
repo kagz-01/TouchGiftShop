@@ -45,29 +45,29 @@ export default function CorporateImpactDashboard() {
   const maxMonthly = Math.max(...(stats?.monthlyActivity?.map(m => m.orders) || [1]));
 
   const metrics = stats ? [
-    { label: "Corporate Orders", value: stats.totalOrders.toLocaleString(), sub: `${stats.monthOrders} this month`, icon: <Package className="w-5 h-5" />, color: "text-gold" },
-    { label: "Gifts Delivered", value: stats.deliveredCount.toLocaleString(), sub: "All time", icon: <Gift className="w-5 h-5" />, color: "text-brand" },
-    { label: "Total Revenue", value: `KSh ${(stats.totalRevenue / 1000).toFixed(0)}K`, sub: "Last 90 days", icon: <DollarSign className="w-5 h-5" />, color: "text-success" },
-    { label: "Active Milestones", value: stats.activeMilestones.toString(), sub: `of ${stats.milestoneRules} total`, icon: <TrendingUp className="w-5 h-5" />, color: "text-violet-500" },
-    { label: "Clients Managed", value: stats.totalClients.toString(), sub: `${stats.platinumClients} platinum`, icon: <Users className="w-5 h-5" />, color: "text-pink-500" },
-    { label: "Active Pools", value: stats.activePools.toString(), sub: `of ${stats.totalPools} total`, icon: <Target className="w-5 h-5" />, color: "text-emerald-500" },
+    { label: "Corporate Orders", value: stats.totalOrders.toLocaleString(), sub: `${stats.monthOrders} this month`, icon: <Package className="w-5 h-5" />, color: "text-amber-400" },
+    { label: "Gifts Delivered", value: stats.deliveredCount.toLocaleString(), sub: "All time", icon: <Gift className="w-5 h-5" />, color: "text-violet-400" },
+    { label: "Total Revenue", value: `KSh ${(stats.totalRevenue / 1000).toFixed(0)}K`, sub: "Last 90 days", icon: <DollarSign className="w-5 h-5" />, color: "text-emerald-400" },
+    { label: "Active Milestones", value: stats.activeMilestones.toString(), sub: `of ${stats.milestoneRules} total`, icon: <TrendingUp className="w-5 h-5" />, color: "text-violet-400" },
+    { label: "Clients Managed", value: stats.totalClients.toString(), sub: `${stats.platinumClients} platinum`, icon: <Users className="w-5 h-5" />, color: "text-pink-400" },
+    { label: "Active Pools", value: stats.activePools.toString(), sub: `of ${stats.totalPools} total`, icon: <Target className="w-5 h-5" />, color: "text-emerald-400" },
   ] : [];
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display italic text-2xl font-bold">Impact Dashboard</h1>
-              <p className="text-theme-muted text-sm">Measure the ROI of your corporate gifting program.</p>
+              <h1 className="font-display italic text-2xl font-bold text-white">Impact Dashboard</h1>
+              <p className="text-white/60 text-sm">Measure the ROI of your corporate gifting program.</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={fetchStats}
                 disabled={loading}
-                className="px-4 py-2 shape-premium-button text-sm font-medium bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30 transition-all flex items-center gap-2"
+                className="px-4 py-2 shape-premium-button text-sm font-medium bg-white/5 border border-white/10 text-white/60 hover:border-violet-400/30 hover:text-white transition-all flex items-center gap-2"
               >
                 <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
                 Refresh
@@ -79,25 +79,25 @@ export default function CorporateImpactDashboard() {
           {loading && !stats ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="bg-white/80 shape-premium-card p-4 border border-surface-border animate-pulse">
-                  <div className="w-8 h-8 bg-gray-200 rounded-lg mb-2" />
-                  <div className="h-6 bg-gray-200 rounded w-16 mb-1" />
-                  <div className="h-3 bg-gray-200 rounded w-24" />
+                <div key={i} className="bg-white/5 shape-premium-card p-4 border border-white/10 animate-pulse">
+                  <div className="w-8 h-8 bg-white/10 rounded-lg mb-2" />
+                  <div className="h-6 bg-white/10 rounded w-16 mb-1" />
+                  <div className="h-3 bg-white/10 rounded w-24" />
                 </div>
               ))}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
               {metrics.map((metric) => (
-                <div key={metric.label} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm hover:shadow-card transition-all">
+                <div key={metric.label} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg hover:border-white/20 transition-all">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className={`w-8 h-8 shape-premium-card flex items-center justify-center bg-gray-50 dark:bg-white/5 ${metric.color}`}>
+                    <div className={`w-8 h-8 shape-premium-card flex items-center justify-center bg-white/5 ${metric.color}`}>
                       {metric.icon}
                     </div>
                   </div>
-                  <p className="text-xl font-bold text-theme-heading">{metric.value}</p>
-                  <p className="text-[10px] text-theme-muted mb-1">{metric.label}</p>
-                  <p className="text-[10px] text-theme-muted">{metric.sub}</p>
+                  <p className="text-xl font-bold text-white">{metric.value}</p>
+                  <p className="text-[10px] text-white/60 mb-1">{metric.label}</p>
+                  <p className="text-[10px] text-white/60">{metric.sub}</p>
                 </div>
               ))}
             </div>
@@ -110,14 +110,14 @@ export default function CorporateImpactDashboard() {
           {/* Main chart area */}
           <div className="lg:col-span-2 space-y-6">
             {/* Monthly activity chart */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-4">Monthly Corporate Orders</h3>
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-4">Monthly Corporate Orders</h3>
               {loading && !stats ? (
                 <div className="space-y-3">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="flex items-center gap-4 animate-pulse">
-                      <div className="w-8 h-4 bg-gray-200 rounded" />
-                      <div className="flex-1 h-6 bg-gray-200 rounded-full" />
+                      <div className="w-8 h-4 bg-white/10 rounded" />
+                      <div className="flex-1 h-6 bg-white/10 rounded-full" />
                     </div>
                   ))}
                 </div>
@@ -125,12 +125,12 @@ export default function CorporateImpactDashboard() {
                 <div className="space-y-3">
                   {(stats?.monthlyActivity || []).map((data) => (
                     <div key={data.month} className="flex items-center gap-4">
-                      <span className="text-xs font-semibold text-theme-muted w-8">{data.month}</span>
+                      <span className="text-xs font-semibold text-white/60 w-8">{data.month}</span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 h-6 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
+                          <div className="flex-1 h-6 bg-white/5 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-brand to-brand-deep rounded-full flex items-center justify-end pr-2 transition-all duration-700"
+                              className="h-full bg-gradient-to-r from-violet-600 to-fuchsia-500 rounded-full flex items-center justify-end pr-2 transition-all duration-700"
                               style={{ width: `${maxMonthly > 0 ? (data.orders / maxMonthly) * 100 : 0}%` }}
                             >
                               {data.orders > 0 && <span className="text-[10px] font-bold text-white">{data.orders}</span>}
@@ -146,8 +146,8 @@ export default function CorporateImpactDashboard() {
 
             {/* Order status breakdown */}
             {stats && (
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
-                <h3 className="text-sm font-semibold text-theme-heading mb-4">Order Pipeline</h3>
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
+                <h3 className="text-sm font-semibold text-white mb-4">Order Pipeline</h3>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   {[
                     { status: "pending_payment", label: "Pending", color: "bg-amber-500" },
@@ -156,10 +156,10 @@ export default function CorporateImpactDashboard() {
                     { status: "dispatched", label: "Dispatched", color: "bg-orange-500" },
                     { status: "delivered", label: "Delivered", color: "bg-emerald-500" },
                   ].map((s) => (
-                    <div key={s.status} className="text-center p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
+                    <div key={s.status} className="text-center p-3 bg-white/5 rounded-xl">
                       <div className={`w-3 h-3 ${s.color} rounded-full mx-auto mb-2`} />
-                      <p className="text-lg font-bold text-theme-heading">{stats.statusCounts[s.status] || 0}</p>
-                      <p className="text-[10px] text-theme-muted">{s.label}</p>
+                      <p className="text-lg font-bold text-white">{stats.statusCounts[s.status] || 0}</p>
+                      <p className="text-[10px] text-white/60">{s.label}</p>
                     </div>
                   ))}
                 </div>
@@ -167,24 +167,24 @@ export default function CorporateImpactDashboard() {
             )}
 
             {/* Quick actions */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-4">Quick Actions</h3>
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-4">Quick Actions</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <Link href="/corporate/build" className="flex items-center gap-3 p-3 bg-gold/5 hover:bg-gold/10 border border-gold/20 rounded-xl transition-all group">
-                  <ShoppingBag className="w-5 h-5 text-gold group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-semibold text-theme-heading">Build Hamper</span>
+                <Link href="/corporate/build" className="flex items-center gap-3 p-3 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-400/40 rounded-xl transition-all group">
+                  <ShoppingBag className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-semibold text-white">Build Hamper</span>
                 </Link>
-                <Link href="/corporate/calendar" className="flex items-center gap-3 p-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl transition-all group">
-                  <Calendar className="w-5 h-5 text-brand group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-semibold text-theme-heading">View Calendar</span>
+                <Link href="/corporate/calendar" className="flex items-center gap-3 p-3 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-400/20 hover:border-violet-400/40 rounded-xl transition-all group">
+                  <Calendar className="w-5 h-5 text-violet-400 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-semibold text-white">View Calendar</span>
                 </Link>
-                <Link href="/corporate/milestones" className="flex items-center gap-3 p-3 bg-violet-500/5 hover:bg-violet-500/10 border border-violet-500/20 rounded-xl transition-all group">
-                  <TrendingUp className="w-5 h-5 text-violet-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-semibold text-theme-heading">Milestones</span>
+                <Link href="/corporate/milestones" className="flex items-center gap-3 p-3 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-400/20 hover:border-violet-400/40 rounded-xl transition-all group">
+                  <TrendingUp className="w-5 h-5 text-violet-400 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-semibold text-white">Milestones</span>
                 </Link>
-                <Link href="/corporate/clients" className="flex items-center gap-3 p-3 bg-pink-500/5 hover:bg-pink-500/10 border border-pink-500/20 rounded-xl transition-all group">
-                  <Users className="w-5 h-5 text-pink-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-semibold text-theme-heading">Clients</span>
+                <Link href="/corporate/clients" className="flex items-center gap-3 p-3 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-400/20 hover:border-pink-400/40 rounded-xl transition-all group">
+                  <Users className="w-5 h-5 text-pink-400 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-semibold text-white">Clients</span>
                 </Link>
               </div>
             </div>
@@ -194,24 +194,24 @@ export default function CorporateImpactDashboard() {
           <div className="space-y-4">
             {/* Status summary */}
             {stats && (
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-                <h3 className="text-sm font-semibold text-theme-heading mb-3">Summary</h3>
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+                <h3 className="text-sm font-semibold text-white mb-3">Summary</h3>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-                    <span className="text-xs text-theme-muted">This Month</span>
-                    <span className="text-sm font-bold text-brand">{stats.monthOrders} orders</span>
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                    <span className="text-xs text-white/60">This Month</span>
+                    <span className="text-sm font-bold text-violet-400">{stats.monthOrders} orders</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-                    <span className="text-xs text-theme-muted">Upcoming Events</span>
-                    <span className="text-sm font-bold text-gold">{stats.monthEvents}</span>
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                    <span className="text-xs text-white/60">Upcoming Events</span>
+                    <span className="text-sm font-bold text-amber-400">{stats.monthEvents}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-                    <span className="text-xs text-theme-muted">Marketplace Vendors</span>
-                    <span className="text-sm font-bold text-success">{stats.totalVendors}</span>
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                    <span className="text-xs text-white/60">Marketplace Vendors</span>
+                    <span className="text-sm font-bold text-emerald-400">{stats.totalVendors}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-xl">
-                    <span className="text-xs text-theme-muted">Delivery Rate</span>
-                    <span className="text-sm font-bold text-emerald-500">
+                  <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                    <span className="text-xs text-white/60">Delivery Rate</span>
+                    <span className="text-sm font-bold text-emerald-400">
                       {stats.totalOrders > 0 ? Math.round((stats.deliveredCount / stats.totalOrders) * 100) : 0}%
                     </span>
                   </div>
@@ -220,20 +220,20 @@ export default function CorporateImpactDashboard() {
             )}
 
             {/* Upcoming links */}
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-3">Corporate Tools</h3>
+            <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-3">Corporate Tools</h3>
               <div className="space-y-2">
                 {[
-                  { href: "/corporate/catalog", icon: <Package className="w-4 h-4" />, label: "Product Catalog", color: "text-gold" },
-                  { href: "/corporate/pools", icon: <Target className="w-4 h-4" />, label: "Gift Pools", color: "text-brand" },
-                  { href: "/corporate/marketplace", icon: <ShoppingBag className="w-4 h-4" />, label: "Marketplace", color: "text-success" },
-                  { href: "/corporate/showroom", icon: <Sparkles className="w-4 h-4" />, label: "Showroom", color: "text-violet-500" },
+                  { href: "/corporate/catalog", icon: <Package className="w-4 h-4" />, label: "Product Catalog", color: "text-amber-400" },
+                  { href: "/corporate/pools", icon: <Target className="w-4 h-4" />, label: "Gift Pools", color: "text-violet-400" },
+                  { href: "/corporate/marketplace", icon: <ShoppingBag className="w-4 h-4" />, label: "Marketplace", color: "text-emerald-400" },
+                  { href: "/corporate/showroom", icon: <Sparkles className="w-4 h-4" />, label: "Showroom", color: "text-violet-400" },
                   { href: "/corporate/whitelabel", icon: <Building2 className="w-4 h-4" />, label: "White-Label", color: "text-cyan-400" },
                 ].map((link) => (
-                  <Link key={link.href} href={link.href} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg transition-all group">
+                  <Link key={link.href} href={link.href} className="flex items-center gap-3 p-2 hover:bg-white/5 rounded-lg transition-all group">
                     <span className={link.color}>{link.icon}</span>
-                    <span className="text-xs font-medium text-theme-heading group-hover:text-gold transition-colors">{link.label}</span>
-                    <ArrowUpRight className="w-3 h-3 text-theme-muted ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <span className="text-xs font-medium text-white group-hover:text-white transition-colors">{link.label}</span>
+                    <ArrowUpRight className="w-3 h-3 text-white/60 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                   </Link>
                 ))}
               </div>

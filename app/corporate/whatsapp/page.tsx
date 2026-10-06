@@ -412,22 +412,22 @@ export default function WhatsAppBotPage() {
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display italic text-2xl font-bold text-gold">WhatsApp Bot</h1>
+              <h1 className="font-display italic text-2xl font-bold text-amber-400">WhatsApp Bot</h1>
               <p className="text-white/60 text-sm">Automate gift notifications, reminders, and contributions via WhatsApp.</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              <span className="text-sm text-success font-semibold">Connected</span>
+              <span className="text-sm text-emerald-400 font-semibold">Connected</span>
             </div>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-5 h-5" />, color: "text-emerald-500" },
-              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-brand" },
-              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-violet-500" },
-              { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-5 h-5" />, color: "text-gold" },
+              { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-5 h-5" />, color: "text-emerald-400" },
+              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-5 h-5" />, color: "text-amber-400" },
             ].map((stat) => (
               <div key={stat.label} className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">
                 <div className="flex items-center gap-3">
@@ -480,7 +480,7 @@ export default function WhatsAppBotPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      flow.is_enabled ? "bg-gold/10 text-gold" : "bg-white/5 text-white/40"
+                      flow.is_enabled ? "bg-gold/10 text-amber-400" : "bg-white/5 text-white/40"
                     }`}>
                       <MessageSquare className="w-5 h-5" />
                     </div>
@@ -528,7 +528,7 @@ export default function WhatsAppBotPage() {
         {/* ═══ LIVE DEMO ═══ */}
         {activeTab === "demo" && (
           <div className="max-w-md mx-auto">
-            <div className="bg-[#ECE5DD] dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-surface-border">
+            <div className="bg-[#ECE5DD] dark:bg-gray-800 rounded-2xl overflow-hidden shadow-lg border border-white/10">
               {/* Chat header */}
               <div className="bg-[#075E54] text-white px-4 py-3 flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 shape-premium-button flex items-center justify-center">
@@ -596,7 +596,7 @@ export default function WhatsAppBotPage() {
               </div>
             </div>
 
-            <p className="text-center text-xs text-theme-muted mt-4">
+            <p className="text-center text-xs text-white/60 mt-4">
               This is a simulated WhatsApp conversation showing how the bot works.
             </p>
           </div>
@@ -617,7 +617,7 @@ export default function WhatsAppBotPage() {
               </div>
 
               {settingsSaved && (
-                <div className="p-3 bg-success/10 border border-success/20 rounded-xl text-sm text-success font-semibold">
+                <div className="p-3 bg-success/10 border border-success/20 rounded-xl text-sm text-emerald-400 font-semibold">
                   Settings saved successfully!
                 </div>
               )}
@@ -645,17 +645,17 @@ export default function WhatsAppBotPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex items-center gap-3">
-                    <Smartphone className="w-5 h-5 text-emerald-500" />
+                    <Smartphone className="w-5 h-5 text-emerald-400" />
                     <div>
                       <p className="text-sm font-semibold text-white">WhatsApp Business API</p>
-                      <p className="text-xs text-success font-semibold">Connected</p>
+                      <p className="text-xs text-emerald-400 font-semibold">Connected</p>
                     </div>
                   </div>
                   <span className="text-xs text-white/60">Phone: +254 142 677 898</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-gold" />
+                    <Shield className="w-5 h-5 text-amber-400" />
                     <div>
                       <p className="text-sm font-semibold text-white">Webhook URL</p>
                       <p className="text-xs text-white/60 font-mono">https://api.touchgift.co.ke/webhook/whatsapp</p>
@@ -687,7 +687,7 @@ export default function WhatsAppBotPage() {
             {/* Header */}
             <div className="sticky top-0 bg-[#14080D]/90 backdrop-blur-md px-6 py-4 border-b border-white/10 flex items-center justify-between z-10">
               <div>
-                <h2 className="font-display italic text-lg font-bold text-gold">Edit Flow</h2>
+                <h2 className="font-display italic text-lg font-bold text-amber-400">Edit Flow</h2>
                 <p className="text-xs text-white/60">Customize the message template for this flow</p>
               </div>
               <button onClick={() => setEditingFlow(null)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">

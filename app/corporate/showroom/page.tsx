@@ -68,14 +68,14 @@ export default function VirtualShowroom() {
   };
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-display italic text-2xl font-bold">Virtual Showroom</h1>
-              <p className="text-theme-muted text-sm">Explore our corporate gift collection in an interactive 3D experience.</p>
+              <p className="text-white/60 text-sm">Explore our corporate gift collection in an interactive 3D experience.</p>
             </div>
             <Link
               href="/corporate/build"
@@ -91,7 +91,7 @@ export default function VirtualShowroom() {
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <div className="bg-white/80 shape-premium-card border border-surface-border aspect-square animate-pulse flex items-center justify-center">
+              <div className="bg-white/80 shape-premium-card border border-white/10 aspect-square animate-pulse flex items-center justify-center">
                 <RefreshCw className="w-8 h-8 text-brand animate-spin" />
               </div>
             </div>
@@ -103,7 +103,7 @@ export default function VirtualShowroom() {
         ) : products.length === 0 ? (
           <div className="text-center py-20">
             <Gift className="w-12 h-12 text-brand/30 mx-auto mb-4" />
-            <p className="text-theme-muted">No products available yet.</p>
+            <p className="text-white/60">No products available yet.</p>
             <Link href="/corporate/catalog" className="text-brand text-sm font-semibold mt-2 inline-block hover:underline">
               Browse Catalog →
             </Link>
@@ -112,23 +112,23 @@ export default function VirtualShowroom() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* 3D Viewer */}
             <div className="lg:col-span-2">
-              <div className="bg-white/80 backdrop-blur-sm shape-premium-card border border-surface-border shadow-sm overflow-hidden">
+              <div className="bg-white/5 backdrop-blur-md shape-premium-card border border-white/10 shadow-sm overflow-hidden">
                 {/* Viewer controls */}
                 <div className="flex items-center justify-between p-4 border-b border-surface-border">
                   <div className="flex items-center gap-2">
-                    <button onClick={prevProduct} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 shape-premium-card transition-colors">
-                      <ChevronLeft className="w-5 h-5 text-theme-muted" />
+                    <button onClick={prevProduct} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
+                      <ChevronLeft className="w-5 h-5 text-white/60" />
                     </button>
-                    <span className="text-sm font-semibold text-theme-heading">{product.name}</span>
-                    <button onClick={nextProduct} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 shape-premium-card transition-colors">
-                      <ChevronRight className="w-5 h-5 text-theme-muted" />
+                    <span className="text-sm font-semibold text-white">{product.name}</span>
+                    <button onClick={nextProduct} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
+                      <ChevronRight className="w-5 h-5 text-white/60" />
                     </button>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setViewAngle((prev) => (prev - 30 + 360) % 360)} className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 shape-premium-card transition-colors" title="Rotate left">
-                      <RotateCcw className="w-4 h-4 text-theme-muted" />
+                    <button onClick={() => setViewAngle((prev) => (prev - 30 + 360) % 360)} className="p-2 hover:bg-white/10 shape-premium-card transition-colors" title="Rotate left">
+                      <RotateCcw className="w-4 h-4 text-white/60" />
                     </button>
-                    <button onClick={toggleRotate} className={`p-2 shape-premium-card transition-colors ${isRotating ? "bg-brand text-white" : "hover:bg-gray-100 dark:hover:bg-white/5"}`} title={isRotating ? "Stop" : "Auto-rotate"}>
+                    <button onClick={toggleRotate} className={`p-2 shape-premium-card transition-colors ${isRotating ? "bg-brand text-white" : "hover:bg-white/10"}`} title={isRotating ? "Stop" : "Auto-rotate"}>
                       <Play className="w-4 h-4" />
                     </button>
                   </div>
@@ -148,13 +148,13 @@ export default function VirtualShowroom() {
                     )}
                   </div>
 
-                  <div className="absolute bottom-4 left-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card px-3 py-1.5 text-xs font-mono text-theme-muted">
+                  <div className="absolute bottom-4 left-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card px-3 py-1.5 text-xs font-mono text-white/60">
                     {viewAngle}°
                   </div>
 
                   <div className="absolute bottom-4 right-4 flex gap-2">
                     {[0, 90, 180, 270].map((angle) => (
-                      <button key={angle} onClick={() => setViewAngle(angle)} className="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card text-xs text-theme-muted hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                      <button key={angle} onClick={() => setViewAngle(angle)} className="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card text-xs text-white/60 hover:bg-white dark:hover:bg-gray-800 transition-colors">
                         {angle === 0 ? "Front" : angle === 90 ? "Side" : angle === 180 ? "Back" : "Other"}
                       </button>
                     ))}
@@ -178,7 +178,7 @@ export default function VirtualShowroom() {
                       </div>
                     ) : (
                       <div className="w-full h-full bg-brand/10 flex items-center justify-center">
-                        <Gift className="w-6 h-6 text-brand" />
+                        <Gift className="w-6 h-6 text-violet-400" />
                       </div>
                     )}
                   </button>
@@ -189,29 +189,29 @@ export default function VirtualShowroom() {
             {/* Product details */}
             {product && (
               <div className="space-y-4">
-                <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
+                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
                   <div className="flex items-center gap-2 mb-2">
                     {product.category && (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold shape-premium-button bg-brand/10 text-brand">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold shape-premium-button bg-brand/10 text-violet-400">
                         {product.category}
                       </span>
                     )}
                     {product.rating && (
-                      <div className="flex items-center gap-1 text-gold">
+                      <div className="flex items-center gap-1 text-amber-400">
                         <Star className="w-3 h-3 fill-current" />
                         <span className="text-xs font-semibold">{product.rating}</span>
-                        {product.review_count && <span className="text-[10px] text-theme-muted">({product.review_count})</span>}
+                        {product.review_count && <span className="text-[10px] text-white/60">({product.review_count})</span>}
                       </div>
                     )}
                   </div>
 
-                  <h2 className="font-display italic text-xl font-bold text-theme-heading mb-2">{product.name}</h2>
-                  {product.description && <p className="text-sm text-theme-muted mb-4">{product.description}</p>}
+                  <h2 className="font-display italic text-xl font-bold text-white mb-2">{product.name}</h2>
+                  {product.description && <p className="text-sm text-white/60 mb-4">{product.description}</p>}
 
                   <div className="text-2xl font-bold text-brand mb-4">
                     {formatKsh(product.sale_price || product.price)}
                     {product.sale_price && product.sale_price < product.price && (
-                      <span className="text-sm text-theme-muted line-through ml-2">{formatKsh(product.price)}</span>
+                      <span className="text-sm text-white/60 line-through ml-2">{formatKsh(product.price)}</span>
                     )}
                   </div>
 
@@ -220,9 +220,9 @@ export default function VirtualShowroom() {
                       {product.product_specs.slice(0, 5).map((spec) => (
                         <div key={spec.spec_key} className="flex items-center gap-2 text-sm text-theme-body">
                           <div className="w-5 h-5 bg-success/10 shape-premium-button flex items-center justify-center">
-                            <span className="text-success text-xs">{spec.icon || "✓"}</span>
+                            <span className="text-emerald-400 text-xs">{spec.icon || "✓"}</span>
                           </div>
-                          <span className="text-xs text-theme-muted">{spec.spec_key}:</span>
+                          <span className="text-xs text-white/60">{spec.spec_key}:</span>
                           <span className="text-xs font-medium">{spec.spec_value}</span>
                         </div>
                       ))}
@@ -237,14 +237,14 @@ export default function VirtualShowroom() {
                       <Eye className="w-4 h-4" /> View Product
                     </Link>
                     <Link href="/corporate/build" className="p-3 bg-gold/10 shape-premium-card hover:bg-gold/20 transition-colors">
-                      <ShoppingCart className="w-5 h-5 text-gold" />
+                      <ShoppingCart className="w-5 h-5 text-amber-400" />
                     </Link>
                   </div>
                 </div>
 
                 {/* Bulk pricing */}
-                <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-                  <h3 className="text-sm font-semibold text-theme-heading mb-3">Bulk Pricing</h3>
+                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+                  <h3 className="text-sm font-semibold text-white mb-3">Bulk Pricing</h3>
                   <div className="space-y-2">
                     {[
                       { qty: "1-9", multiplier: 1 },
@@ -253,21 +253,21 @@ export default function VirtualShowroom() {
                       { qty: "50+", multiplier: 0.8 },
                     ].map((tier) => (
                       <div key={tier.qty} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
-                        <span className="text-xs text-theme-muted">{tier.qty} units</span>
-                        <span className="text-sm font-semibold text-theme-heading">{formatKsh(Math.round(product.price * tier.multiplier))}</span>
+                        <span className="text-xs text-white/60">{tier.qty} units</span>
+                        <span className="text-sm font-semibold text-white">{formatKsh(Math.round(product.price * tier.multiplier))}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Share */}
-                <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-5 border border-surface-border shadow-sm">
-                  <h3 className="text-sm font-semibold text-theme-heading mb-3">Share this product</h3>
+                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
+                  <h3 className="text-sm font-semibold text-white mb-3">Share this product</h3>
                   <div className="flex gap-2">
                     <a href={`https://wa.me/?text=Check out ${product.name} on TouchGift - ${formatKsh(product.price)}`} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-emerald-500 text-white shape-premium-button text-xs font-semibold hover:bg-emerald-600 transition-colors text-center">
                       WhatsApp
                     </a>
-                    <button onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/product/${product.slug}`)} className="flex-1 py-2 bg-gray-100 dark:bg-white/5 text-theme-muted shape-premium-button text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+                    <button onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/product/${product.slug}`)} className="flex-1 py-2 bg-white/5 text-white/60 shape-premium-button text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
                       Copy Link
                     </button>
                   </div>
