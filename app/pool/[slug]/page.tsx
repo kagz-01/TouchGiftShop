@@ -37,7 +37,7 @@ function TimeLeft({ expiresAt }: { expiresAt: string }) {
   useEffect(() => { calc(); const t = setInterval(calc, 60000); return () => clearInterval(t); }, [calc]);
   const isUrgent = new Date(expiresAt).getTime() - Date.now() < 86400000;
   return (
-    <span className={`flex items-center gap-1 text-sm font-semibold ${isUrgent ? "text-red-500 animate-pulse" : "text-brand-deep/60"}`}>
+    <span className={`flex items-center gap-1 text-sm font-semibold ${isUrgent ? "text-red-400 animate-pulse" : "text-white/60"}`}>
       <Clock className="w-3.5 h-3.5" />{left}
     </span>
   );
@@ -48,12 +48,12 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
   return (
     <div>
       <div className="flex justify-between text-sm mb-2">
-        <span className="font-bold text-brand-deep">KES {current.toLocaleString()}</span>
-        <span className="text-brand-deep/50">of KES {target.toLocaleString()}</span>
+        <span className="font-bold text-white">KES {current.toLocaleString()}</span>
+        <span className="text-white/40">of KES {target.toLocaleString()}</span>
       </div>
-      <div className="h-4 rounded-full bg-brand/10 overflow-hidden relative">
+      <div className="h-4 rounded-full bg-white/10 overflow-hidden relative">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-brand via-brand-light to-gold transition-all duration-1000 relative"
+          className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 via-fuchsia-400 to-pink-400 transition-all duration-1000 relative"
           style={{ width: `${pct}%` }}
         >
           {pct > 15 && (
@@ -62,9 +62,9 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
         </div>
       </div>
       <div className="flex justify-between mt-1.5">
-        <span className="text-xs font-bold text-brand">{pct}% funded</span>
+        <span className="text-xs font-bold text-fuchsia-400">{pct}% funded</span>
         {pct >= 80 && pct < 100 && <span className="text-xs font-semibold text-gold animate-pulse">Almost there! 🔥</span>}
-        {pct >= 100 && <span className="text-xs font-bold text-success">🎉 Goal reached!</span>}
+        {pct >= 100 && <span className="text-xs font-bold text-emerald-400">🎉 Goal reached!</span>}
       </div>
     </div>
   );
@@ -73,7 +73,7 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
 function ContributionFeed({ contributions, privacyMode }: { contributions: Contribution[]; privacyMode: "named" | "anonymous" }) {
   if (contributions.length === 0) {
     return (
-      <div className="text-center py-6 text-brand-deep/40 text-sm">
+      <div className="text-center py-6 text-white/30 text-sm">
         <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
         Be the first to contribute ✨
       </div>
@@ -95,19 +95,19 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
         return (
           <div
             key={c.id}
-            className="flex items-center gap-3 p-3 rounded-2xl bg-brand/3 hover:bg-brand/5 transition-colors"
+            className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/8 transition-colors"
             style={{ animationDelay: `${i * 50}ms` }}
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand/20 to-gold/20 flex items-center justify-center text-sm font-bold text-brand-deep flex-shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-fuchsia-500/30 to-pink-500/20 flex items-center justify-center text-sm font-bold text-fuchsia-300 flex-shrink-0">
               {name[0]}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-brand-deep truncate">{name}</p>
-              {c.message && <p className="text-xs text-brand-deep/50 italic truncate">&ldquo;{c.message}&rdquo;</p>}
+              <p className="text-sm font-semibold text-white truncate">{name}</p>
+              {c.message && <p className="text-xs text-white/40 italic truncate">&ldquo;{c.message}&rdquo;</p>}
             </div>
             <div className="text-right flex-shrink-0">
-              <p className="text-sm font-bold text-brand">+{c.amount.toLocaleString()}</p>
-              <p className="text-xs text-brand-deep/40">{timeAgo}</p>
+              <p className="text-sm font-bold text-fuchsia-400">+{c.amount.toLocaleString()}</p>
+              <p className="text-xs text-white/30">{timeAgo}</p>
             </div>
           </div>
         );
@@ -185,10 +185,10 @@ export default function PoolLandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4]">
+      <div className="min-h-screen flex items-center justify-center bg-[#14080D]">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-full border-4 border-brand/20 border-t-brand animate-spin mx-auto mb-4" />
-          <p className="text-brand-deep/50 text-sm">Loading pool…</p>
+          <div className="w-12 h-12 rounded-full border-4 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin mx-auto mb-4" />
+          <p className="text-white/40 text-sm">Loading pool…</p>
         </div>
       </div>
     );
@@ -196,12 +196,12 @@ export default function PoolLandingPage() {
 
   if (error || !pool) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4] px-4">
+      <div className="min-h-screen flex items-center justify-center bg-[#14080D] px-4">
         <div className="text-center max-w-sm">
           <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h2 className="font-display text-2xl font-bold text-brand-deep mb-2">Pool Not Found</h2>
-          <p className="text-brand-deep/60 mb-6">{error || "This gift pool doesn't exist or has been removed."}</p>
-          <Link href="/" className="px-6 py-3 bg-brand text-white rounded-2xl font-semibold text-sm">Go Home</Link>
+          <h2 className="font-display text-2xl font-bold text-white mb-2">Pool Not Found</h2>
+          <p className="text-white/50 mb-6">{error || "This gift pool doesn&apos;t exist or has been removed."}</p>
+          <Link href="/" className="px-6 py-3 bg-fuchsia-500 text-white rounded-2xl font-semibold text-sm hover:bg-fuchsia-600 transition-colors">Go Home</Link>
         </div>
       </div>
     );
@@ -211,7 +211,11 @@ export default function PoolLandingPage() {
   const isCompleted = pool.status === "completed" || pool.status === "fulfilled";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5F8] to-[#FDF8F4] relative overflow-hidden">
+    <div className="min-h-screen bg-[#14080D] relative overflow-hidden">
+      {/* Ambient glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-fuchsia-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-pink-500/5 rounded-full blur-[100px] pointer-events-none" />
+
       {/* Confetti layer */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none z-50">
@@ -227,41 +231,43 @@ export default function PoolLandingPage() {
                 fontSize: `${12 + Math.random() * 16}px`,
               }}
             >
-              {["🎉", "🎊", "💛", "🌸", "⭐", "💝", "🎁"][Math.floor(Math.random() * 7)]}
+              {["🎉", "🎊", "💛", "🌸", "⭐", "💝", "🎁"][
+                Math.floor(Math.random() * 7)
+              ]}
             </div>
           ))}
         </div>
       )}
 
       {/* Hero Banner */}
-      <div className="relative bg-gradient-to-br from-brand-deep via-brand to-brand-light overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gold/20 rounded-full blur-[80px]" />
+      <div className="relative bg-gradient-to-br from-[#1F0A1C] via-fuchsia-950 to-[#14080D] overflow-hidden border-b border-fuchsia-500/10">
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-[80px]" />
         <div className="max-w-xl mx-auto px-4 py-10 text-center relative z-10">
-          {/* Recipient photo */}
-          <div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white/30 overflow-hidden bg-white/20 flex items-center justify-center shadow-xl">
+          {/* Recipient avatar */}
+          <div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-fuchsia-500/30 overflow-hidden bg-fuchsia-500/10 flex items-center justify-center shadow-[0_0_30px_rgba(217,70,239,0.3)]">
             {pool.recipient_photo_url
               ? <img src={pool.recipient_photo_url} alt={pool.recipient_name} className="w-full h-full object-cover" />
               : <span className="text-4xl">🎁</span>
             }
           </div>
           {pool.occasion && (
-            <div className="inline-block px-3 py-1 bg-white/15 rounded-full text-white/80 text-xs font-semibold mb-3 backdrop-blur-sm">
+            <div className="inline-block px-3 py-1 bg-fuchsia-500/15 rounded-full text-fuchsia-300 text-xs font-semibold mb-3 border border-fuchsia-500/20">
               {pool.occasion}
             </div>
           )}
           <h1 className="font-display text-3xl md:text-4xl font-bold italic text-white leading-tight">{pool.title}</h1>
-          {pool.description && <p className="text-white/70 mt-3 text-sm max-w-sm mx-auto">&ldquo;{pool.description}&rdquo;</p>}
+          {pool.description && <p className="text-white/60 mt-3 text-sm max-w-sm mx-auto">&ldquo;{pool.description}&rdquo;</p>}
           <div className="mt-4 flex items-center justify-center gap-4">
             <TimeLeft expiresAt={pool.expires_at} />
-            <span className="text-white/40">·</span>
-            <span className="flex items-center gap-1 text-sm text-white/60">
+            <span className="text-white/20">·</span>
+            <span className="flex items-center gap-1 text-sm text-white/50">
               <Users className="w-3.5 h-3.5" />{contributions.length} contributor{contributions.length !== 1 ? "s" : ""}
             </span>
             {pool.surprise_mode && (
               <>
-                <span className="text-white/40">·</span>
-                <span className="flex items-center gap-1 text-sm text-white/60"><Gift className="w-3.5 h-3.5" /> Surprise</span>
+                <span className="text-white/20">·</span>
+                <span className="flex items-center gap-1 text-sm text-white/50"><Gift className="w-3.5 h-3.5" /> Surprise</span>
               </>
             )}
           </div>
@@ -272,38 +278,42 @@ export default function PoolLandingPage() {
 
         {/* Closed banner */}
         {isClosed && (
-          <div className={`rounded-2xl p-4 text-center font-semibold text-sm ${isCompleted ? "bg-success/10 text-success border border-success/20" : "bg-orange-50 text-orange-600 border border-orange-200"}`}>
+          <div className={`rounded-2xl p-4 text-center font-semibold text-sm ${
+            isCompleted
+              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+              : "bg-red-500/10 text-red-400 border border-red-500/20"
+          }`}>
             {isCompleted ? "🎉 This pool reached its goal!" : pool.status === "expired" ? "⏰ This pool has expired" : "This pool is closed"}
           </div>
         )}
 
         {/* Progress Card */}
-        <div className="bg-white rounded-3xl shadow-card p-6">
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6">
           <ProgressBar current={pool.current_balance} target={pool.target_amount} />
 
           {/* Gift info */}
           {pool.gift_name && !pool.surprise_mode && (
-            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-brand/5">
+            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
               {pool.gift_image_url
                 ? <img src={pool.gift_image_url} alt="" className="w-14 h-14 object-cover rounded-xl" />
-                : <div className="w-14 h-14 rounded-xl bg-brand/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-brand/40" /></div>
+                : <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-fuchsia-400/40" /></div>
               }
               <div>
-                <p className="text-xs font-semibold text-brand-deep/50 uppercase tracking-wide">The Gift</p>
-                <p className="font-semibold text-brand-deep">{pool.gift_name}</p>
-                <p className="text-sm text-brand">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
+                <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
+                <p className="font-semibold text-white">{pool.gift_name}</p>
+                <p className="text-sm text-fuchsia-400">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
               </div>
             </div>
           )}
           {pool.gift_name && pool.surprise_mode && (
-            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-brand/5">
-              <div className="w-14 h-14 rounded-xl bg-brand/10 flex items-center justify-center">
-                <Lock className="w-6 h-6 text-brand/40" />
+            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
+              <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-fuchsia-400/40" />
               </div>
               <div>
-                <p className="text-xs font-semibold text-brand-deep/50 uppercase tracking-wide">The Gift</p>
-                <p className="font-semibold text-brand-deep">🤫 It&apos;s a surprise!</p>
-                <p className="text-sm text-brand-deep/50">Revealed when delivered</p>
+                <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
+                <p className="font-semibold text-white">🤫 It&apos;s a surprise!</p>
+                <p className="text-sm text-white/40">Revealed when delivered</p>
               </div>
             </div>
           )}
@@ -313,7 +323,7 @@ export default function PoolLandingPage() {
         {!isClosed && (
           <Link
             href={`/pool/${slug}/contribute`}
-            className="group block w-full py-5 bg-gradient-to-r from-brand to-brand-deep text-white rounded-3xl font-bold text-lg text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+            className="group block w-full py-5 bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white rounded-3xl font-bold text-lg text-center shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:shadow-[0_0_40px_rgba(217,70,239,0.5)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
             <span className="flex items-center justify-center gap-2">
@@ -329,29 +339,29 @@ export default function PoolLandingPage() {
         <div className="flex gap-3">
           <button
             onClick={copyLink}
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white border border-brand/10 rounded-2xl text-brand-deep font-semibold text-sm hover:bg-brand/5 transition-colors shadow-sm"
+            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-2xl text-white font-semibold text-sm hover:bg-white/10 transition-colors"
           >
-            {copied ? <CheckCircle2 className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+            {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             {copied ? "Copied!" : "Copy Link"}
           </button>
           <a
             href={`https://wa.me/?text=${encodeURIComponent(`🎁 ${pool.title}\n\nContribute here: ${shareUrl}`)}`}
             target="_blank"
             rel="noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors shadow-sm"
+            className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"
           >
             <Share2 className="w-4 h-4" /> WhatsApp
           </a>
         </div>
 
         {/* Contribution Feed */}
-        <div className="bg-white rounded-3xl shadow-card p-5">
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="w-4 h-4 text-brand" />
-            <h3 className="font-semibold text-brand-deep">
+            <Heart className="w-4 h-4 text-fuchsia-400" />
+            <h3 className="font-semibold text-white">
               {pool.privacy_mode === "anonymous" ? "Contributions" : "Wall of Love"}
             </h3>
-            <span className="ml-auto text-xs text-brand-deep/40">{contributions.length} total</span>
+            <span className="ml-auto text-xs text-white/30">{contributions.length} total</span>
           </div>
           <ContributionFeed contributions={contributions} privacyMode={pool.privacy_mode} />
         </div>
