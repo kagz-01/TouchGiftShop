@@ -56,7 +56,9 @@ async function getProducts(params: ShopParams): Promise<{
   // from the row count of range(0, limit)), so skip the exact aggregate.
   let query = supabaseAdmin.from("products").select(selectCols, { count: "estimated" });
 
-  if (dbSlugs.length) {
+  if (effectiveCategory === "corporate") {
+    query = query.contains("tags", JSON.stringify(["corporate"]));
+  } else if (dbSlugs.length) {
     query = query.in("product_categories.categories.slug", dbSlugs);
   }
 
