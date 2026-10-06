@@ -9,13 +9,13 @@ import QuickViewModal from "./QuickViewModal";
 
 const HAMPER_CATEGORIES = [
   { label: "All", slug: "" },
+  { label: "Drinks & Spirits", slug: "drinks" },
+  { label: "Drinkware", slug: "drinkware" },
+  { label: "Accessories", slug: "accessories" },
+  { label: "Perfumes", slug: "perfumes" },
+  { label: "Stationery", slug: "stationery-office" },
   { label: "Flowers", slug: "flowers" },
-  { label: "Chocolates", slug: "chocolates" },
-  { label: "Drinks", slug: "beverages" },
-  { label: "Snacks", slug: "food-treats" },
-  { label: "Personalised", slug: "personalised" },
-  { label: "Self Care", slug: "wellness" },
-  { label: "Baby", slug: "baby" },
+  { label: "Gift Sets", slug: "gift-sets" },
 ];
 
 interface HamperItem {

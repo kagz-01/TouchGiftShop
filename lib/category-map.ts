@@ -25,6 +25,7 @@ const TAXONOMY = new Set([
   "flowers",
   "perfumes",
   "fruits-edibles",
+  "drinks",
 ]);
 
 /**
