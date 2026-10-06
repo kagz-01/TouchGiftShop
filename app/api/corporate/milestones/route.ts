@@ -119,3 +119,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    let body: any;
+    try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+    
+    if (!body.id) {
+      return NextResponse.json({ error: "Missing rule ID" }, { status: 400 });
+    }
+
+    const { data: rule, error } = await supabaseAdmin
+      .from("milestone_rules")
+      .update({ is_active: body.is_active })
+      .eq("id", body.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Update milestone rule error:", error);
+      return NextResponse.json({ error: "Failed to update rule" }, { status: 500 });
+    }
+
+    return NextResponse.json({ rule });
+  } catch (error) {
+    console.error("Milestones PATCH error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

@@ -11,13 +11,73 @@ import {
 } from "lucide-react";
 
 type BotFlow = {
-  id: string;
+  id?: string;
+  flow_id: string;
   title: string;
   description: string;
-  trigger: string;
-  message: string;
-  enabled: boolean;
+  trigger_rule: string;
+  message_template: string;
+  is_enabled: boolean;
 };
+
+const DEFAULT_FLOWS: BotFlow[] = [
+  {
+    flow_id: "pool_invite",
+    title: "Pool Invitation",
+    description: "Notify colleagues about a new gift pool",
+    trigger_rule: "When pool is created",
+    message_template: "🎉 *{organizer}* is collecting gifts for *{recipient}'s {occasion}*!\n\nTarget: KSh *{target}*\nMin contribution: KSh *{min}*\n\nContribute here: {link}\n\n#TeamSpirit",
+    is_enabled: true,
+  },
+  {
+    flow_id: "pool_reminder",
+    title: "Pool Reminder",
+    description: "Remind contributors before deadline",
+    trigger_rule: "3 days before deadline",
+    message_template: "⏰ Reminder: *{recipient}'s {occasion}* pool closes in {days} days!\n\nCurrent: KSh *{collected}* / KSh *{target}*\n{contributors} people have contributed.\n\nHelp us reach the goal: {link}",
+    is_enabled: true,
+  },
+  {
+    flow_id: "pool_target_hit",
+    title: "Target Reached",
+    description: "Celebrate when pool hits the target",
+    trigger_rule: "When 100% collected",
+    message_template: "🎯 *We did it!*\n\n*{recipient}'s {occasion}* pool has reached KSh *{target}*!\n\n{contributors} colleagues came together. The gift is being prepared! 🎁",
+    is_enabled: true,
+  },
+  {
+    flow_id: "birthday_reminder",
+    title: "Birthday Alert",
+    description: "Alert HR about upcoming birthdays",
+    trigger_rule: "7 days before birthday",
+    message_template: "🎂 Upcoming birthday: *{recipient}* ({department}) on *{date}*!\n\nSuggested budget: KSh *{budget}*\n\nCreate a pool or order a gift: {link}",
+    is_enabled: true,
+  },
+  {
+    flow_id: "anniversary_reminder",
+    title: "Work Anniversary",
+    description: "Celebrate work anniversaries",
+    trigger_rule: "On work anniversary",
+    message_template: "🎉 Happy {years} year work anniversary, *{recipient}*!\n\nYour team has prepared something special. 🎁\n\nWith love from the *{department}* team.",
+    is_enabled: false,
+  },
+  {
+    flow_id: "gift_delivered",
+    title: "Gift Delivered",
+    description: "Notify when gift is delivered",
+    trigger_rule: "When gift is delivered",
+    message_template: "✅ Gift delivered to *{recipient}*!\n\n📸 Photo: {photo_link}\n\nThank you to everyone who contributed! 🙏",
+    is_enabled: true,
+  },
+  {
+    flow_id: "product_recommendation",
+    title: "Product Recommendation",
+    description: "Suggest gifts based on occasion and budget",
+    trigger_rule: "When employee asks for gift ideas",
+    message_template: "🎁 *Gift Suggestions*\n\nBased on your budget of *KSh {budget}*, here are top picks:\n\n{product_list}\n\nWant to order? Just reply with the number! 🛒",
+    is_enabled: true,
+  },
+];
 
 type RecommendedProduct = {
   name: string;
@@ -25,65 +85,6 @@ type RecommendedProduct = {
   image_url: string;
   slug: string;
 };
-
-const DEFAULT_FLOWS: BotFlow[] = [
-  {
-    id: "pool_invite",
-    title: "Pool Invitation",
-    description: "Notify colleagues about a new gift pool",
-    trigger: "When pool is created",
-    message: "🎉 *{organizer}* is collecting gifts for *{recipient}'s {occasion}*!\n\nTarget: KSh *{target}*\nMin contribution: KSh *{min}*\n\nContribute here: {link}\n\n#TeamSpirit",
-    enabled: true,
-  },
-  {
-    id: "pool_reminder",
-    title: "Pool Reminder",
-    description: "Remind contributors before deadline",
-    trigger: "3 days before deadline",
-    message: "⏰ Reminder: *{recipient}'s {occasion}* pool closes in {days} days!\n\nCurrent: KSh *{collected}* / KSh *{target}*\n{contributors} people have contributed.\n\nHelp us reach the goal: {link}",
-    enabled: true,
-  },
-  {
-    id: "pool_target_hit",
-    title: "Target Reached",
-    description: "Celebrate when pool hits the target",
-    trigger: "When 100% collected",
-    message: "🎯 *We did it!*\n\n*{recipient}'s {occasion}* pool has reached KSh *{target}*!\n\n{contributors} colleagues came together. The gift is being prepared! 🎁",
-    enabled: true,
-  },
-  {
-    id: "birthday_reminder",
-    title: "Birthday Alert",
-    description: "Alert HR about upcoming birthdays",
-    trigger: "7 days before birthday",
-    message: "🎂 Upcoming birthday: *{recipient}* ({department}) on *{date}*!\n\nSuggested budget: KSh *{budget}*\n\nCreate a pool or order a gift: {link}",
-    enabled: true,
-  },
-  {
-    id: "anniversary_reminder",
-    title: "Work Anniversary",
-    description: "Celebrate work anniversaries",
-    trigger: "On work anniversary",
-    message: "🎉 Happy {years} year work anniversary, *{recipient}*!\n\nYour team has prepared something special. 🎁\n\nWith love from the *{department}* team.",
-    enabled: false,
-  },
-  {
-    id: "gift_delivered",
-    title: "Gift Delivered",
-    description: "Notify when gift is delivered",
-    trigger: "When gift is delivered",
-    message: "✅ Gift delivered to *{recipient}*!\n\n📸 Photo: {photo_link}\n\nThank you to everyone who contributed! 🙏",
-    enabled: true,
-  },
-  {
-    id: "product_recommendation",
-    title: "Product Recommendation",
-    description: "Suggest gifts based on occasion and budget",
-    trigger: "When employee asks for gift ideas",
-    message: "🎁 *Gift Suggestions*\n\nBased on your budget of *KSh {budget}*, here are top picks:\n\n{product_list}\n\nWant to order? Just reply with the number! 🛒",
-    enabled: true,
-  },
-];
 
 const SAMPLE_DATA: Record<string, string> = {
   "{organizer}": "David",
@@ -276,6 +277,18 @@ export default function WhatsAppBotPage() {
   const [settingsSaved, setSettingsSaved] = useState(false);
 
   useEffect(() => {
+    // Fetch API flows
+    fetch("/api/corporate/whatsapp")
+      .then(r => r.json())
+      .then(d => {
+        if (d.flows && d.flows.length > 0) {
+          // Merge API flows with defaults if needed, or just use API
+          // For simplicity, we assume DB has the truth, but if it's empty, we use defaults
+          setFlows(d.flows);
+        }
+      })
+      .catch(() => {});
+
     fetch("/api/products?limit=4")
       .then(r => r.json())
       .then(d => {
@@ -305,8 +318,21 @@ export default function WhatsAppBotPage() {
     setChatMessages([...BASE_CHAT, ...productMsgs]);
   }, [recommendedProducts]);
 
-  const toggleFlow = (id: string) => {
-    setFlows((prev) => prev.map((f) => (f.id === id ? { ...f, enabled: !f.enabled } : f)));
+  const toggleFlow = async (flow: BotFlow) => {
+    const newVal = !flow.is_enabled;
+    setFlows((prev) => prev.map((f) => (f.flow_id === flow.flow_id ? { ...f, is_enabled: newVal } : f)));
+    
+    // Save to API
+    try {
+      await fetch("/api/corporate/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...flow, is_enabled: newVal }),
+      });
+    } catch {
+      // Revert on error
+      setFlows((prev) => prev.map((f) => (f.flow_id === flow.flow_id ? { ...f, is_enabled: !newVal } : f)));
+    }
   };
 
   const toggleSetting = (key: string) => {
@@ -323,17 +349,38 @@ export default function WhatsAppBotPage() {
   const openEdit = (flow: BotFlow) => {
     setEditingFlow(flow);
     setEditTitle(flow.title);
-    setEditTrigger(flow.trigger);
-    setEditMessage(flow.message);
+    setEditTrigger(flow.trigger_rule);
+    setEditMessage(flow.message_template);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!editingFlow) return;
-    setFlows(prev => prev.map(f => f.id === editingFlow.id
-      ? { ...f, title: editTitle, trigger: editTrigger, message: editMessage }
-      : f
-    ));
+    
+    const updated = {
+      ...editingFlow,
+      title: editTitle,
+      trigger_rule: editTrigger,
+      message_template: editMessage
+    };
+
+    setFlows(prev => prev.map(f => f.flow_id === editingFlow.flow_id ? updated : f));
     setEditingFlow(null);
+
+    // Save to API
+    try {
+      const res = await fetch("/api/corporate/whatsapp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+      const data = await res.json();
+      if (data.flow) {
+        // Update with DB ID if newly created
+        setFlows(prev => prev.map(f => f.flow_id === data.flow.flow_id ? data.flow : f));
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   /* ── Test handler ── */
@@ -359,14 +406,14 @@ export default function WhatsAppBotPage() {
   }, []);
 
   return (
-    <div className="min-h-screen section-theme-a">
+    <div className="min-h-screen bg-[#14080D] text-white">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-md border-b border-surface-border">
+      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display italic text-2xl font-bold">WhatsApp Bot</h1>
-              <p className="text-theme-muted text-sm">Automate gift notifications, reminders, and contributions via WhatsApp.</p>
+              <h1 className="font-display italic text-2xl font-bold text-gold">WhatsApp Bot</h1>
+              <p className="text-white/60 text-sm">Automate gift notifications, reminders, and contributions via WhatsApp.</p>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
@@ -378,18 +425,18 @@ export default function WhatsAppBotPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
               { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-5 h-5" />, color: "text-emerald-500" },
-              { label: "Active Flows", value: flows.filter((f) => f.enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-brand" },
+              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-brand" },
               { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-violet-500" },
               { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-5 h-5" />, color: "text-gold" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/80 backdrop-blur-sm shape-premium-card p-4 border border-surface-border shadow-sm">
+              <div key={stat.label} className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 shape-premium-card flex items-center justify-center bg-gray-50 dark:bg-white/5 ${stat.color}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 ${stat.color}`}>
                     {stat.icon}
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-theme-heading">{stat.value}</p>
-                    <p className="text-xs text-theme-muted">{stat.label}</p>
+                    <p className="text-xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xs text-white/60">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -406,10 +453,10 @@ export default function WhatsAppBotPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 shape-premium-button text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
                   activeTab === tab.id
-                    ? "bg-brand text-white"
-                    : "bg-white/80 border border-surface-border text-theme-muted hover:border-brand/30"
+                    ? "bg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-gold"
+                    : "bg-white/5 border border-white/10 text-white/60 hover:border-gold/30 hover:text-white"
                 }`}
               >
                 {tab.icon} {tab.label}
@@ -425,50 +472,50 @@ export default function WhatsAppBotPage() {
           <div className="space-y-4">
             {flows.map((flow) => (
               <div
-                key={flow.id}
-                className={`bg-white/80 backdrop-blur-sm shape-premium-card p-5 border shadow-sm transition-all ${
-                  flow.enabled ? "border-brand/20" : "border-surface-border opacity-75"
+                key={flow.flow_id}
+                className={`bg-white/5 backdrop-blur-md rounded-2xl p-5 border shadow-lg transition-all ${
+                  flow.is_enabled ? "border-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.1)]" : "border-white/10 opacity-75"
                 }`}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 shape-premium-card flex items-center justify-center ${
-                      flow.enabled ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500" : "bg-gray-100 dark:bg-white/5 text-gray-400"
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                      flow.is_enabled ? "bg-gold/10 text-gold" : "bg-white/5 text-white/40"
                     }`}>
                       <MessageSquare className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-theme-heading">{flow.title}</h3>
-                      <p className="text-xs text-theme-muted">{flow.description}</p>
+                      <h3 className="text-sm font-bold text-white">{flow.title}</h3>
+                      <p className="text-xs text-white/60">{flow.description}</p>
                     </div>
                   </div>
                   <button
-                    onClick={() => toggleFlow(flow.id)}
-                    className={`w-12 h-7 shape-premium-button transition-all relative ${
-                      flow.enabled ? "bg-brand" : "bg-gray-200"
+                    onClick={() => toggleFlow(flow)}
+                    className={`w-12 h-7 rounded-full transition-all relative ${
+                      flow.is_enabled ? "bg-gold" : "bg-white/20"
                     }`}
                   >
                     <div className={`w-5 h-5 bg-white rounded-full absolute top-1 transition-all shadow-sm ${
-                      flow.enabled ? "left-6" : "left-1"
+                      flow.is_enabled ? "left-6" : "left-1"
                     }`} />
                   </button>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 mb-3">
-                  <p className="text-xs font-semibold text-theme-muted mb-1">Trigger: {flow.trigger}</p>
-                  <p className="text-sm text-theme-heading whitespace-pre-line font-mono text-xs leading-relaxed">{flow.message}</p>
+                <div className="bg-black/40 rounded-xl p-4 mb-3 border border-white/5">
+                  <p className="text-xs font-semibold text-white/60 mb-1">Trigger: {flow.trigger_rule}</p>
+                  <p className="text-sm text-white whitespace-pre-line font-mono leading-relaxed">{flow.message_template}</p>
                 </div>
 
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEdit(flow)}
-                    className="px-3 py-1.5 bg-brand/10 text-brand shape-premium-button text-xs font-semibold hover:bg-brand/20 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gold/10 text-gold rounded-lg text-xs font-semibold hover:bg-gold/20 transition-colors flex items-center gap-1"
                   >
                     <Settings className="w-3 h-3" /> Edit
                   </button>
                   <button
                     onClick={() => openTest(flow)}
-                    className="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-theme-muted shape-premium-button text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 bg-white/5 text-white/60 rounded-lg text-xs font-semibold hover:bg-white/10 hover:text-white transition-colors flex items-center gap-1"
                   >
                     <Play className="w-3 h-3" /> Test
                   </button>
@@ -558,33 +605,33 @@ export default function WhatsAppBotPage() {
         {/* ═══ SETTINGS ═══ */}
         {activeTab === "settings" && (
           <div className="max-w-2xl mx-auto space-y-6">
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm space-y-5">
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg space-y-5">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-theme-heading">Bot Configuration</h3>
+                <h3 className="text-sm font-semibold text-white">Bot Configuration</h3>
                 <button
                   onClick={handleSaveSettings}
-                  className="px-4 py-2 bg-brand text-white shape-premium-button text-xs font-semibold hover:bg-brand-dark transition-colors flex items-center gap-1.5"
+                  className="px-4 py-2 bg-gold text-black rounded-lg text-xs font-semibold hover:bg-gold/80 transition-colors flex items-center gap-1.5"
                 >
                   <Save className="w-3.5 h-3.5" /> Save Settings
                 </button>
               </div>
 
               {settingsSaved && (
-                <div className="p-3 bg-success/10 border border-success/20 shape-premium-card text-sm text-success font-semibold">
+                <div className="p-3 bg-success/10 border border-success/20 rounded-xl text-sm text-success font-semibold">
                   Settings saved successfully!
                 </div>
               )}
 
               <div className="space-y-3">
                 {settings.map((setting) => (
-                  <div key={setting.key} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 shape-premium-card">
+                  <div key={setting.key} className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                     <div>
-                      <p className="text-sm font-semibold text-theme-heading">{setting.label}</p>
-                      <p className="text-xs text-theme-muted">{setting.description}</p>
+                      <p className="text-sm font-semibold text-white">{setting.label}</p>
+                      <p className="text-xs text-white/60">{setting.description}</p>
                     </div>
                     <button
                       onClick={() => toggleSetting(setting.key)}
-                      className={`w-10 h-6 shape-premium-button transition-all relative ${setting.enabled ? "bg-brand" : "bg-gray-200"}`}
+                      className={`w-10 h-6 rounded-full transition-all relative ${setting.enabled ? "bg-gold" : "bg-white/20"}`}
                     >
                       <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all shadow-sm ${setting.enabled ? "left-5" : "left-1"}`} />
                     </button>
@@ -593,30 +640,30 @@ export default function WhatsAppBotPage() {
               </div>
             </div>
 
-            <div className="bg-white/80 backdrop-blur-sm shape-premium-card p-6 border border-surface-border shadow-sm">
-              <h3 className="text-sm font-semibold text-theme-heading mb-3">Integration</h3>
+            <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg">
+              <h3 className="text-sm font-semibold text-white mb-3">Integration</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 shape-premium-card">
+                <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex items-center gap-3">
                     <Smartphone className="w-5 h-5 text-emerald-500" />
                     <div>
-                      <p className="text-sm font-semibold text-theme-heading">WhatsApp Business API</p>
+                      <p className="text-sm font-semibold text-white">WhatsApp Business API</p>
                       <p className="text-xs text-success font-semibold">Connected</p>
                     </div>
                   </div>
-                  <span className="text-xs text-theme-muted">Phone: +254 142 677 898</span>
+                  <span className="text-xs text-white/60">Phone: +254 142 677 898</span>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-white/5 shape-premium-card">
+                <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex items-center gap-3">
-                    <Shield className="w-5 h-5 text-brand" />
+                    <Shield className="w-5 h-5 text-gold" />
                     <div>
-                      <p className="text-sm font-semibold text-theme-heading">Webhook URL</p>
-                      <p className="text-xs text-theme-muted font-mono">https://api.touchgift.co.ke/webhook/whatsapp</p>
+                      <p className="text-sm font-semibold text-white">Webhook URL</p>
+                      <p className="text-xs text-white/60 font-mono">https://api.touchgift.co.ke/webhook/whatsapp</p>
                     </div>
                   </div>
                   <button
                     onClick={copyWebhook}
-                    className="px-3 py-1.5 bg-brand/10 text-brand shape-premium-button text-xs font-semibold hover:bg-brand/20 transition-colors flex items-center gap-1"
+                    className="px-3 py-1.5 bg-gold/10 text-gold rounded-lg text-xs font-semibold hover:bg-gold/20 transition-colors flex items-center gap-1"
                   >
                     <Copy className="w-3 h-3" /> Copy
                   </button>
@@ -636,33 +683,33 @@ export default function WhatsAppBotPage() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setEditingFlow(null)} />
 
           {/* Modal */}
-          <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-surface-border">
+          <div className="relative bg-[#14080D] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-white/10">
             {/* Header */}
-            <div className="sticky top-0 bg-white dark:bg-gray-900 px-6 py-4 border-b border-surface-border flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-[#14080D]/90 backdrop-blur-md px-6 py-4 border-b border-white/10 flex items-center justify-between z-10">
               <div>
-                <h2 className="font-display italic text-lg font-bold text-theme-heading">Edit Flow</h2>
-                <p className="text-xs text-theme-muted">Customize the message template for this flow</p>
+                <h2 className="font-display italic text-lg font-bold text-gold">Edit Flow</h2>
+                <p className="text-xs text-white/60">Customize the message template for this flow</p>
               </div>
-              <button onClick={() => setEditingFlow(null)} className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
-                <X className="w-4 h-4 text-theme-muted" />
+              <button onClick={() => setEditingFlow(null)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+                <X className="w-4 h-4 text-white" />
               </button>
             </div>
 
             <div className="p-6 space-y-5">
               {/* Title */}
               <div>
-                <label className="block text-sm font-semibold text-theme-heading mb-1.5">Flow Title</label>
+                <label className="block text-sm font-semibold text-white mb-1.5">Flow Title</label>
                 <input
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  className="w-full bg-gray-50 dark:bg-white/5 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold text-white"
                 />
               </div>
 
               {/* Trigger */}
               <div>
-                <label className="block text-sm font-semibold text-theme-heading mb-1.5">Trigger</label>
+                <label className="block text-sm font-semibold text-white mb-1.5">Trigger</label>
                 <div className="space-y-2">
                   <select
                     value={PRESET_TRIGGERS.includes(editTrigger) ? editTrigger : "Custom"}
@@ -670,7 +717,7 @@ export default function WhatsAppBotPage() {
                       if (e.target.value !== "Custom") setEditTrigger(e.target.value);
                       else setEditTrigger("");
                     }}
-                    className="w-full bg-gray-50 dark:bg-white/5 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand appearance-none cursor-pointer"
+                    className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold appearance-none cursor-pointer text-white"
                   >
                     {PRESET_TRIGGERS.map((t) => (
                       <option key={t} value={t}>{t}</option>
@@ -682,29 +729,29 @@ export default function WhatsAppBotPage() {
                       value={editTrigger}
                       onChange={(e) => setEditTrigger(e.target.value)}
                       placeholder="Type your custom trigger..."
-                      className="w-full bg-gray-50 dark:bg-white/5 border border-surface-border shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                      className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold text-white"
                     />
                   )}
                 </div>
-                <p className="text-xs text-theme-muted mt-1">When should this message be sent?</p>
+                <p className="text-xs text-white/60 mt-1">When should this message be sent?</p>
               </div>
 
               {/* Message template */}
               <div>
-                <label className="block text-sm font-semibold text-theme-heading mb-1.5">Message Template</label>
+                <label className="block text-sm font-semibold text-white mb-1.5">Message Template</label>
                 <textarea
                   ref={textareaRef}
                   value={editMessage}
                   onChange={(e) => setEditMessage(e.target.value)}
                   rows={8}
-                  className="w-full bg-gray-50 dark:bg-white/5 border border-surface-border shape-premium-card px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm font-mono leading-relaxed focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold resize-none text-white"
                 />
 
                 {/* Variable categories — click to insert */}
                 <div className="mt-3 space-y-2.5">
                   {VARIABLE_CATEGORIES.map((cat) => (
                     <div key={cat.name}>
-                      <p className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider mb-1">{cat.name}</p>
+                      <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-1">{cat.name}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {cat.items.map((v) => (
                           <button
@@ -723,14 +770,14 @@ export default function WhatsAppBotPage() {
 
                 {/* Active variables in template */}
                 {extractVariables(editMessage).length > 0 && (
-                  <div className="mt-3 p-3 bg-brand/5 border border-brand/10 rounded-xl">
-                    <p className="text-[11px] font-semibold text-brand uppercase tracking-wider mb-1.5">In this template</p>
+                  <div className="mt-3 p-3 bg-gold/5 border border-gold/10 rounded-xl">
+                    <p className="text-[11px] font-semibold text-gold uppercase tracking-wider mb-1.5">In this template</p>
                     <div className="flex flex-wrap gap-1.5">
                       {extractVariables(editMessage).map((v) => {
                         const cat = VARIABLE_CATEGORIES.find(c => c.items.some(i => i.key === v));
                         const desc = cat?.items.find(i => i.key === v)?.desc;
                         return (
-                          <span key={v} title={desc} className="px-2 py-0.5 bg-brand/10 text-brand text-xs font-mono rounded-full">
+                          <span key={v} title={desc} className="px-2 py-0.5 bg-gold/10 text-gold text-xs font-mono rounded-full">
                             {v}
                           </span>
                         );
@@ -742,7 +789,7 @@ export default function WhatsAppBotPage() {
 
               {/* Live preview */}
               <div>
-                <label className="block text-sm font-semibold text-theme-heading mb-1.5">Preview (with sample data)</label>
+                <label className="block text-sm font-semibold text-white mb-1.5">Preview (with sample data)</label>
                 <div className="bg-[#ECE5DD] dark:bg-[#0B141A] rounded-xl p-4">
                   <div className="bg-white dark:bg-[#1F2C34] rounded-xl px-3 py-2 shadow-sm max-w-[90%]">
                     <p className="text-sm whitespace-pre-line text-gray-800 dark:text-white">{renderPreview(editMessage)}</p>
@@ -752,16 +799,16 @@ export default function WhatsAppBotPage() {
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 bg-white dark:bg-gray-900 px-6 py-4 border-t border-surface-border flex items-center justify-end gap-3">
+            <div className="sticky bottom-0 bg-[#14080D]/90 backdrop-blur-md px-6 py-4 border-t border-white/10 flex items-center justify-end gap-3">
               <button
                 onClick={() => setEditingFlow(null)}
-                className="px-4 py-2 bg-gray-100 dark:bg-white/5 text-theme-muted shape-premium-button text-sm font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                className="px-4 py-2 bg-white/5 text-white/60 rounded-xl text-sm font-semibold hover:bg-white/10 transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={saveEdit}
-                className="px-5 py-2 bg-brand text-white shape-premium-button text-sm font-semibold hover:bg-brand-dark transition-colors flex items-center gap-1.5"
+                className="px-5 py-2 bg-gold text-black rounded-xl text-sm font-semibold hover:bg-gold/80 transition-colors flex items-center gap-1.5"
               >
                 <Save className="w-4 h-4" /> Save Changes
               </button>
@@ -779,11 +826,11 @@ export default function WhatsAppBotPage() {
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setTestingFlow(null)} />
 
           {/* Modal */}
-          <div className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-surface-border">
+          <div className="relative bg-[#14080D] rounded-3xl shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full max-w-md overflow-hidden border border-white/10">
             {/* Header */}
             <div className="bg-[#075E54] text-white px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 shape-premium-button flex items-center justify-center">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                   <Gift className="w-5 h-5" />
                 </div>
                 <div>
@@ -800,22 +847,22 @@ export default function WhatsAppBotPage() {
             <div className="bg-[#ECE5DD] dark:bg-[#0B141A] p-4 min-h-[200px]">
               <div className="flex justify-start">
                 <div className="bg-white dark:bg-[#1F2C34] rounded-xl px-3 py-2 shadow-sm max-w-[90%] text-gray-800 dark:text-white">
-                  <p className="text-sm whitespace-pre-line">{renderPreview(testingFlow.message)}</p>
+                  <p className="text-sm whitespace-pre-line">{renderPreview(testingFlow.message_template)}</p>
                   <p className="text-[10px] mt-1 text-gray-400 dark:text-gray-500 text-right">9:00 AM</p>
                 </div>
               </div>
             </div>
 
             {/* Footer actions */}
-            <div className="bg-white dark:bg-gray-900 px-4 py-3 border-t border-surface-border flex items-center justify-between">
-              <div className="flex items-center gap-2 text-xs text-theme-muted">
+            <div className="bg-[#14080D]/90 backdrop-blur-md px-4 py-3 border-t border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-white/60">
                 <AlertTriangle className="w-3.5 h-3.5" />
                 <span>Simulated — not sent to real WhatsApp</span>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => setTestingFlow(null)}
-                  className="px-3 py-1.5 bg-gray-100 dark:bg-white/5 text-theme-muted shape-premium-button text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                  className="px-3 py-1.5 bg-white/5 text-white/60 rounded-xl text-xs font-semibold hover:bg-white/10 hover:text-white transition-colors"
                 >
                   Close
                 </button>
@@ -824,7 +871,7 @@ export default function WhatsAppBotPage() {
                     setTestingFlow(null);
                     setActiveTab("demo");
                   }}
-                  className="px-3 py-1.5 bg-brand text-white shape-premium-button text-xs font-semibold hover:bg-brand-dark transition-colors flex items-center gap-1"
+                  className="px-3 py-1.5 bg-gold text-black rounded-xl text-xs font-semibold hover:bg-gold/80 transition-colors flex items-center gap-1"
                 >
                   <Play className="w-3 h-3" /> View in Demo
                 </button>
