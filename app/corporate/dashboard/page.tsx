@@ -224,6 +224,7 @@ export default function CorporateImpactDashboard() {
               <h3 className="text-sm font-semibold text-white mb-3">Corporate Tools</h3>
               <div className="space-y-2">
                 {[
+                  { href: "/corporate/reports", icon: <BarChart3 className="w-4 h-4" />, label: "Reports & Analytics", color: "text-fuchsia-400" },
                   { href: "/corporate/catalog", icon: <Package className="w-4 h-4" />, label: "Product Catalog", color: "text-amber-400" },
                   { href: "/corporate/pools", icon: <Target className="w-4 h-4" />, label: "Gift Pools", color: "text-violet-400" },
                   { href: "/corporate/marketplace", icon: <ShoppingBag className="w-4 h-4" />, label: "Marketplace", color: "text-emerald-400" },
