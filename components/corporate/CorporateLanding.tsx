@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import {
-  Upload, Users, Trophy, MessageSquare, Briefcase, ArrowRight, Star, Package, ChevronRight
+  Upload, Users, Trophy, MessageSquare, Briefcase, ArrowRight, Star, Package, ChevronRight, Check
 } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { useMood, type Mood } from "@/context/MoodContext";
 
 function useInView(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,8 +47,46 @@ const CORPORATE_CATEGORIES = [
   { label: "Wellness & Self-Care", desc: "Thoughtful employee gifts", emoji: "🧘", href: "/shop?category=wellness", accent: "from-sky-400/20 to-blue-400/10", border: "border-sky-400/20 hover:border-sky-400/50" },
 ];
 
+const CORP_MOODS = [
+  {
+    id: "corp_appreciation" as Mood,
+    emoji: "🤝",
+    label: "Client Appreciation",
+    tagline: "Navy & Platinum — for loyalty that lasts",
+    gradient: "linear-gradient(135deg, #0D1B2A, #1B263B, #415A77)",
+    glow: "rgba(65,90,119,0.5)",
+    cta: "Shop Client Gifts",
+    href: "/shop?category=corporate&context=appreciation",
+    stats: ["150+ curated options", "Same-day delivery", "Bulk orders welcome"],
+  },
+  {
+    id: "corp_milestone" as Mood,
+    emoji: "🏆",
+    label: "Team Milestones",
+    tagline: "Deep Forest & Gold — for teams that deliver",
+    gradient: "linear-gradient(135deg, #0F1F19, #1C372D, #2D5A4C)",
+    glow: "rgba(45,90,76,0.5)",
+    cta: "Reward Your Team",
+    href: "/shop?category=corporate&context=milestone",
+    stats: ["Automated scheduling", "Custom engraving", "Branded packaging"],
+  },
+  {
+    id: "corp_welcome" as Mood,
+    emoji: "👋",
+    label: "New Hire Welcome",
+    tagline: "Midnight & Emerald — for first impressions",
+    gradient: "linear-gradient(135deg, #0E141E, #192231, #2A3B52)",
+    glow: "rgba(42,59,82,0.5)",
+    cta: "Build Onboarding Kits",
+    href: "/shop?category=corporate&context=welcome",
+    stats: ["Personalised per hire", "WhatsApp delivery bot", "White-label portal"],
+  },
+];
+
 export default function CorporateLanding() {
   const [loaded, setLoaded] = useState(false);
+  const { mood, setMood } = useMood();
+  const activeMood = CORP_MOODS.find(m => m.id === mood) ?? null;
   useEffect(() => { setLoaded(true); }, []);
 
   const features = [
@@ -99,6 +138,95 @@ export default function CorporateLanding() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* ── CORPORATE MOOD SWITCHER ── */}
+      <section className="relative py-20 px-6 md:px-12 max-w-7xl mx-auto">
+        <Reveal>
+          <div className="text-center mb-12">
+            <p className="text-xs uppercase tracking-[0.3em] font-bold mb-3" style={{ color: "var(--color-gold, #D4AF37)" }}>
+              Set Your Gifting Context
+            </p>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
+              What are you<br /><span className="italic font-light" style={{ color: "var(--color-gold, #D4AF37)" }}>gifting for?</span>
+            </h2>
+            <p className="text-white/50 mt-4 max-w-xl mx-auto">
+              Choose a context and the entire experience — colors, curation, and copy — adapts to match.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {CORP_MOODS.map((cm, i) => {
+            const isActive = mood === cm.id;
+            return (
+              <Reveal key={cm.id} delay={i * 120}>
+                <button
+                  onClick={() => setMood(cm.id, true)}
+                  className="group relative w-full text-left overflow-hidden rounded-3xl transition-all duration-500 hover:-translate-y-2"
+                  style={{
+                    boxShadow: isActive
+                      ? `0 0 0 2px rgba(255,255,255,0.4), 0 24px 60px ${cm.glow}`
+                      : "0 4px 20px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {/* Background gradient */}
+                  <div
+                    className="absolute inset-0 transition-opacity duration-700"
+                    style={{ background: cm.gradient, opacity: isActive ? 1 : 0.6 }}
+                  />
+                  {/* Glow overlay */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: cm.gradient }}
+                  />
+                  {/* Dot grid texture */}
+                  <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
+                  {/* Active check badge */}
+                  {isActive && (
+                    <div className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
+                      <Check className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                  <div className="relative z-10 p-8 flex flex-col gap-5">
+                    <span className="text-5xl">{cm.emoji}</span>
+                    <div>
+                      <p className="font-display text-2xl font-bold text-white">{cm.label}</p>
+                      <p className="text-white/60 text-sm mt-1 leading-relaxed">{cm.tagline}</p>
+                    </div>
+                    <ul className="space-y-2">
+                      {cm.stats.map(s => (
+                        <li key={s} className="flex items-center gap-2 text-xs text-white/70">
+                          <span className="w-1.5 h-1.5 rounded-full bg-white/40 flex-shrink-0" />
+                          {s}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href={cm.href}
+                      onClick={e => e.stopPropagation()}
+                      className="inline-flex items-center gap-2 text-sm font-bold text-white mt-2 group-hover:gap-3 transition-all"
+                    >
+                      {cm.cta} <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </button>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* Live preview bar */}
+        {activeMood && (
+          <div className="mt-10 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm flex items-center gap-4 transition-all duration-700">
+            <span className="text-2xl">{activeMood.emoji}</span>
+            <div>
+              <p className="text-sm font-semibold text-white">{activeMood.label} theme is active</p>
+              <p className="text-xs text-white/50">{activeMood.tagline}</p>
+            </div>
+            <div className="ml-auto h-1.5 rounded-full w-32 md:w-64 transition-all duration-700" style={{ background: activeMood.gradient, boxShadow: `0 0 12px ${activeMood.glow}` }} />
+          </div>
+        )}
       </section>
 
       {/* ── CORPORATE GIFT CATEGORIES ── */}
