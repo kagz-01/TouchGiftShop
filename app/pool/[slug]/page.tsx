@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Clock, Users, Heart, Share2, Copy, CheckCircle2,
-  Lock, Sparkles, ChevronRight, AlertCircle
+  Lock, Sparkles, ChevronRight, AlertCircle, Vote
 } from "lucide-react";
 
 type Pool = {
@@ -16,10 +16,13 @@ type Pool = {
   target_amount: number; current_balance: number; min_contribution: number;
   privacy_mode: "named" | "anonymous"; surprise_mode: boolean;
   voice_message_url: string | null; expires_at: string; status: string;
+  is_poll_mode: boolean;
+  poll_options: Array<{ name: string; price: number; imageUrl?: string }> | null;
 };
 type Contribution = {
   id: string; contributor_name: string | null; amount: number;
-  is_anonymous: boolean; is_ghost: boolean; message: string | null; created_at: string;
+  is_anonymous: boolean; is_ghost: boolean; message: string | null;
+  created_at: string; poll_vote_index: number | null;
 };
 
 function TimeLeft({ expiresAt }: { expiresAt: string }) {
@@ -40,6 +43,88 @@ function TimeLeft({ expiresAt }: { expiresAt: string }) {
     <span className={`flex items-center gap-1 text-sm font-semibold ${isUrgent ? "text-red-400 animate-pulse" : "text-white/60"}`}>
       <Clock className="w-3.5 h-3.5" />{left}
     </span>
+  );
+}
+
+function PollBallot({
+  options, contributions, isClosed, slug
+}: {
+  options: Array<{ name: string; price: number; imageUrl?: string }>;
+  contributions: Contribution[];
+  isClosed: boolean;
+  slug: string;
+}) {
+  // Calculate vote totals by KES weight per option
+  const voteTotals = options.map((_, idx) =>
+    contributions
+      .filter(c => c.poll_vote_index === idx && !c.is_ghost)
+      .reduce((sum, c) => sum + Number(c.amount), 0)
+  );
+  const grandTotal = voteTotals.reduce((s, v) => s + v, 0);
+  const leadingIdx = voteTotals.indexOf(Math.max(...voteTotals));
+
+  const OPTION_COLORS = [
+    "from-fuchsia-500 to-pink-500",
+    "from-blue-500 to-cyan-500",
+    "from-amber-500 to-orange-500",
+    "from-emerald-500 to-teal-500",
+  ];
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 mb-4">
+        <Vote className="w-4 h-4 text-fuchsia-400" />
+        <span className="text-sm font-bold text-white">Gift Poll — vote with your contribution</span>
+      </div>
+      {options.map((opt, idx) => {
+        const pct = grandTotal > 0 ? Math.round((voteTotals[idx] / grandTotal) * 100) : 0;
+        const isLeading = idx === leadingIdx && grandTotal > 0;
+        return (
+          <div key={idx} className={`relative overflow-hidden rounded-2xl border-2 transition-all ${
+            isLeading ? "border-fuchsia-400/60 shadow-[0_0_20px_rgba(217,70,239,0.2)]" : "border-white/10"
+          }`}>
+            {/* Vote bar background */}
+            <div
+              className={`absolute inset-0 bg-gradient-to-r ${OPTION_COLORS[idx]} opacity-10 transition-all duration-1000`}
+              style={{ width: `${pct}%` }}
+            />
+            <div className="relative p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${OPTION_COLORS[idx]} flex items-center justify-center text-white text-xs font-bold flex-shrink-0`}>
+                  {idx + 1}
+                </div>
+                <div>
+                  <p className="font-semibold text-white text-sm">{opt.name}</p>
+                  <p className="text-xs text-white/50">KES {opt.price.toLocaleString()}</p>
+                </div>
+              </div>
+              <div className="text-right flex-shrink-0 ml-4">
+                {isLeading && grandTotal > 0 && (
+                  <div className="text-[10px] font-bold text-fuchsia-300 mb-0.5 animate-pulse">🔥 Leading</div>
+                )}
+                <span className={`text-lg font-bold ${isLeading && grandTotal > 0 ? "text-fuchsia-300" : "text-white/60"}`}>
+                  {pct}%
+                </span>
+                <p className="text-[10px] text-white/40">{voteTotals[idx] > 0 ? `KES ${voteTotals[idx].toLocaleString()}` : "No votes yet"}</p>
+              </div>
+            </div>
+            {!isClosed && (
+              <a
+                href={`/pool/${slug}/contribute?vote=${idx}`}
+                className={`block w-full py-2 text-center text-xs font-bold bg-gradient-to-r ${OPTION_COLORS[idx]} text-white hover:opacity-90 transition-opacity`}
+              >
+                Vote for this →
+              </a>
+            )}
+          </div>
+        );
+      })}
+      {grandTotal > 0 && (
+        <p className="text-center text-xs text-white/30 pt-1">
+          {contributions.filter(c => c.poll_vote_index !== null).length} votes · KES {grandTotal.toLocaleString()} pledged
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -291,31 +376,44 @@ export default function PoolLandingPage() {
         <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6">
           <ProgressBar current={pool.current_balance} target={pool.target_amount} />
 
-          {/* Gift info */}
-          {pool.gift_name && !pool.surprise_mode && (
-            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
-              {pool.gift_image_url
-                ? <img src={pool.gift_image_url} alt="" className="w-14 h-14 object-cover rounded-xl" />
-                : <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-fuchsia-400/40" /></div>
-              }
-              <div>
-                <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
-                <p className="font-semibold text-white">{pool.gift_name}</p>
-                <p className="text-sm text-fuchsia-400">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
-              </div>
+          {/* Gift info or Poll Ballot */}
+          {pool.is_poll_mode && pool.poll_options && pool.poll_options.length > 0 ? (
+            <div className="mt-5">
+              <PollBallot
+                options={pool.poll_options}
+                contributions={contributions}
+                isClosed={isClosed}
+                slug={slug as string}
+              />
             </div>
-          )}
-          {pool.gift_name && pool.surprise_mode && (
-            <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
-              <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center">
-                <Lock className="w-6 h-6 text-fuchsia-400/40" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
-                <p className="font-semibold text-white">🤫 It&apos;s a surprise!</p>
-                <p className="text-sm text-white/40">Revealed when delivered</p>
-              </div>
-            </div>
+          ) : (
+            <>
+              {pool.gift_name && !pool.surprise_mode && (
+                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
+                  {pool.gift_image_url
+                    ? <img src={pool.gift_image_url} alt="" className="w-14 h-14 object-cover rounded-xl" />
+                    : <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-fuchsia-400/40" /></div>
+                  }
+                  <div>
+                    <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
+                    <p className="font-semibold text-white">{pool.gift_name}</p>
+                    <p className="text-sm text-fuchsia-400">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
+                  </div>
+                </div>
+              )}
+              {pool.gift_name && pool.surprise_mode && (
+                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
+                  <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center">
+                    <Lock className="w-6 h-6 text-fuchsia-400/40" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
+                    <p className="font-semibold text-white">🤫 It&apos;s a surprise!</p>
+                    <p className="text-sm text-white/40">Revealed when delivered</p>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
 

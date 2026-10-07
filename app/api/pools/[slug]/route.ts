@@ -36,8 +36,8 @@ export async function GET(
   // Fetch contributions — respect privacy mode
   const selectFields =
     pool.privacy_mode === "anonymous"
-      ? "id, amount, is_verified, is_anonymous, is_ghost, created_at, message"
-      : "id, contributor_name, amount, is_verified, is_anonymous, is_ghost, message, created_at";
+      ? "id, amount, is_verified, is_anonymous, is_ghost, created_at, message, poll_vote_index"
+      : "id, contributor_name, amount, is_verified, is_anonymous, is_ghost, message, created_at, poll_vote_index";
 
   const { data: contributions } = await supabaseAdmin
     .from("pool_contributions")

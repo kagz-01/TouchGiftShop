@@ -11,7 +11,7 @@ const ContributeSchema = z.object({
   isAnonymous: z.boolean().default(false),
   isGhost: z.boolean().default(false),
   paymentMethod: z.enum(["pesapal", "mpesa", "card", "airtel"]).default("pesapal"),
-  pollVoteId: z.string().optional(),
+  pollVoteIndex: z.number().int().optional(),
   splitParentId: z.string().uuid().optional(),
 });
 
@@ -78,7 +78,7 @@ export async function POST(
       is_anonymous: d.isAnonymous,
       is_ghost: d.isGhost,
       is_verified: false,
-      poll_vote_id: d.pollVoteId ?? null,
+      poll_vote_index: d.pollVoteIndex ?? null,
       split_parent_id: d.splitParentId ?? null,
     })
     .select()

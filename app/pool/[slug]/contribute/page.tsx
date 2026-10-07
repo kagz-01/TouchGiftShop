@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Heart, CreditCard, Smartphone, Ghost, Eye, EyeOff } from "lucide-react";
 
@@ -9,6 +9,8 @@ type PoolSummary = {
   title: string; recipient_name: string; target_amount: number;
   current_balance: number; min_contribution: number; gift_name: string | null;
   ghost_mode_allowed: boolean; privacy_mode: "named" | "anonymous"; slug: string;
+  is_poll_mode?: boolean;
+  poll_options?: Array<{ name: string; price: number }> | null;
 };
 
 const PAYMENT_METHODS = [
@@ -22,6 +24,11 @@ const QUICK_AMOUNTS = [200, 500, 1000, 2000, 5000];
 export default function ContributePage() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const voteParam = searchParams.get("vote");
+  const [pollVoteIndex, setPollVoteIndex] = useState<number | null>(
+    voteParam !== null ? parseInt(voteParam) : null
+  );
   const [pool, setPool] = useState<PoolSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -67,6 +74,7 @@ export default function ContributePage() {
           isAnonymous,
           isGhost,
           paymentMethod,
+          pollVoteIndex: pollVoteIndex !== null ? pollVoteIndex : undefined,
         }),
       });
 

@@ -6,7 +6,8 @@ import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Users, Settings, Eye, Share2, CheckCircle2,
   ChevronRight, ChevronLeft, Upload, Calendar, Lock,
-  Globe, Sparkles, Target, ArrowRight, UserRound
+  Globe, Sparkles, Target, ArrowRight, UserRound,
+  Plus, Minus, Vote, X
 } from "lucide-react";
 
 // ─── Step config ────────────────────────────────────────────────────────────
@@ -26,6 +27,13 @@ const OCCASIONS = [
   "+ Other",
 ];
 
+type PollOption = {
+  name: string;
+  price: number;
+  imageUrl: string;
+  description: string;
+};
+
 type WizardData = {
   // Step 1
   recipientName: string;
@@ -34,11 +42,13 @@ type WizardData = {
   customOccasion: string;
   surpriseMode: boolean;
   // Step 2
+  isPollMode: boolean;
   giftName: string;
   giftPrice: number;
   giftImageUrl: string;
   giftProductId: string;
   aiQuery: string;
+  pollOptions: PollOption[];
   // Step 3
   title: string;
   description: string;
@@ -53,7 +63,12 @@ type WizardData = {
 
 const defaultData: WizardData = {
   recipientName: "", recipientPhoto: "", occasion: "", customOccasion: "", surpriseMode: true,
+  isPollMode: false,
   giftName: "", giftPrice: 0, giftImageUrl: "", giftProductId: "", aiQuery: "",
+  pollOptions: [
+    { name: "", price: 0, imageUrl: "", description: "" },
+    { name: "", price: 0, imageUrl: "", description: "" },
+  ],
   title: "", description: "", targetAmount: 0, minContribution: 200,
   deadline: (() => { const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString().split("T")[0]; })(),
   overTargetBehaviour: "wallet_credit",
@@ -172,6 +187,51 @@ function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardD
   );
 }
 
+// ─── Per-option AI helper ─────────────────────────────────────────────────
+function OptionAISuggester({ recipientName, onPick }: { recipientName: string; onPick: (s: { name: string; price: number }) => void }) {
+  const [q, setQ] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<{ name: string; price: number }[]>([]);
+  const [open, setOpen] = useState(false);
+
+  const runAI = async () => {
+    if (!q.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/ai/suggest?q=${encodeURIComponent(q)}&limit=4`);
+      if (res.ok) { const d = await res.json(); setResults(d.suggestions ?? []); setOpen(true); }
+    } catch { /* noop */ } finally { setLoading(false); }
+  };
+
+  return (
+    <div>
+      <div className="flex gap-2">
+        <input
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && runAI()}
+          placeholder={`e.g. "tech lover, 25th birthday"`}
+          className="flex-1 px-3 py-2 rounded-xl text-xs border border-fuchsia-200 focus:border-fuchsia-400 focus:outline-none bg-white"
+        />
+        <button onClick={runAI} disabled={loading} className="px-3 py-2 bg-fuchsia-500 text-white rounded-xl text-xs font-semibold hover:bg-fuchsia-600 transition-colors disabled:opacity-50">
+          {loading ? "…" : <><Sparkles className="w-3.5 h-3.5 inline" /> AI</>}
+        </button>
+      </div>
+      {open && results.length > 0 && (
+        <div className="mt-2 grid grid-cols-2 gap-1.5">
+          {results.map((r, i) => (
+            <button key={i} onClick={() => { onPick(r); setOpen(false); setQ(""); }}
+              className="p-2 rounded-xl text-left text-xs bg-fuchsia-50 hover:bg-fuchsia-100 border border-fuchsia-100 transition-all">
+              <div className="font-semibold text-fuchsia-900 truncate">{r.name}</div>
+              <div className="text-fuchsia-600">KES {r.price.toLocaleString()}</div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, v: unknown) => void }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<{ name: string; price: number; image: string }[]>([]);
@@ -179,91 +239,193 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
   const runAI = async () => {
     if (!data.aiQuery.trim()) return;
     setAiLoading(true);
-    // Fetch from gift-finder API
     try {
       const res = await fetch(`/api/ai/suggest?q=${encodeURIComponent(data.aiQuery)}&limit=4`);
-      if (res.ok) {
-        const d = await res.json();
-        setAiSuggestions(d.suggestions ?? []);
-      }
-    } catch { /* noop */ }
-    setAiLoading(false);
+      if (res.ok) { const d = await res.json(); setAiSuggestions(d.suggestions ?? []); }
+    } catch { /* noop */ } finally { setAiLoading(false); }
+  };
+
+  const updatePollOption = (index: number, field: keyof PollOption, value: string | number) => {
+    const updated = data.pollOptions.map((opt, i) => i === index ? { ...opt, [field]: value } : opt);
+    set("pollOptions", updated);
+    // In poll mode, set targetAmount to max option price
+    if (field === "price") {
+      const maxPrice = Math.max(...updated.map(o => Number(o.price) || 0));
+      set("targetAmount", maxPrice);
+    }
+  };
+
+  const addPollOption = () => {
+    if (data.pollOptions.length >= 4) return;
+    set("pollOptions", [...data.pollOptions, { name: "", price: 0, imageUrl: "", description: "" }]);
+  };
+
+  const removePollOption = (index: number) => {
+    if (data.pollOptions.length <= 2) return;
+    set("pollOptions", data.pollOptions.filter((_, i) => i !== index));
   };
 
   return (
-    <div className="space-y-6">
-      <div className="p-4 rounded-2xl bg-gradient-to-br from-gold/10 to-gold/5 border border-gold/20">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-gold" />
-          <span className="text-sm font-semibold text-brand-deep">AI Gift Suggester</span>
-        </div>
-        <div className="flex gap-2">
-          <input
-            value={data.aiQuery}
-            onChange={e => set("aiQuery", e.target.value)}
-            onKeyDown={e => e.key === "Enter" && runAI()}
-            placeholder={`Describe ${data.recipientName || "the recipient"}... e.g. "loves cooking, 30th birthday"`}
-            className="flex-1 px-3 py-2 rounded-xl text-sm border border-gold/20 focus:border-gold focus:outline-none bg-white"
-          />
-          <button
-            onClick={runAI}
-            disabled={aiLoading}
-            className="px-4 py-2 bg-gold text-white rounded-xl text-sm font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50"
-          >
-            {aiLoading ? "..." : "Find"}
-          </button>
-        </div>
-        {aiSuggestions.length > 0 && (
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            {aiSuggestions.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => { set("giftName", s.name); set("giftPrice", s.price); set("targetAmount", s.price); set("giftImageUrl", s.image); }}
-                className={`p-2 rounded-xl text-left text-xs transition-all border-2 ${data.giftName === s.name ? "border-brand bg-brand/5" : "border-transparent bg-white hover:border-brand/30"}`}
-              >
-                <div className="font-semibold text-brand-deep truncate">{s.name}</div>
-                <div className="text-brand/70">KES {s.price.toLocaleString()}</div>
+    <div className="space-y-5">
+
+      {/* Mode toggle */}
+      <div className="flex rounded-2xl overflow-hidden border-2 border-brand/10">
+        <button
+          onClick={() => set("isPollMode", false)}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all ${
+            !data.isPollMode ? "bg-brand text-white" : "bg-white text-brand-deep/50 hover:bg-brand/5"
+          }`}
+        >
+          <Gift className="w-4 h-4" /> One Gift
+        </button>
+        <button
+          onClick={() => set("isPollMode", true)}
+          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-all ${
+            data.isPollMode ? "bg-brand text-white" : "bg-white text-brand-deep/50 hover:bg-brand/5"
+          }`}
+        >
+          <Vote className="w-4 h-4" /> Let Them Vote
+        </button>
+      </div>
+
+      {!data.isPollMode ? (
+        /* ── SINGLE GIFT MODE ── */
+        <div className="space-y-5">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-50/50 border border-amber-200">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="text-sm font-semibold text-brand-deep">AI Gift Suggester</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={data.aiQuery}
+                onChange={e => set("aiQuery", e.target.value)}
+                onKeyDown={e => e.key === "Enter" && runAI()}
+                placeholder={`Describe ${data.recipientName || "the recipient"}… e.g. "loves cooking, 30th birthday"`}
+                className="flex-1 px-3 py-2 rounded-xl text-sm border border-amber-200 focus:border-amber-400 focus:outline-none bg-white"
+              />
+              <button onClick={runAI} disabled={aiLoading}
+                className="px-4 py-2 bg-amber-500 text-white rounded-xl text-sm font-semibold hover:bg-amber-600 transition-colors disabled:opacity-50">
+                {aiLoading ? "…" : "Find"}
               </button>
-            ))}
+            </div>
+            {aiSuggestions.length > 0 && (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {aiSuggestions.map((s, i) => (
+                  <button key={i}
+                    onClick={() => { set("giftName", s.name); set("giftPrice", s.price); set("targetAmount", s.price); set("giftImageUrl", s.image); }}
+                    className={`p-2.5 rounded-xl text-left text-xs transition-all border-2 ${
+                      data.giftName === s.name ? "border-brand bg-brand/5" : "border-transparent bg-white hover:border-brand/30"
+                    }`}>
+                    <div className="font-semibold text-brand-deep truncate">{s.name}</div>
+                    <div className="text-amber-600 font-medium">KES {s.price.toLocaleString()}</div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="relative flex items-center gap-3">
-        <div className="flex-1 h-px bg-brand/10" />
-        <span className="text-xs text-brand-deep/40 font-medium">or enter manually</span>
-        <div className="flex-1 h-px bg-brand/10" />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-brand-deep mb-2">Gift Name</label>
-          <input
-            value={data.giftName}
-            onChange={e => set("giftName", e.target.value)}
-            placeholder="e.g. Premium Spa Hamper"
-            className="w-full px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none font-sans text-brand-deep bg-white"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-brand-deep mb-2">Gift Price (KES)</label>
-          <input
-            type="number"
-            value={data.giftPrice || ""}
-            onChange={e => { const v = Number(e.target.value); set("giftPrice", v); set("targetAmount", v); }}
-            placeholder="e.g. 5000"
-            className="w-full px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none font-sans text-brand-deep bg-white"
-          />
-        </div>
-      </div>
-
-      {data.giftName && (
-        <div className="p-4 rounded-2xl bg-success/5 border border-success/20 flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0" />
-          <div>
-            <p className="text-sm font-semibold text-brand-deep">{data.giftName}</p>
-            {data.giftPrice > 0 && <p className="text-xs text-brand-deep/60">Target: KES {data.giftPrice.toLocaleString()}</p>}
+          <div className="relative flex items-center gap-3">
+            <div className="flex-1 h-px bg-brand/10" />
+            <span className="text-xs text-brand-deep/40 font-medium">or enter manually</span>
+            <div className="flex-1 h-px bg-brand/10" />
           </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-brand-deep mb-2">Gift Name</label>
+              <input value={data.giftName} onChange={e => set("giftName", e.target.value)}
+                placeholder="e.g. Premium Spa Hamper"
+                className="w-full px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none font-sans text-brand-deep bg-white" />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-brand-deep mb-2">Gift Price (KES)</label>
+              <input type="number" value={data.giftPrice || ""}
+                onChange={e => { const v = Number(e.target.value); set("giftPrice", v); set("targetAmount", v); }}
+                placeholder="e.g. 5000"
+                className="w-full px-4 py-3 rounded-2xl border-2 border-brand/10 focus:border-brand focus:outline-none font-sans text-brand-deep bg-white" />
+            </div>
+          </div>
+
+          {data.giftName && (
+            <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-brand-deep">{data.giftName}</p>
+                {data.giftPrice > 0 && <p className="text-xs text-brand-deep/60">Target: KES {data.giftPrice.toLocaleString()}</p>}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* ── POLL MODE ── */
+        <div className="space-y-4">
+          <div className="p-3 rounded-2xl bg-fuchsia-50 border border-fuchsia-100 text-center">
+            <p className="text-xs font-semibold text-fuchsia-700">🗳️ Contributors vote with their contributions — the most-funded option wins!</p>
+          </div>
+
+          {data.pollOptions.map((opt, index) => (
+            <div key={index} className="relative p-4 rounded-2xl border-2 border-fuchsia-100 bg-white space-y-3 shadow-sm">
+              {/* Option header */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-fuchsia-500 text-white text-xs font-bold flex items-center justify-center">{index + 1}</div>
+                  <span className="text-sm font-bold text-brand-deep">Option {index + 1}</span>
+                </div>
+                {data.pollOptions.length > 2 && (
+                  <button onClick={() => removePollOption(index)}
+                    className="p-1 rounded-lg hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors">
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {/* Gift name */}
+              <input
+                value={opt.name}
+                onChange={e => updatePollOption(index, "name", e.target.value)}
+                placeholder={`Option ${index + 1} name, e.g. Luxury Spa Day`}
+                className="w-full px-3 py-2.5 rounded-xl border-2 border-fuchsia-100 focus:border-fuchsia-400 focus:outline-none text-sm text-brand-deep bg-white"
+              />
+
+              {/* Price */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-brand-deep/60 w-12 flex-shrink-0">KES</span>
+                <input
+                  type="number"
+                  value={opt.price || ""}
+                  onChange={e => updatePollOption(index, "price", Number(e.target.value))}
+                  placeholder="Price"
+                  className="flex-1 px-3 py-2 rounded-xl border-2 border-fuchsia-100 focus:border-fuchsia-400 focus:outline-none text-sm text-brand-deep bg-white"
+                />
+              </div>
+
+              {/* AI assistant per option */}
+              <div>
+                <p className="text-xs font-semibold text-fuchsia-600 mb-1.5 flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Suggest for this option</p>
+                <OptionAISuggester
+                  recipientName={data.recipientName}
+                  onPick={s => { updatePollOption(index, "name", s.name); updatePollOption(index, "price", s.price); }}
+                />
+              </div>
+            </div>
+          ))}
+
+          {data.pollOptions.length < 4 && (
+            <button onClick={addPollOption}
+              className="w-full py-3 border-2 border-dashed border-fuchsia-200 rounded-2xl text-sm font-semibold text-fuchsia-500 hover:bg-fuchsia-50 hover:border-fuchsia-300 transition-all flex items-center justify-center gap-2">
+              <Plus className="w-4 h-4" /> Add Option ({data.pollOptions.length}/4)
+            </button>
+          )}
+
+          {data.pollOptions.filter(o => o.name && o.price > 0).length >= 2 && (
+            <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+              <p className="text-xs font-semibold text-emerald-700">
+                {data.pollOptions.filter(o => o.name && o.price > 0).length} options ready · Highest priced option sets the pool target (KES {Math.max(...data.pollOptions.map(o => Number(o.price) || 0)).toLocaleString()})
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -496,7 +658,12 @@ export default function CreatePoolPage() {
 
   const canNext = () => {
     if (step === 1) return data.recipientName.trim().length > 0;
-    if (step === 2) return data.giftName.trim().length > 0 && data.giftPrice > 0;
+    if (step === 2) {
+      if (data.isPollMode) {
+        return data.pollOptions.filter(o => o.name.trim() && o.price > 0).length >= 2;
+      }
+      return data.giftName.trim().length > 0 && data.giftPrice > 0;
+    }
     if (step === 3) return data.targetAmount > 0 && data.deadline;
     return true;
   };
@@ -505,26 +672,39 @@ export default function CreatePoolPage() {
     setLoading(true);
     setError("");
     try {
+      const payload: Record<string, unknown> = {
+        recipientName: data.recipientName,
+        recipientPhotoUrl: data.recipientPhoto || undefined,
+        occasion: data.occasion === "✨ Other" ? data.customOccasion : (data.occasion || undefined),
+        title: data.title || `Gift Pool for ${data.recipientName}`,
+        description: data.description || undefined,
+        targetAmount: data.targetAmount,
+        minContribution: data.minContribution,
+        overTargetBehaviour: data.overTargetBehaviour,
+        expiresAt: new Date(data.deadline + "T23:59:59").toISOString(),
+        privacyMode: data.privacyMode,
+        surpriseMode: data.surpriseMode,
+        ghostModeAllowed: data.ghostModeAllowed,
+        isPollMode: data.isPollMode,
+      };
+
+      if (data.isPollMode) {
+        // For poll mode, use first option as "the gift" placeholder, store all options in poll_options
+        const validOptions = data.pollOptions.filter(o => o.name && o.price > 0);
+        payload.giftName = `Vote: ${validOptions.map(o => o.name).join(" vs ")}`;
+        payload.giftPrice = Math.max(...validOptions.map(o => Number(o.price)));
+        payload.pollOptions = validOptions;
+      } else {
+        payload.giftName = data.giftName;
+        payload.giftPrice = data.giftPrice;
+        payload.giftImageUrl = data.giftImageUrl || undefined;
+        payload.pollOptions = null;
+      }
+
       const res = await fetch("/api/pools", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          recipientName: data.recipientName,
-          recipientPhotoUrl: data.recipientPhoto || undefined,
-          occasion: data.occasion === "✨ Other" ? data.customOccasion : (data.occasion || undefined),
-          title: data.title || `Gift Pool for ${data.recipientName}`,
-          description: data.description || undefined,
-          giftName: data.giftName,
-          giftPrice: data.giftPrice,
-          giftImageUrl: data.giftImageUrl || undefined,
-          targetAmount: data.targetAmount,
-          minContribution: data.minContribution,
-          overTargetBehaviour: data.overTargetBehaviour,
-          expiresAt: new Date(data.deadline + "T23:59:59").toISOString(),
-          privacyMode: data.privacyMode,
-          surpriseMode: data.surpriseMode,
-          ghostModeAllowed: data.ghostModeAllowed,
-        }),
+        body: JSON.stringify(payload),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Failed to create pool");

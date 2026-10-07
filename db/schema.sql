@@ -115,6 +115,7 @@ CREATE TABLE pool_contributions (
     is_anonymous BOOLEAN DEFAULT FALSE,
     is_ghost BOOLEAN DEFAULT FALSE,
     split_parent_id UUID REFERENCES pool_contributions(id) ON DELETE SET NULL,
+    poll_vote_index INT DEFAULT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 

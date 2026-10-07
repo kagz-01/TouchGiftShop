@@ -191,16 +191,16 @@ export default function HamperBuilder() {
       <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40 sticky top-0 z-40">
         <div className="page-container-capped py-4">
           <div className="flex items-center justify-between mb-4">
-            <Link href="/corporate" className="text-brand-muted hover:text-brand text-sm flex items-center gap-1">
+            <Link href="/corporate" className="text-white/60 hover:text-cyan-400 text-sm flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               Back
             </Link>
             <h1 className="font-display italic text-lg font-bold">Corporate Hamper Builder</h1>
-            <div className="text-sm text-brand-muted">
+            <div className="text-sm text-white/60">
               {recipientCount > 0 && (
-                <span className="bg-brand/10 text-brand px-2 py-1 shape-premium-button text-xs font-semibold">
+                <span className="bg-brand/10 text-cyan-400 px-2 py-1 shape-premium-button text-xs font-semibold">
                   {recipientCount} recipient{recipientCount !== 1 ? "s" : ""}
                 </span>
               )}
@@ -219,7 +219,7 @@ export default function HamperBuilder() {
                       ? "bg-brand text-white shadow-ribbon"
                       : s.id < step
                       ? "bg-success/10 text-emerald-400 cursor-pointer hover:bg-success/20"
-                      : "bg-white/60 text-brand-muted cursor-not-allowed shadow-sm border border-white/10/50"
+                      : "bg-white/5 text-white/60 cursor-not-allowed shadow-sm border border-white/10/50"
                   }`}
                 >
                   <span className="text-base">{s.id < step ? "✓" : s.icon}</span>
@@ -240,7 +240,7 @@ export default function HamperBuilder() {
           <div className="space-y-6">
             <div>
               <h2 className="font-display italic text-2xl font-bold mb-2">Choose your gift</h2>
-              <p className="text-brand-muted text-sm">Start with a template or build your hamper from scratch.</p>
+              <p className="text-white/60 text-sm">Start with a template or build your hamper from scratch.</p>
             </div>
 
             {/* Template vs Build toggle */}
@@ -250,7 +250,7 @@ export default function HamperBuilder() {
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   !budgetMode && !selectedTemplate
                     ? "bg-brand text-white"
-                    : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
+                    : "bg-white/5 backdrop-blur-sm border border-white/10 text-white/60 hover:border-cyan-400/30 shadow-sm"
                 }`}
               >
                 <Layout className="w-4 h-4" /> Start from Template
@@ -259,9 +259,9 @@ export default function HamperBuilder() {
                 onClick={() => { setSelectedTemplate(null); setBudgetMode(false); }}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   !budgetMode && !selectedTemplate
-                    ? "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted"
+                    ? "bg-white/5 backdrop-blur-sm border border-white/10 text-white/60"
                     : budgetMode
-                    ? "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted"
+                    ? "bg-white/5 backdrop-blur-sm border border-white/10 text-white/60"
                     : "bg-brand text-white"
                 }`}
               >
@@ -272,7 +272,7 @@ export default function HamperBuilder() {
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all flex items-center gap-2 ${
                   budgetMode
                     ? "bg-brand text-white"
-                    : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
+                    : "bg-white/5 backdrop-blur-sm border border-white/10 text-white/60 hover:border-cyan-400/30 shadow-sm"
                 }`}
               >
                 <Target className="w-4 h-4" /> Budget Mode
@@ -298,7 +298,7 @@ export default function HamperBuilder() {
                 </div>
                 <button
                   onClick={() => setSelectedTemplate(null)}
-                  className="text-xs text-brand hover:text-brand-dark font-medium"
+                  className="text-xs text-cyan-400 hover:text-cyan-600 font-medium"
                 >
                   Change template
                 </button>
@@ -327,7 +327,7 @@ export default function HamperBuilder() {
                       className={`px-4 py-2 shape-premium-button text-sm font-medium whitespace-nowrap transition-all ${
                         selectedCategory === cat.slug
                           ? "bg-brand text-white"
-                          : "bg-white/80 backdrop-blur-sm border border-white/10 text-brand-muted hover:border-brand/30 shadow-sm"
+                          : "bg-white/5 backdrop-blur-sm border border-white/10 text-white/60 hover:border-cyan-400/30 shadow-sm"
                       }`}
                     >
                       {cat.label}
@@ -356,7 +356,7 @@ export default function HamperBuilder() {
                       key={product.id}
                       onClick={() => toggleProduct(product)}
                       className={`relative bg-white/5 backdrop-blur-md shape-premium-card p-4 border-2 cursor-pointer transition-all duration-300 hover:border-white/20 shadow-sm ${
-                        selected ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"
+                        selected ? "border-cyan-400 shadow-ribbon" : "border-surface-border hover:border-cyan-400/30"
                       }`}
                     >
                       {selected && (
@@ -374,10 +374,10 @@ export default function HamperBuilder() {
                         )}
                       </div>
                       <h3 className="font-semibold text-sm mb-1 line-clamp-2">{product.name}</h3>
-                      <p className="text-brand font-bold text-sm">KSh {product.price.toLocaleString()}</p>
+                      <p className="text-cyan-400 font-bold text-sm">KSh {product.price.toLocaleString()}</p>
                       {selected && item && (
                         <div className="mt-3 flex items-center justify-between bg-violet-500/10 rounded-lg px-3 py-2" onClick={(e) => e.stopPropagation()}>
-                          <span className="text-xs text-brand-muted">Qty per hamper</span>
+                          <span className="text-xs text-white/60">Qty per hamper</span>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateQuantity(product.id, item.quantity - 1)}
@@ -409,7 +409,7 @@ export default function HamperBuilder() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold">{hamperItems.length} item{hamperItems.length !== 1 ? "s" : ""} in hamper</p>
-                    <p className="text-brand-muted text-xs">KSh {hamperTotal.toLocaleString()} per hamper</p>
+                    <p className="text-white/60 text-xs">KSh {hamperTotal.toLocaleString()} per hamper</p>
                   </div>
                   <button
                     onClick={() => setStep(2)}
@@ -428,7 +428,7 @@ export default function HamperBuilder() {
           <div className="space-y-6">
             <div>
               <h2 className="font-display italic text-2xl font-bold mb-2">Add recipients</h2>
-              <p className="text-brand-muted text-sm">Add the people who will receive this gift. One hamper per recipient.</p>
+              <p className="text-white/60 text-sm">Add the people who will receive this gift. One hamper per recipient.</p>
             </div>
 
             {/* Toggle CSV/Manual */}
@@ -436,7 +436,7 @@ export default function HamperBuilder() {
               <button
                 onClick={() => setCsvMode(false)}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
-                  !csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-brand-muted"
+                  !csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-white/60"
                 }`}
               >
                 <PenLine className="w-4 h-4 inline-block mr-1" /> Add Manually
@@ -444,7 +444,7 @@ export default function HamperBuilder() {
               <button
                 onClick={() => setCsvMode(true)}
                 className={`px-4 py-2 shape-premium-card text-sm font-medium transition-all ${
-                  csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-brand-muted"
+                  csvMode ? "bg-brand text-white" : "bg-white border border-white/10 text-white/60"
                 }`}
               >
                 <ClipboardList className="w-4 h-4 inline-block mr-1" /> Upload CSV
@@ -455,10 +455,10 @@ export default function HamperBuilder() {
               <div className="bg-white shape-premium-card p-6 border border-white/10 space-y-4">
                 <div>
                   <p className="text-sm font-semibold mb-2">Paste CSV data</p>
-                  <p className="text-xs text-brand-muted mb-3">
+                  <p className="text-xs text-white/60 mb-3">
                     Format: name, phone, note (one recipient per line). Example:
                   </p>
-                  <pre className="bg-gray-50 rounded-lg p-3 text-xs text-brand-muted mb-3">
+                  <pre className="bg-gray-50 rounded-lg p-3 text-xs text-white/60 mb-3">
 {`John Kamau, 0712345678, Happy birthday!
 Jane Wanjiku, 0798765432, Congratulations!
 Peter Odhiambo, 0755555555`}
@@ -468,7 +468,7 @@ Peter Odhiambo, 0755555555`}
                   value={csvText}
                   onChange={(e) => setCsvText(e.target.value)}
                   placeholder={`name, phone, note\nJohn Kamau, 0712345678, Happy birthday!\nJane Wanjiku, 0798765432`}
-                  className="w-full h-40 bg-white/50 border border-white/10 shape-premium-card p-4 text-sm font-mono focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none shadow-inner"
+                  className="w-full h-40 bg-white/5 border border-white/10 shape-premium-card p-4 text-sm font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-none shadow-inner"
                 />
                 <button
                   onClick={parseCsv}
@@ -498,14 +498,14 @@ Peter Odhiambo, 0755555555`}
                         placeholder="Full name *"
                         value={recipient.name}
                         onChange={(e) => updateRecipient(index, "name", e.target.value)}
-                        className="bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/5 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                       />
                       <input
                         type="tel"
                         placeholder="Phone number (07XX) *"
                         value={recipient.phone}
                         onChange={(e) => updateRecipient(index, "phone", e.target.value)}
-                        className="bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                        className="bg-white/5 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                       />
                     </div>
                     <input
@@ -513,7 +513,7 @@ Peter Odhiambo, 0755555555`}
                       placeholder="Personal note (optional)"
                       value={recipient.note}
                       onChange={(e) => updateRecipient(index, "note", e.target.value)}
-                      className="w-full mt-3 bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                      className="w-full mt-3 bg-white/5 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                     />
                   </div>
                 ))}
@@ -525,7 +525,7 @@ Peter Odhiambo, 0755555555`}
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{recipients.filter((r) => r.name && r.phone).length} recipient(s)</p>
-                  <p className="text-brand-muted text-xs">KSh {hamperTotal.toLocaleString()} × {recipients.filter((r) => r.name && r.phone).length} = KSh {orderTotal.toLocaleString()}</p>
+                  <p className="text-white/60 text-xs">KSh {hamperTotal.toLocaleString()} × {recipients.filter((r) => r.name && r.phone).length} = KSh {orderTotal.toLocaleString()}</p>
                   {bulkDiscount > 0 && (
                     <p className="text-emerald-400 text-xs font-semibold">{bulkDiscount * 100}% bulk discount applied!</p>
                   )}
@@ -534,21 +534,21 @@ Peter Odhiambo, 0755555555`}
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="hidden sm:block px-4 py-3 bg-brand/10 text-brand shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-violet-400/20"
+                      className="hidden sm:block px-4 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-violet-400/20"
                     >
                       + Add Recipient
                     </button>
                   )}
                   <button
                     onClick={() => setStep(1)}
-                    className="px-4 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 bg-gray-100 text-white/60 shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
                     ← Back
                   </button>
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="sm:hidden px-3 py-3 bg-brand/10 text-brand shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-violet-400/20"
+                      className="sm:hidden px-3 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-violet-400/20"
                       aria-label="Add Recipient"
                     >
                       +
@@ -572,7 +572,7 @@ Peter Odhiambo, 0755555555`}
           <div className="space-y-6">
             <div>
               <h2 className="font-display italic text-2xl font-bold mb-2">Customize (optional)</h2>
-              <p className="text-brand-muted text-sm">Add your company branding and personal touches.</p>
+              <p className="text-white/60 text-sm">Add your company branding and personal touches.</p>
             </div>
 
             <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 space-y-6 shadow-sm">
@@ -584,7 +584,7 @@ Peter Odhiambo, 0755555555`}
                   placeholder="e.g. Acme Technologies Ltd"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="w-full bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
+                  className="w-full bg-white/5 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                 />
               </div>
 
@@ -596,9 +596,9 @@ Peter Odhiambo, 0755555555`}
                   value={customMessage}
                   onChange={(e) => setCustomMessage(e.target.value)}
                   rows={3}
-                  className="w-full bg-white/50 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  className="w-full bg-white/5 border border-white/10 shape-premium-card px-4 py-3 text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-none"
                 />
-                <p className="text-xs text-brand-muted mt-1">{customMessage.length}/200 characters</p>
+                <p className="text-xs text-white/60 mt-1">{customMessage.length}/200 characters</p>
               </div>
 
               {/* Gift wrap options */}
@@ -615,13 +615,13 @@ Peter Odhiambo, 0755555555`}
                       onClick={() => setGiftWrap(wrap.id)}
                       className={`p-4 shape-premium-card border-2 text-center transition-all ${
                         giftWrap === wrap.id
-                          ? "border-brand bg-violet-500/10 shadow-ribbon"
-                          : "border-surface-border hover:border-brand/30"
+                          ? "border-cyan-400 bg-violet-500/10 shadow-ribbon"
+                          : "border-surface-border hover:border-cyan-400/30"
                       }`}
                     >
                       <span className="text-2xl block mb-1">{wrap.icon}</span>
                       <p className="text-sm font-semibold">{wrap.label}</p>
-                      <p className="text-xs text-brand-muted">{wrap.desc}</p>
+                      <p className="text-xs text-white/60">{wrap.desc}</p>
                     </button>
                   ))}
                 </div>
@@ -655,7 +655,7 @@ Peter Odhiambo, 0755555555`}
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">Order Summary</p>
-                  <p className="text-brand-muted text-xs">
+                  <p className="text-white/60 text-xs">
                     {hamperItems.length} item(s) × {recipients.filter((r) => r.name && r.phone).length} recipients
                   </p>
                   {bulkDiscount > 0 && (
@@ -665,7 +665,7 @@ Peter Odhiambo, 0755555555`}
                 <div className="flex gap-2">
                   <button
                     onClick={() => setStep(2)}
-                    className="px-4 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    className="px-4 py-3 bg-gray-100 text-white/60 shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
                   >
                     ← Back
                   </button>
@@ -686,7 +686,7 @@ Peter Odhiambo, 0755555555`}
           <div className="space-y-6">
             <div>
               <h2 className="font-display italic text-2xl font-bold mb-2">Review your order</h2>
-              <p className="text-brand-muted text-sm">Double-check everything before placing your order.</p>
+              <p className="text-white/60 text-sm">Double-check everything before placing your order.</p>
             </div>
 
             {/* Order breakdown */}
@@ -709,7 +709,7 @@ Peter Odhiambo, 0755555555`}
                         </div>
                         <div>
                           <p className="font-medium">{item.product.name}</p>
-                          <p className="text-brand-muted text-xs">Qty: {item.quantity}</p>
+                          <p className="text-white/60 text-xs">Qty: {item.quantity}</p>
                         </div>
                       </div>
                       <p className="font-semibold">KSh {(item.product.price * item.quantity).toLocaleString()}</p>
@@ -728,11 +728,11 @@ Peter Odhiambo, 0755555555`}
                   <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                     <span className="text-lg">🎨</span> Customization
                   </h3>
-                  <div className="bg-white/50 border border-white/10 shape-premium-card p-4 space-y-2 text-sm">
-                    {companyName && <p><span className="text-brand-muted">Company:</span> {companyName}</p>}
-                    {customMessage && <p><span className="text-brand-muted">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
+                  <div className="bg-white/5 border border-white/10 shape-premium-card p-4 space-y-2 text-sm">
+                    {companyName && <p><span className="text-white/60">Company:</span> {companyName}</p>}
+                    {customMessage && <p><span className="text-white/60">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
                     {giftWrap !== "standard" && (
-                      <p><span className="text-brand-muted">Wrapping:</span> {giftWrap === "premium" ? "Premium Box + Ribbon" : "Branded Logo Box"}</p>
+                      <p><span className="text-white/60">Wrapping:</span> {giftWrap === "premium" ? "Premium Box + Ribbon" : "Branded Logo Box"}</p>
                     )}
                   </div>
                 </div>
@@ -748,9 +748,9 @@ Peter Odhiambo, 0755555555`}
                     <div key={i} className="flex items-center justify-between text-sm py-2 border-b border-surface-border last:border-0">
                       <div>
                         <p className="font-medium">{r.name}</p>
-                        <p className="text-brand-muted text-xs">{r.phone}{r.note ? ` • ${r.note}` : ""}</p>
+                        <p className="text-white/60 text-xs">{r.phone}{r.note ? ` • ${r.note}` : ""}</p>
                       </div>
-                      <p className="text-brand-muted text-xs">KSh {hamperTotal.toLocaleString()}</p>
+                      <p className="text-white/60 text-xs">KSh {hamperTotal.toLocaleString()}</p>
                     </div>
                   ))}
                 </div>
@@ -785,7 +785,7 @@ Peter Odhiambo, 0755555555`}
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setStep(3)}
-                className="px-6 py-3 bg-gray-100 text-brand-muted shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
+                className="px-6 py-3 bg-gray-100 text-white/60 shape-premium-card font-semibold text-sm hover:bg-gray-200 transition-colors"
               >
                 ← Back
               </button>
@@ -822,11 +822,11 @@ Peter Odhiambo, 0755555555`}
                   }
                 }}
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep shape-premium-card font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50"
+                className="flex-1 px-6 py-4 bg-gradient-to-r from-gold to-gold-light text-cyan-950 shape-premium-card font-bold text-lg hover:shadow-gold hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-5 h-5 border-2 border-brand-deep/30 border-t-brand-deep shape-premium-button animate-spin" />
+                    <span className="w-5 h-5 border-2 border-cyan-400-deep/30 border-t-brand-deep shape-premium-button animate-spin" />
                     Processing...
                   </span>
                 ) : (
