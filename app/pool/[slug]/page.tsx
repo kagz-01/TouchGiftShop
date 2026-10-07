@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Clock, Users, Heart, Share2, Copy, CheckCircle2,
-  Lock, Sparkles, ChevronRight, AlertCircle, Vote, QrCode, X
+  Lock, Sparkles, ChevronRight, AlertCircle, Vote, QrCode, X, Play, Pause, Volume2
 } from "lucide-react";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -231,6 +231,48 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
   );
 }
 
+function VoicePlayer({ url }: { url: string }) {
+  const [playing, setPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  // A completely mocked interaction for the Voice Message UI.
+  // We simulate playback duration.
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (playing) {
+      interval = setInterval(() => {
+        setProgress(p => {
+          if (p >= 100) { setPlaying(false); return 0; }
+          return p + 2;
+        });
+      }, 200);
+    }
+    return () => clearInterval(interval);
+  }, [playing]);
+
+  return (
+    <div className="bg-[#1F0A1C] border border-fuchsia-500/20 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden shadow-lg mt-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500/10 to-transparent pointer-events-none" />
+      <button 
+        onClick={() => setPlaying(!playing)}
+        className="relative z-10 w-12 h-12 rounded-full bg-fuchsia-500 flex items-center justify-center text-white flex-shrink-0 shadow-[0_0_20px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform"
+      >
+        {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-1" />}
+      </button>
+      <div className="flex-1 relative z-10">
+        <div className="flex items-center gap-2 mb-1">
+          <Volume2 className="w-4 h-4 text-fuchsia-400" />
+          <p className="text-sm font-semibold text-white">Voice Message</p>
+        </div>
+        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-fuchsia-500 to-pink-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+        </div>
+        <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider">{playing ? 'Playing...' : 'Tap to play'}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function PoolLandingPage() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
@@ -388,7 +430,12 @@ export default function PoolLandingPage() {
         </div>
       </div>
 
-      <div className="max-w-xl mx-auto px-4 -mt-4 pb-24 space-y-4">
+      <div className="max-w-xl mx-auto px-4 -mt-4 pb-24 space-y-4 relative z-20">
+
+        {/* Voice Message Player */}
+        {pool.voice_message_url && (
+          <VoicePlayer url={pool.voice_message_url} />
+        )}
 
         {/* Closed banner */}
         {isClosed && (
