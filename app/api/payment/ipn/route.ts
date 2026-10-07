@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getTransactionStatus } from "@/lib/payment";
-import { deliverGiftCard } from "@/lib/notifications";
+import { deliverGiftCard, sendPoolMilestoneAlert } from "@/lib/notifications";
 import {
   REFERRAL_BONUS_POINTS,
   CONVERSION_MIN_ORDER_KSH,
@@ -353,19 +353,49 @@ async function handlePoolPayment(
 
     const { data: pool } = await supabaseAdmin
       .from("group_gifting_pools")
-      .select("target_amount")
+      .select("target_amount, current_balance, title, slug, organizer_id")
       .eq("id", contribution.pool_id)
       .single();
 
     if (pool !== null) {
+      const target = Number(pool.target_amount);
+      const prevBalance = Number(pool.current_balance);
       const updates: Record<string, unknown> = { current_balance: recomputedBalance };
-      if (recomputedBalance >= Number(pool.target_amount)) {
+      
+      if (recomputedBalance >= target) {
         updates.status = "completed";
       }
+
       await supabaseAdmin
         .from("group_gifting_pools")
         .update(updates)
         .eq("id", contribution.pool_id);
+
+      // Check milestones
+      const oldPct = Math.floor((prevBalance / target) * 100);
+      const newPct = Math.floor((recomputedBalance / target) * 100);
+      const milestones = [25, 50, 75, 100];
+      const crossedMilestones = milestones.filter(m => oldPct < m && newPct >= m);
+
+      if (crossedMilestones.length > 0) {
+        const highestMilestone = Math.max(...crossedMilestones);
+        
+        // Fetch organizer info to send alert
+        const { data: organizer } = await supabaseAdmin
+          .from("users")
+          .select("email, phone")
+          .eq("id", pool.organizer_id)
+          .maybeSingle();
+
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
+        await sendPoolMilestoneAlert({
+          poolTitle: pool.title,
+          milestonePct: highestMilestone,
+          organizerEmail: organizer?.email,
+          organizerPhone: organizer?.phone,
+          poolUrl: `${siteUrl}/pool/${pool.slug}`,
+        }).catch(console.error);
+      }
     }
   }
 }

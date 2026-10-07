@@ -125,3 +125,39 @@ export async function deliverGiftCard(options: {
 
   return { success: true, results };
 }
+
+export async function sendPoolMilestoneAlert(options: {
+  poolTitle: string;
+  milestonePct: number; // 25, 50, 75, 100
+  organizerEmail?: string | null;
+  organizerPhone?: string | null;
+  poolUrl: string;
+}) {
+  const { poolTitle, milestonePct, organizerEmail, organizerPhone, poolUrl } = options;
+  const isGoal = milestonePct >= 100;
+  
+  const subject = isGoal
+    ? `🎉 Goal Reached! Your gift pool "${poolTitle}" is fully funded!`
+    : `Milestone Unlocked: "${poolTitle}" is ${milestonePct}% funded!`;
+
+  const text = isGoal
+    ? `Great news! Your gift pool "${poolTitle}" has reached its goal. Check it out here: ${poolUrl}`
+    : `Your gift pool "${poolTitle}" has just hit the ${milestonePct}% milestone! View progress here: ${poolUrl}`;
+
+  const html = isGoal
+    ? `<p>Great news!</p><p>Your gift pool <strong>"${poolTitle}"</strong> has reached its goal.</p><p><a href="${poolUrl}">Check it out here</a></p>`
+    : `<p>Your gift pool <strong>"${poolTitle}"</strong> has just hit the ${milestonePct}% milestone!</p><p><a href="${poolUrl}">View progress here</a></p>`;
+
+  const results: Record<string, any> = {};
+
+  if (organizerEmail) {
+    results.email = await sendEmail(organizerEmail, subject, html, text);
+  }
+  
+  if (organizerPhone) {
+    const phone = organizerPhone.replace(/[^0-9+]/g, "");
+    results.sms = await sendSms(phone, text);
+  }
+
+  return { success: true, results };
+}

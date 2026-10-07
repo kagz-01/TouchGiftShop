@@ -6,8 +6,11 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase-browser";
 import {
   Gift, Clock, Users, Heart, Share2, Copy, CheckCircle2,
-  Lock, Sparkles, ChevronRight, AlertCircle, Vote
+  Lock, Sparkles, ChevronRight, AlertCircle, Vote, QrCode, X
 } from "lucide-react";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
+import QRCode from "react-qr-code";
 
 type Pool = {
   id: string; slug: string; title: string; description: string | null;
@@ -164,39 +167,66 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
       </div>
     );
   }
+
+  // Wall of Love Mosaic
   return (
-    <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
-      {contributions.map((c, i) => {
-        const name = c.is_ghost ? "👻 Anonymous" :
-          privacyMode === "anonymous" || c.is_anonymous ? "💛 Contributor" :
-          c.contributor_name ?? "Someone";
-        const timeAgo = (() => {
-          const diff = Date.now() - new Date(c.created_at).getTime();
-          if (diff < 60000) return "just now";
-          if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-          if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-          return `${Math.floor(diff / 86400000)}d ago`;
-        })();
-        return (
-          <div
-            key={c.id}
-            className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/8 transition-colors"
-            style={{ animationDelay: `${i * 50}ms` }}
-          >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-fuchsia-500/30 to-pink-500/20 flex items-center justify-center text-sm font-bold text-fuchsia-300 flex-shrink-0">
-              {name[0]}
+    <div>
+      <div className="flex flex-wrap gap-2 justify-center mb-6">
+        {contributions.map((c, i) => {
+          const name = c.is_ghost ? "👻" :
+            privacyMode === "anonymous" || c.is_anonymous ? "💛" :
+            c.contributor_name ?? "Someone";
+          const initial = name.length > 2 ? name[0].toUpperCase() : name;
+          return (
+            <div
+              key={c.id}
+              title={`${name} — KES ${c.amount.toLocaleString()}`}
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500/20 to-pink-500/20 flex items-center justify-center text-sm font-bold text-fuchsia-300 border border-fuchsia-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)] hover:scale-110 transition-transform cursor-default"
+              style={{ animation: `popIn 0.5s ease-out ${i * 0.05}s both` }}
+            >
+              {initial}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-white truncate">{name}</p>
-              {c.message && <p className="text-xs text-white/40 italic truncate">&ldquo;{c.message}&rdquo;</p>}
+          );
+        })}
+      </div>
+
+      <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
+        {contributions.map((c, i) => {
+          const name = c.is_ghost ? "👻 Anonymous" :
+            privacyMode === "anonymous" || c.is_anonymous ? "💛 Contributor" :
+            c.contributor_name ?? "Someone";
+          const timeAgo = (() => {
+            const diff = Date.now() - new Date(c.created_at).getTime();
+            if (diff < 60000) return "just now";
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return `${Math.floor(diff / 86400000)}d ago`;
+          })();
+          return (
+            <div
+              key={c.id}
+              className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 hover:bg-white/8 transition-colors"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{name}</p>
+                {c.message && <p className="text-xs text-white/40 italic truncate">&ldquo;{c.message}&rdquo;</p>}
+              </div>
+              <div className="text-right flex-shrink-0">
+                <p className="text-sm font-bold text-fuchsia-400">+{c.amount.toLocaleString()}</p>
+                <p className="text-xs text-white/30">{timeAgo}</p>
+              </div>
             </div>
-            <div className="text-right flex-shrink-0">
-              <p className="text-sm font-bold text-fuchsia-400">+{c.amount.toLocaleString()}</p>
-              <p className="text-xs text-white/30">{timeAgo}</p>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes popIn {
+          0% { transform: scale(0); opacity: 0; }
+          70% { transform: scale(1.1); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+      `}} />
     </div>
   );
 }
@@ -210,7 +240,9 @@ export default function PoolLandingPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [error, setError] = useState("");
+  const { width, height } = useWindowSize();
 
   const fetchPool = useCallback(async () => {
     try {
@@ -220,6 +252,12 @@ export default function PoolLandingPage() {
       setPool(data.pool);
       setContributions(data.contributions ?? []);
       setProgressPercent(data.progressPercent ?? 0);
+      
+      // Auto-trigger confetti if it just loaded and is fully funded
+      if (data.progressPercent >= 100 && !showConfetti) {
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 8000);
+      }
     } catch {
       setError("Could not load this pool.");
     } finally {
@@ -303,24 +341,15 @@ export default function PoolLandingPage() {
 
       {/* Confetti layer */}
       {showConfetti && (
-        <div className="absolute inset-0 pointer-events-none z-50">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-confetti-fall"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `-20px`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
-                fontSize: `${12 + Math.random() * 16}px`,
-              }}
-            >
-              {["🎉", "🎊", "💛", "🌸", "⭐", "💝", "🎁"][
-                Math.floor(Math.random() * 7)
-              ]}
-            </div>
-          ))}
+        <div className="fixed inset-0 pointer-events-none z-[100]">
+          <Confetti
+            width={width}
+            height={height}
+            recycle={false}
+            numberOfPieces={400}
+            gravity={0.15}
+            colors={['#d946ef', '#ec4899', '#fcd34d', '#3b82f6', '#10b981']}
+          />
         </div>
       )}
 
@@ -433,24 +462,14 @@ export default function PoolLandingPage() {
           </Link>
         )}
 
-        {/* Share Row */}
-        <div className="flex gap-3">
-          <button
-            onClick={copyLink}
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-2xl text-white font-semibold text-sm hover:bg-white/10 transition-colors"
-          >
-            {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-            {copied ? "Copied!" : "Copy Link"}
-          </button>
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(`🎁 ${pool.title}\n\nContribute here: ${shareUrl}`)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"
-          >
-            <Share2 className="w-4 h-4" /> WhatsApp
-          </a>
-        </div>
+        {/* Share Button */}
+        <button
+          onClick={() => setShowShareModal(true)}
+          className="w-full flex items-center justify-center gap-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-semibold hover:bg-white/10 transition-colors"
+        >
+          <Share2 className="w-5 h-5" />
+          Share Pool
+        </button>
 
         {/* Organizer link */}
         <div className="text-center">
@@ -476,6 +495,44 @@ export default function PoolLandingPage() {
         </div>
 
       </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-[#1A0B14] border border-white/10 rounded-3xl p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowShareModal(false)}
+              className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-2">Share this pool</h3>
+            <p className="text-sm text-white/50 mb-6">Invite friends and family to chip in.</p>
+
+            <div className="bg-white p-4 rounded-2xl mb-6 mx-auto w-fit">
+              <QRCode value={shareUrl} size={160} />
+            </div>
+
+            <div className="space-y-3">
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(`🎁 ${pool.title}\n\nWe're collecting for ${pool.recipient_name}'s gift! Chip in here: ${shareUrl}`)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 transition-colors"
+              >
+                <Share2 className="w-4 h-4" /> Share on WhatsApp
+              </a>
+              <button
+                onClick={copyLink}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-semibold hover:bg-white/10 transition-colors"
+              >
+                {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                {copied ? "Link Copied!" : "Copy Link"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
