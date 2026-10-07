@@ -7,7 +7,8 @@ import {
   ArrowLeft, Users, TrendingUp, Share2, Copy, Check,
   Clock, Target, Zap, Crown, Gift, MessageSquare,
   RefreshCw, CheckCircle, AlertCircle, ExternalLink,
-  Trophy, Flame, Heart, Lock
+  Trophy, Flame, Heart, Lock, Calendar, DollarSign,
+  RotateCcw, Bell, ChevronRight, XCircle
 } from "lucide-react";
 
 type Contribution = {
@@ -100,8 +101,14 @@ export default function PoolManagePage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "leaderboard" | "messages">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "leaderboard" | "messages" | "audit">("overview");
   const [unlockedMilestones, setUnlockedMilestones] = useState<number[]>([]);
+  const [closeAction, setCloseAction] = useState<"extend" | "downgrade" | "refund" | null>(null);
+  const [extendDate, setExtendDate] = useState("");
+  const [closeLoading, setCloseLoading] = useState(false);
+  const [closeResult, setCloseResult] = useState<string | null>(null);
+  const [nudgeLoading, setNudgeLoading] = useState(false);
+  const [nudgeSent, setNudgeSent] = useState(false);
 
   const load = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true); else setRefreshing(true);
@@ -135,6 +142,30 @@ export default function PoolManagePage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCloseAction = async () => {
+    if (!closeAction || !pool) return;
+    setCloseLoading(true);
+    try {
+      const res = await fetch(`/api/pools/${slug}/close-action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: closeAction, newDeadline: extendDate || undefined }),
+      });
+      if (res.ok) {
+        setCloseResult(closeAction);
+        await load(true);
+      }
+    } catch { /* noop */ } finally { setCloseLoading(false); }
+  };
+
+  const handleNudge = async () => {
+    setNudgeLoading(true);
+    try {
+      const res = await fetch(`/api/pools/${slug}/nudge`, { method: "POST" });
+      if (res.ok) setNudgeSent(true);
+    } catch { /* noop */ } finally { setNudgeLoading(false); }
+  };
+
   const shareWhatsApp = () => {
     const url = `${window.location.origin}/pool/${slug}`;
     const text = `🎁 ${pool?.title}\n\nHelp us reach the goal! Contribute here:\n${url}`;
@@ -154,8 +185,11 @@ export default function PoolManagePage() {
   const pct = pool.target_amount > 0 ? (pool.current_balance / pool.target_amount) * 100 : 0;
   const isActive = pool.status === "active";
   const isCompleted = pool.status === "completed";
+  const isExpired = pool.status === "expired";
+  const isRefunded = pool.status === "refunded";
   const totalRaised = pool.current_balance;
   const remaining = Math.max(0, pool.target_amount - totalRaised);
+  const canNudge = pct >= 70 && pct < 100 && isActive;
 
   // Leaderboard (named contributors, sorted by amount)
   const named = contributions
@@ -214,29 +248,33 @@ export default function PoolManagePage() {
           <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl font-semibold ${
             isCompleted ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
             isActive    ? "bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/20" :
-                          "bg-red-500/10 text-red-400 border border-red-500/20"
+            isRefunded  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" :
+                          "bg-amber-500/10 text-amber-400 border border-amber-500/20"
           }`}>
             {isCompleted ? <CheckCircle className="w-3.5 h-3.5" /> :
              isActive    ? <Flame className="w-3.5 h-3.5" />       :
+             isRefunded  ? <RotateCcw className="w-3.5 h-3.5" />   :
                            <AlertCircle className="w-3.5 h-3.5" />}
             {isCompleted ? "🎉 Goal reached! Ready to order the gift." :
              isActive    ? <span>Live · <TimeLeft expiresAt={pool.expires_at} /></span> :
-                           "Pool closed"}
+             isRefunded  ? "All contributions refunded." :
+                           "Pool expired — choose what to do next"}
           </div>
         </div>
 
         {/* Tabs */}
         <div className="max-w-2xl mx-auto px-4">
-          <div className="flex gap-1 border-b border-white/10">
+          <div className="flex gap-1 border-b border-white/10 overflow-x-auto scrollbar-hide">
             {[
               { id: "overview",    label: "Overview",    icon: <TrendingUp className="w-3.5 h-3.5" /> },
               { id: "leaderboard", label: "Leaderboard", icon: <Trophy className="w-3.5 h-3.5" /> },
               { id: "messages",    label: "Messages",    icon: <MessageSquare className="w-3.5 h-3.5" /> },
+              { id: "audit",       label: "Audit Trail", icon: <DollarSign className="w-3.5 h-3.5" /> },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
-                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-all ${
+                className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-all whitespace-nowrap ${
                   activeTab === tab.id
                     ? "border-fuchsia-400 text-fuchsia-400"
                     : "border-transparent text-white/40 hover:text-white/70"
@@ -357,6 +395,26 @@ export default function PoolManagePage() {
               </div>
             </div>
 
+            {/* 80% Nudge button */}
+            {canNudge && (
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-3xl p-5 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center shrink-0">
+                  <Flame className="w-6 h-6 text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-bold text-white">Almost There — {Math.round(pct)}% funded!</p>
+                  <p className="text-xs text-white/50">Send yourself an "Almost There" nudge to share with friends.</p>
+                </div>
+                <button
+                  onClick={handleNudge}
+                  disabled={nudgeLoading || nudgeSent}
+                  className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-black text-xs font-bold rounded-xl hover:bg-amber-400 transition-colors disabled:opacity-50 shrink-0"
+                >
+                  {nudgeSent ? <><Check className="w-3.5 h-3.5" /> Sent!</> : nudgeLoading ? "…" : <><Bell className="w-3.5 h-3.5" /> Nudge</>}
+                </button>
+              </div>
+            )}
+
             {/* Order CTA when completed */}
             {isCompleted && (
               <div className="bg-gradient-to-r from-fuchsia-600/20 to-pink-500/20 border border-fuchsia-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
@@ -372,6 +430,106 @@ export default function PoolManagePage() {
                 >
                   <Gift className="w-4 h-4" /> Order the Gift
                 </Link>
+              </div>
+            )}
+
+            {/* Expired Pool — Choose Action */}
+            {isExpired && !closeResult && (
+              <div className="border border-amber-500/30 rounded-3xl overflow-hidden">
+                <div className="bg-amber-500/10 px-6 py-4 flex items-center gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+                  <div>
+                    <p className="text-sm font-bold text-white">Pool Deadline Reached</p>
+                    <p className="text-xs text-white/50">KES {totalRaised.toLocaleString()} of KES {pool.target_amount.toLocaleString()} raised ({Math.round(pct)}%). Choose what to do next.</p>
+                  </div>
+                </div>
+                <div className="p-5 space-y-3 bg-black/30">
+                  {/* Option cards */}
+                  {([
+                    {
+                      id: "extend" as const,
+                      icon: <Calendar className="w-5 h-5 text-sky-400" />,
+                      bg: "bg-sky-500/10 border-sky-500/20",
+                      activeBg: "bg-sky-500/20 border-sky-500/50",
+                      title: "Extend Deadline",
+                      desc: "Pick a new date — contributors get notified to come back.",
+                    },
+                    {
+                      id: "downgrade" as const,
+                      icon: <Gift className="w-5 h-5 text-emerald-400" />,
+                      bg: "bg-emerald-500/10 border-emerald-500/20",
+                      activeBg: "bg-emerald-500/20 border-emerald-500/50",
+                      title: "Proceed with Current Amount",
+                      desc: `Order a gift within the KES ${totalRaised.toLocaleString()} budget you've already raised.`,
+                    },
+                    {
+                      id: "refund" as const,
+                      icon: <RotateCcw className="w-5 h-5 text-red-400" />,
+                      bg: "bg-red-500/10 border-red-500/20",
+                      activeBg: "bg-red-500/20 border-red-500/50",
+                      title: "Refund All Contributors",
+                      desc: `Auto-refund KES ${totalRaised.toLocaleString()} to all ${contributions.length} contributors.`,
+                    },
+                  ] as const).map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setCloseAction(closeAction === opt.id ? null : opt.id)}
+                      className={`w-full flex items-start gap-4 p-4 rounded-2xl border text-left transition-all ${
+                        closeAction === opt.id ? opt.activeBg : opt.bg
+                      }`}
+                    >
+                      <div className="w-9 h-9 rounded-xl bg-black/20 flex items-center justify-center shrink-0 mt-0.5">{opt.icon}</div>
+                      <div className="flex-1">
+                        <p className="text-sm font-bold text-white">{opt.title}</p>
+                        <p className="text-xs text-white/50 mt-0.5 leading-relaxed">{opt.desc}</p>
+                        {opt.id === "extend" && closeAction === "extend" && (
+                          <input
+                            type="date"
+                            value={extendDate}
+                            min={new Date().toISOString().split("T")[0]}
+                            onChange={e => setExtendDate(e.target.value)}
+                            onClick={e => e.stopPropagation()}
+                            className="mt-3 w-full px-3 py-2 rounded-xl bg-black/40 border border-sky-500/30 text-white text-sm focus:outline-none focus:border-sky-400"
+                          />
+                        )}
+                      </div>
+                      <div className={`w-4 h-4 rounded-full border-2 mt-1 shrink-0 flex items-center justify-center ${
+                        closeAction === opt.id ? "border-fuchsia-400 bg-fuchsia-400" : "border-white/20"
+                      }`}>
+                        {closeAction === opt.id && <div className="w-2 h-2 rounded-full bg-white" />}
+                      </div>
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={handleCloseAction}
+                    disabled={!closeAction || closeLoading || (closeAction === "extend" && !extendDate)}
+                    className="w-full py-3 bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white rounded-2xl font-bold text-sm hover:from-fuchsia-700 hover:to-pink-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {closeLoading ? "Processing…" : closeAction === "extend" ? "Extend Pool" : closeAction === "downgrade" ? "Proceed with Gift" : closeAction === "refund" ? "Refund All" : "Select an option"}
+                    {!closeLoading && closeAction && <ChevronRight className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* After action confirmation */}
+            {closeResult && (
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-3xl p-6 text-center">
+                <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+                <p className="font-bold text-white">
+                  {closeResult === "extended" ? "Deadline Extended! Pool is live again." :
+                   closeResult === "downgraded" ? "Done! Proceed to order a gift." :
+                   "Refunds initiated. Contributors will be notified."}
+                </p>
+              </div>
+            )}
+
+            {isRefunded && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-3xl p-6 text-center">
+                <RotateCcw className="w-10 h-10 text-blue-400 mx-auto mb-3" />
+                <p className="text-sm font-bold text-white">All contributions have been refunded.</p>
+                <p className="text-xs text-white/50 mt-1">KES {totalRaised.toLocaleString()} returned to {contributions.length} contributors.</p>
               </div>
             )}
           </>
@@ -505,6 +663,75 @@ export default function PoolManagePage() {
                         </div>
                         <p className="text-sm text-white/70 italic leading-relaxed">&ldquo;{c.message}&rdquo;</p>
                       </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ═══ AUDIT TRAIL ═══ */}
+        {activeTab === "audit" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Money Trail</h2>
+              <span className="text-xs text-white/40">{contributions.filter(c => c.is_verified).length} verified payments</span>
+            </div>
+
+            {/* Summary bar */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Total collected</span>
+                <span className="font-bold text-emerald-400">KES {totalRaised.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Goal</span>
+                <span className="font-bold text-white">KES {pool.target_amount.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Verified contributions</span>
+                <span className="font-bold text-fuchsia-400">{contributions.filter(c => c.is_verified).length}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Pending verification</span>
+                <span className="font-bold text-amber-400">{contributions.filter(c => !c.is_verified).length}</span>
+              </div>
+              <div className="h-px bg-white/10" />
+              <div className="flex justify-between text-sm">
+                <span className="text-white/50">Status</span>
+                <span className={`font-bold capitalize ${
+                  pool.status === "active" ? "text-fuchsia-400" :
+                  pool.status === "completed" ? "text-emerald-400" :
+                  pool.status === "expired" ? "text-amber-400" :
+                  pool.status === "refunded" ? "text-blue-400" : "text-white/50"
+                }`}>{pool.status}</span>
+              </div>
+            </div>
+
+            {/* Per-contribution ledger */}
+            <div className="space-y-2">
+              {contributions.length === 0 && (
+                <div className="bg-white/5 rounded-3xl border border-white/10 p-12 text-center">
+                  <DollarSign className="w-10 h-10 text-white/20 mx-auto mb-3" />
+                  <p className="text-sm text-white/40">No contributions yet.</p>
+                </div>
+              )}
+              {contributions.map((c, i) => {
+                const name = c.is_anonymous || c.is_ghost ? "Anonymous" : (c.contributor_name ?? "Unknown");
+                const date = new Date(c.created_at).toLocaleDateString("en-KE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+                return (
+                  <div key={c.id} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <div className="w-8 h-8 rounded-xl bg-fuchsia-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-fuchsia-400">#{i + 1}</div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-white truncate">{name}</p>
+                      <p className="text-xs text-white/30">{date}</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <p className="text-sm font-bold text-emerald-400">KES {c.amount.toLocaleString()}</p>
+                      <p className={`text-[10px] font-semibold ${
+                        c.is_verified ? "text-emerald-400" : "text-amber-400"
+                      }`}>{c.is_verified ? "✓ Verified" : "⏳ Pending"}</p>
                     </div>
                   </div>
                 );

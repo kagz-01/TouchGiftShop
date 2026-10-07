@@ -235,13 +235,19 @@ function OptionAISuggester({ recipientName, onPick }: { recipientName: string; o
 function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, v: unknown) => void }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiSuggestions, setAiSuggestions] = useState<{ name: string; price: number; image: string }[]>([]);
+  const [aiSource, setAiSource] = useState<"gemini" | "fallback" | null>(null);
 
   const runAI = async () => {
     if (!data.aiQuery.trim()) return;
     setAiLoading(true);
+    setAiSource(null);
     try {
       const res = await fetch(`/api/ai/suggest?q=${encodeURIComponent(data.aiQuery)}&limit=4`);
-      if (res.ok) { const d = await res.json(); setAiSuggestions(d.suggestions ?? []); }
+      if (res.ok) {
+        const d = await res.json();
+        setAiSuggestions(d.suggestions ?? []);
+        setAiSource(d.source ?? "fallback");
+      }
     } catch { /* noop */ } finally { setAiLoading(false); }
   };
 
@@ -292,9 +298,18 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
         /* ── SINGLE GIFT MODE ── */
         <div className="space-y-5">
           <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-amber-50/50 border border-amber-200">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span className="text-sm font-semibold text-brand-deep">AI Gift Suggester</span>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span className="text-sm font-semibold text-brand-deep">AI Gift Suggester</span>
+              </div>
+              {aiSource === "gemini" && (
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-purple-500/20">
+                  <span className="text-[10px] font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Powered by Gemini AI
+                  </span>
+                </div>
+              )}
             </div>
             <div className="flex gap-2">
               <input
