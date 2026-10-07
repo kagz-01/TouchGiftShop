@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Heart, CreditCard, Smartphone, Ghost, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Heart, CreditCard, Smartphone, Ghost, Eye, EyeOff, Users2, Copy, CheckCircle2, Link2 } from "lucide-react";
 
 type PoolSummary = {
   title: string; recipient_name: string; target_amount: number;
@@ -29,6 +29,9 @@ export default function ContributePage() {
   const [pollVoteIndex, setPollVoteIndex] = useState<number | null>(
     voteParam !== null ? parseInt(voteParam) : null
   );
+  const splitParam = searchParams.get("split");     // split parent contribution id (friend link)
+  const amountParam = searchParams.get("amount");   // pre-filled amount for friend
+
   const [pool, setPool] = useState<PoolSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -37,12 +40,38 @@ export default function ContributePage() {
   // Form state
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [amount, setAmount] = useState<number | "">("");
+  const [amount, setAmount] = useState<number | "">(amountParam ? Number(amountParam) : "");
   const [message, setMessage] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isGhost, setIsGhost] = useState(false);
   const [showName, setShowName] = useState(true);
+
+  // Split-with-a-friend state
+  const [isSplitMode, setIsSplitMode] = useState(false);
+  const [splitRatio, setSplitRatio] = useState<50 | 33 | "custom">(50);
+  const [customSplit, setCustomSplit] = useState<number | "">(""   );
+  const [splitCopied, setSplitCopied] = useState(false);
+  const [splitParentId] = useState<string | null>(splitParam);
+
+  const myAmount = Number(amount) || 0;
+  const friendShare = (() => {
+    if (splitRatio === 50) return Math.ceil(myAmount / 2);
+    if (splitRatio === 33) return Math.ceil(myAmount * 2 / 3);
+    return Number(customSplit) || 0;
+  })();
+  const myShare = myAmount - friendShare;
+
+  const splitLink = typeof window !== "undefined" && myAmount > 0
+    ? `${window.location.origin}/pool/${slug}/contribute?split=PENDING&amount=${friendShare}`
+    : "";
+
+  const copySplitLink = () => {
+    if (!splitLink) return;
+    navigator.clipboard?.writeText(splitLink);
+    setSplitCopied(true);
+    setTimeout(() => setSplitCopied(false), 3000);
+  };
 
   useEffect(() => {
     fetch(`/api/pools/${slug}`)
@@ -75,6 +104,7 @@ export default function ContributePage() {
           isGhost,
           paymentMethod,
           pollVoteIndex: pollVoteIndex !== null ? pollVoteIndex : undefined,
+          splitParentId: splitParentId ?? undefined,
         }),
       });
 
@@ -126,6 +156,25 @@ export default function ContributePage() {
           <ArrowLeft className="w-4 h-4" /> Back to pool
         </Link>
 
+        {/* Split-with-friend invite banner (shown when arriving via split link) */}
+        {splitParentId && (
+          <div className="bg-gradient-to-br from-blue-500/15 to-cyan-500/10 border border-blue-400/30 rounded-3xl p-5 mb-5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/20 rounded-full blur-3xl" />
+            <div className="relative z-10 flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <Users2 className="w-6 h-6 text-blue-300" />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-blue-300 uppercase tracking-wider mb-1">You&apos;ve been invited to split!</p>
+                <p className="text-white font-semibold">A friend is splitting a contribution with you</p>
+                <p className="text-white/60 text-sm mt-1">
+                  Your share: <span className="text-blue-300 font-bold">KES {Number(amountParam || 0).toLocaleString()}</span> — already pre-filled below.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Pool summary banner */}
         <div className="bg-gradient-to-br from-[#1F0A1C] via-fuchsia-950/80 to-[#14080D] rounded-3xl p-5 text-white mb-5 relative overflow-hidden border border-fuchsia-500/20">
           <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/20 rounded-full blur-3xl" />
@@ -176,6 +225,109 @@ export default function ContributePage() {
               min={pool.min_contribution}
               className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-fuchsia-400 focus:outline-none font-sans text-white bg-black/30 text-lg font-bold placeholder-white/30"
             />
+
+            {/* Split-with-friend card — only shown if amount ≥ 2x minimum and not already a split contributor */}
+            {myAmount >= (pool.min_contribution) * 2 && !splitParentId && (
+              <div className="mt-4 rounded-2xl border-2 border-dashed border-blue-400/30 overflow-hidden transition-all">
+                <button
+                  type="button"
+                  onClick={() => setIsSplitMode(!isSplitMode)}
+                  className="w-full flex items-center justify-between p-4 hover:bg-white/3 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-blue-500/15 flex items-center justify-center">
+                      <Users2 className="w-4 h-4 text-blue-300" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-bold text-white">Split with a friend</p>
+                      <p className="text-xs text-white/50">Share the cost — send them a pre-filled link</p>
+                    </div>
+                  </div>
+                  <div className={`w-10 h-5 rounded-full transition-colors flex-shrink-0 ${isSplitMode ? "bg-blue-500" : "bg-white/10"}`}>
+                    <div className={`w-4 h-4 rounded-full bg-white shadow mt-0.5 transition-all ${isSplitMode ? "translate-x-5" : "translate-x-0.5"}`} />
+                  </div>
+                </button>
+
+                {isSplitMode && (
+                  <div className="px-4 pb-4 space-y-4 bg-blue-500/5 border-t border-blue-400/15">
+                    {/* Split ratio options */}
+                    <div>
+                      <p className="text-xs font-semibold text-white/50 uppercase tracking-wide mt-3 mb-2">How to split</p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {([
+                          { label: "50 / 50", value: 50 as const },
+                          { label: "33 / 67", value: 33 as const },
+                          { label: "Custom", value: "custom" as const },
+                        ] as const).map(opt => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setSplitRatio(opt.value)}
+                            className={`py-2 rounded-xl text-xs font-bold transition-all ${
+                              splitRatio === opt.value
+                                ? "bg-blue-500 text-white"
+                                : "bg-white/5 text-white/60 border border-white/10 hover:border-blue-400/30"
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {splitRatio === "custom" && (
+                      <div>
+                        <label className="text-xs font-semibold text-white/50 uppercase tracking-wide block mb-1">Friend pays (KES)</label>
+                        <input
+                          type="number"
+                          value={customSplit}
+                          onChange={e => setCustomSplit(e.target.value ? Number(e.target.value) : "")}
+                          max={myAmount - pool.min_contribution}
+                          min={pool.min_contribution}
+                          placeholder="e.g. 1500"
+                          className="w-full px-3 py-2.5 rounded-xl bg-black/30 border-2 border-white/10 focus:border-blue-400 focus:outline-none text-white text-sm"
+                        />
+                      </div>
+                    )}
+
+                    {/* Share preview */}
+                    {(splitRatio !== "custom" || Number(customSplit) > 0) && (
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10">
+                          <p className="text-[10px] font-bold text-white/40 uppercase tracking-wide mb-1">You pay</p>
+                          <p className="text-lg font-bold text-white">KES {myShare > 0 ? myShare.toLocaleString() : "—"}</p>
+                        </div>
+                        <div className="bg-blue-500/10 rounded-xl p-3 text-center border border-blue-400/20">
+                          <p className="text-[10px] font-bold text-blue-300/70 uppercase tracking-wide mb-1">Friend pays</p>
+                          <p className="text-lg font-bold text-blue-300">KES {friendShare > 0 ? friendShare.toLocaleString() : "—"}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Copy link */}
+                    {friendShare > 0 && myShare >= pool.min_contribution && (
+                      <button
+                        type="button"
+                        onClick={copySplitLink}
+                        className={`w-full flex items-center justify-center gap-2 py-3 rounded-2xl font-bold text-sm transition-all ${
+                          splitCopied
+                            ? "bg-emerald-500/20 border border-emerald-500/30 text-emerald-300"
+                            : "bg-blue-500/15 border border-blue-400/30 text-blue-300 hover:bg-blue-500/25"
+                        }`}
+                      >
+                        {splitCopied
+                          ? <><CheckCircle2 className="w-4 h-4" /> Link copied! Send it to your friend</>
+                          : <><Link2 className="w-4 h-4" /> Copy friend&apos;s share link</>
+                        }
+                      </button>
+                    )}
+                    <p className="text-xs text-white/30 text-center">
+                      Your amount adjusts to KES {myShare > 0 ? myShare.toLocaleString() : "—"} when you proceed
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Identity */}
