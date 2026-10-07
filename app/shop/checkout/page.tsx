@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
-import { ArrowLeft, Smartphone, ShieldCheck, ChevronRight, Gift } from "lucide-react";
+import { ArrowLeft, Smartphone, ShieldCheck, Gift, Wallet } from "lucide-react";
 
 export default function ShopCheckoutPage() {
   const router = useRouter();
@@ -12,10 +12,16 @@ export default function ShopCheckoutPage() {
 
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Payment States
   const [phone, setPhone] = useState("");
   const [paying, setPaying] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<"idle" | "processing" | "success" | "failed">("idle");
-  const [giftLinkSlug, setGiftLinkSlug] = useState("");
+  
+  // Wallet States
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [walletId, setWalletId] = useState<string | null>(null);
+  const [useWallet, setUseWallet] = useState(true);
 
   const supabase = createClient();
 
@@ -32,16 +38,43 @@ export default function ShopCheckoutPage() {
     fetchProduct();
   }, [productId, router, supabase]);
 
+  // Debounced Wallet Check
+  useEffect(() => {
+    if (phone.length >= 9) {
+      const checkWallet = async () => {
+        const { data } = await supabase.from("user_wallets").select("id, balance").eq("phone", phone).single();
+        if (data) {
+          setWalletBalance(Number(data.balance));
+          setWalletId(data.id);
+        } else {
+          setWalletBalance(0);
+          setWalletId(null);
+        }
+      };
+      const timeout = setTimeout(checkWallet, 500);
+      return () => clearTimeout(timeout);
+    } else {
+      setWalletBalance(0);
+      setWalletId(null);
+    }
+  }, [phone, supabase]);
+
+  const amountToPayWithMpesa = useWallet && walletBalance > 0 
+    ? Math.max(0, Number(product?.price || 0) - walletBalance) 
+    : Number(product?.price || 0);
+
+  const amountFromWallet = useWallet && walletBalance > 0 
+    ? Math.min(Number(product?.price || 0), walletBalance)
+    : 0;
+
   const handleSlideToBuy = async () => {
-    if (phone.length < 9) {
-      alert("Please enter a valid M-Pesa number");
+    if (amountToPayWithMpesa > 0 && phone.length < 9) {
+      alert("Please enter a valid M-Pesa number for the remaining balance");
       return;
     }
     setPaying(true);
     setPaymentStatus("processing");
 
-    // In a real app, this hits a real STK Push endpoint.
-    // For now, we simulate the payment delay and create the order + gift link locally.
     setTimeout(async () => {
       try {
         // 1. Create the Order
@@ -58,10 +91,24 @@ export default function ShopCheckoutPage() {
 
         if (orderError) throw orderError;
 
-        // 2. Generate Secret Gift Slug
+        // 2. Process Wallet Deduction if applicable
+        if (amountFromWallet > 0 && walletId) {
+          // Deduct from wallet
+          await supabase.from("user_wallets").update({ balance: walletBalance - amountFromWallet }).eq("id", walletId);
+          // Log transaction
+          await supabase.from("wallet_transactions").insert({
+            wallet_id: walletId,
+            amount: amountFromWallet,
+            type: "debit",
+            reference_type: "order_payment",
+            reference_id: order.id
+          });
+        }
+
+        // 3. Generate Secret Gift Slug
         const slug = Math.random().toString(36).substring(2, 10);
 
-        // 3. Create Gift Link
+        // 4. Create Gift Link
         const { error: linkError } = await supabase
           .from("shop_gift_links")
           .insert({
@@ -71,7 +118,6 @@ export default function ShopCheckoutPage() {
 
         if (linkError) throw linkError;
 
-        setGiftLinkSlug(slug);
         setPaymentStatus("success");
         setTimeout(() => {
           router.push(`/shop/gift-ready?slug=${slug}`);
@@ -85,15 +131,11 @@ export default function ShopCheckoutPage() {
     }, 2500);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0A0508] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
-      </div>
-    );
-  }
-
-  if (!product) return null;
+  if (loading || !product) return (
+    <div className="min-h-screen bg-[#0A0508] flex items-center justify-center">
+      <div className="w-8 h-8 rounded-full border-2 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-[#0A0508] text-white selection:bg-fuchsia-500/30">
@@ -121,7 +163,7 @@ export default function ShopCheckoutPage() {
             </div>
             <div className="flex-1">
               <h3 className="font-bold text-lg leading-tight">{product.name}</h3>
-              <p className="text-white/60 text-xs mt-1">Blind Gifting Mode Active</p>
+              <p className="text-white/60 text-xs mt-1">Blind Gifting Mode</p>
             </div>
             <div className="text-right">
               <p className="font-bold text-fuchsia-400">KES {Number(product.price).toLocaleString()}</p>
@@ -129,10 +171,10 @@ export default function ShopCheckoutPage() {
           </div>
         </div>
 
-        {/* Payment Details */}
-        <div className="space-y-4 mb-8">
+        {/* M-Pesa Input */}
+        <div className="space-y-4 mb-6">
           <div>
-            <label className="block text-sm font-semibold text-white/80 mb-2">Your M-Pesa Number</label>
+            <label className="block text-sm font-semibold text-white/80 mb-2">Phone Number</label>
             <div className="relative">
               <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
               <input 
@@ -147,7 +189,47 @@ export default function ShopCheckoutPage() {
           </div>
         </div>
 
-        {/* Slide to Buy Simulation (simplified button for now) */}
+        {/* Wallet Detection */}
+        {walletBalance > 0 && (
+          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 mb-6 animate-in slide-in-from-top-4 fade-in duration-300">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <Wallet className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="font-bold text-sm">TouchGift Wallet Found</p>
+                  <p className="text-emerald-400 text-xs font-semibold mt-0.5">Balance: KES {walletBalance.toLocaleString()}</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setUseWallet(!useWallet)}
+                className={`w-12 h-6 rounded-full transition-colors relative ${useWallet ? "bg-emerald-500" : "bg-white/20"}`}
+              >
+                <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-transform ${useWallet ? "translate-x-6" : "translate-x-0.5"}`} />
+              </button>
+            </div>
+            
+            {useWallet && (
+              <div className="mt-4 pt-4 border-t border-emerald-500/20 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-white/60">Total Cost</span>
+                  <span className="font-bold">KES {Number(product.price).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-emerald-400">Wallet Deduction</span>
+                  <span className="font-bold text-emerald-400">- KES {amountFromWallet.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-base font-bold pt-2 border-t border-emerald-500/10">
+                  <span>M-Pesa Amount</span>
+                  <span className="text-fuchsia-400">KES {amountToPayWithMpesa.toLocaleString()}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Slide to Buy Simulation */}
         <button 
           onClick={handleSlideToBuy}
           disabled={paying}
@@ -156,19 +238,23 @@ export default function ShopCheckoutPage() {
               ? "bg-emerald-500 scale-105" 
               : paymentStatus === "processing"
               ? "bg-fuchsia-600/50"
+              : amountToPayWithMpesa === 0
+              ? "bg-emerald-500 hover:bg-emerald-400"
               : "bg-fuchsia-500 hover:bg-fuchsia-400"
           }`}
         >
           {paymentStatus === "idle" && (
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-white" />
-              <span className="font-bold text-lg">Pay KES {Number(product.price).toLocaleString()}</span>
+              <span className="font-bold text-lg">
+                {amountToPayWithMpesa === 0 ? "Pay from Wallet" : `Pay KES ${amountToPayWithMpesa.toLocaleString()}`}
+              </span>
             </div>
           )}
           {paymentStatus === "processing" && (
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span className="font-bold">Check your phone...</span>
+              <span className="font-bold">{amountToPayWithMpesa === 0 ? "Processing Wallet..." : "Check your phone..."}</span>
             </div>
           )}
           {paymentStatus === "success" && (
@@ -178,10 +264,6 @@ export default function ShopCheckoutPage() {
             </div>
           )}
         </button>
-
-        <p className="text-center text-xs text-white/40 mt-4">
-          Secured by PesaPal. You will not need the recipient's address yet.
-        </p>
 
       </main>
     </div>

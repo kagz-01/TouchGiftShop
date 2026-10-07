@@ -1664,3 +1664,47 @@ VALUES
 ('The Tech Minimalist Desk Set', 'Declutter your space with this wireless charging walnut desk pad, minimalist aluminum laptop stand, and cable management kit.', 18000, ARRAY['The Tech Minimalist', 'WFH Upgrade', 'Geek'], ARRAY['https://images.unsplash.com/photo-1593642632823-8f785ba67e45?q=80&w=800&auto=format&fit=crop'], 20, true),
 ('Wanderlust Essentials', 'For the frequent flyer. A personalized leather passport holder, noise-isolating travel earbuds, and a luxury silk neck pillow.', 15500, ARRAY['Wanderlust', 'Travel', 'Adventure'], ARRAY['https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop'], 40, true),
 ('The Midnight Sommelier', 'An exquisite crystal decanter set, twin heavy-base whiskey glasses, and a curated assortment of dark artisan chocolates.', 22000, ARRAY['Evening Wind Down', 'Luxury', 'Celebration'], ARRAY['https://images.unsplash.com/photo-1597075687490-8f673c6c17f6?q=80&w=800&auto=format&fit=crop'], 15, true);
+
+
+-- ============================================================================
+-- DIGITAL GIFT CARDS, WALLETS & OTP SYSTEM
+-- ============================================================================
+
+CREATE TABLE IF NOT EXISTS user_wallets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  phone TEXT UNIQUE NOT NULL,
+  balance NUMERIC NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS wallet_transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  wallet_id UUID REFERENCES user_wallets(id) ON DELETE CASCADE,
+  amount NUMERIC NOT NULL,
+  type TEXT NOT NULL, -- 'credit', 'debit'
+  reference_type TEXT NOT NULL, -- 'gift_card_claim', 'order_payment', 'refund'
+  reference_id TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS otp_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  phone TEXT NOT NULL,
+  code TEXT NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  verified BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS digital_gift_cards (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug TEXT UNIQUE NOT NULL, -- The magic link ID
+  amount NUMERIC NOT NULL,
+  theme_style TEXT NOT NULL DEFAULT 'glassmorphism',
+  voice_note_url TEXT,
+  sender_name TEXT,
+  status TEXT NOT NULL DEFAULT 'active', -- active, claimed
+  claimed_by_phone TEXT, -- Who claimed it (links to wallet)
+  claimed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
