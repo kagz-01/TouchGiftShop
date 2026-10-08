@@ -112,7 +112,7 @@ export default function UnboxGiftCardPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0508] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-rose-500/20 border-t-rose-500 animate-spin" />
       </div>
     );
   }
@@ -120,7 +120,7 @@ export default function UnboxGiftCardPage() {
   if (!giftCard) return <div className="min-h-screen bg-[#0A0508] flex items-center justify-center text-white/50">Gift not found</div>;
 
   return (
-    <div className="min-h-screen bg-[#0A0508] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-fuchsia-500/30">
+    <div className="min-h-screen bg-[#0A0508] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-rose-500/30">
       
       {/* ── BEFORE UNBOXING ── */}
       {!unboxed && (
@@ -128,13 +128,13 @@ export default function UnboxGiftCardPage() {
           <div className="w-64 h-40 mx-auto mb-8 relative cursor-pointer group" onClick={handleUnbox}>
              {/* Closed Envelope Mock */}
              <div className="absolute inset-0 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl group-hover:scale-105 transition-transform duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center justify-center">
-               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-fuchsia-600 to-pink-500 flex items-center justify-center shadow-[0_0_20px_rgba(217,70,239,0.5)]">
+               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center shadow-[0_0_20px_rgba(217,70,239,0.5)]">
                  <Wallet className="w-6 h-6 text-white" />
                </div>
              </div>
           </div>
           <h1 className="font-display text-4xl font-bold italic mb-4">A Gift from {giftCard.sender_name}</h1>
-          <button onClick={handleUnbox} className="w-full py-4 bg-gradient-to-r from-fuchsia-600 to-pink-500 rounded-full font-bold text-lg shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform">
+          <button onClick={handleUnbox} className="w-full py-4 bg-gradient-to-r from-rose-600 to-pink-500 rounded-full font-bold text-lg shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform">
             Tap to Open ✨
           </button>
         </div>
@@ -149,11 +149,11 @@ export default function UnboxGiftCardPage() {
             
             {/* 3D Card Representation */}
             <div className={`w-80 h-48 rounded-[2rem] p-6 flex flex-col justify-between border shadow-2xl relative overflow-hidden mb-8 transform transition-transform hover:scale-105 ${
-              giftCard.theme_style === "holographic" ? "border-fuchsia-500 shadow-[0_0_50px_rgba(217,70,239,0.3)]" :
+              giftCard.theme_style === "holographic" ? "border-rose-500 shadow-[0_0_50px_rgba(217,70,239,0.3)]" :
               giftCard.theme_style === "glassmorphism" ? "border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.2)] bg-white/5 backdrop-blur-xl" :
               "border-white/20 bg-black shadow-[0_0_50px_rgba(255,255,255,0.1)]"
             }`}>
-              {giftCard.theme_style === "holographic" && <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-600 via-purple-500 to-pink-500 opacity-80" />}
+              {giftCard.theme_style === "holographic" && <div className="absolute inset-0 bg-gradient-to-tr from-rose-600 via-rose-500 to-pink-500 opacity-80" />}
               {giftCard.theme_style === "glassmorphism" && <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-teal-500/20" />}
               
               <div className="relative z-10 flex justify-between items-start">
@@ -170,7 +170,7 @@ export default function UnboxGiftCardPage() {
               </div>
             </div>
 
-            <div className="bg-[#1F0A1C] border border-fuchsia-500/20 rounded-3xl p-6 w-full shadow-2xl">
+            <div className="bg-[#1F0A1C] border border-rose-500/20 rounded-3xl p-6 w-full shadow-2xl">
               <h2 className="font-bold text-xl mb-2 text-center">Claim to Wallet</h2>
               <p className="text-sm text-white/50 text-center mb-6">Enter your phone number to secure these funds in your TouchGift Wallet.</p>
 
@@ -178,18 +178,18 @@ export default function UnboxGiftCardPage() {
                 <form onSubmit={handleRequestOtp}>
                   <div className="relative mb-4">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                    <input required type="tel" placeholder="07XX XXX XXX" value={phone} onChange={e => setPhone(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
+                    <input required type="tel" aria-label="Phone number" placeholder="07XX XXX XXX" value={phone} onChange={e => setPhone(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
                   </div>
-                  <button type="submit" disabled={submitting} className="w-full py-4 bg-fuchsia-500 hover:bg-fuchsia-400 disabled:opacity-50 text-white rounded-2xl font-bold transition-colors">
+                  <button type="submit" disabled={submitting} className="w-full py-4 bg-rose-500 hover:bg-rose-400 disabled:opacity-50 text-white rounded-2xl font-bold transition-colors">
                     {submitting ? "Sending OTP..." : "Send Secure OTP"}
                   </button>
                 </form>
               ) : (
                 <form onSubmit={handleVerifyOtp} className="animate-in fade-in zoom-in duration-300">
                   <div className="mb-4">
-                    <input required type="text" placeholder="Enter 4-digit OTP" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4}
-                      className="w-full bg-white/5 border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 text-center text-2xl font-bold tracking-[0.5em] transition-colors" />
+                    <input required type="text" aria-label="One-time password" placeholder="Enter 4-digit OTP" value={otp} onChange={e => setOtp(e.target.value)} maxLength={4}
+                      className="w-full bg-white/5 border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 text-center text-2xl font-bold tracking-[0.5em] transition-colors" />
                   </div>
                   <button type="submit" disabled={submitting} className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-white rounded-2xl font-bold transition-colors shadow-[0_0_20px_rgba(16,185,129,0.3)]">
                     {submitting ? "Verifying..." : "Verify & Claim Funds"}

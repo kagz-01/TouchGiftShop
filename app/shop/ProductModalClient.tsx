@@ -30,7 +30,7 @@ export default function ProductModalClient({ children, product }: { children: Re
 
       {/* Bottom Sheet Modal */}
       <div 
-        className={`fixed bottom-0 left-0 right-0 z-50 bg-[#0D050A] rounded-t-[2.5rem] border-t border-fuchsia-500/20 shadow-[0_-20px_60px_rgba(217,70,239,0.15)] transition-transform duration-500 max-h-[90vh] overflow-y-auto overflow-x-hidden
+        className={`fixed bottom-0 left-0 right-0 z-50 bg-[#0D050A] rounded-t-[2.5rem] border-t border-rose-500/20 shadow-[0_-20px_60px_rgba(217,70,239,0.15)] transition-transform duration-500 max-h-[90vh] overflow-y-auto overflow-x-hidden
           ${isOpen ? "translate-y-0" : "translate-y-full"}`}
       >
         <div className="max-w-md mx-auto relative pb-safe">
@@ -61,8 +61,8 @@ export default function ProductModalClient({ children, product }: { children: Re
           {/* Details */}
           <div className="p-6">
             <h2 className="font-display text-2xl font-bold italic text-white mb-2">{product.name}</h2>
-            <div className="inline-block px-3 py-1 bg-fuchsia-500/10 border border-fuchsia-500/20 rounded-full mb-4">
-              <span className="text-fuchsia-400 font-bold tracking-wide">KES {Number(product.price).toLocaleString()}</span>
+            <div className="inline-block px-3 py-1 bg-rose-500/10 border border-rose-500/20 rounded-full mb-4">
+              <span className="text-rose-400 font-bold tracking-wide">KES {Number(product.price).toLocaleString()}</span>
             </div>
             
             <p className="text-white/60 text-sm leading-relaxed mb-6">
@@ -82,9 +82,9 @@ export default function ProductModalClient({ children, product }: { children: Re
             </div>
 
             {/* Slide to Gift (CTA) */}
-            <div className="relative w-full h-16 bg-fuchsia-500/10 border border-fuchsia-500/30 rounded-full flex items-center justify-center overflow-hidden cursor-pointer group"
+            <div className="relative w-full h-16 bg-rose-500/10 border border-rose-500/30 rounded-full flex items-center justify-center overflow-hidden cursor-pointer group"
                  onClick={() => router.push(`/shop/checkout?product=${product.id}`)}>
-              <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-600 to-pink-500 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+              <div className="absolute inset-0 bg-gradient-to-r from-rose-600 to-pink-500 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500 ease-out" />
               
               <div className="relative z-10 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-white/80 group-hover:text-white transition-colors" />

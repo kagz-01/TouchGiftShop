@@ -53,19 +53,19 @@ export default async function ShopVibeEngine() {
   const sortedVibes = Object.keys(vibeGroups).sort();
 
   return (
-    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-fuchsia-500/30">
+    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-rose-500/30">
       
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 bg-[#0A0508]/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-fuchsia-600 to-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(217,70,239,0.4)]">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(217,70,239,0.4)]">
               <Gift className="w-4 h-4 text-white" />
             </div>
             <h1 className="font-display font-bold italic text-lg tracking-wide">Vibe Engine</h1>
           </div>
           <Link href="/gift-finder" className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 rounded-full text-xs font-bold hover:bg-white/20 transition-colors border border-white/5">
-            <Sparkles className="w-3.5 h-3.5 text-fuchsia-400" />
+            <Sparkles className="w-3.5 h-3.5 text-rose-400" />
             AI Match
           </Link>
         </div>
@@ -75,9 +75,9 @@ export default async function ShopVibeEngine() {
         
         {/* ── Hero Banner ── */}
         <div className="px-4 py-8 relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px] pointer-events-none" />
           <h2 className="font-display text-4xl font-bold italic leading-tight mb-2">
-            Shop by <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400 to-pink-500">mood.</span>
+            Shop by <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-400 to-pink-500">mood.</span>
           </h2>
           <p className="text-white/50 text-sm">Find gifts that match their exact energy.</p>
         </div>
@@ -95,7 +95,7 @@ export default async function ShopVibeEngine() {
               <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pl-4 pr-4 gap-4 pb-4">
                 {vibeGroups[vibe].map((product) => (
                   <ProductModalClient key={product.id} product={product}>
-                    <div className="snap-center shrink-0 w-[280px] h-[380px] relative rounded-[2rem] overflow-hidden group cursor-pointer border border-white/10 hover:border-fuchsia-500/50 transition-colors shadow-2xl">
+                    <div className="snap-center shrink-0 w-[280px] h-[380px] relative rounded-[2rem] overflow-hidden group cursor-pointer border border-white/10 hover:border-rose-500/50 transition-colors shadow-2xl">
                       {/* Image */}
                       {product.media_urls?.[0] ? (
                         <img 
@@ -115,7 +115,7 @@ export default async function ShopVibeEngine() {
                         <div className="inline-block px-2.5 py-1 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-bold text-white/80 uppercase tracking-wider mb-2">
                           KES {Number(product.price).toLocaleString()}
                         </div>
-                        <h4 className="font-display text-xl font-bold italic leading-tight text-white mb-1 group-hover:text-fuchsia-300 transition-colors">
+                        <h4 className="font-display text-xl font-bold italic leading-tight text-white mb-1 group-hover:text-rose-300 transition-colors">
                           {product.name}
                         </h4>
                         <p className="text-white/60 text-xs line-clamp-2 leading-relaxed">

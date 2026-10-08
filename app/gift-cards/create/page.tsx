@@ -77,7 +77,7 @@ export default function GiftCardWizard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-fuchsia-500/30 font-sans">
+    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-rose-500/30 font-sans">
       <header className="sticky top-0 z-40 bg-[#0A0508]/80 backdrop-blur-xl border-b border-white/5 px-4 py-4">
         <button 
           onClick={() => step === "amount" ? router.push("/") : setStep(step === "checkout" ? "details" : step === "details" ? "style" : "amount")} 
@@ -93,8 +93,8 @@ export default function GiftCardWizard() {
         <div className="flex justify-between items-center mb-8 px-2">
           {["amount", "style", "details", "checkout"].map((s, i) => (
             <div key={s} className="flex-1 flex items-center">
-              <div className={`w-2 h-2 rounded-full ${["amount", "style", "details", "checkout"].indexOf(step) >= i ? "bg-fuchsia-500 shadow-[0_0_10px_#d946ef]" : "bg-white/20"}`} />
-              {i < 3 && <div className={`h-px flex-1 mx-2 ${["amount", "style", "details", "checkout"].indexOf(step) > i ? "bg-fuchsia-500" : "bg-white/10"}`} />}
+              <div className={`w-2 h-2 rounded-full ${["amount", "style", "details", "checkout"].indexOf(step) >= i ? "bg-rose-500 shadow-[0_0_10px_#d946ef]" : "bg-white/20"}`} />
+              {i < 3 && <div className={`h-px flex-1 mx-2 ${["amount", "style", "details", "checkout"].indexOf(step) > i ? "bg-rose-500" : "bg-white/10"}`} />}
             </div>
           ))}
         </div>
@@ -110,7 +110,7 @@ export default function GiftCardWizard() {
                 <button 
                   key={val}
                   onClick={() => setAmount(val)}
-                  className={`py-6 rounded-3xl border transition-all ${amount === val ? "bg-fuchsia-500/20 border-fuchsia-500 text-fuchsia-300" : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10"}`}
+                  className={`py-6 rounded-3xl border transition-all ${amount === val ? "bg-rose-500/20 border-rose-500 text-rose-300" : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10"}`}
                 >
                   <span className="text-xl font-bold">KES {val.toLocaleString()}</span>
                 </button>
@@ -123,7 +123,7 @@ export default function GiftCardWizard() {
                 type="number"
                 value={amount}
                 onChange={e => setAmount(Number(e.target.value))}
-                className="w-full bg-[#1F0A1C] border border-fuchsia-500/20 rounded-2xl py-5 pl-16 pr-6 text-2xl font-bold text-white focus:outline-none focus:border-fuchsia-500 transition-colors"
+                className="w-full bg-[#1F0A1C] border border-rose-500/20 rounded-2xl py-5 pl-16 pr-6 text-2xl font-bold text-white focus:outline-none focus:border-rose-500 transition-colors"
               />
             </div>
           </div>
@@ -136,8 +136,8 @@ export default function GiftCardWizard() {
             <p className="text-white/50 text-sm mb-8">Pick a premium card style for the 3D unboxing.</p>
             
             <div className="space-y-4 mb-8">
-              <button onClick={() => setThemeStyle("holographic")} className={`w-full relative h-32 rounded-3xl overflow-hidden border transition-all ${themeStyle === "holographic" ? "border-fuchsia-500 shadow-[0_0_30px_rgba(217,70,239,0.3)]" : "border-white/10 opacity-70"}`}>
-                <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-600 via-purple-500 to-pink-500" />
+              <button onClick={() => setThemeStyle("holographic")} className={`w-full relative h-32 rounded-3xl overflow-hidden border transition-all ${themeStyle === "holographic" ? "border-rose-500 shadow-[0_0_30px_rgba(217,70,239,0.3)]" : "border-white/10 opacity-70"}`}>
+                <div className="absolute inset-0 bg-gradient-to-tr from-rose-600 via-rose-500 to-pink-500" />
                 <div className="absolute inset-0 bg-white/20 backdrop-blur-sm" />
                 <div className="absolute bottom-4 left-4 font-bold text-lg">Holographic Glow</div>
               </button>
@@ -164,8 +164,8 @@ export default function GiftCardWizard() {
             
             <div className="mb-6">
               <label className="block text-sm font-semibold text-white/80 mb-2">Your Name</label>
-              <input type="text" value={senderName} onChange={e => setSenderName(e.target.value)} placeholder="e.g. John Doe"
-                className="w-full bg-[#1F0A1C] border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 px-4 text-white font-semibold transition-colors" />
+              <input type="text" value={senderName} onChange={e => setSenderName(e.target.value)} aria-label="Your name" placeholder="e.g. John Doe"
+                className="w-full bg-[#1F0A1C] border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 px-4 text-white font-semibold transition-colors" />
             </div>
 
             <div className="bg-white/5 border border-white/10 rounded-3xl p-6 text-center">
@@ -173,7 +173,7 @@ export default function GiftCardWizard() {
               
               <button 
                 onClick={toggleRecording}
-                className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto transition-all ${recording ? "bg-red-500 animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.5)]" : audioUrl ? "bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]" : "bg-fuchsia-500 hover:bg-fuchsia-400"}`}
+                className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto transition-all ${recording ? "bg-red-500 animate-pulse shadow-[0_0_30px_rgba(239,68,68,0.5)]" : audioUrl ? "bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]" : "bg-rose-500 hover:bg-rose-400"}`}
               >
                 {recording ? <Square className="w-8 h-8 text-white fill-white" /> : audioUrl ? <Play className="w-8 h-8 text-white fill-white ml-1" /> : <Mic className="w-8 h-8 text-white" />}
               </button>
@@ -189,7 +189,7 @@ export default function GiftCardWizard() {
         {step === "checkout" && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-500">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-fuchsia-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
                 <CreditCard className="w-8 h-8 text-white" />
               </div>
               <h1 className="font-display text-2xl font-bold italic mb-1">Secure Checkout</h1>
@@ -201,7 +201,7 @@ export default function GiftCardWizard() {
                 <label className="block text-sm font-semibold text-white/80 mb-2">Your M-Pesa Number</label>
                 <div className="relative">
                   <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder="07XX XXX XXX" disabled={paying}
-                    className="w-full bg-[#1F0A1C] border border-fuchsia-500/20 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-4 pr-4 text-white font-semibold transition-colors" />
+                    className="w-full bg-[#1F0A1C] border border-rose-500/20 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-4 pr-4 text-white font-semibold transition-colors" />
                 </div>
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function GiftCardWizard() {
               onClick={handleSlideToBuy}
               disabled={paying}
               className={`relative w-full h-16 rounded-full flex items-center justify-center overflow-hidden transition-all duration-500 ${
-                paying ? "bg-fuchsia-600/50" : "bg-fuchsia-500 hover:bg-fuchsia-400"
+                paying ? "bg-rose-600/50" : "bg-rose-500 hover:bg-rose-400"
               }`}
             >
               {paying ? (

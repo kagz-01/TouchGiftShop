@@ -31,7 +31,7 @@ export default function GiftReadyPage() {
   return (
     <div className="min-h-screen bg-[#0A0508] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Ambient Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[400px] bg-rose-500/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-pink-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-sm w-full relative z-10 text-center">
@@ -47,9 +47,9 @@ export default function GiftReadyPage() {
         </p>
 
         {/* The Link Card */}
-        <div className="bg-[#1F0A1C] border border-fuchsia-500/20 rounded-3xl p-6 mb-6 shadow-2xl relative overflow-hidden text-left">
+        <div className="bg-[#1F0A1C] border border-rose-500/20 rounded-3xl p-6 mb-6 shadow-2xl relative overflow-hidden text-left">
           <div className="absolute top-0 right-0 p-4 opacity-10">
-            <Gift className="w-24 h-24 text-fuchsia-500 transform rotate-12" />
+            <Gift className="w-24 h-24 text-rose-500 transform rotate-12" />
           </div>
           
           <h3 className="font-bold text-lg mb-2 relative z-10">Send the Magic Link</h3>
@@ -58,12 +58,12 @@ export default function GiftReadyPage() {
           </p>
 
           <div className="flex gap-2 relative z-10">
-            <code className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-3 text-xs text-fuchsia-300 truncate">
+            <code className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-3 text-xs text-rose-300 truncate">
               {shareUrl}
             </code>
             <button 
               onClick={handleCopy}
-              className="px-4 py-3 bg-fuchsia-500 hover:bg-fuchsia-400 transition-colors rounded-xl flex items-center justify-center"
+              className="px-4 py-3 bg-rose-500 hover:bg-rose-400 transition-colors rounded-xl flex items-center justify-center"
             >
               {copied ? <CheckCircle2 className="w-4 h-4 text-white" /> : <Copy className="w-4 h-4 text-white" />}
             </button>

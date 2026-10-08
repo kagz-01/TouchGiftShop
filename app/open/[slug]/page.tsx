@@ -90,7 +90,7 @@ export default function UnboxGiftPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#0A0508] flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
+        <div className="w-8 h-8 rounded-full border-2 border-rose-500/20 border-t-rose-500 animate-spin" />
       </div>
     );
   }
@@ -104,20 +104,20 @@ export default function UnboxGiftPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0508] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-fuchsia-500/30">
+    <div className="min-h-screen bg-[#0A0508] text-white flex flex-col items-center justify-center px-4 relative overflow-hidden selection:bg-rose-500/30">
       
       {/* ── BEFORE UNBOXING ── */}
       {!unboxed && (
         <div className="text-center z-10 max-w-sm w-full animate-in fade-in zoom-in duration-1000">
           <div className="w-32 h-32 mx-auto mb-8 relative cursor-pointer hover:scale-105 transition-transform" onClick={handleUnbox}>
-            <div className="absolute inset-0 bg-fuchsia-500/20 rounded-full blur-[40px] animate-pulse" />
-            <Gift className="w-full h-full text-fuchsia-400 drop-shadow-[0_0_15px_rgba(217,70,239,0.5)]" />
+            <div className="absolute inset-0 bg-rose-500/20 rounded-full blur-[40px] animate-pulse" />
+            <Gift className="w-full h-full text-rose-400 drop-shadow-[0_0_15px_rgba(217,70,239,0.5)]" />
           </div>
           <h1 className="font-display text-4xl font-bold italic mb-4">You have a gift!</h1>
           <p className="text-white/60 text-sm mb-8">Someone thinks you're awesome. Tap the button to unwrap your surprise.</p>
           <button 
             onClick={handleUnbox}
-            className="w-full py-4 bg-gradient-to-r from-fuchsia-600 to-pink-500 rounded-full font-bold text-lg shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform"
+            className="w-full py-4 bg-gradient-to-r from-rose-600 to-pink-500 rounded-full font-bold text-lg shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform"
           >
             Tap to Unbox ✨
           </button>
@@ -131,15 +131,15 @@ export default function UnboxGiftPage() {
           <div className="max-w-md w-full z-10 animate-in slide-in-from-bottom-12 fade-in duration-700 py-12">
             
             <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center p-3 bg-fuchsia-500/10 rounded-full mb-4 border border-fuchsia-500/20">
-                <PackageOpen className="w-6 h-6 text-fuchsia-400" />
+              <div className="inline-flex items-center justify-center p-3 bg-rose-500/10 rounded-full mb-4 border border-rose-500/20">
+                <PackageOpen className="w-6 h-6 text-rose-400" />
               </div>
               <h1 className="font-display text-3xl font-bold italic mb-2">It's {product.name}!</h1>
               <p className="text-white/60 text-sm">Now, where should we send it?</p>
             </div>
 
             {/* Product Card */}
-            <div className="bg-[#1F0A1C] border border-fuchsia-500/20 rounded-3xl p-4 mb-6 shadow-2xl flex gap-4">
+            <div className="bg-[#1F0A1C] border border-rose-500/20 rounded-3xl p-4 mb-6 shadow-2xl flex gap-4">
               <div className="w-24 h-24 rounded-2xl overflow-hidden bg-black shrink-0">
                 {product.media_urls?.[0] && <img src={product.media_urls[0]} alt={product.name} className="w-full h-full object-cover" />}
               </div>
@@ -153,22 +153,22 @@ export default function UnboxGiftPage() {
             <form onSubmit={handleSubmitAddress} className="space-y-4">
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input required type="text" placeholder="Your Full Name" value={name} onChange={e => setName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
+                <input required type="text" aria-label="Your Full Name" placeholder="Your Full Name" value={name} onChange={e => setName(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
               </div>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input required type="tel" placeholder="Your Phone Number" value={phone} onChange={e => setPhone(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
+                <input required type="tel" aria-label="Your Phone Number" placeholder="Your Phone Number" value={phone} onChange={e => setPhone(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors" />
               </div>
               <div className="relative">
                 <MapPin className="absolute left-4 top-4 w-5 h-5 text-white/40" />
                 <textarea required placeholder="Delivery Address (e.g. 4th Floor, Kofisi Square, Riverside)" value={address} onChange={e => setAddress(e.target.value)} rows={3}
-                  className="w-full bg-white/5 border border-white/10 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors resize-none" />
+                  className="w-full bg-white/5 border border-white/10 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-sm font-semibold transition-colors resize-none" />
               </div>
 
               <button type="submit" disabled={submitting}
-                className="w-full py-4 mt-2 bg-fuchsia-500 hover:bg-fuchsia-400 disabled:opacity-50 text-white rounded-2xl font-bold shadow-[0_0_20px_rgba(217,70,239,0.3)] transition-all">
+                className="w-full py-4 mt-2 bg-rose-500 hover:bg-rose-400 disabled:opacity-50 text-white rounded-2xl font-bold shadow-[0_0_20px_rgba(217,70,239,0.3)] transition-all">
                 {submitting ? "Confirming..." : "Confirm Delivery Details"}
               </button>
             </form>

@@ -133,12 +133,12 @@ export default function ShopCheckoutPage() {
 
   if (loading || !product) return (
     <div className="min-h-screen bg-[#0A0508] flex items-center justify-center">
-      <div className="w-8 h-8 rounded-full border-2 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
+      <div className="w-8 h-8 rounded-full border-2 border-rose-500/20 border-t-rose-500 animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-fuchsia-500/30">
+    <div className="min-h-screen bg-[#0A0508] text-white selection:bg-rose-500/30">
       <header className="sticky top-0 z-40 bg-[#0A0508]/80 backdrop-blur-xl border-b border-white/5 px-4 py-4">
         <button onClick={() => router.back()} className="flex items-center gap-2 text-white/60 hover:text-white transition-colors">
           <ArrowLeft className="w-5 h-5" />
@@ -148,7 +148,7 @@ export default function ShopCheckoutPage() {
 
       <main className="max-w-md mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-fuchsia-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
             <Gift className="w-8 h-8 text-white" />
           </div>
           <h1 className="font-display text-2xl font-bold italic mb-1">Secure Checkout</h1>
@@ -166,7 +166,7 @@ export default function ShopCheckoutPage() {
               <p className="text-white/60 text-xs mt-1">Blind Gifting Mode</p>
             </div>
             <div className="text-right">
-              <p className="font-bold text-fuchsia-400">KES {Number(product.price).toLocaleString()}</p>
+              <p className="font-bold text-rose-400">KES {Number(product.price).toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -182,7 +182,7 @@ export default function ShopCheckoutPage() {
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 placeholder="07XX XXX XXX"
-                className="w-full bg-[#1F0A1C] border border-fuchsia-500/20 focus:border-fuchsia-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-white font-semibold transition-colors"
+                className="w-full bg-[#1F0A1C] border border-rose-500/20 focus:border-rose-500 focus:outline-none rounded-2xl py-4 pl-12 pr-4 text-white font-semibold transition-colors"
                 disabled={paying}
               />
             </div>
@@ -222,7 +222,7 @@ export default function ShopCheckoutPage() {
                 </div>
                 <div className="flex justify-between text-base font-bold pt-2 border-t border-emerald-500/10">
                   <span>M-Pesa Amount</span>
-                  <span className="text-fuchsia-400">KES {amountToPayWithMpesa.toLocaleString()}</span>
+                  <span className="text-rose-400">KES {amountToPayWithMpesa.toLocaleString()}</span>
                 </div>
               </div>
             )}
@@ -237,10 +237,10 @@ export default function ShopCheckoutPage() {
             paymentStatus === "success" 
               ? "bg-emerald-500 scale-105" 
               : paymentStatus === "processing"
-              ? "bg-fuchsia-600/50"
+              ? "bg-rose-600/50"
               : amountToPayWithMpesa === 0
               ? "bg-emerald-500 hover:bg-emerald-400"
-              : "bg-fuchsia-500 hover:bg-fuchsia-400"
+              : "bg-rose-500 hover:bg-rose-400"
           }`}
         >
           {paymentStatus === "idle" && (
