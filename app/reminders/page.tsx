@@ -133,7 +133,7 @@ function RemindersDashboard() {
         <div className="page-container py-6">
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h1 className="font-display text-2xl font-bold text-brand-deep">Reminders & Subscriptions</h1>
+              <h2 className="font-display text-2xl font-bold text-brand-deep">Reminders & Subscriptions</h2>
               <p className="text-sm text-brand-muted mt-1">Never miss an important date again.</p>
             </div>
             <BackToHome />

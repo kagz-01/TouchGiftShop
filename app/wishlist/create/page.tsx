@@ -148,7 +148,7 @@ export default function CreateWishlistPage() {
           <div className="space-y-6">
             <div className="text-center">
               <span className="text-5xl block mb-3">💌</span>
-              <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Add a Message</h1>
+              <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">Add a Message</h2>
               <p className="text-gray-500 text-sm max-w-xs mx-auto">
                 Give your gifters some context — totally optional but adds a personal touch!
               </p>
@@ -202,7 +202,7 @@ export default function CreateWishlistPage() {
             </div>
 
             <div>
-              <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Wishlist Created! 🎉</h1>
+              <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">Wishlist Created! 🎉</h2>
               <p className="text-gray-500 text-sm max-w-xs mx-auto">
                 Now browse the shop and heart anything you love. Your registry is ready to share!
               </p>

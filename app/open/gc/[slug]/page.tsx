@@ -207,7 +207,7 @@ export default function UnboxGiftCardPage() {
           <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.2)]">
             <Wallet className="w-10 h-10 text-emerald-400" />
           </div>
-          <h1 className="font-display text-3xl font-bold italic mb-3">Funds Secured!</h1>
+          <h2 className="font-display text-3xl font-bold italic mb-3">Funds Secured!</h2>
           <p className="text-white/60 text-sm leading-relaxed mb-8">
             KES {Number(giftCard.amount).toLocaleString()} has been added to your TouchGift Wallet.
           </p>

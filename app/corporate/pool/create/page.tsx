@@ -31,7 +31,7 @@ type PoolConfig = {
 
 const OCCASIONS = [
   { id: "birthday", label: "Birthday", icon: "🎂", color: "from-pink-400 to-rose-400" },
-  { id: "work_anniversary", label: "Work Anniversary", icon: "🎉", color: "from-violet-400 to-purple-400" },
+  { id: "work_anniversary", label: "Work Anniversary", icon: "🎉", color: "from-teal-400 to-cyan-400" },
   { id: "farewell", label: "Farewell / Send-off", icon: "👋", color: "from-blue-400 to-indigo-400" },
   { id: "promotion", label: "Promotion", icon: "🏆", color: "from-amber-400 to-yellow-400" },
   { id: "new_baby", label: "New Baby", icon: "👶", color: "from-emerald-400 to-teal-400" },

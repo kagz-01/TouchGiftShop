@@ -30,7 +30,7 @@ async function getProducts() {
 }
 
 const VIBE_ICONS: Record<string, React.ReactNode> = {
-  "Sunday Reset": <Moon className="w-4 h-4 text-purple-400" />,
+  "Sunday Reset": <Moon className="w-4 h-4 text-teal-400" />,
   "Main Character Energy": <Activity className="w-4 h-4 text-emerald-400" />,
   "The Tech Minimalist": <Coffee className="w-4 h-4 text-blue-400" />,
   "Wanderlust": <Plane className="w-4 h-4 text-amber-400" />,

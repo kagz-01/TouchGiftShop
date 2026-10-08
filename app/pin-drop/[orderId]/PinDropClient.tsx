@@ -153,9 +153,9 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
       <div className="bg-white border-b border-surface-border px-4 py-4 safe-area-top">
         <div className="max-w-lg mx-auto">
           <span className="text-2xl block mb-1">🎁</span>
-          <h1 className="font-display text-lg font-bold">
+          <h2 className="font-display text-lg font-bold">
             Hey {recipientName}!
-          </h1>
+          </h2>
           <p className="text-xs text-brand-muted">
             Someone sent you a gift. Drop your pin so we can deliver it to you.
           </p>

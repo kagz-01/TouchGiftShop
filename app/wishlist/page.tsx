@@ -36,7 +36,7 @@ const OCCASION_CONFIG: Record<string, { emoji: string; gradient: string }> = {
   wedding:        { emoji: "💒", gradient: "from-rose-400 to-red-500" },
   baby:           { emoji: "👶", gradient: "from-sky-400 to-blue-500" },
   anniversary:    { emoji: "💕", gradient: "from-red-400 to-pink-500" },
-  graduation:     { emoji: "🎓", gradient: "from-violet-400 to-purple-500" },
+  graduation:     { emoji: "🎓", gradient: "from-teal-400 to-cyan-500" },
   christmas:      { emoji: "🎄", gradient: "from-emerald-400 to-green-500" },
   "just because": { emoji: "💝", gradient: "from-pink-400 to-fuchsia-500" },
   other:          { emoji: "🎁", gradient: "from-amber-400 to-orange-500" },
@@ -172,7 +172,7 @@ export default function WishlistPage() {
           {/* gradient header */}
           <div className={`bg-gradient-to-r ${cfg.gradient} p-6 text-white text-center`}>
             <span className="text-4xl block mb-2">{cfg.emoji}</span>
-            <h1 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s</h1>
+            <h2 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s</h2>
             <p className="text-white/80 text-sm capitalize mt-0.5">
               {wishlist?.occasion ? `${wishlist.occasion} Wishlist` : "Gift Registry"}
             </p>

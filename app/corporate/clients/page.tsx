@@ -27,7 +27,7 @@ type Client = {
 };
 
 const TIER_CONFIG = {
-  platinum: { label: "Platinum", color: "text-violet-400", bg: "bg-violet-500/10", icon: <Star className="w-3 h-3" /> },
+  platinum: { label: "Platinum", color: "text-teal-400", bg: "bg-teal-500/10", icon: <Star className="w-3 h-3" /> },
   gold: { label: "Gold", color: "text-amber-400", bg: "bg-amber-500/10", icon: <Star className="w-3 h-3" /> },
   silver: { label: "Silver", color: "text-gray-400", bg: "bg-white/5", icon: <Star className="w-3 h-3" /> },
 };
@@ -109,10 +109,10 @@ export default function ClientAppreciationNetwork() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: "Total Clients", value: stats.totalClients, icon: <Users className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Total Clients", value: stats.totalClients, icon: <Users className="w-5 h-5" />, color: "text-teal-400" },
               { label: "Total Invested", value: `KSh ${(stats.totalSpent / 1000).toFixed(0)}K`, icon: <DollarSign className="w-5 h-5" />, color: "text-gold" },
               { label: "Avg Relationship", value: `${stats.avgRelationship}%`, icon: <Heart className="w-5 h-5" />, color: "text-pink-400" },
-              { label: "Upcoming (30d)", value: stats.upcomingOccasions, icon: <Calendar className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Upcoming (30d)", value: stats.upcomingOccasions, icon: <Calendar className="w-5 h-5" />, color: "text-teal-400" },
             ].map((stat) => (
               <div key={stat.label} className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg">
                 <div className="flex items-center gap-3">
@@ -217,7 +217,7 @@ export default function ClientAppreciationNetwork() {
                   {/* Next occasion */}
                   <div className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-violet-400" />
+                      <Calendar className="w-4 h-4 text-teal-400" />
                       <span className="text-xs text-white font-semibold">
                         {client.nextOccasion} · {daysUntilOccasion <= 0 ? "Today!" : `in ${daysUntilOccasion} days`}
                       </span>
@@ -242,7 +242,7 @@ export default function ClientAppreciationNetwork() {
                   </div>
                   <h3 className="font-display italic text-lg font-bold text-white">{selectedClient.name}</h3>
                   <p className="text-sm text-white/60">{selectedClient.role}</p>
-                  <p className="text-sm font-semibold text-violet-400">{selectedClient.company}</p>
+                  <p className="text-sm font-semibold text-teal-400">{selectedClient.company}</p>
 
                   <div className="flex justify-center gap-4 mt-4 text-xs text-white/60">
                     <span className="flex items-center gap-1"><Mail className="w-3 h-3" /> Email</span>
@@ -272,13 +272,13 @@ export default function ClientAppreciationNetwork() {
                 <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg space-y-2">
                   <Link
                     href="/corporate/build"
-                    className="flex items-center gap-3 p-3 bg-violet-500/10 hover:bg-violet-500/20 shape-premium-card transition-colors text-sm font-medium text-violet-400"
+                    className="flex items-center gap-3 p-3 bg-teal-500/10 hover:bg-teal-500/20 shape-premium-card transition-colors text-sm font-medium text-teal-400"
                   >
                     <Gift className="w-4 h-4" /> Send a Gift
                   </Link>
                   <Link
                     href="/corporate/pool/create"
-                    className="flex items-center gap-3 p-3 bg-violet-500/10 hover:bg-violet-100 dark:hover:bg-violet-500/20 shape-premium-card transition-colors text-sm font-medium text-violet-600"
+                    className="flex items-center gap-3 p-3 bg-teal-500/10 hover:bg-violet-100 dark:hover:bg-teal-500/20 shape-premium-card transition-colors text-sm font-medium text-violet-600"
                   >
                     <Users className="w-4 h-4" /> Create Pool
                   </Link>

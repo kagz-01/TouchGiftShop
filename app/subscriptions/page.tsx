@@ -235,7 +235,7 @@ export default function SubscriptionsPage() {
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="font-display font-bold text-xl text-theme-heading">Add your recipients</h1>
+            <h2 className="font-display font-bold text-xl text-theme-heading">Add your recipients</h2>
             <p className="text-sm text-theme-muted">Who will you be gifting? We&apos;ll remind you before each occasion.</p>
           </div>
         </div>
@@ -362,7 +362,7 @@ export default function SubscriptionsPage() {
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="font-display font-bold text-xl text-theme-heading">{selectedPlan.name} plan</h1>
+            <h2 className="font-display font-bold text-xl text-theme-heading">{selectedPlan.name} plan</h2>
             <p className="text-sm text-theme-muted">Set your monthly savings contribution</p>
           </div>
         </div>
@@ -476,9 +476,9 @@ export default function SubscriptionsPage() {
           <div className="inline-flex items-center gap-2 bg-brand/10 text-brand px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
             <Sparkles className="w-4 h-4" /> Gift Subscriptions
           </div>
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-theme-heading leading-tight mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-theme-heading leading-tight mb-4">
             Save monthly. <span className="text-brand">Gift perfectly.</span>
-          </h1>
+          </h2>
           <p className="text-lg text-theme-body leading-relaxed">
             Like a chama, but for gifts. Commit a monthly amount that builds up in your Gift Wallet. We handle the reminders, curation, and delivery.
           </p>

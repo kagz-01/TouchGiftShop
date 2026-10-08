@@ -36,9 +36,9 @@ export default function CartPage() {
       <div className="page-container-capped py-6 md:py-10">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">
               Your Cart
-            </h1>
+            </h2>
             <p className="text-sm text-brand-muted mt-1">
               {itemCount} {itemCount === 1 ? "item" : "items"}
             </p>

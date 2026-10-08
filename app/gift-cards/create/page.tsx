@@ -132,7 +132,7 @@ export default function GiftCardWizard() {
         {/* --- STEP 2: STYLE --- */}
         {step === "style" && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-            <h1 className="font-display text-3xl font-bold italic mb-2">Choose the Vibe</h1>
+            <h2 className="font-display text-3xl font-bold italic mb-2">Choose the Vibe</h2>
             <p className="text-white/50 text-sm mb-8">Pick a premium card style for the 3D unboxing.</p>
             
             <div className="space-y-4 mb-8">
@@ -159,7 +159,7 @@ export default function GiftCardWizard() {
         {/* --- STEP 3: DETAILS --- */}
         {step === "details" && (
           <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-            <h1 className="font-display text-3xl font-bold italic mb-2">Personalize it</h1>
+            <h2 className="font-display text-3xl font-bold italic mb-2">Personalize it</h2>
             <p className="text-white/50 text-sm mb-8">Add a voice note that plays when they unbox the card.</p>
             
             <div className="mb-6">
@@ -192,7 +192,7 @@ export default function GiftCardWizard() {
               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
                 <CreditCard className="w-8 h-8 text-white" />
               </div>
-              <h1 className="font-display text-2xl font-bold italic mb-1">Secure Checkout</h1>
+              <h2 className="font-display text-2xl font-bold italic mb-1">Secure Checkout</h2>
               <p className="text-white/50 text-sm">You are gifting KES {amount.toLocaleString()}</p>
             </div>
 

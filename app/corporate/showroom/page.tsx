@@ -178,7 +178,7 @@ export default function VirtualShowroom() {
                       </div>
                     ) : (
                       <div className="w-full h-full bg-brand/10 flex items-center justify-center">
-                        <Gift className="w-6 h-6 text-violet-400" />
+                        <Gift className="w-6 h-6 text-teal-400" />
                       </div>
                     )}
                   </button>
@@ -192,7 +192,7 @@ export default function VirtualShowroom() {
                 <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
                   <div className="flex items-center gap-2 mb-2">
                     {product.category && (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold shape-premium-button bg-brand/10 text-violet-400">
+                      <span className="px-2 py-0.5 text-[10px] font-semibold shape-premium-button bg-brand/10 text-teal-400">
                         {product.category}
                       </span>
                     )}

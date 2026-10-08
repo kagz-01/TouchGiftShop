@@ -305,8 +305,8 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
                 <span className="text-sm font-semibold text-brand-deep">AI Gift Suggester</span>
               </div>
               {aiSource === "gemini" && (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-purple-500/20">
-                  <span className="text-[10px] font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-teal-500/10 via-cyan-500/10 to-blue-500/10 border border-teal-500/20">
+                  <span className="text-[10px] font-bold bg-gradient-to-r from-teal-600 via-cyan-600 to-blue-600 bg-clip-text text-transparent">
                     Powered by Gemini AI
                   </span>
                 </div>

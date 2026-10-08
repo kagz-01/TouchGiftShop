@@ -193,9 +193,9 @@ export default function LoyaltyPage() {
               <div className="inline-flex items-center gap-2 bg-white/15 px-3 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-5">
                 <Award className="w-3.5 h-3.5" /> Loyalty Programme
               </div>
-              <h1 className="font-display text-4xl md:text-5xl font-black leading-tight mb-2">
+              <h2 className="font-display text-4xl md:text-5xl font-black leading-tight mb-2">
                 {currentTierConfig.name}
-              </h1>
+              </h2>
               <p className="text-white/70 text-base mb-6">
                 {currentTierConfig.discount > 0
                   ? `${currentTierConfig.discount}% off every order, ${currentTierConfig.multiplier} points earned`

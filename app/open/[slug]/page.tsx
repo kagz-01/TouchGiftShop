@@ -134,7 +134,7 @@ export default function UnboxGiftPage() {
               <div className="inline-flex items-center justify-center p-3 bg-rose-500/10 rounded-full mb-4 border border-rose-500/20">
                 <PackageOpen className="w-6 h-6 text-rose-400" />
               </div>
-              <h1 className="font-display text-3xl font-bold italic mb-2">It's {product.name}!</h1>
+              <h2 className="font-display text-3xl font-bold italic mb-2">It's {product.name}!</h2>
               <p className="text-white/60 text-sm">Now, where should we send it?</p>
             </div>
 
@@ -182,7 +182,7 @@ export default function UnboxGiftPage() {
           <div className="w-20 h-20 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_40px_rgba(16,185,129,0.2)]">
             <CheckCircle2 className="w-10 h-10 text-emerald-400" />
           </div>
-          <h1 className="font-display text-3xl font-bold italic mb-3">All Set!</h1>
+          <h2 className="font-display text-3xl font-bold italic mb-3">All Set!</h2>
           <p className="text-white/60 text-sm leading-relaxed mb-6">
             We've got your details. Your gift is being prepared and will be dispatched to your location shortly. Enjoy! ✨
           </p>

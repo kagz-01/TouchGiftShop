@@ -213,7 +213,7 @@ export default function B2B2CMarketplace() {
                   {product.image_url ? (
                     <Image src={product.image_url} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 25vw" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-violet-500/10">
+                    <div className="w-full h-full flex items-center justify-center bg-teal-500/10">
                       <Package className="w-10 h-10 text-brand/20" />
                     </div>
                   )}
@@ -232,7 +232,7 @@ export default function B2B2CMarketplace() {
                   </div>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <p className="text-sm font-bold text-violet-400">{formatKsh(product.price)}</p>
+                      <p className="text-sm font-bold text-teal-400">{formatKsh(product.price)}</p>
                       {product.bulk_price && (
                         <p className="text-[10px] text-emerald-400">Bulk: {formatKsh(product.bulk_price)} ({product.bulk_min}+)</p>
                       )}
@@ -253,7 +253,7 @@ export default function B2B2CMarketplace() {
                   {product.image_url ? (
                     <Image src={product.image_url} alt={product.name} fill className="object-cover" sizes="80px" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-violet-500/10">
+                    <div className="w-full h-full flex items-center justify-center bg-teal-500/10">
                       <Package className="w-6 h-6 text-brand/20" />
                     </div>
                   )}
@@ -268,7 +268,7 @@ export default function B2B2CMarketplace() {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="text-sm font-bold text-violet-400">{formatKsh(product.price)}</p>
+                  <p className="text-sm font-bold text-teal-400">{formatKsh(product.price)}</p>
                   {product.bulk_price && <p className="text-[10px] text-emerald-400">Bulk: {formatKsh(product.bulk_price)}</p>}
                   <Link href="/corporate/build" className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-brand hover:text-gold transition-colors">
                     Order <ArrowRight className="w-3 h-3" />

@@ -286,7 +286,7 @@ export default function HamperBuilder() {
 
             {/* Show selected template summary */}
             {selectedTemplate && (
-              <div className="bg-violet-500/10 border border-violet-400/20 shape-premium-card p-4 flex items-center justify-between">
+              <div className="bg-teal-500/10 border border-teal-400/20 shape-premium-card p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 bg-gradient-to-br ${selectedTemplate.gradient} shape-premium-card flex items-center justify-center text-white`}>
                     {selectedTemplate.icon}
@@ -376,19 +376,19 @@ export default function HamperBuilder() {
                       <h3 className="font-semibold text-sm mb-1 line-clamp-2">{product.name}</h3>
                       <p className="text-cyan-400 font-bold text-sm">KSh {product.price.toLocaleString()}</p>
                       {selected && item && (
-                        <div className="mt-3 flex items-center justify-between bg-violet-500/10 rounded-lg px-3 py-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="mt-3 flex items-center justify-between bg-teal-500/10 rounded-lg px-3 py-2" onClick={(e) => e.stopPropagation()}>
                           <span className="text-xs text-white/60">Qty per hamper</span>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateQuantity(product.id, item.quantity - 1)}
-                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-violet-500/20"
+                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-teal-500/20"
                             >
                               -
                             </button>
                             <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(product.id, item.quantity + 1)}
-                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-violet-500/20"
+                              className="w-6 h-6 bg-white border rounded-lg flex items-center justify-center text-sm font-bold hover:bg-teal-500/20"
                             >
                               +
                             </button>
@@ -534,7 +534,7 @@ Peter Odhiambo, 0755555555`}
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="hidden sm:block px-4 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-violet-400/20"
+                      className="hidden sm:block px-4 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-semibold text-sm hover:bg-brand/20 transition-colors border border-teal-400/20"
                     >
                       + Add Recipient
                     </button>
@@ -548,7 +548,7 @@ Peter Odhiambo, 0755555555`}
                   {!csvMode && (
                     <button
                       onClick={addRecipient}
-                      className="sm:hidden px-3 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-violet-400/20"
+                      className="sm:hidden px-3 py-3 bg-brand/10 text-cyan-400 shape-premium-card font-bold text-lg hover:bg-brand/20 transition-colors border border-teal-400/20"
                       aria-label="Add Recipient"
                     >
                       +
@@ -615,7 +615,7 @@ Peter Odhiambo, 0755555555`}
                       onClick={() => setGiftWrap(wrap.id)}
                       className={`p-4 shape-premium-card border-2 text-center transition-all ${
                         giftWrap === wrap.id
-                          ? "border-cyan-400 bg-violet-500/10 shadow-ribbon"
+                          ? "border-cyan-400 bg-teal-500/10 shadow-ribbon"
                           : "border-surface-border hover:border-cyan-400/30"
                       }`}
                     >
