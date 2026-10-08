@@ -82,7 +82,7 @@ export default function ThanksPage() {
           </div>
 
           <h1 className="font-display text-3xl font-bold italic text-white mb-2">
-            {name ? `Thank you, ${name}! 💜` : "Thank you! 💜"}
+            {name ? `Thank you, ${name}! 💛` : "Thank you! 💛"}
           </h1>
           {amount && (
             <div className="inline-flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 mb-4">
@@ -111,7 +111,7 @@ export default function ThanksPage() {
             </button>
           </div>
           <a
-            href={`https://wa.me/?text=${encodeURIComponent(`🎁 I just contributed to a gift pool!\n\nJoin me and help make their day special 💜\n${shareUrl}`)}`}
+            href={`https://wa.me/?text=${encodeURIComponent(`🎁 I just contributed to a gift pool!\n\nJoin me and help make their day special 💛\n${shareUrl}`)}`}
             target="_blank"
             rel="noreferrer"
             className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"

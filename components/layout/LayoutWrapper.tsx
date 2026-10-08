@@ -56,8 +56,14 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return () => subscription.unsubscribe();
   }, []);
 
-  if (isAdmin) {
-    return <>{children}</>;
+  if (isAdmin || pathname.startsWith("/corporate")) {
+    return (
+      <main className="flex-1 relative z-0">
+        {children}
+        {!isAdmin && <WhatsAppFloat />}
+        {!isAdmin && <GiftChatWidget />}
+      </main>
+    );
   }
 
   return (

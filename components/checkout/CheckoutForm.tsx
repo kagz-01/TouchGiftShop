@@ -91,6 +91,14 @@ export default function CheckoutForm({
   const [giftCardError, setGiftCardError] = useState<string | null>(null);
   const [giftCardChecking, setGiftCardChecking] = useState(false);
 
+  // Wallet redemption
+  const [walletPhone, setWalletPhone] = useState("");
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [walletApply, setWalletApply] = useState(0);
+  const [walletChecking, setWalletChecking] = useState(false);
+  const [walletError, setWalletError] = useState<string | null>(null);
+  const [walletVerified, setWalletVerified] = useState(false);
+
   // Delivery slots
   const [deliverySlots, setDeliverySlots] = useState<Array<{
     id: string; name: string; key: string; description: string;
@@ -236,6 +244,27 @@ export default function CheckoutForm({
     setGiftCardChecking(false);
   }
 
+  async function lookupWallet(ph: string) {
+    if (!ph || ph.replace(/\D/g, "").length < 9) return;
+    setWalletChecking(true);
+    setWalletError(null);
+    try {
+      const res = await fetch(`/api/wallet?phone=${encodeURIComponent(ph)}`);
+      const data = await res.json();
+      if (data.wallet) {
+        setWalletBalance(Number(data.wallet.balance));
+        setWalletVerified(true);
+        setWalletApply(Math.min(Number(data.wallet.balance), total));
+      } else {
+        setWalletBalance(0);
+        setWalletError("No wallet found for this number.");
+      }
+    } catch {
+      setWalletError("Failed to check wallet.");
+    }
+    setWalletChecking(false);
+  }
+
   const lookupDelivery = useCallback(async (value: string, lat?: number | null, lng?: number | null) => {
     setLandmark(value);
     if (value.length < 3) { setDeliveryZone(null); return; }
@@ -296,7 +325,8 @@ export default function CheckoutForm({
   const pointsDiscount = pointsDiscountKsh(effectivePoints);
 
   const subtotal = itemsTotal + deliveryFee + wrappingCost - loyaltyDiscount + slotExtraFee;
-  const total = Math.max(0, subtotal - giftCardDiscount - pointsDiscount);
+  const walletDiscount = walletVerified ? Math.min(walletApply, walletBalance ?? 0) : 0;
+  const total = Math.max(0, subtotal - giftCardDiscount - pointsDiscount - walletDiscount);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -829,6 +859,13 @@ export default function CheckoutForm({
                 </div>
               )}
 
+              {walletDiscount > 0 && (
+                <div className="flex justify-between text-emerald-600">
+                  <span className="flex items-center gap-1.5">👛 Wallet credit</span>
+                  <span className="font-medium">-{formatKsh(walletDiscount)}</span>
+                </div>
+              )}
+
               {engraving && (
                 <div className="border-t border-black/5 pt-3">
                   <p className="text-brand-muted text-xs">Engraving: &ldquo;{engraving}&rdquo;</p>
@@ -909,7 +946,72 @@ export default function CheckoutForm({
             )}
           </div>
 
+          {/* Wallet Balance */}
+          <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-4 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">👛</span>
+              <p className="text-sm font-semibold text-brand-deep">Pay with Wallet</p>
+              {walletBalance !== null && (
+                <span className="ml-auto text-xs font-bold text-emerald-600">KES {walletBalance.toLocaleString()} available</span>
+              )}
+            </div>
+
+            {!walletVerified ? (
+              <div className="flex gap-2">
+                <input
+                  id="co-wallet-phone"
+                  type="tel"
+                  aria-label="Wallet phone number"
+                  placeholder="07XX XXX XXX"
+                  value={walletPhone}
+                  onChange={e => setWalletPhone(e.target.value)}
+                  className={`${INPUT} flex-1`}
+                />
+                <button
+                  type="button"
+                  onClick={() => lookupWallet(walletPhone)}
+                  disabled={walletChecking || !walletPhone}
+                  className="px-4 py-2 bg-emerald-500/10 text-emerald-700 rounded-xl text-xs font-semibold hover:bg-emerald-500/20 transition-colors disabled:opacity-50"
+                >
+                  {walletChecking ? "Checking…" : "Check"}
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-brand-muted">Apply from wallet</span>
+                  <button type="button" onClick={() => { setWalletVerified(false); setWalletBalance(null); setWalletApply(0); setWalletError(null); }} className="text-xs text-brand-muted underline">Change</button>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.min(walletBalance ?? 0, subtotal - giftCardDiscount - pointsDiscount)}
+                  step={50}
+                  value={walletApply}
+                  onChange={e => setWalletApply(Number(e.target.value))}
+                  className="w-full accent-emerald-500"
+                />
+                <div className="flex justify-between text-xs">
+                  <span className="text-brand-muted">KES 0</span>
+                  <span className="text-emerald-700 font-bold">-KES {walletApply.toLocaleString()} from wallet</span>
+                  <span className="text-brand-muted">KES {Math.min(walletBalance ?? 0, subtotal).toLocaleString()}</span>
+                </div>
+                {walletApply > 0 && total > 0 && (
+                  <p className="text-[11px] text-brand-muted">
+                    Remaining <span className="font-bold text-brand-deep">{formatKsh(total)}</span> paid via M-Pesa
+                  </p>
+                )}
+                {walletApply > 0 && total === 0 && (
+                  <p className="text-[11px] text-emerald-600 font-semibold">✓ Fully covered by wallet — no M-Pesa needed!</p>
+                )}
+              </div>
+            )}
+
+            {walletError && <p className="text-xs text-red-500">{walletError}</p>}
+          </div>
+
           {/* Points redemption */}
+
           {pointsBalance >= MIN_REDEEM_POINTS && (
             <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">
               <div className="flex items-center justify-between">

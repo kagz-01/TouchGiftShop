@@ -37,6 +37,11 @@ CREATE TABLE IF NOT EXISTS group_gifting_pools (
   
   status TEXT NOT NULL DEFAULT 'active', -- active, closed, cancelled, fulfilled
   
+  milestone_25_sent BOOLEAN NOT NULL DEFAULT false,
+  milestone_50_sent BOOLEAN NOT NULL DEFAULT false,
+  milestone_75_sent BOOLEAN NOT NULL DEFAULT false,
+  milestone_100_sent BOOLEAN NOT NULL DEFAULT false,
+  
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   closed_at TIMESTAMPTZ
@@ -55,9 +60,13 @@ CREATE TABLE IF NOT EXISTS pool_contributions (
   
   payment_method TEXT NOT NULL,
   payment_ref TEXT NOT NULL,
+  pesapal_tracking_id TEXT,
   
   is_anonymous BOOLEAN NOT NULL DEFAULT false,
   is_ghost_mode BOOLEAN NOT NULL DEFAULT false,
+  is_verified BOOLEAN NOT NULL DEFAULT false,
+  
+  poll_vote_index INTEGER,
   
   split_parent_id UUID REFERENCES pool_contributions(id) ON DELETE SET NULL,
   

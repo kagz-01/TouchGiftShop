@@ -425,7 +425,7 @@ export default function PoolManagePage() {
                   Time to order the gift!
                 </p>
                 <Link
-                  href={`/corporate/pool/${slug}/order`}
+                  href={`/checkout?pool=${slug}`}
                   className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-2xl font-bold text-sm hover:from-rose-600 hover:to-orange-600 transition-all shadow-lg"
                 >
                   <Gift className="w-4 h-4" /> Order the Gift

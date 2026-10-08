@@ -9,7 +9,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
 
   const { data: pool } = await supabaseAdmin
     .from("group_gifting_pools")
-    .select("id, title, current_balance, target_amount, organizer_id, slug")
+    .select("id, title, current_balance, target_amount, organiser_user_id, slug")
     .eq("slug", slug)
     .single();
 
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
   const { data: organizer } = await supabaseAdmin
     .from("users")
     .select("email, phone")
-    .eq("id", pool.organizer_id)
+    .eq("id", pool.organiser_user_id)
     .maybeSingle();
 
   const results: Record<string, unknown> = {};

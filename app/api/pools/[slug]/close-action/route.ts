@@ -11,7 +11,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
 
   const { data: pool } = await supabaseAdmin
     .from("group_gifting_pools")
-    .select("id, title, status, current_balance, target_amount, organizer_id, slug")
+    .select("id, title, status, current_balance, target_amount, organiser_user_id, slug")
     .eq("slug", slug)
     .single();
 
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     // Fetch all verified contributions to refund
     const { data: contribs } = await supabaseAdmin
       .from("pool_contributions")
-      .select("id, amount, contributor_name, mpesa_receipt_number")
+      .select("id, amount, contributor_name, payment_ref")
       .eq("pool_id", pool.id)
       .eq("is_verified", true);
 
