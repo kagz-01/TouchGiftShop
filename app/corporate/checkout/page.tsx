@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
-import { ArrowLeft, Building2, Link as LinkIcon, Upload, ShieldCheck, Download } from "lucide-react";
+import { ArrowLeft, Building2, Link as LinkIcon, Upload, ShieldCheck, Download, ChevronRight, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function CorporateCheckoutPage() {
   const router = useRouter();
@@ -87,121 +88,204 @@ export default function CorporateCheckoutPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#050304] text-white selection:bg-emerald-500/30">
-      <header className="sticky top-0 z-40 bg-[#050304]/80 backdrop-blur-xl border-b border-white/5 px-4 py-4 max-w-4xl mx-auto flex justify-between items-center">
-        <button onClick={() => router.back()} className="flex items-center gap-2 text-white/60 hover:text-white transition-colors">
-          <ArrowLeft className="w-5 h-5" />
-          <span className="font-semibold text-sm">Back</span>
+    <div className="min-h-screen bg-[#050304] text-white selection:bg-emerald-500/30 font-sans pb-20">
+      {/* Premium Gradient Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-emerald-900/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-teal-900/10 blur-[120px] rounded-full" />
+      </div>
+
+      <header className="sticky top-0 z-40 bg-[#050304]/60 backdrop-blur-2xl border-b border-white/5 px-6 py-4 flex justify-between items-center transition-all">
+        <button onClick={() => router.back()} className="flex items-center gap-2 text-white/50 hover:text-white transition-colors group">
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="font-semibold text-sm tracking-wide">Return to Showroom</span>
         </button>
-        <div className="font-display font-bold italic text-emerald-400 text-sm">Pesapal B2B Gateway</div>
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span className="font-display font-bold text-emerald-400 text-sm tracking-widest uppercase">Pesapal Enterprise</span>
+        </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+      <main className="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 relative z-10">
         
         {/* Left Column: Configuration */}
-        <div>
-          <h1 className="font-display text-3xl font-bold mb-8">Configure Order</h1>
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="lg:col-span-7 space-y-8"
+        >
+          <div>
+            <h1 className="font-display text-4xl font-bold tracking-tight mb-2">Configure Deployment</h1>
+            <p className="text-white/50 text-sm">Customize how your team receives their {product.name} gifts.</p>
+          </div>
           
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-6">
-            <h2 className="text-sm font-bold text-white/60 uppercase tracking-wider mb-4">Team Size</h2>
+          <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-sm relative overflow-hidden group hover:border-white/10 transition-colors">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500/0 via-emerald-500/50 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <h2 className="text-xs font-bold text-emerald-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Recipient Count
+            </h2>
+            
+            <div className="flex items-end justify-between mb-6">
+              <span className="font-display text-5xl font-bold text-white tracking-tighter">{quantity}</span>
+              <span className="text-white/40 font-medium mb-2">Employees</span>
+            </div>
+            
             <input 
               type="range" 
-              min="10" max="500" step="10"
+              min="10" max="1000" step="10"
               value={quantity} 
               onChange={e => setQuantity(Number(e.target.value))}
-              className="w-full accent-emerald-500 mb-4"
+              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500"
             />
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-white/60">Number of Employees</span>
-              <span className="font-display text-3xl font-bold text-emerald-400">{quantity}</span>
+            <div className="flex justify-between text-[10px] text-white/30 uppercase font-bold mt-3 tracking-wider">
+              <span>Min: 10</span>
+              <span>Max: 1,000+</span>
             </div>
           </div>
 
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-6">
-            <h2 className="text-sm font-bold text-white/60 uppercase tracking-wider mb-4">Delivery Method</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <button 
+          <div className="bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-sm">
+            <h2 className="text-xs font-bold text-emerald-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              Distribution Protocol
+            </h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setDeliveryMethod("links")}
-                className={`p-4 rounded-2xl border transition-all text-left ${deliveryMethod === "links" ? "bg-emerald-500/20 border-emerald-500" : "bg-white/5 border-white/10 hover:border-white/30"}`}
+                className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden ${
+                  deliveryMethod === "links" 
+                    ? "bg-emerald-500/10 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.1)]" 
+                    : "bg-white/5 border-white/10 hover:border-white/20"
+                }`}
               >
-                <LinkIcon className={`w-6 h-6 mb-2 ${deliveryMethod === "links" ? "text-emerald-400" : "text-white/40"}`} />
-                <h3 className="font-bold text-sm">Generate Links</h3>
-                <p className="text-[10px] text-white/50 mt-1">We give you a list of links. You DM them via Slack/Teams.</p>
-              </button>
+                {deliveryMethod === "links" && (
+                  <CheckCircle2 className="absolute top-4 right-4 w-5 h-5 text-emerald-400" />
+                )}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${deliveryMethod === "links" ? "bg-emerald-500/20" : "bg-white/5"}`}>
+                  <LinkIcon className={`w-5 h-5 ${deliveryMethod === "links" ? "text-emerald-400" : "text-white/40"}`} />
+                </div>
+                <h3 className="font-bold text-base mb-2">Export Magic Links</h3>
+                <p className="text-xs text-white/50 leading-relaxed">Download a secure spreadsheet of unique gift links. Ideal for internal distribution via Slack or Microsoft Teams.</p>
+              </motion.button>
               
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setDeliveryMethod("csv")}
-                className={`p-4 rounded-2xl border transition-all text-left ${deliveryMethod === "csv" ? "bg-emerald-500/20 border-emerald-500" : "bg-white/5 border-white/10 hover:border-white/30"}`}
+                className={`p-6 rounded-2xl border transition-all text-left relative overflow-hidden ${
+                  deliveryMethod === "csv" 
+                    ? "bg-emerald-500/10 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.1)]" 
+                    : "bg-white/5 border-white/10 hover:border-white/20"
+                }`}
               >
-                <Upload className={`w-6 h-6 mb-2 ${deliveryMethod === "csv" ? "text-emerald-400" : "text-white/40"}`} />
-                <h3 className="font-bold text-sm">Auto-Send CSV</h3>
-                <p className="text-[10px] text-white/50 mt-1">Upload emails. Our system blasts them automatically.</p>
-              </button>
+                {deliveryMethod === "csv" && (
+                  <CheckCircle2 className="absolute top-4 right-4 w-5 h-5 text-emerald-400" />
+                )}
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-4 ${deliveryMethod === "csv" ? "bg-emerald-500/20" : "bg-white/5"}`}>
+                  <Upload className={`w-5 h-5 ${deliveryMethod === "csv" ? "text-emerald-400" : "text-white/40"}`} />
+                </div>
+                <h3 className="font-bold text-base mb-2">Automated CSV Upload</h3>
+                <p className="text-xs text-white/50 leading-relaxed">Provide an employee roster. Our enterprise engine will automatically dispatch branded emails.</p>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Right Column: Checkout */}
-        <div>
-          <div className="bg-[#0C080A] border border-white/10 rounded-3xl p-8 sticky top-24 shadow-2xl">
-            <h2 className="font-display text-2xl font-bold mb-6 border-b border-white/10 pb-4">Order Summary</h2>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          className="lg:col-span-5"
+        >
+          <div className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 sticky top-24 backdrop-blur-xl shadow-2xl">
+            <h2 className="font-display text-xl font-bold mb-6 flex items-center justify-between">
+              Investment Summary
+              <span className="text-xs font-sans font-normal text-white/40 bg-white/5 px-2 py-1 rounded-md">B2B Portal</span>
+            </h2>
             
-            <div className="flex gap-4 mb-6">
-               <div className="w-16 h-16 rounded-xl bg-black overflow-hidden shrink-0">
+            <div className="flex items-center gap-4 mb-8 bg-black/40 p-3 rounded-2xl border border-white/5">
+               <div className="w-14 h-14 rounded-xl bg-[#0A0508] border border-white/10 overflow-hidden shrink-0">
                  {product.media_urls?.[0] && <img src={product.media_urls[0]} alt="" className="w-full h-full object-cover" />}
                </div>
                <div>
-                 <h3 className="font-bold">{product.name}</h3>
-                 <p className="text-sm text-white/50">KES {Number(product.price).toLocaleString()} / ea</p>
+                 <h3 className="font-bold text-sm">{product.name}</h3>
+                 <p className="text-xs text-emerald-400 mt-1">KES {Number(product.price).toLocaleString()} / recipient</p>
                </div>
             </div>
 
-            <div className="space-y-3 mb-6 text-sm">
-              <div className="flex justify-between">
-                <span className="text-white/60">Subtotal ({quantity}x)</span>
-                <span>KES {totalAmount.toLocaleString()}</span>
+            <div className="space-y-4 mb-8 text-sm">
+              <div className="flex justify-between items-center text-white/60">
+                <span>Subtotal ({quantity} units)</span>
+                <span className="font-medium text-white">KES {totalAmount.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-white/60">B2B Volume Discount</span>
-                <span className="text-emerald-400">- KES {(totalAmount * 0.1).toLocaleString()}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-white/60">Enterprise Discount (10%)</span>
+                <span className="font-medium text-emerald-400">- KES {(totalAmount * 0.1).toLocaleString()}</span>
               </div>
-              <div className="flex justify-between font-bold text-xl pt-4 border-t border-white/10">
-                <span>Total</span>
-                <span className="text-emerald-400">KES {(totalAmount * 0.9).toLocaleString()}</span>
+              
+              <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-6" />
+              
+              <div className="flex justify-between items-end">
+                <span className="text-white/60 font-medium">Total Due</span>
+                <div className="text-right">
+                  <span className="font-display text-3xl font-bold text-white tracking-tight">KES {(totalAmount * 0.9).toLocaleString()}</span>
+                  <p className="text-[10px] text-white/40 uppercase tracking-wider mt-1">Includes all taxes</p>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-3 mb-8">
-               <h4 className="text-xs font-bold text-white/60 uppercase tracking-wider">Payment Method</h4>
-               <select 
-                 value={paymentMethod}
-                 onChange={e => setPaymentMethod(e.target.value as any)}
-                 className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 outline-none focus:border-emerald-500 font-semibold"
-               >
-                 <option value="bank" className="bg-[#0C080A]">Pesapal: Bank Transfer (Invoice)</option>
-                 <option value="mpesa" className="bg-[#0C080A]">Pesapal: Corporate M-Pesa</option>
-               </select>
+            <div className="space-y-4 mb-8">
+               <h4 className="text-[10px] font-bold text-white/40 uppercase tracking-wider">Settlement Method</h4>
+               
+               <div className="relative">
+                 <select 
+                   value={paymentMethod}
+                   onChange={e => setPaymentMethod(e.target.value as any)}
+                   className="w-full bg-black/40 border border-white/10 rounded-xl py-4 px-4 appearance-none outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 font-medium text-sm transition-all"
+                 >
+                   <option value="bank" className="bg-[#0C080A]">Wire Transfer / Proforma Invoice</option>
+                   <option value="mpesa" className="bg-[#0C080A]">Pesapal Corporate M-Pesa</option>
+                 </select>
+                 <ChevronRight className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none rotate-90" />
+               </div>
             </div>
 
             <button 
               onClick={handleCheckout}
               disabled={paying}
-              className={`w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold transition-all ${paying ? "bg-emerald-600/50" : "bg-emerald-500 hover:bg-emerald-400"}`}
+              className={`relative w-full py-4 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all overflow-hidden group ${
+                paying 
+                  ? "bg-emerald-900/50 text-emerald-400 cursor-wait border border-emerald-500/20" 
+                  : "bg-emerald-500 text-[#050304] hover:bg-emerald-400 shadow-[0_0_40px_rgba(16,185,129,0.2)] hover:shadow-[0_0_60px_rgba(16,185,129,0.4)]"
+              }`}
             >
-              {paying ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Generating Corporate Order...
-                </>
-              ) : (
-                <>
-                  <ShieldCheck className="w-5 h-5" />
-                  Complete Corporate Checkout
-                </>
-              )}
+              {!paying && <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />}
+              <span className="relative z-10 flex items-center gap-2">
+                {paying ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin" />
+                    Provisioning Gifts...
+                  </>
+                ) : (
+                  <>
+                    <ShieldCheck className="w-4 h-4" />
+                    Authorize Payment
+                  </>
+                )}
+              </span>
             </button>
+            
+            <p className="text-center text-[10px] text-white/30 mt-4 uppercase tracking-widest flex items-center justify-center gap-2">
+              <ShieldCheck className="w-3 h-3" />
+              Secured by Pesapal
+            </p>
           </div>
-        </div>
+        </motion.div>
 
       </main>
     </div>
