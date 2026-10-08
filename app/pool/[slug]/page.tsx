@@ -67,7 +67,7 @@ function PollBallot({
   const leadingIdx = voteTotals.indexOf(Math.max(...voteTotals));
 
   const OPTION_COLORS = [
-    "from-fuchsia-500 to-pink-500",
+    "from-rose-500 to-orange-500",
     "from-blue-500 to-cyan-500",
     "from-amber-500 to-orange-500",
     "from-emerald-500 to-teal-500",
@@ -76,7 +76,7 @@ function PollBallot({
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 mb-4">
-        <Vote className="w-4 h-4 text-fuchsia-400" />
+        <Vote className="w-4 h-4 text-rose-400" />
         <span className="text-sm font-bold text-white">Gift Poll — vote with your contribution</span>
       </div>
       {options.map((opt, idx) => {
@@ -84,7 +84,7 @@ function PollBallot({
         const isLeading = idx === leadingIdx && grandTotal > 0;
         return (
           <div key={idx} className={`relative overflow-hidden rounded-2xl border-2 transition-all ${
-            isLeading ? "border-fuchsia-400/60 shadow-[0_0_20px_rgba(217,70,239,0.2)]" : "border-white/10"
+            isLeading ? "border-rose-400/60 shadow-[0_0_20px_rgba(217,70,239,0.2)]" : "border-white/10"
           }`}>
             {/* Vote bar background */}
             <div
@@ -103,9 +103,9 @@ function PollBallot({
               </div>
               <div className="text-right flex-shrink-0 ml-4">
                 {isLeading && grandTotal > 0 && (
-                  <div className="text-[10px] font-bold text-fuchsia-300 mb-0.5 animate-pulse">🔥 Leading</div>
+                  <div className="text-[10px] font-bold text-rose-300 mb-0.5 animate-pulse">🔥 Leading</div>
                 )}
-                <span className={`text-lg font-bold ${isLeading && grandTotal > 0 ? "text-fuchsia-300" : "text-white/60"}`}>
+                <span className={`text-lg font-bold ${isLeading && grandTotal > 0 ? "text-rose-300" : "text-white/60"}`}>
                   {pct}%
                 </span>
                 <p className="text-[10px] text-white/40">{voteTotals[idx] > 0 ? `KES ${voteTotals[idx].toLocaleString()}` : "No votes yet"}</p>
@@ -141,7 +141,7 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
       </div>
       <div className="h-4 rounded-full bg-white/10 overflow-hidden relative">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 via-fuchsia-400 to-pink-400 transition-all duration-1000 relative"
+          className="h-full rounded-full bg-gradient-to-r from-rose-500 via-rose-400 to-orange-400 transition-all duration-1000 relative"
           style={{ width: `${pct}%` }}
         >
           {pct > 15 && (
@@ -150,7 +150,7 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
         </div>
       </div>
       <div className="flex justify-between mt-1.5">
-        <span className="text-xs font-bold text-fuchsia-400">{pct}% funded</span>
+        <span className="text-xs font-bold text-rose-400">{pct}% funded</span>
         {pct >= 80 && pct < 100 && <span className="text-xs font-semibold text-gold animate-pulse">Almost there! 🔥</span>}
         {pct >= 100 && <span className="text-xs font-bold text-emerald-400">🎉 Goal reached!</span>}
       </div>
@@ -181,7 +181,7 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
             <div
               key={c.id}
               title={`${name} — KES ${c.amount.toLocaleString()}`}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500/20 to-pink-500/20 flex items-center justify-center text-sm font-bold text-fuchsia-300 border border-fuchsia-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)] hover:scale-110 transition-transform cursor-default"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-500/20 to-orange-500/20 flex items-center justify-center text-sm font-bold text-rose-300 border border-rose-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)] hover:scale-110 transition-transform cursor-default"
               style={{ animation: `popIn 0.5s ease-out ${i * 0.05}s both` }}
             >
               {initial}
@@ -213,7 +213,7 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
                 {c.message && <p className="text-xs text-white/40 italic truncate">&ldquo;{c.message}&rdquo;</p>}
               </div>
               <div className="text-right flex-shrink-0">
-                <p className="text-sm font-bold text-fuchsia-400">+{c.amount.toLocaleString()}</p>
+                <p className="text-sm font-bold text-rose-400">+{c.amount.toLocaleString()}</p>
                 <p className="text-xs text-white/30">{timeAgo}</p>
               </div>
             </div>
@@ -251,21 +251,21 @@ function VoicePlayer({ url }: { url: string }) {
   }, [playing]);
 
   return (
-    <div className="bg-[#1F0A1C] border border-fuchsia-500/20 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden shadow-lg mt-6">
-      <div className="absolute inset-0 bg-gradient-to-r from-fuchsia-500/10 to-transparent pointer-events-none" />
+    <div className="bg-[#1F0A1C] border border-rose-500/20 rounded-2xl p-4 flex items-center gap-4 relative overflow-hidden shadow-lg mt-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-transparent pointer-events-none" />
       <button 
         onClick={() => setPlaying(!playing)}
-        className="relative z-10 w-12 h-12 rounded-full bg-fuchsia-500 flex items-center justify-center text-white flex-shrink-0 shadow-[0_0_20px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform"
+        className="relative z-10 w-12 h-12 rounded-full bg-rose-500 flex items-center justify-center text-white flex-shrink-0 shadow-[0_0_20px_rgba(217,70,239,0.3)] hover:scale-105 transition-transform"
       >
         {playing ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-1" />}
       </button>
       <div className="flex-1 relative z-10">
         <div className="flex items-center gap-2 mb-1">
-          <Volume2 className="w-4 h-4 text-fuchsia-400" />
+          <Volume2 className="w-4 h-4 text-rose-400" />
           <p className="text-sm font-semibold text-white">Voice Message</p>
         </div>
         <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-fuchsia-500 to-pink-500 transition-all duration-200" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-gradient-to-r from-rose-500 to-orange-500 transition-all duration-200" style={{ width: `${progress}%` }} />
         </div>
         <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider">{playing ? 'Playing...' : 'Tap to play'}</p>
       </div>
@@ -352,7 +352,7 @@ export default function PoolLandingPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#14080D]">
         <div className="text-center">
-          <div className="w-12 h-12 rounded-full border-4 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin mx-auto mb-4" />
+          <div className="w-12 h-12 rounded-full border-4 border-rose-500/20 border-t-rose-500 animate-spin mx-auto mb-4" />
           <p className="text-white/40 text-sm">Loading pool…</p>
         </div>
       </div>
@@ -366,7 +366,7 @@ export default function PoolLandingPage() {
           <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <h2 className="font-display text-2xl font-bold text-white mb-2">Pool Not Found</h2>
           <p className="text-white/50 mb-6">{error || "This gift pool doesn&apos;t exist or has been removed."}</p>
-          <Link href="/" className="px-6 py-3 bg-fuchsia-500 text-white rounded-2xl font-semibold text-sm hover:bg-fuchsia-600 transition-colors">Go Home</Link>
+          <Link href="/" className="px-6 py-3 bg-rose-500 text-white rounded-2xl font-semibold text-sm hover:bg-rose-600 transition-colors">Go Home</Link>
         </div>
       </div>
     );
@@ -378,8 +378,8 @@ export default function PoolLandingPage() {
   return (
     <div className="min-h-screen bg-[#14080D] relative overflow-hidden">
       {/* Ambient glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-fuchsia-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-pink-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-rose-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
 
       {/* Confetti layer */}
       {showConfetti && (
@@ -396,19 +396,19 @@ export default function PoolLandingPage() {
       )}
 
       {/* Hero Banner */}
-      <div className="relative bg-gradient-to-br from-[#1F0A1C] via-fuchsia-950 to-[#14080D] overflow-hidden border-b border-fuchsia-500/10">
+      <div className="relative bg-gradient-to-br from-[#1F0A1C] via-rose-950 to-[#14080D] overflow-hidden border-b border-rose-500/10">
         <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-500/20 rounded-full blur-[80px]" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/20 rounded-full blur-[80px]" />
         <div className="max-w-xl mx-auto px-4 py-10 text-center relative z-10">
           {/* Recipient avatar */}
-          <div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-fuchsia-500/30 overflow-hidden bg-fuchsia-500/10 flex items-center justify-center shadow-[0_0_30px_rgba(217,70,239,0.3)]">
+          <div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-rose-500/30 overflow-hidden bg-rose-500/10 flex items-center justify-center shadow-[0_0_30px_rgba(217,70,239,0.3)]">
             {pool.recipient_photo_url
               ? <img src={pool.recipient_photo_url} alt={pool.recipient_name} className="w-full h-full object-cover" />
               : <span className="text-4xl">🎁</span>
             }
           </div>
           {pool.occasion && (
-            <div className="inline-block px-3 py-1 bg-fuchsia-500/15 rounded-full text-fuchsia-300 text-xs font-semibold mb-3 border border-fuchsia-500/20">
+            <div className="inline-block px-3 py-1 bg-rose-500/15 rounded-full text-rose-300 text-xs font-semibold mb-3 border border-rose-500/20">
               {pool.occasion}
             </div>
           )}
@@ -465,22 +465,22 @@ export default function PoolLandingPage() {
           ) : (
             <>
               {pool.gift_name && !pool.surprise_mode && (
-                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
+                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-rose-500/5 border border-rose-500/10">
                   {pool.gift_image_url
                     ? <img src={pool.gift_image_url} alt="" className="w-14 h-14 object-cover rounded-xl" />
-                    : <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-fuchsia-400/40" /></div>
+                    : <div className="w-14 h-14 rounded-xl bg-rose-500/10 flex items-center justify-center"><Sparkles className="w-6 h-6 text-rose-400/40" /></div>
                   }
                   <div>
                     <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
                     <p className="font-semibold text-white">{pool.gift_name}</p>
-                    <p className="text-sm text-fuchsia-400">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
+                    <p className="text-sm text-rose-400">KES {(pool.gift_price ?? 0).toLocaleString()}</p>
                   </div>
                 </div>
               )}
               {pool.gift_name && pool.surprise_mode && (
-                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-fuchsia-500/5 border border-fuchsia-500/10">
-                  <div className="w-14 h-14 rounded-xl bg-fuchsia-500/10 flex items-center justify-center">
-                    <Lock className="w-6 h-6 text-fuchsia-400/40" />
+                <div className="mt-5 flex items-center gap-3 p-3 rounded-2xl bg-rose-500/5 border border-rose-500/10">
+                  <div className="w-14 h-14 rounded-xl bg-rose-500/10 flex items-center justify-center">
+                    <Lock className="w-6 h-6 text-rose-400/40" />
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
@@ -497,7 +497,7 @@ export default function PoolLandingPage() {
         {!isClosed && (
           <Link
             href={`/pool/${slug}/contribute`}
-            className="group block w-full py-5 bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white rounded-3xl font-bold text-lg text-center shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:shadow-[0_0_40px_rgba(217,70,239,0.5)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
+            className="group block w-full py-5 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-3xl font-bold text-lg text-center shadow-[0_0_30px_rgba(217,70,239,0.3)] hover:shadow-[0_0_40px_rgba(217,70,239,0.5)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity" />
             <span className="flex items-center justify-center gap-2">
@@ -522,7 +522,7 @@ export default function PoolLandingPage() {
         <div className="text-center">
           <Link
             href={`/pool/${slug}/manage`}
-            className="inline-flex items-center gap-1.5 text-xs text-white/20 hover:text-fuchsia-400 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs text-white/20 hover:text-rose-400 transition-colors"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
             Organizer? Manage this pool
@@ -532,7 +532,7 @@ export default function PoolLandingPage() {
         {/* Contribution Feed */}
         <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Heart className="w-4 h-4 text-fuchsia-400" />
+            <Heart className="w-4 h-4 text-rose-400" />
             <h3 className="font-semibold text-white">
               {pool.privacy_mode === "anonymous" ? "Contributions" : "Wall of Love"}
             </h3>

@@ -126,7 +126,7 @@ export default function ContributePage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#14080D]">
-        <div className="w-10 h-10 rounded-full border-4 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
+        <div className="w-10 h-10 rounded-full border-4 border-rose-500/20 border-t-rose-500 animate-spin" />
       </div>
     );
   }
@@ -136,7 +136,7 @@ export default function ContributePage() {
       <div className="min-h-screen flex items-center justify-center bg-[#14080D] px-4">
         <div className="text-center">
           <p className="text-white/50 mb-4">Pool not found</p>
-          <Link href="/" className="text-fuchsia-400 font-semibold text-sm hover:text-fuchsia-300 transition-colors">Go Home</Link>
+          <Link href="/" className="text-rose-400 font-semibold text-sm hover:text-rose-300 transition-colors">Go Home</Link>
         </div>
       </div>
     );
@@ -147,7 +147,7 @@ export default function ContributePage() {
   return (
     <div className="min-h-screen bg-[#14080D] pb-24 text-white">
       {/* Ambient glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-fuchsia-500/8 rounded-full blur-[100px] pointer-events-none" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-rose-500/8 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="max-w-md mx-auto px-4 pt-6">
 
@@ -176,8 +176,8 @@ export default function ContributePage() {
         )}
 
         {/* Pool summary banner */}
-        <div className="bg-gradient-to-br from-[#1F0A1C] via-fuchsia-950/80 to-[#14080D] rounded-3xl p-5 text-white mb-5 relative overflow-hidden border border-fuchsia-500/20">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/20 rounded-full blur-3xl" />
+        <div className="bg-gradient-to-br from-[#1F0A1C] via-rose-950/80 to-[#14080D] rounded-3xl p-5 text-white mb-5 relative overflow-hidden border border-rose-500/20">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/20 rounded-full blur-3xl" />
           <div className="relative z-10">
             <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">Contributing to</p>
             <h1 className="font-display text-xl font-bold italic text-white">{pool.title}</h1>
@@ -188,9 +188,9 @@ export default function ContributePage() {
                 <span className="text-white/40">of KES {pool.target_amount.toLocaleString()}</span>
               </div>
               <div className="h-2 rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-400" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-gradient-to-r from-rose-500 to-orange-400" style={{ width: `${pct}%` }} />
               </div>
-              <p className="text-fuchsia-400 text-xs mt-1 font-semibold">{pct}% funded</p>
+              <p className="text-rose-400 text-xs mt-1 font-semibold">{pct}% funded</p>
             </div>
           </div>
         </div>
@@ -209,8 +209,8 @@ export default function ContributePage() {
                   onClick={() => setAmount(a)}
                   className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${
                     amount === a
-                      ? "bg-fuchsia-500 text-white shadow-[0_0_10px_rgba(217,70,239,0.4)]"
-                      : "bg-white/5 text-white/70 border border-white/10 hover:border-fuchsia-400/30 hover:text-white"
+                      ? "bg-rose-500 text-white shadow-[0_0_10px_rgba(217,70,239,0.4)]"
+                      : "bg-white/5 text-white/70 border border-white/10 hover:border-rose-400/30 hover:text-white"
                   }`}
                 >
                   {a.toLocaleString()}
@@ -223,7 +223,7 @@ export default function ContributePage() {
               onChange={e => setAmount(e.target.value ? Number(e.target.value) : "")}
               placeholder={`Custom amount (min KES ${pool.min_contribution})`}
               min={pool.min_contribution}
-              className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-fuchsia-400 focus:outline-none font-sans text-white bg-black/30 text-lg font-bold placeholder-white/30"
+              className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-rose-400 focus:outline-none font-sans text-white bg-black/30 text-lg font-bold placeholder-white/30"
             />
 
             {/* Split-with-friend card — only shown if amount ≥ 2x minimum and not already a split contributor */}
@@ -372,7 +372,7 @@ export default function ContributePage() {
                     value={name}
                     onChange={e => setName(e.target.value)}
                     placeholder="Your name"
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-fuchsia-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-rose-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
                   />
                 </div>
               </>
@@ -386,7 +386,7 @@ export default function ContributePage() {
                 placeholder="07XX XXX XXX"
                 type="tel"
                 required
-                className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-fuchsia-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
+                className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-rose-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
               />
             </div>
 
@@ -397,7 +397,7 @@ export default function ContributePage() {
                 onChange={e => setMessage(e.target.value)}
                 maxLength={200}
                 placeholder={`A message for ${pool.recipient_name}…`}
-                className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-fuchsia-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
+                className="w-full px-4 py-3 rounded-2xl border-2 border-white/10 focus:border-rose-400 focus:outline-none font-sans text-white bg-black/30 placeholder-white/30"
               />
             </div>
           </div>
@@ -413,7 +413,7 @@ export default function ContributePage() {
                   onClick={() => setPaymentMethod(pm.id)}
                   className={`w-full flex items-center gap-3 p-3 rounded-2xl border-2 transition-all text-left ${
                     paymentMethod === pm.id
-                      ? "border-fuchsia-500 bg-fuchsia-500/10"
+                      ? "border-rose-500 bg-rose-500/10"
                       : "border-white/10 hover:border-white/20 bg-white/3"
                   }`}
                 >
@@ -423,7 +423,7 @@ export default function ContributePage() {
                     <p className="text-xs text-white/40">{pm.desc}</p>
                   </div>
                   <div className={`w-4 h-4 rounded-full border-2 transition-all ${
-                    paymentMethod === pm.id ? "border-fuchsia-500 bg-fuchsia-500" : "border-white/20"
+                    paymentMethod === pm.id ? "border-rose-500 bg-rose-500" : "border-white/20"
                   }`}>
                     {paymentMethod === pm.id && <div className="w-full h-full rounded-full bg-white scale-50" />}
                   </div>
@@ -441,7 +441,7 @@ export default function ContributePage() {
           <button
             type="submit"
             disabled={submitting || !amount}
-            className="w-full py-5 bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white rounded-3xl font-bold text-lg hover:shadow-[0_0_30px_rgba(217,70,239,0.5)] hover:-translate-y-1 transition-all disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center gap-2"
+            className="w-full py-5 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-3xl font-bold text-lg hover:shadow-[0_0_30px_rgba(217,70,239,0.5)] hover:-translate-y-1 transition-all disabled:opacity-50 disabled:translate-y-0 flex items-center justify-center gap-2"
           >
             <Heart className="w-5 h-5" />
             {submitting ? "Processing…" : `Contribute KES ${amount ? Number(amount).toLocaleString() : "—"}`}

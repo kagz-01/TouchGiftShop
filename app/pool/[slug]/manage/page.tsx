@@ -175,7 +175,7 @@ export default function PoolManagePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#14080D] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-fuchsia-500/20 border-t-fuchsia-500 rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-rose-500/20 border-t-rose-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -223,20 +223,20 @@ export default function PoolManagePage() {
             </button>
             <div>
               <h1 className="font-display italic font-bold text-white text-lg leading-tight">{pool.title}</h1>
-              <p className="text-xs text-fuchsia-400">Organizer Dashboard</p>
+              <p className="text-xs text-rose-400">Organizer Dashboard</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => load(true)}
-              className="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-fuchsia-400/30 transition-colors"
+              className="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-rose-400/30 transition-colors"
             >
               <RefreshCw className={`w-4 h-4 text-white/60 ${refreshing ? "animate-spin" : ""}`} />
             </button>
             <Link
               href={`/pool/${slug}`}
               target="_blank"
-              className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold text-white/60 hover:border-fuchsia-400/30 hover:text-white transition-all"
+              className="flex items-center gap-1.5 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-xs font-semibold text-white/60 hover:border-rose-400/30 hover:text-white transition-all"
             >
               <ExternalLink className="w-3.5 h-3.5" /> Public View
             </Link>
@@ -247,7 +247,7 @@ export default function PoolManagePage() {
         <div className="max-w-2xl mx-auto px-4 pb-3">
           <div className={`flex items-center gap-2 text-xs px-3 py-2 rounded-xl font-semibold ${
             isCompleted ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" :
-            isActive    ? "bg-fuchsia-500/10 text-fuchsia-400 border border-fuchsia-500/20" :
+            isActive    ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" :
             isRefunded  ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" :
                           "bg-amber-500/10 text-amber-400 border border-amber-500/20"
           }`}>
@@ -276,13 +276,13 @@ export default function PoolManagePage() {
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? "border-fuchsia-400 text-fuchsia-400"
+                    ? "border-rose-400 text-rose-400"
                     : "border-transparent text-white/40 hover:text-white/70"
                 }`}
               >
                 {tab.icon} {tab.label}
                 {tab.id === "messages" && messages.length > 0 && (
-                  <span className="ml-1 text-[10px] bg-fuchsia-500/20 text-fuchsia-300 px-1.5 py-0.5 rounded-full">{messages.length}</span>
+                  <span className="ml-1 text-[10px] bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded-full">{messages.length}</span>
                 )}
               </button>
             ))}
@@ -301,7 +301,7 @@ export default function PoolManagePage() {
 
               <div className="grid grid-cols-3 gap-3 mt-6">
                 <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
-                  <p className="text-lg font-bold text-fuchsia-400">KES {totalRaised.toLocaleString()}</p>
+                  <p className="text-lg font-bold text-rose-400">KES {totalRaised.toLocaleString()}</p>
                   <p className="text-[10px] text-white/40">Raised</p>
                 </div>
                 <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
@@ -345,12 +345,12 @@ export default function PoolManagePage() {
                       key={m.pct}
                       className={`flex items-center gap-4 p-3 rounded-2xl border transition-all ${
                         unlocked
-                          ? "bg-fuchsia-500/10 border-fuchsia-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)]"
+                          ? "bg-rose-500/10 border-rose-500/30 shadow-[0_0_10px_rgba(217,70,239,0.1)]"
                           : "bg-black/20 border-white/5 opacity-60"
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
-                        unlocked ? "bg-fuchsia-500/20" : "bg-white/5"
+                        unlocked ? "bg-rose-500/20" : "bg-white/5"
                       }`}>
                         {unlocked ? m.icon : <Lock className="w-4 h-4 text-white/20" />}
                       </div>
@@ -358,11 +358,11 @@ export default function PoolManagePage() {
                         <p className={`text-sm font-semibold ${unlocked ? "text-white" : "text-white/40"}`}>
                           {m.pct}% — {m.label}
                         </p>
-                        <p className={`text-xs ${unlocked ? "text-fuchsia-300" : "text-white/20"}`}>
+                        <p className={`text-xs ${unlocked ? "text-rose-300" : "text-white/20"}`}>
                           {m.reward}
                         </p>
                       </div>
-                      {unlocked && <CheckCircle className="w-5 h-5 text-fuchsia-400 shrink-0" />}
+                      {unlocked && <CheckCircle className="w-5 h-5 text-rose-400 shrink-0" />}
                     </div>
                   );
                 })}
@@ -372,7 +372,7 @@ export default function PoolManagePage() {
             {/* Share & Action strip */}
             <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-5 space-y-3">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Share2 className="w-4 h-4 text-fuchsia-400" /> Spread the word
+                <Share2 className="w-4 h-4 text-rose-400" /> Spread the word
               </h3>
               <div className="flex gap-3">
                 <button
@@ -380,7 +380,7 @@ export default function PoolManagePage() {
                   className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-semibold transition-all ${
                     copied
                       ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                      : "bg-white/5 border border-white/10 text-white hover:border-fuchsia-400/30"
+                      : "bg-white/5 border border-white/10 text-white hover:border-rose-400/30"
                   }`}
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -417,7 +417,7 @@ export default function PoolManagePage() {
 
             {/* Order CTA when completed */}
             {isCompleted && (
-              <div className="bg-gradient-to-r from-fuchsia-600/20 to-pink-500/20 border border-fuchsia-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
+              <div className="bg-gradient-to-r from-rose-600/20 to-orange-500/20 border border-rose-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
                 <div className="text-4xl mb-3">🎉</div>
                 <h3 className="font-display italic text-xl font-bold text-white mb-1">Goal Reached!</h3>
                 <p className="text-white/60 text-sm mb-4">
@@ -426,7 +426,7 @@ export default function PoolManagePage() {
                 </p>
                 <Link
                   href={`/corporate/pool/${slug}/order`}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white rounded-2xl font-bold text-sm hover:from-fuchsia-600 hover:to-pink-600 transition-all shadow-lg"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-2xl font-bold text-sm hover:from-rose-600 hover:to-orange-600 transition-all shadow-lg"
                 >
                   <Gift className="w-4 h-4" /> Order the Gift
                 </Link>
@@ -494,7 +494,7 @@ export default function PoolManagePage() {
                         )}
                       </div>
                       <div className={`w-4 h-4 rounded-full border-2 mt-1 shrink-0 flex items-center justify-center ${
-                        closeAction === opt.id ? "border-fuchsia-400 bg-fuchsia-400" : "border-white/20"
+                        closeAction === opt.id ? "border-rose-400 bg-rose-400" : "border-white/20"
                       }`}>
                         {closeAction === opt.id && <div className="w-2 h-2 rounded-full bg-white" />}
                       </div>
@@ -504,7 +504,7 @@ export default function PoolManagePage() {
                   <button
                     onClick={handleCloseAction}
                     disabled={!closeAction || closeLoading || (closeAction === "extend" && !extendDate)}
-                    className="w-full py-3 bg-gradient-to-r from-fuchsia-600 to-pink-600 text-white rounded-2xl font-bold text-sm hover:from-fuchsia-700 hover:to-pink-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 bg-gradient-to-r from-rose-600 to-orange-600 text-white rounded-2xl font-bold text-sm hover:from-rose-700 hover:to-orange-700 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {closeLoading ? "Processing…" : closeAction === "extend" ? "Extend Pool" : closeAction === "downgrade" ? "Proceed with Gift" : closeAction === "refund" ? "Refund All" : "Select an option"}
                     {!closeLoading && closeAction && <ChevronRight className="w-4 h-4" />}
@@ -579,7 +579,7 @@ export default function PoolManagePage() {
                     </p>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-fuchsia-400">KES {c.total.toLocaleString()}</p>
+                    <p className="text-sm font-bold text-rose-400">KES {c.total.toLocaleString()}</p>
                     <p className="text-[10px] text-white/30">
                       {pool.target_amount > 0 ? `${Math.round((c.total / pool.target_amount) * 100)}% of goal` : ""}
                     </p>
@@ -606,7 +606,7 @@ export default function PoolManagePage() {
             {/* Quick stat */}
             <div className="grid grid-cols-2 gap-3">
               <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-center">
-                <p className="text-xl font-bold text-fuchsia-400">
+                <p className="text-xl font-bold text-rose-400">
                   {leaderboard.length > 0 ? `KES ${leaderboard[0].total.toLocaleString()}` : "—"}
                 </p>
                 <p className="text-xs text-white/40 mt-0.5">Top contribution</p>
@@ -650,14 +650,14 @@ export default function PoolManagePage() {
                 return (
                   <div key={c.id} className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-600 to-pink-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-600 to-orange-500 flex items-center justify-center text-xs font-bold text-white shrink-0">
                         {c.is_anonymous || c.is_ghost ? "♥" : initials}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <p className="text-xs font-semibold text-white">{name}</p>
                           <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-xs text-fuchsia-400 font-bold">KES {c.amount.toLocaleString()}</span>
+                            <span className="text-xs text-rose-400 font-bold">KES {c.amount.toLocaleString()}</span>
                             <span className="text-[10px] text-white/30">{timeAgo}</span>
                           </div>
                         </div>
@@ -691,7 +691,7 @@ export default function PoolManagePage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-white/50">Verified contributions</span>
-                <span className="font-bold text-fuchsia-400">{contributions.filter(c => c.is_verified).length}</span>
+                <span className="font-bold text-rose-400">{contributions.filter(c => c.is_verified).length}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-white/50">Pending verification</span>
@@ -701,7 +701,7 @@ export default function PoolManagePage() {
               <div className="flex justify-between text-sm">
                 <span className="text-white/50">Status</span>
                 <span className={`font-bold capitalize ${
-                  pool.status === "active" ? "text-fuchsia-400" :
+                  pool.status === "active" ? "text-rose-400" :
                   pool.status === "completed" ? "text-emerald-400" :
                   pool.status === "expired" ? "text-amber-400" :
                   pool.status === "refunded" ? "text-blue-400" : "text-white/50"
@@ -722,7 +722,7 @@ export default function PoolManagePage() {
                 const date = new Date(c.created_at).toLocaleDateString("en-KE", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
                 return (
                   <div key={c.id} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
-                    <div className="w-8 h-8 rounded-xl bg-fuchsia-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-fuchsia-400">#{i + 1}</div>
+                    <div className="w-8 h-8 rounded-xl bg-rose-500/10 flex items-center justify-center shrink-0 text-xs font-bold text-rose-400">#{i + 1}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-white truncate">{name}</p>
                       <p className="text-xs text-white/30">{date}</p>

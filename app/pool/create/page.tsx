@@ -212,9 +212,9 @@ function OptionAISuggester({ recipientName, onPick }: { recipientName: string; o
           onChange={e => setQ(e.target.value)}
           onKeyDown={e => e.key === "Enter" && runAI()}
           placeholder={`e.g. "tech lover, 25th birthday"`}
-          className="flex-1 px-3 py-2 rounded-xl text-xs border border-fuchsia-200 focus:border-fuchsia-400 focus:outline-none bg-white"
+          className="flex-1 px-3 py-2 rounded-xl text-xs border border-rose-200 focus:border-rose-400 focus:outline-none bg-white"
         />
-        <button onClick={runAI} disabled={loading} className="px-3 py-2 bg-fuchsia-500 text-white rounded-xl text-xs font-semibold hover:bg-fuchsia-600 transition-colors disabled:opacity-50">
+        <button onClick={runAI} disabled={loading} className="px-3 py-2 bg-rose-500 text-white rounded-xl text-xs font-semibold hover:bg-rose-600 transition-colors disabled:opacity-50">
           {loading ? "…" : <><Sparkles className="w-3.5 h-3.5 inline" /> AI</>}
         </button>
       </div>
@@ -222,9 +222,9 @@ function OptionAISuggester({ recipientName, onPick }: { recipientName: string; o
         <div className="mt-2 grid grid-cols-2 gap-1.5">
           {results.map((r, i) => (
             <button key={i} onClick={() => { onPick(r); setOpen(false); setQ(""); }}
-              className="p-2 rounded-xl text-left text-xs bg-fuchsia-50 hover:bg-fuchsia-100 border border-fuchsia-100 transition-all">
-              <div className="font-semibold text-fuchsia-900 truncate">{r.name}</div>
-              <div className="text-fuchsia-600">KES {r.price.toLocaleString()}</div>
+              className="p-2 rounded-xl text-left text-xs bg-rose-50 hover:bg-rose-100 border border-rose-100 transition-all">
+              <div className="font-semibold text-rose-900 truncate">{r.name}</div>
+              <div className="text-rose-600">KES {r.price.toLocaleString()}</div>
             </button>
           ))}
         </div>
@@ -376,16 +376,16 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
       ) : (
         /* ── POLL MODE ── */
         <div className="space-y-4">
-          <div className="p-3 rounded-2xl bg-fuchsia-50 border border-fuchsia-100 text-center">
-            <p className="text-xs font-semibold text-fuchsia-700">🗳️ Contributors vote with their contributions — the most-funded option wins!</p>
+          <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-center">
+            <p className="text-xs font-semibold text-rose-700">🗳️ Contributors vote with their contributions — the most-funded option wins!</p>
           </div>
 
           {data.pollOptions.map((opt, index) => (
-            <div key={index} className="relative p-4 rounded-2xl border-2 border-fuchsia-100 bg-white space-y-3 shadow-sm">
+            <div key={index} className="relative p-4 rounded-2xl border-2 border-rose-100 bg-white space-y-3 shadow-sm">
               {/* Option header */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-fuchsia-500 text-white text-xs font-bold flex items-center justify-center">{index + 1}</div>
+                  <div className="w-7 h-7 rounded-full bg-rose-500 text-white text-xs font-bold flex items-center justify-center">{index + 1}</div>
                   <span className="text-sm font-bold text-brand-deep">Option {index + 1}</span>
                 </div>
                 {data.pollOptions.length > 2 && (
@@ -401,7 +401,7 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
                 value={opt.name}
                 onChange={e => updatePollOption(index, "name", e.target.value)}
                 placeholder={`Option ${index + 1} name, e.g. Luxury Spa Day`}
-                className="w-full px-3 py-2.5 rounded-xl border-2 border-fuchsia-100 focus:border-fuchsia-400 focus:outline-none text-sm text-brand-deep bg-white"
+                className="w-full px-3 py-2.5 rounded-xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none text-sm text-brand-deep bg-white"
               />
 
               {/* Price */}
@@ -412,13 +412,13 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
                   value={opt.price || ""}
                   onChange={e => updatePollOption(index, "price", Number(e.target.value))}
                   placeholder="Price"
-                  className="flex-1 px-3 py-2 rounded-xl border-2 border-fuchsia-100 focus:border-fuchsia-400 focus:outline-none text-sm text-brand-deep bg-white"
+                  className="flex-1 px-3 py-2 rounded-xl border-2 border-rose-100 focus:border-rose-400 focus:outline-none text-sm text-brand-deep bg-white"
                 />
               </div>
 
               {/* AI assistant per option */}
               <div>
-                <p className="text-xs font-semibold text-fuchsia-600 mb-1.5 flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Suggest for this option</p>
+                <p className="text-xs font-semibold text-rose-600 mb-1.5 flex items-center gap-1"><Sparkles className="w-3 h-3" /> AI Suggest for this option</p>
                 <OptionAISuggester
                   recipientName={data.recipientName}
                   onPick={s => { updatePollOption(index, "name", s.name); updatePollOption(index, "price", s.price); }}
@@ -429,7 +429,7 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
 
           {data.pollOptions.length < 4 && (
             <button onClick={addPollOption}
-              className="w-full py-3 border-2 border-dashed border-fuchsia-200 rounded-2xl text-sm font-semibold text-fuchsia-500 hover:bg-fuchsia-50 hover:border-fuchsia-300 transition-all flex items-center justify-center gap-2">
+              className="w-full py-3 border-2 border-dashed border-rose-200 rounded-2xl text-sm font-semibold text-rose-500 hover:bg-rose-50 hover:border-rose-300 transition-all flex items-center justify-center gap-2">
               <Plus className="w-4 h-4" /> Add Option ({data.pollOptions.length}/4)
             </button>
           )}
@@ -549,15 +549,15 @@ function StepPrivacy({ data, set }: { data: WizardData; set: (k: keyof WizardDat
 
       <div>
         <label className="block text-sm font-semibold text-brand-deep mb-3">Voice/Video Message to Recipient (Optional)</label>
-        <div className="p-4 rounded-2xl bg-fuchsia-50 border border-fuchsia-100 flex flex-col items-center justify-center gap-3 text-center transition-all hover:bg-fuchsia-100/50 cursor-pointer">
+        <div className="p-4 rounded-2xl bg-rose-50 border border-rose-100 flex flex-col items-center justify-center gap-3 text-center transition-all hover:bg-rose-100/50 cursor-pointer">
           <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
-            <Mic className="w-5 h-5 text-fuchsia-500" />
+            <Mic className="w-5 h-5 text-rose-500" />
           </div>
           <div>
-            <p className="text-sm font-bold text-fuchsia-900">Record a Message</p>
-            <p className="text-xs text-fuchsia-700 mt-1">Make your gift pool extra special. Plays at the top of the pool page.</p>
+            <p className="text-sm font-bold text-rose-900">Record a Message</p>
+            <p className="text-xs text-rose-700 mt-1">Make your gift pool extra special. Plays at the top of the pool page.</p>
           </div>
-          <button className="px-4 py-2 mt-1 rounded-xl bg-fuchsia-500 text-white text-xs font-bold shadow-md hover:bg-fuchsia-600 transition-colors">
+          <button className="px-4 py-2 mt-1 rounded-xl bg-rose-500 text-white text-xs font-bold shadow-md hover:bg-rose-600 transition-colors">
             Start Recording
           </button>
         </div>
