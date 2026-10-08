@@ -35,7 +35,16 @@ export default function CorporateCheckoutPage() {
     fetchProduct();
   }, [productId, router, supabase]);
 
-  const totalAmount = (product?.price || 0) * quantity;
+  const baseAmount = (product?.price || 0) * quantity;
+  
+  // Dynamic Volume Discount Logic
+  let discountPercentage = 0;
+  if (quantity >= 500) discountPercentage = 0.15;
+  else if (quantity >= 100) discountPercentage = 0.10;
+  else if (quantity >= 50) discountPercentage = 0.05;
+  
+  const discountAmount = baseAmount * discountPercentage;
+  const finalAmount = baseAmount - discountAmount;
 
   const handleCheckout = async () => {
     setPaying(true);
@@ -137,10 +146,15 @@ export default function CorporateCheckoutPage() {
               min="10" max="1000" step="10"
               value={quantity} 
               onChange={e => setQuantity(Number(e.target.value))}
-              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500 relative z-10"
             />
-            <div className="flex justify-between text-[10px] text-white/30 uppercase font-bold mt-3 tracking-wider">
+            <div className="flex justify-between text-[10px] text-white/30 uppercase font-bold mt-3 tracking-wider relative">
               <span>Min: 10</span>
+              <div className="absolute left-1/2 -translate-x-1/2 flex gap-4">
+                <span className={quantity >= 50 && quantity < 100 ? "text-emerald-400" : ""}>50+ (5%)</span>
+                <span className={quantity >= 100 && quantity < 500 ? "text-emerald-400" : ""}>100+ (10%)</span>
+                <span className={quantity >= 500 ? "text-emerald-400" : ""}>500+ (15%)</span>
+              </div>
               <span>Max: 1,000+</span>
             </div>
           </div>
@@ -221,19 +235,29 @@ export default function CorporateCheckoutPage() {
             <div className="space-y-4 mb-8 text-sm">
               <div className="flex justify-between items-center text-white/60">
                 <span>Subtotal ({quantity} units)</span>
-                <span className="font-medium text-white">KES {totalAmount.toLocaleString()}</span>
+                <span className="font-medium text-white">KES {baseAmount.toLocaleString()}</span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-white/60">Enterprise Discount (10%)</span>
-                <span className="font-medium text-emerald-400">- KES {(totalAmount * 0.1).toLocaleString()}</span>
-              </div>
+              
+              <AnimatePresence>
+                {discountPercentage > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="flex justify-between items-center"
+                  >
+                    <span className="text-white/60">Volume Discount ({discountPercentage * 100}%)</span>
+                    <span className="font-medium text-emerald-400">- KES {discountAmount.toLocaleString()}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
               
               <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-6" />
               
               <div className="flex justify-between items-end">
                 <span className="text-white/60 font-medium">Total Due</span>
                 <div className="text-right">
-                  <span className="font-display text-3xl font-bold text-white tracking-tight">KES {(totalAmount * 0.9).toLocaleString()}</span>
+                  <span className="font-display text-3xl font-bold text-white tracking-tight">KES {finalAmount.toLocaleString()}</span>
                   <p className="text-[10px] text-white/40 uppercase tracking-wider mt-1">Includes all taxes</p>
                 </div>
               </div>
