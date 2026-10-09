@@ -7,10 +7,12 @@ import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { maxRedeemablePoints, pointsDiscountKsh, pointsToKsh, MIN_REDEEM_POINTS, POINTS_PER_KSH_REDEEM } from "@/lib/points";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
-import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound } from "lucide-react";
+import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound, Layers, Users } from "lucide-react";
+import type { PackagingMode } from "@/components/checkout/PackagingDecision";
 import type { CartItem } from "@/lib/cart";
 import { createClient } from "@/lib/supabase-browser";
 import { isGuest, setGuest } from "@/lib/guest";
+import GiftWrapSelector, { WrapType, WRAP_OPTIONS } from "@/components/shared/GiftWrapSelector";
 
 type Step = "form" | "redirecting" | "error";
 
@@ -34,8 +36,6 @@ interface LoyaltyInfo {
 
 const INPUT =
   "w-full bg-gray-50 border border-black/8 rounded-xl px-4 py-3 text-sm text-brand-deep placeholder:text-brand-muted/50 focus:outline-none focus:border-brand focus:bg-white transition-all";
-
-const WRAPPING_PRICES = { classic: 200, premium: 500, luxury: 1000 };
 
 export default function CheckoutForm({
   productId,
@@ -74,9 +74,12 @@ export default function CheckoutForm({
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartCheckout, setIsCartCheckout] = useState(false);
 
+  // Packaging mode set by PackagingDecision
+  const [packagingMode, setPackagingMode] = useState<PackagingMode | null>(null);
+  const [extraWrapCost, setExtraWrapCost] = useState(0);
+
   // Gift wrapping
-  const [giftWrapping, setGiftWrapping] = useState(false);
-  const [giftWrappingStyle, setGiftWrappingStyle] = useState<"classic" | "premium" | "luxury">("classic");
+  const [giftWrapStyle, setGiftWrapStyle] = useState<WrapType>("none");
 
   // Loyalty
   const [loyaltyInfo, setLoyaltyInfo] = useState<LoyaltyInfo | null>(null);
@@ -120,11 +123,13 @@ export default function CheckoutForm({
   const [guestMode, setGuestMode] = useState(false);
   const [promptDismissed, setPromptDismissed] = useState(false);
 
-  // Load cart items from localStorage
+  // Load cart items + packaging decisions from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cartParam = params.get("cart");
     const wrappingParam = params.get("wrapping");
+    const packagingParam = params.get("packaging") as PackagingMode | null;
+    const wrapCostParam = params.get("wrapCost");
 
     if (cartParam === "true") {
       setIsCartCheckout(true);
@@ -134,9 +139,11 @@ export default function CheckoutForm({
       } catch {}
     }
 
-    if (wrappingParam && ["classic", "premium", "luxury"].includes(wrappingParam)) {
-      setGiftWrapping(true);
-      setGiftWrappingStyle(wrappingParam as "classic" | "premium" | "luxury");
+    if (packagingParam) setPackagingMode(packagingParam);
+    if (wrapCostParam) setExtraWrapCost(Number(wrapCostParam));
+
+    if (wrappingParam && ["classic", "woven", "premium_box"].includes(wrappingParam)) {
+      setGiftWrapStyle(wrappingParam as WrapType);
     }
   }, []);
 
@@ -313,7 +320,11 @@ export default function CheckoutForm({
     ? cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
     : amount;
   const deliveryFee = usePinDrop ? 0 : (deliveryZone?.fee ?? 0);
-  const wrappingCost = giftWrapping ? WRAPPING_PRICES[giftWrappingStyle] : 0;
+  // wrappingCost: single-product checkout uses the in-form selector;
+  // multi-item cart checkout uses the amount pre-decided in PackagingDecision (extraWrapCost)
+  const wrappingCost = packagingMode != null
+    ? extraWrapCost
+    : (WRAP_OPTIONS.find((o) => o.id === giftWrapStyle)?.price || 0);
   const loyaltyDiscount = loyaltyInfo && loyaltyInfo.discountPercent > 0
     ? Math.round(itemsTotal * (loyaltyInfo.discountPercent / 100))
     : 0;
@@ -491,6 +502,33 @@ export default function CheckoutForm({
             <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-600 flex items-start gap-3">
               <span className="text-lg flex-shrink-0">⚠️</span>
               <p>{errorMessage}</p>
+            </div>
+          )}
+
+          {/* Packaging mode banner — shown when coming from multi-item cart */}
+          {packagingMode && (
+            <div className={`rounded-2xl border px-4 py-3 flex items-center gap-3 text-sm ${
+              packagingMode === "hamper"
+                ? "bg-amber-50 border-amber-200 text-amber-900"
+                : packagingMode === "individual"
+                ? "bg-sky-50 border-sky-200 text-sky-900"
+                : "bg-emerald-50 border-emerald-200 text-emerald-900"
+            }`}>
+              {packagingMode === "hamper" && <Layers className="w-4 h-4 flex-shrink-0" />}
+              {packagingMode === "individual" && <Package className="w-4 h-4 flex-shrink-0" />}
+              {packagingMode === "multi_recipient" && <Users className="w-4 h-4 flex-shrink-0" />}
+              <div>
+                <span className="font-bold mr-1">
+                  {packagingMode === "hamper" && "Hamper Mode"}
+                  {packagingMode === "individual" && "Individual Wrapping"}
+                  {packagingMode === "multi_recipient" && "Multi-Recipient"}
+                </span>
+                {extraWrapCost > 0 && (
+                  <span className="font-normal">
+                    · +KSh {extraWrapCost.toLocaleString("en-US")} packaging included
+                  </span>
+                )}
+              </div>
             </div>
           )}
 
@@ -726,55 +764,16 @@ export default function CheckoutForm({
             )}
           </div>
 
-          {/* SECTION: Gift Wrapping */}
-          <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-display font-bold text-brand-deep">Gift Wrapping 🎁</h2>
-                <p className="text-xs text-brand-muted mt-0.5">Make it extra special</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={giftWrapping}
-                  onChange={(e) => setGiftWrapping(e.target.checked)}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand"></div>
-              </label>
+          {/* SECTION: Gift Wrapping — only shown for single-product checkout */}
+          {!packagingMode && (
+            <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6">
+              <GiftWrapSelector
+                value={giftWrapStyle}
+                onChange={setGiftWrapStyle}
+                theme="b2c"
+              />
             </div>
-            {giftWrapping && (
-              <div className="space-y-2">
-                {[
-                  { style: "classic" as const, label: "Classic Wrap", price: 200, emoji: "🎀" },
-                  { style: "premium" as const, label: "Premium Box", price: 500, emoji: "🎁" },
-                  { style: "luxury" as const, label: "Luxury Experience", price: 1000, emoji: "✨" },
-                ].map((opt) => (
-                  <label
-                    key={opt.style}
-                    className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-colors ${
-                      giftWrappingStyle === opt.style
-                        ? "border-brand bg-brand/5"
-                        : "border-black/8 hover:border-brand/30"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="wrapping"
-                      checked={giftWrappingStyle === opt.style}
-                      onChange={() => setGiftWrappingStyle(opt.style)}
-                      className="w-4 h-4 text-brand focus:ring-brand"
-                    />
-                    <span className="text-lg">{opt.emoji}</span>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-brand-deep">{opt.label}</p>
-                    </div>
-                    <span className="text-sm font-bold text-brand-deep">+{formatKsh(opt.price)}</span>
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
+          )}
 
           {/* SECTION: Gift note */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-6 space-y-3">
@@ -841,9 +840,9 @@ export default function CheckoutForm({
               )}
 
               {/* Gift wrapping */}
-              {giftWrapping && (
+              {giftWrapStyle !== "none" && (
                 <div className="flex justify-between">
-                  <span className="text-brand-muted">Gift wrapping</span>
+                  <span className="text-brand-muted flex items-center gap-1.5"><Gift className="w-3.5 h-3.5" /> Gift wrapping</span>
                   <span className="font-medium">{formatKsh(wrappingCost)}</span>
                 </div>
               )}

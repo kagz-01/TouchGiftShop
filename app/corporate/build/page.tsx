@@ -8,6 +8,7 @@ import TemplateLibrary, { type HamperTemplate } from "@/components/corporate/Tem
 import BrandStudio from "@/components/corporate/BrandStudio";
 import BudgetMode from "@/components/corporate/BudgetMode";
 import { Gift, Users, Palette, CreditCard, PenLine, ClipboardList, Package, Ribbon, Building2, Layout, Target } from "lucide-react";
+import GiftWrapSelector, { WrapType, WRAP_OPTIONS } from "@/components/shared/GiftWrapSelector";
 
 type Product = {
   id: string;
@@ -59,7 +60,7 @@ export default function HamperBuilder() {
   // Step 3: Customization
   const [companyName, setCompanyName] = useState("");
   const [customMessage, setCustomMessage] = useState("");
-  const [giftWrap, setGiftWrap] = useState("standard");
+  const [giftWrap, setGiftWrap] = useState<WrapType>("none");
   const [noteData, setNoteData] = useState<{ text: string; style: NoteStyle } | null>(null);
 
   // Step 3: Brand Studio
@@ -138,7 +139,8 @@ export default function HamperBuilder() {
     );
   };
 
-  const hamperTotal = hamperItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const wrappingCost = WRAP_OPTIONS.find((o) => o.id === giftWrap)?.price || 0;
+  const hamperTotal = hamperItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0) + wrappingCost;
   const recipientCount = recipients.filter((r) => r.name && r.phone).length;
   const orderTotal = hamperTotal * recipientCount;
   const bulkDiscount = recipientCount >= 50 ? 0.15 : recipientCount >= 10 ? 0.10 : 0;
@@ -603,28 +605,7 @@ Peter Odhiambo, 0755555555`}
 
               {/* Gift wrap options */}
               <div>
-                <label className="block text-sm font-semibold mb-3">Gift Wrapping</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { id: "standard", label: "Standard", icon: <Package className="w-5 h-5 mx-auto mb-1" />, desc: "Classic gift wrap" },
-                    { id: "premium", label: "Premium", icon: <Ribbon className="w-5 h-5 mx-auto mb-1" />, desc: "Box + ribbon" },
-                    { id: "branded", label: "Branded", icon: <Building2 className="w-5 h-5 mx-auto mb-1" />, desc: "Custom logo box (+KSh 200)", extra: 200 },
-                  ].map((wrap) => (
-                    <button
-                      key={wrap.id}
-                      onClick={() => setGiftWrap(wrap.id)}
-                      className={`p-4 shape-premium-card border-2 text-center transition-all ${
-                        giftWrap === wrap.id
-                          ? "border-cyan-400 bg-teal-500/10 shadow-ribbon"
-                          : "border-surface-border hover:border-cyan-400/30"
-                      }`}
-                    >
-                      <span className="text-2xl block mb-1">{wrap.icon}</span>
-                      <p className="text-sm font-semibold">{wrap.label}</p>
-                      <p className="text-xs text-white/60">{wrap.desc}</p>
-                    </button>
-                  ))}
-                </div>
+                <GiftWrapSelector value={giftWrap} onChange={setGiftWrap} theme="corporate" />
               </div>
             </div>
 
@@ -723,7 +704,7 @@ Peter Odhiambo, 0755555555`}
               </div>
 
               {/* Customization */}
-              {(companyName || customMessage || giftWrap !== "standard") && (
+              {(companyName || customMessage || giftWrap !== "none") && (
                 <div>
                   <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
                     <span className="text-lg">🎨</span> Customization
@@ -731,8 +712,8 @@ Peter Odhiambo, 0755555555`}
                   <div className="bg-white/5 border border-white/10 shape-premium-card p-4 space-y-2 text-sm">
                     {companyName && <p><span className="text-white/60">Company:</span> {companyName}</p>}
                     {customMessage && <p><span className="text-white/60">Message:</span> &ldquo;{customMessage}&rdquo;</p>}
-                    {giftWrap !== "standard" && (
-                      <p><span className="text-white/60">Wrapping:</span> {giftWrap === "premium" ? "Premium Box + Ribbon" : "Branded Logo Box"}</p>
+                    {giftWrap !== "none" && (
+                      <p><span className="text-white/60">Wrapping:</span> {WRAP_OPTIONS.find((o) => o.id === giftWrap)?.label}</p>
                     )}
                   </div>
                 </div>

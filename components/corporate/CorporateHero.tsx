@@ -217,7 +217,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                 <div className="p-6 flex-1 flex flex-col -mt-8 relative z-10">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                      KES {Number(product.price).toLocaleString()} / head
+                      KES {Number(product.price).toLocaleString("en-US")} / head
                     </span>
                   </div>
                   <h3 className="font-display text-xl font-bold italic mb-2 text-white group-hover:text-emerald-300 transition-colors">{product.name}</h3>
@@ -372,7 +372,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h3 className="font-display text-xl font-bold italic">{selectedProduct.name}</h3>
-                  <p className="text-white/50 text-sm mt-1">KES {Number(selectedProduct.price).toLocaleString()} / recipient</p>
+                  <p className="text-white/50 text-sm mt-1">KES {Number(selectedProduct.price).toLocaleString("en-US")} / recipient</p>
                 </div>
                 <button onClick={() => setSelectedProduct(null)} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
                   <X className="w-5 h-5 text-white/50" />
@@ -409,17 +409,17 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-white/50">Subtotal</span>
-                      <span>KES {base.toLocaleString()}</span>
+                      <span>KES {base.toLocaleString("en-US")}</span>
                     </div>
                     {pct > 0 && (
                       <div className="flex justify-between text-emerald-400">
                         <span>Volume Discount ({pct * 100}%)</span>
-                        <span>- KES {discount.toLocaleString()}</span>
+                        <span>- KES {discount.toLocaleString("en-US")}</span>
                       </div>
                     )}
                     <div className="border-t border-white/10 pt-2 flex justify-between font-bold text-base">
                       <span>Total</span>
-                      <span className="text-emerald-400">KES {final.toLocaleString()}</span>
+                      <span className="text-emerald-400">KES {final.toLocaleString("en-US")}</span>
                     </div>
                   </div>
                 );
