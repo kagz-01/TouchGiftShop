@@ -16,6 +16,7 @@ export interface ShopParams {
   minPrice?: string;
   maxPrice?: string;
   q?: string;
+  subcat?: string;  // subcategory filter (e.g. wines, whiskies) — uses tag/name filter
   sort?: string;
   newArrivals?: string;
   onSale?: string;
@@ -83,11 +84,23 @@ async function getProducts(params: ShopParams): Promise<{
     if (!isNaN(max)) query = query.lte("price", max);
   }
 
-  // Text search
+  // Text search (free-form, from search bar)
   if (params.q) {
     const term = params.q.trim().replace(/[%,()]/g, "");
     if (term) {
       query = query.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+  }
+
+  // Subcategory filter (from pills like Wines, Whiskies, For Him, etc.)
+  // Uses tag matching first, then falls back to name/description search
+  if (params.subcat) {
+    const term = params.subcat.trim().replace(/[%,()]/g, "");
+    if (term) {
+      // Try tag match first (most precise), fall back to name search
+      query = query.or(
+        `tags.cs.["${term.toLowerCase()}"],name.ilike.%${term}%,description.ilike.%${term}%`
+      );
     }
   }
 
@@ -244,7 +257,9 @@ export default async function ProductGrid({
 
   const headingParts: string[] = [];
   if (params?.q) headingParts.push(`Results for \u201c${params.q}\u201d`);
-  else if (effectiveCategory) headingParts.push(`${pretty(effectiveCategory)} Gifts`);
+  else if (params?.subcat && effectiveCategory) {
+    headingParts.push(`${pretty(params.subcat)} in ${pretty(effectiveCategory)}`);
+  } else if (effectiveCategory) headingParts.push(`${pretty(effectiveCategory)} Gifts`);
   else headingParts.push("All Gifts");
 
   if (params?.onSale === "1") headingParts.push(" — On Sale");
@@ -259,6 +274,7 @@ export default async function ProductGrid({
       category={effectiveCategory}
       budget={params?.budget}
       search={params?.q}
+      subcat={params?.subcat}
       heading={headingParts.join("")}
       sort={params?.sort}
       newArrivals={params?.newArrivals}

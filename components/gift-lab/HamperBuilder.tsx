@@ -443,7 +443,7 @@ export default function HamperBuilder() {
                   : "hover:shadow-lg hover:-translate-y-0.5"
               )}
             >
-              {isFull ? "🎉 " : ""}Send this hamper — {formatKsh(displayTotal)}
+              {isFull ? "🎉 " : ""}Gift / Buy Hamper — {formatKsh(displayTotal)}
             </button>
 
             {/* Confetti overlay */}

@@ -3,7 +3,8 @@
 import React, { useState, MouseEvent, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import LiveCustomizer from "./LiveCustomizer";
+import dynamic from 'next/dynamic';
+const LiveCustomizer = dynamic(() => import('./LiveCustomizer'), { ssr: false });
 
 interface ProductGalleryProps {
   productName: string;

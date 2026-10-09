@@ -41,6 +41,9 @@ export async function GET(req: Request) {
   // ── Text search ──
   const q = searchParams.get("q");
 
+  // ── Subcategory filter ──
+  const subcat = searchParams.get("subcat");
+
   // ── Sort ──
   const sortParam = searchParams.get("sort");
 
@@ -99,11 +102,21 @@ export async function GET(req: Request) {
     if (!isNaN(max)) query = query.lte("price", max);
   }
 
-  // ── Text search ──
+  // ── Text search (free-form, from search bar) ──
   if (q) {
     const term = q.trim().replace(/[%,()]/g, "");
     if (term) {
       query = query.or(`name.ilike.%${term}%,description.ilike.%${term}%`);
+    }
+  }
+
+  // ── Subcategory filter (from UI pills) ──
+  if (subcat) {
+    const term = subcat.trim().replace(/[%,()]/g, "");
+    if (term) {
+      query = query.or(
+        `tags.cs.["${term.toLowerCase()}"],name.ilike.%${term}%,description.ilike.%${term}%`
+      );
     }
   }
 

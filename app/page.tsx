@@ -263,7 +263,7 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
         count: rows.length,
         heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
         heroName: hero.name,
-        href: `/shop?category=drinks&q=${encodeURIComponent(name.toLowerCase())}`,
+        href: `/shop?category=drinks&subcat=${encodeURIComponent(name)}`,
       };
     })
     .filter(Boolean) as (CategoryTile & { href: string })[];

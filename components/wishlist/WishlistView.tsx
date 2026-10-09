@@ -269,7 +269,7 @@ export default function WishlistView({ slug }: { slug: string }) {
                         className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-xl text-xs font-bold hover:from-rose-600 hover:to-pink-600 shadow-sm hover:shadow-rose-200 hover:shadow-lg transition-all"
                       >
                         <Gift className="w-3.5 h-3.5" />
-                        {giftingItem === item.id ? "Let's go! 🎉" : "Send Gift"}
+                        {giftingItem === item.id ? "Let's go! 🎉" : "Gift / Buy"}
                       </Link>
                       <Link
                         href={`/product/${item.product_id}`}

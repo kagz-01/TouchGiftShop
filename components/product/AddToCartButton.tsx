@@ -28,9 +28,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
     const handleCustomization = (e: Event) => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail) {
-        const { imageUrl, text } = customEvent.detail;
+        const { imageUrl, text, quantity } = customEvent.detail;
         if (imageUrl) setCustomizationImageUrl(imageUrl);
         if (text) setPersonalization(text);
+        if (quantity && quantity > 1) setQuantity(quantity);
         setIsOpen(true);
       }
     };
@@ -104,7 +105,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
           className="flex-1 py-4 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-base rounded-2xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 flex items-center justify-center gap-2"
         >
           {product.is_coming_soon ? "Coming Soon — Not Yet Available" : (
-            <>Send this Gift &mdash; {formatKsh(effectivePrice)}</>
+            <>Gift / Buy for Me &mdash; {formatKsh(effectivePrice)}</>
           )}
         </button>
       </div>
@@ -130,8 +131,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-black/6">
               <div>
-                <h2 className="font-display font-bold text-brand-deep">Gift Details</h2>
-                <p className="text-[11px] text-brand-muted">Personalise before sending</p>
+                <h2 className="font-display font-bold text-brand-deep">Item Options</h2>
+                <p className="text-[11px] text-brand-muted">Customize your selection</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -315,7 +316,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                   onClick={handleBuyNow}
                   className="flex-1 py-3 bg-gradient-to-r from-gold to-gold-light text-brand-deep font-bold text-sm rounded-xl shadow-gold hover:shadow-gold-lg hover:-translate-y-0.5 active:translate-y-0 transition-all"
                 >
-                  Send Now →
+                  Checkout Now →
                 </button>
               </div>
             </div>

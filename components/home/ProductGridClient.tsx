@@ -41,7 +41,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
           {/* Quick view */}
           <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
             <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3.5 text-center text-xs font-bold text-brand shadow-sm">
-              View Gift →
+              View / Buy →
             </div>
           </div>
 
@@ -157,6 +157,7 @@ export default function ProductGridClient({
   category,
   budget,
   search,
+  subcat,
   heading,
   sort,
   newArrivals,
@@ -175,6 +176,7 @@ export default function ProductGridClient({
   category?: string;
   budget?: string;
   search?: string;
+  subcat?: string;
   heading?: string;
   sort?: string;
   newArrivals?: string;
@@ -244,6 +246,7 @@ export default function ProductGridClient({
       if (category) params.set("category", category);
       if (budget) params.set("budget", budget);
       if (search) params.set("q", search);
+      if (subcat) params.set("subcat", subcat);
       if (sort) params.set("sort", sort);
       if (newArrivals) params.set("newArrivals", newArrivals);
       if (onSale) params.set("onSale", onSale);
@@ -269,6 +272,7 @@ export default function ProductGridClient({
   // Count active filters
   const activeFilters: { label: string; param: string; value: string }[] = [];
   if (category) activeFilters.push({ label: heading?.replace(" Gifts", "") || category, param: "category", value: category });
+  if (subcat) activeFilters.push({ label: subcat, param: "subcat", value: subcat });
   if (budget) activeFilters.push({ label: budget.replace(/-/g, " "), param: "budget", value: budget });
   if (sort) activeFilters.push({ label: `Sort: ${sort}`, param: "sort", value: sort });
   if (onSale === "1") activeFilters.push({ label: "On Sale", param: "onSale", value: "1" });
@@ -302,29 +306,29 @@ export default function ProductGridClient({
         {category === "drinks" && (
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
-              { name: "Wines", icon: "🍷" },
-              { name: "Whiskies", icon: "🥃" },
-              { name: "Vodka", icon: "🍸" },
-              { name: "Gin", icon: "🍃" },
-              { name: "Rum", icon: "🌊" },
-              { name: "Champagne & Sparkling", icon: "🍾" },
-              { name: "Brandy & Cognac", icon: "🥂" },
-              { name: "Tequila", icon: "🌵" },
-              { name: "Liqueurs", icon: "🍬" },
-              { name: "Ciders", icon: "🍏" },
-              { name: "Spirits", icon: "🔥" },
-              { name: "Non-Alcoholic", icon: "🧃" },
+              { name: "Wines", subcat: "wine", icon: "🍷" },
+              { name: "Whiskies", subcat: "whisky", icon: "🥃" },
+              { name: "Vodka", subcat: "vodka", icon: "🍸" },
+              { name: "Gin", subcat: "gin", icon: "🍃" },
+              { name: "Rum", subcat: "rum", icon: "🌊" },
+              { name: "Champagne & Sparkling", subcat: "champagne", icon: "🍾" },
+              { name: "Brandy & Cognac", subcat: "brandy", icon: "🥂" },
+              { name: "Tequila", subcat: "tequila", icon: "🌵" },
+              { name: "Liqueurs", subcat: "liqueur", icon: "🍬" },
+              { name: "Ciders", subcat: "cider", icon: "🍏" },
+              { name: "Spirits", subcat: "spirit", icon: "🔥" },
+              { name: "Non-Alcoholic", subcat: "non-alcoholic", icon: "🧃" },
             ].map((g) => {
-              const isActive = search?.toLowerCase() === g.name.toLowerCase();
+              const isActive = subcat?.toLowerCase() === g.subcat.toLowerCase();
               return (
                 <button
                   key={g.name}
                   onClick={() => {
                     const url = new URL(window.location.href);
                     if (isActive) {
-                      url.searchParams.delete("q");
+                      url.searchParams.delete("subcat");
                     } else {
-                      url.searchParams.set("q", g.name.toLowerCase());
+                      url.searchParams.set("subcat", g.subcat);
                     }
                     router.push(`${url.pathname}${url.search}`);
                   }}
@@ -384,23 +388,23 @@ export default function ProductGridClient({
         {category === "corporate" && (
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
-              { name: "Gift Sets & Hampers", search: "hamper", icon: "🎁" },
-              { name: "Awards & Plaques", search: "award", icon: "🏆" },
-              { name: "Drinkware", search: "mug", icon: "☕" },
-              { name: "Stationery & Notebooks", search: "notebook", icon: "📓" },
-              { name: "Tech & Gadgets", search: "tech", icon: "💻" },
-              { name: "Bags", search: "bag", icon: "🎒" },
+              { name: "Gift Sets & Hampers", subcat: "hamper", icon: "🎁" },
+              { name: "Awards & Plaques", subcat: "award", icon: "🏆" },
+              { name: "Drinkware", subcat: "mug", icon: "☕" },
+              { name: "Stationery & Notebooks", subcat: "notebook", icon: "📓" },
+              { name: "Tech & Gadgets", subcat: "tech", icon: "💻" },
+              { name: "Bags", subcat: "bag", icon: "🎒" },
             ].map((g) => {
-              const isActive = search?.toLowerCase() === g.search;
+              const isActive = subcat?.toLowerCase() === g.subcat.toLowerCase();
               return (
                 <button
                   key={g.name}
                   onClick={() => {
                     const url = new URL(window.location.href);
                     if (isActive) {
-                      url.searchParams.delete("q");
+                      url.searchParams.delete("subcat");
                     } else {
-                      url.searchParams.set("q", g.search);
+                      url.searchParams.set("subcat", g.subcat);
                     }
                     router.push(`${url.pathname}${url.search}`);
                   }}
