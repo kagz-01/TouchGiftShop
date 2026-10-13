@@ -95,7 +95,7 @@ export default async function ShopVibeEngine() {
               <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pl-4 pr-4 gap-4 pb-4">
                 {vibeGroups[vibe].map((product) => (
                   <ProductModalClient key={product.id} product={product}>
-                    <div className="snap-center shrink-0 w-[280px] h-[380px] relative rounded-[2rem] overflow-hidden group cursor-pointer border border-white/10 hover:border-rose-500/50 transition-colors shadow-2xl">
+                    <div className="snap-center shrink-0 w-[240px] h-[340px] sm:w-[280px] sm:h-[380px] relative rounded-[2rem] overflow-hidden group cursor-pointer border border-white/10 hover:border-rose-500/50 transition-colors shadow-2xl">
                       {/* Image */}
                       {product.media_urls?.[0] ? (
                         <img 

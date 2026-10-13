@@ -249,7 +249,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 We found {duplicates.length > 1 ? "accounts" : "an account"} sharing your{" "}
                 {duplicates.map((d) => `${d.method} (${d.masked})`).join(" and ")}. Orders and points are
                 separate per account — email{" "}
-                <a href="mailto:info@touchgiftshop.co.ke" className="underline font-medium">info@touchgiftshop.co.ke</a>{" "}
+                <a href="mailto:info@touchgiftshop.co.ke" className="underline font-medium break-all">info@touchgiftshop.co.ke</a>{" "}
                 to merge them.
               </p>
             </div>
@@ -444,20 +444,20 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                 </div>
 
                 {/* Contact support */}
-                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-5">
+                <div className="card-theme rounded-2xl border border-surface-border shadow-card p-4 sm:p-5">
                   <h2 className="font-display font-bold text-brand-deep mb-4">Need Help?</h2>
-                  <div className="grid grid-cols-2 gap-3">
-                    <a href="https://wa.me/254142677898" target="_blank" rel="noreferrer" className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-4 hover:shadow-card transition-all">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <a href="https://wa.me/254142677898" target="_blank" rel="noreferrer" className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl p-3 sm:p-4 hover:shadow-card transition-all min-w-0">
                       <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg className="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.535 5.855L.057 23.998l6.297-1.649A11.938 11.938 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.866 9.866 0 01-5.035-1.378l-.361-.214-3.741.98 1.001-3.649-.235-.374A9.862 9.862 0 012.106 12C2.106 6.527 6.527 2.106 12 2.106S21.894 6.527 21.894 12 17.473 21.894 12 21.894z"/></svg>
                       </div>
-                      <div><p className="font-bold text-sm text-brand-deep">WhatsApp</p><p className="text-xs text-brand-muted">Chat support</p></div>
+                      <div className="min-w-0"><p className="font-bold text-sm text-brand-deep truncate">WhatsApp</p><p className="text-xs text-brand-muted truncate">Chat support</p></div>
                     </a>
-                    <a href="mailto:info@touchgiftshop.co.ke" className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl p-4 hover:shadow-card transition-all">
+                    <a href="mailto:info@touchgiftshop.co.ke" className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4 hover:shadow-card transition-all min-w-0">
                       <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                       </div>
-                      <div><p className="font-bold text-sm text-brand-deep">Email Us</p><p className="text-xs text-brand-muted">info@touchgiftshop.co.ke</p></div>
+                      <div className="min-w-0"><p className="font-bold text-sm text-brand-deep truncate">Email Us</p><p className="text-xs text-brand-muted truncate" title="info@touchgiftshop.co.ke">info@touchgiftshop.co.ke</p></div>
                     </a>
                   </div>
                 </div>
@@ -468,15 +468,15 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
             {activeSection === "activity" && (
               <div className="space-y-5 animate-fade-in">
                 {/* Stats row */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4">
                   {[
                     { label: "Orders", value: ordersLoading ? "…" : orderCount },
                     { label: "Total spent", value: ordersLoading ? "…" : formatKsh(totalSpend) },
                     { label: "Your tier", value: tier.name },
                   ].map((stat) => (
-                    <div key={stat.label} className="bg-white rounded-2xl border border-surface-border p-5 text-center shadow-card">
-                      <p className="font-display text-2xl font-bold text-brand-deep">{stat.value}</p>
-                      <p className="text-xs text-brand-muted mt-1 font-medium">{stat.label}</p>
+                    <div key={stat.label} className="min-w-0 bg-white rounded-2xl border border-surface-border p-3 sm:p-5 text-center shadow-card">
+                      <p className="font-display text-lg sm:text-2xl font-bold text-brand-deep truncate">{stat.value}</p>
+                      <p className="text-[10px] sm:text-xs text-brand-muted mt-1 font-medium truncate">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -626,7 +626,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                     {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy Referral Link</>}
                   </button>
 
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <a
                       href={`https://wa.me/?text=${encodeURIComponent(`Hey! I've been gifting via TouchGift — use my code ${referralCode} and we both earn 1,000 pts (≈KSh 500) on your first order. ${typeof window !== "undefined" ? window.location.origin : ""}?ref=${referralCode}`)}`}
                       target="_blank" rel="noreferrer"
