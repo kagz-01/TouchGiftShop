@@ -20,7 +20,24 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/render/image/public/**",
+      },
+      {
+        protocol: "https",
         hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
       },
     ],
   },
@@ -48,7 +65,7 @@ const nextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com https://www.googletagmanager.com https://www.google-analytics.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "img-src 'self' data: blob: https://*.supabase.co https://touchgiftshop.co.ke https://lh3.googleusercontent.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org",
+              "img-src 'self' data: blob: https://*.supabase.co https://touchgiftshop.co.ke https://lh3.googleusercontent.com https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://images.unsplash.com https://plus.unsplash.com https://i.imgur.com",
               "connect-src 'self' https://*.supabase.co https://api.openai.com https://api.x.ai https://generativelanguage.googleapis.com https://openrouter.ai https://pay.pesapal.com https://cybqa.pesapal.com https://www.google-analytics.com https://vitals.vercel-insights.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",

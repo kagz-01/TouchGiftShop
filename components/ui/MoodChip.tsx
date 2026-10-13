@@ -15,14 +15,14 @@ import { X } from "lucide-react";
 
 /** Only moods with an honest category behind them get a destination. */
 const MOOD_SHOP_HREF: Record<string, string> = {
-  corporate: "/shop?category=gift-sets",
-  corp_appreciation: "/shop?category=gift-sets",
-  corp_milestone: "/shop?category=awards-trophies",
-  corp_welcome: "/shop?category=gift-sets",
-  hampers: "/shop?category=gift-sets",
-  flowers: "/shop?category=gift-sets",
-  perfumes: "/shop?category=perfumes",
-  liquor: "/shop?category=drinkware",
+  corporate: "/catalog?category=gift-sets",
+  corp_appreciation: "/catalog?category=gift-sets",
+  corp_milestone: "/catalog?category=awards-trophies",
+  corp_welcome: "/catalog?category=gift-sets",
+  hampers: "/catalog?category=gift-sets",
+  flowers: "/catalog?category=gift-sets",
+  perfumes: "/catalog?category=perfumes",
+  liquor: "/catalog?category=drinkware",
   default: "/shop",
 };
 
