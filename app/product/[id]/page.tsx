@@ -446,6 +446,27 @@ export default async function ProductPage({
             {/* Add to cart button */}
             <AddToCartButton product={product} />
 
+            {/* Corporate Bulk Awareness Banner */}
+            <Link
+              href={`/corporate/catalog?search=${encodeURIComponent(product.name)}`}
+              className="group flex items-center gap-3.5 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white/5 dark:to-white/3 border border-slate-700/60 dark:border-white/10 hover:border-amber-500/40 rounded-2xl p-3.5 transition-all"
+            >
+              <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                <span className="text-xl">🏢</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-amber-400 group-hover:text-amber-300 transition-colors">
+                  Need this in bulk?
+                </p>
+                <p className="text-[11px] text-slate-400 dark:text-white/40 leading-snug mt-0.5">
+                  Brand with your logo · Bulk names · Invoice / LPO · From 10 units
+                </p>
+              </div>
+              <span className="text-[10px] font-bold px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20 whitespace-nowrap group-hover:bg-amber-500/20 transition-colors">
+                Get Quote →
+              </span>
+            </Link>
+
             {/* Add to wishlist */}
             <WishlistButton productId={product.id} />
 

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2, Users, Sparkles, ArrowRight, ShieldCheck, Zap,
   Gift, BarChart3, MessageSquare, X, ChevronRight, Check,
-  Globe, Clock, Award, TrendingUp,
+  Globe, Clock, Award, TrendingUp, Palette, Layers, ShoppingBag, Star,
 } from "lucide-react";
 
 type Product = {
@@ -23,6 +23,109 @@ const STATS = [
   { value: "98%", label: "On-time Delivery", icon: Clock },
   { value: "KES 50M+", label: "Gifts Deployed", icon: Gift },
   { value: "4.9★", label: "Client Rating", icon: Award },
+];
+
+// Branded merchandise catalog categories for awareness
+const MERCH_CATEGORIES = [
+  {
+    emoji: "👕",
+    label: "T-shirts & Polos",
+    desc: "DTG, screen print, embroidery",
+    count: "20 styles",
+    moq: "25 units",
+    href: "/corporate/catalog?category=apparel",
+    color: "from-emerald-500/20 to-teal-500/10",
+    border: "border-emerald-500/20",
+    badge: "bg-emerald-500/10 text-emerald-400",
+  },
+  {
+    emoji: "🧥",
+    label: "Jackets & Workwear",
+    desc: "Softshell, parka, overalls, hi-vis",
+    count: "32 styles",
+    moq: "10 units",
+    href: "/corporate/catalog?category=workwear",
+    color: "from-cyan-500/20 to-blue-500/10",
+    border: "border-cyan-500/20",
+    badge: "bg-cyan-500/10 text-cyan-400",
+  },
+  {
+    emoji: "🧢",
+    label: "Caps & Headwear",
+    desc: "Baseball, trucker, snapback, bucket",
+    count: "9 styles",
+    moq: "25 units",
+    href: "/corporate/catalog?category=caps",
+    color: "from-orange-500/20 to-amber-500/10",
+    border: "border-orange-500/20",
+    badge: "bg-orange-500/10 text-orange-400",
+  },
+  {
+    emoji: "🎒",
+    label: "Bags & Totes",
+    desc: "Cotton, jute, duffel, laptop bags",
+    count: "15 styles",
+    moq: "25 units",
+    href: "/corporate/catalog?category=bags",
+    color: "from-rose-500/20 to-pink-500/10",
+    border: "border-rose-500/20",
+    badge: "bg-rose-500/10 text-rose-400",
+  },
+  {
+    emoji: "🪧",
+    label: "Banners & Displays",
+    desc: "Roll-up, X-banner, media wall, pop-up",
+    count: "11 formats",
+    moq: "1 unit",
+    href: "/corporate/catalog?category=banners",
+    color: "from-violet-500/20 to-purple-500/10",
+    border: "border-violet-500/20",
+    badge: "bg-violet-500/10 text-violet-400",
+  },
+  {
+    emoji: "☂️",
+    label: "Umbrellas & Tents",
+    desc: "Golf, compact, 3×3 branded gazebos",
+    count: "6 styles",
+    moq: "10 units",
+    href: "/corporate/catalog?category=umbrellas",
+    color: "from-sky-500/20 to-indigo-500/10",
+    border: "border-sky-500/20",
+    badge: "bg-sky-500/10 text-sky-400",
+  },
+  {
+    emoji: "🏆",
+    label: "Drinkware & Awards",
+    desc: "Mugs, tumblers, bottles, laser engrave",
+    count: "18 styles",
+    moq: "12 units",
+    href: "/corporate/catalog?category=drinkware",
+    color: "from-yellow-500/20 to-amber-500/10",
+    border: "border-yellow-500/20",
+    badge: "bg-yellow-500/10 text-yellow-400",
+  },
+  {
+    emoji: "📓",
+    label: "Notebooks & Pens",
+    desc: "Leather journals, deboss, gold foil",
+    count: "12 styles",
+    moq: "20 units",
+    href: "/corporate/catalog?category=stationery",
+    color: "from-stone-500/20 to-neutral-500/10",
+    border: "border-stone-500/20",
+    badge: "bg-stone-500/10 text-stone-400",
+  },
+  {
+    emoji: "🧣",
+    label: "Blankets & Towels",
+    desc: "Fleece throw, beach, golf, picnic",
+    count: "5 styles",
+    moq: "15 units",
+    href: "/corporate/catalog?category=fabric",
+    color: "from-teal-500/20 to-green-500/10",
+    border: "border-teal-500/20",
+    badge: "bg-teal-500/10 text-teal-400",
+  },
 ];
 
 const FEATURES = [
@@ -261,6 +364,130 @@ export default function CorporateHero({ products }: { products: Product[] }) {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ── Branded Merchandise Hub ── */}
+      <section id="merch" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row md:items-end gap-6 mb-12"
+        >
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-5">
+              <Palette className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">New · Live Branding Studio</span>
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold">
+              Brand{" "}
+              <span className="italic font-light text-amber-400">anything</span>{" "}
+              with your logo.
+            </h2>
+            <p className="text-white/50 mt-3 text-sm max-w-xl leading-relaxed">
+              Upload your logo once. Our Live Customization Studio lets you preview exactly how it looks on every product — embroidered on caps, screen-printed on polos, sublimated on umbrellas — before placing a single order.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-3 text-xs text-white/50">
+              <Check className="w-4 h-4 text-amber-400 shrink-0" /> Live design preview before ordering
+            </div>
+            <div className="flex items-center gap-3 text-xs text-white/50">
+              <Check className="w-4 h-4 text-amber-400 shrink-0" /> Bulk names for uniforms (1 design → 500 names)
+            </div>
+            <div className="flex items-center gap-3 text-xs text-white/50">
+              <Check className="w-4 h-4 text-amber-400 shrink-0" /> Digital proof before production
+            </div>
+            <div className="flex items-center gap-3 text-xs text-white/50">
+              <Check className="w-4 h-4 text-amber-400 shrink-0" /> Invoice / LPO / M-Pesa payment
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Category grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          {MERCH_CATEGORIES.map((cat, i) => (
+            <motion.a
+              key={cat.label}
+              href={cat.href}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className={`group relative bg-gradient-to-br ${cat.color} border ${cat.border} rounded-2xl p-5 hover:scale-[1.02] transition-all cursor-pointer flex gap-4 items-start`}
+            >
+              <span className="text-3xl shrink-0 mt-0.5">{cat.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-white text-sm">{cat.label}</p>
+                <p className="text-white/50 text-[11px] mt-0.5 leading-snug">{cat.desc}</p>
+                <div className="flex items-center gap-2 mt-3 flex-wrap">
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.badge}`}>
+                    {cat.count}
+                  </span>
+                  <span className="text-[10px] text-white/40">
+                    MOQ: {cat.moq}
+                  </span>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+            </motion.a>
+          ))}
+
+          {/* View all */}
+          <motion.a
+            href="/corporate/catalog"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.45 }}
+            className="group border border-white/10 border-dashed rounded-2xl p-5 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-3 text-center"
+          >
+            <Layers className="w-8 h-8 text-white/20 group-hover:text-white/50 transition-colors" />
+            <div>
+              <p className="font-bold text-white/40 group-hover:text-white/70 text-sm transition-colors">View All Products</p>
+              <p className="text-white/25 text-[11px] mt-1">170+ brandable items</p>
+            </div>
+            <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all" />
+          </motion.a>
+        </div>
+
+        {/* Studio CTA banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="relative overflow-hidden bg-gradient-to-r from-amber-950/60 via-amber-900/40 to-amber-950/60 border border-amber-500/20 rounded-3xl p-8 flex flex-col md:flex-row md:items-center gap-6"
+        >
+          {/* Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-3">
+              <Star className="w-4 h-4 text-amber-400" />
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Live Customization Studio</span>
+            </div>
+            <h3 className="font-display text-xl md:text-2xl font-bold text-white">
+              See your logo on the product <span className="italic text-amber-400">before</span> you order.
+            </h3>
+            <p className="text-white/50 text-sm mt-2 leading-relaxed">
+              Choose embroidery, screen print, DTG, sublimation or laser engrave. Position your artwork. Add names for each team member. Export a proof — all in real time.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 shrink-0">
+            <a
+              href="/corporate/catalog"
+              className="px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm rounded-xl flex items-center gap-2 transition-all shadow-[0_0_30px_rgba(245,158,11,0.25)]"
+            >
+              <ShoppingBag className="w-4 h-4" /> Browse Catalog
+            </a>
+            <a
+              href="/corporate/build"
+              className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm rounded-xl flex items-center gap-2 transition-all"
+            >
+              <Palette className="w-4 h-4 text-amber-400" /> Open Studio
+            </a>
+          </div>
+        </motion.div>
       </section>
 
       {/* ── Milestone Automation ── */}
