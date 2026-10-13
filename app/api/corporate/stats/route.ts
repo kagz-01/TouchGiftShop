@@ -115,6 +115,27 @@ export async function GET() {
     });
   }
 
+  // Quote requests
+  const { count: pendingQuotes } = await supabase
+    .from("corporate_quote_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+
+  const { count: quotedQuotes } = await supabase
+    .from("corporate_quote_requests")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "quoted");
+
+  const { count: totalQuotes } = await supabase
+    .from("corporate_quote_requests")
+    .select("id", { count: "exact", head: true });
+
+  const { data: recentQuotes } = await supabase
+    .from("corporate_quote_requests")
+    .select("id, product_name, company_name, quantity, total_estimate, status, created_at")
+    .order("created_at", { ascending: false })
+    .limit(5);
+
   return NextResponse.json({
     totalOrders: totalOrders ?? 0,
     monthOrders: monthOrders ?? 0,
@@ -130,5 +151,10 @@ export async function GET() {
     totalVendors: totalVendors ?? 0,
     statusCounts,
     monthlyActivity,
+    // Quote requests
+    pendingQuotes: pendingQuotes ?? 0,
+    quotedQuotes: quotedQuotes ?? 0,
+    totalQuotes: totalQuotes ?? 0,
+    recentQuotes: recentQuotes ?? [],
   });
 }
