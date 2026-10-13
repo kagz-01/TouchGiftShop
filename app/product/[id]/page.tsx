@@ -254,41 +254,80 @@ export default async function ProductPage({
               product.material_type ??
               (() => {
                 const t = [...(product.tags ?? []), product.category ?? "", product.name].join(" ").toLowerCase();
-                // Apparel & Textiles
+
+                // Large format print (banners, flags, displays, tents) — check FIRST
+                if (
+                  t.includes("banner") || t.includes("roll-up") || t.includes("rollup") ||
+                  t.includes("x-banner") || t.includes("media wall") || t.includes("pop-up") ||
+                  t.includes("a-frame") || t.includes("gazebo") || t.includes("tent") ||
+                  t.includes("flag") || t.includes("bunting") || t.includes("display") ||
+                  t.includes("sail banner") || t.includes("feather") || t.includes("lectern") ||
+                  t.includes("table cloth") || t.includes("table skirt") || t.includes("chair cover") ||
+                  t.includes("table textile") || t.includes("table runner") || t.includes("desk pad")
+                ) return "largeformat";
+
+                // Apparel & Wearables
                 if (
                   t.includes("polo") || t.includes("shirt") || t.includes("hoodie") ||
-                  t.includes("overall") || t.includes("workwear") || t.includes("vest") ||
-                  t.includes("jacket") || t.includes("apron") || t.includes("beanie") ||
-                  t.includes("cap") || t.includes("hat") || t.includes("sock") ||
-                  t.includes("mask") || t.includes("sweatshirt") || t.includes("t-shirt") ||
-                  t.includes("tshirt") || t.includes("apparel") || t.includes("wristband") ||
-                  t.includes("lanyard") || t.includes("tote") || t.includes("backpack")
+                  t.includes("overall") || t.includes("coverall") || t.includes("conti") ||
+                  t.includes("workwear") || t.includes("vest") || t.includes("jacket") ||
+                  t.includes("parka") || t.includes("puffer") || t.includes("softshell") ||
+                  t.includes("varsity") || t.includes("blazer") || t.includes("bodywarmer") ||
+                  t.includes("apron") || t.includes("beanie") || t.includes("cap") ||
+                  t.includes("hat") || t.includes("trucker") || t.includes("snapback") ||
+                  t.includes("bucket hat") || t.includes("visor") || t.includes("safari") ||
+                  t.includes("sock") || t.includes("mask") || t.includes("sweatshirt") ||
+                  t.includes("t-shirt") || t.includes("tshirt") || t.includes("apparel") ||
+                  t.includes("wristband") || t.includes("lanyard") || t.includes("backpack") ||
+                  t.includes("sash") || t.includes("bib") || t.includes("scrub") ||
+                  t.includes("hi-vis") || t.includes("high vis") || t.includes("reflective") ||
+                  t.includes("security") || t.includes("chef") || t.includes("dust coat") ||
+                  t.includes("chino") || t.includes("cargo") || t.includes("trouser") ||
+                  t.includes("pants") || t.includes("jogger") || t.includes("tactical") ||
+                  t.includes("sportswear") || t.includes("quarter-zip") || t.includes("fleece")
                 ) return "apparel";
-                // Fabric / Sublimation items
+
+                // Bags, Totes, Fabric items
                 if (
+                  t.includes("tote") || t.includes("duffel") || t.includes("messenger") ||
+                  t.includes("drawstring") || t.includes("cooler bag") || t.includes("laptop bag") ||
                   t.includes("fabric") || t.includes("cotton") || t.includes("canvas") ||
-                  t.includes("polyester") || t.includes("fleece") || t.includes("bag") ||
-                  t.includes("drawstring") || t.includes("waist bag")
+                  t.includes("jute") || t.includes("non-woven") || t.includes("polyester") ||
+                  t.includes("blanket") || t.includes("throw") || t.includes("towel") ||
+                  t.includes("beach") || t.includes("picnic") || t.includes("travel kit")
                 ) return "fabric";
+
                 // Umbrellas
-                if (t.includes("umbrella") || t.includes("golf umbrella")) return "umbrella";
+                if (t.includes("umbrella") || t.includes("golf umbrella") || t.includes("compact")) return "umbrella";
+
                 // Drinkware
                 if (
                   t.includes("mug") || t.includes("tumbler") || t.includes("bottle") ||
-                  t.includes("thermos") || t.includes("drinkware") || t.includes("cup")
+                  t.includes("thermos") || t.includes("drinkware") || t.includes("cup") ||
+                  t.includes("flask")
                 ) return "drinkware";
-                // Leather
-                if (t.includes("leather") || t.includes("notebook") || t.includes("journal") || t.includes("planner") || t.includes("diary")) return "leather";
-                // Metal
+
+                // Leather / Notebooks
                 if (
-                  t.includes("metal") || t.includes("flask") || t.includes("steel") ||
-                  t.includes("pen") || t.includes("engraving") || t.includes("usb") ||
-                  t.includes("power bank") || t.includes("keychain")
+                  t.includes("leather") || t.includes("notebook") || t.includes("journal") ||
+                  t.includes("planner") || t.includes("diary") || t.includes("card holder")
+                ) return "leather";
+
+                // Metal / Tech
+                if (
+                  t.includes("metal") || t.includes("steel") || t.includes("pen") ||
+                  t.includes("engraving") || t.includes("usb") || t.includes("power bank") ||
+                  t.includes("keychain") || t.includes("charger") || t.includes("speaker") ||
+                  t.includes("phone case") || t.includes("stress ball") || t.includes("frisbee") ||
+                  t.includes("golf ball")
                 ) return "metal";
+
                 // Wood
                 if (t.includes("wood") || t.includes("bamboo") || t.includes("timber")) return "wood";
-                // Glass
+
+                // Glass / Acrylic
                 if (t.includes("glass") || t.includes("crystal") || t.includes("acrylic")) return "glass";
+
                 return "default";
               })()
             }

@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
-import { Bell, Search, X, UserRound, MessageCircle, ChevronRight, Briefcase } from "lucide-react";
+import { Bell, Search, X, UserRound, MessageCircle, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import VibeSelector from "@/components/ui/VibeSelector";
@@ -28,8 +28,6 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [splashActive, setSplashActive] = useState(false);
-  const [announcementIndex, setAnnouncementIndex] = useState(0);
-  const [announcementVisible, setAnnouncementVisible] = useState(true);
   const router = useRouter();
   const shellRef = useRef<HTMLDivElement>(null);
 
@@ -55,17 +53,6 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
     return () => ro.disconnect();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnnouncementVisible(false);
-      setTimeout(() => {
-        setAnnouncementIndex((i) => (i + 1) % ANNOUNCEMENTS.length);
-        setAnnouncementVisible(true);
-      }, 350);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   const handleLogoPress = useCallback(() => {
     const isHome = window.location.pathname === "/";
     if (isHome) {
@@ -86,7 +73,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
 
   return (
     <>
-      {/* ── FIXED HEADER SHELL: seasonal bar + announcement bar + main nav ── */}
+      {/* ── FIXED HEADER SHELL: promo bar + main nav ── */}
       <div
         ref={shellRef}
         className={cn("hidden md:flex flex-col fixed top-0 left-0 right-0 z-50 transition-all duration-500")}
@@ -97,23 +84,14 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
           boxShadow: scrolled ? "0 4px 30px rgba(155,27,90,0.08)" : "none",
         }}
       >
-        {/* ── SEASONAL PROMPT BAR ──
-            Lives INSIDE the fixed shell. It used to be a sibling rendered in
-            normal flow above it, which meant this shell (fixed, top:0, z-50)
-            painted straight over it — the Mashujaa Day countdown was rendered
-            but permanently buried under the announcement bar. */}
-        <SeasonalPromptBar />
-
-        {/* ── ANNOUNCEMENT BAR ── */}
-        <div className={cn("bg-brand/90 text-white text-center text-[11px] font-medium tracking-wide py-2 px-4 relative overflow-hidden transition-all duration-300", scrolled ? "py-1.5" : "py-2")}>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
-          <span className={cn("inline-block transition-all duration-300", announcementVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1")}>
-            {ANNOUNCEMENTS[announcementIndex]}
-          </span>
-          <Link href="/shop" className="ml-3 inline-flex items-center gap-0.5 text-white/80 hover:text-white underline underline-offset-2 transition-colors text-[10px] font-semibold tracking-wider uppercase">
-            Shop now <ChevronRight className="w-3 h-3" />
-          </Link>
-        </div>
+        {/* ── SEASONAL + ANNOUNCEMENT BAR ──
+            One promo strip, not two. It used to sit above a separate
+            announcement bar as a sibling in normal flow while this shell is
+            fixed at top:0 / z-50, so the shell painted straight over it and
+            the Mashujaa Day countdown was permanently buried. Merging the
+            two rotations removes the overlap by construction and reclaims
+            the announcement bar's ~34px. */}
+        <SeasonalPromptBar announcements={ANNOUNCEMENTS} />
 
         {/* ── MAIN HEADER ── */}
         <header

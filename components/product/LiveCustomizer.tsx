@@ -12,7 +12,7 @@ interface LiveCustomizerProps {
   baseImage: string;
   onClose: () => void;
   productName?: string;
-  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "apparel" | "drinkware" | "umbrella" | "default";
+  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "apparel" | "drinkware" | "umbrella" | "largeformat" | "default";
 }
 
 const FONTS = [
@@ -36,15 +36,54 @@ const MATERIAL_EFFECTS: Record<string, { label: string; emoji: string; filters: 
 
 // Smart default effects per material type
 const RECOMMENDED_EFFECTS: Record<string, string[]> = {
-  metal:      ["laser", "foil", "none"],
-  leather:    ["deboss", "foil", "laser"],
-  wood:       ["laser", "none"],
-  glass:      ["laser", "foil", "none"],
-  apparel:    ["embroidery", "screenprint", "dtg", "none"],
-  fabric:     ["screenprint", "embroidery", "sublimation", "none"],
-  umbrella:   ["sublimation", "screenprint", "none"],
-  drinkware:  ["sublimation", "laser", "none"],
-  default:    ["none", "laser", "screenprint", "embroidery", "deboss", "foil", "sublimation", "dtg"],
+  metal:       ["laser", "foil", "none"],
+  leather:     ["deboss", "foil", "laser"],
+  wood:        ["laser", "none"],
+  glass:       ["laser", "foil", "none"],
+  apparel:     ["embroidery", "screenprint", "dtg", "none"],
+  fabric:      ["screenprint", "embroidery", "sublimation", "none"],
+  umbrella:    ["sublimation", "screenprint", "none"],
+  drinkware:   ["sublimation", "laser", "none"],
+  largeformat: ["sublimation", "screenprint", "dtg", "none"],
+  default:     ["none", "laser", "screenprint", "embroidery", "deboss", "foil", "sublimation", "dtg"],
+};
+
+// Canvas aspect ratio per material (Tailwind class)
+const CANVAS_ASPECT: Record<string, string> = {
+  largeformat: "aspect-[16/9]",
+  apparel:     "aspect-[3/4]",
+  umbrella:    "aspect-square",
+  drinkware:   "aspect-[3/4]",
+  default:     "aspect-[4/3]",
+};
+
+// Whether the whole canvas is the design area (no constrained safe zone)
+const FULL_BLEED_TYPES = new Set(["largeformat"]);
+
+// Print locations for apparel
+const PRINT_LOCATIONS: Record<string, { label: string; emoji: string }[]> = {
+  apparel: [
+    { label: "Left Chest",  emoji: "◀" },
+    { label: "Full Front",  emoji: "⬛" },
+    { label: "Full Back",   emoji: "⬛" },
+    { label: "Sleeve",      emoji: "━" },
+    { label: "Collar",      emoji: "〰️" },
+  ],
+  fabric: [
+    { label: "Full Surface", emoji: "⬛" },
+    { label: "Centre",       emoji: "◉" },
+    { label: "Bottom Edge",  emoji: "▬" },
+  ],
+  largeformat: [
+    { label: "Full Bleed",  emoji: "⬛" },
+    { label: "Centre",      emoji: "◉" },
+    { label: "Top-Left",    emoji: "↖" },
+  ],
+  umbrella: [
+    { label: "1 Panel",     emoji: "△" },
+    { label: "4 Panels",    emoji: "4△" },
+    { label: "All 8 Panels",emoji: "8△" },
+  ],
 };
 
 export default function LiveCustomizer({
@@ -64,6 +103,7 @@ export default function LiveCustomizer({
   const [materialEffect, setMaterialEffect] = useState("none");
   const [safeZone, setSafeZone] = useState<fabric.Rect | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [printLocation, setPrintLocation] = useState<string>("");
 
   useEffect(() => {
     setMounted(true);
@@ -109,9 +149,11 @@ export default function LiveCustomizer({
       { crossOrigin: "anonymous" }
     );
 
-    // Safe zone
-    const szW = Math.min(containerWidth * 0.55, 320);
-    const szH = Math.min(containerHeight * 0.55, 320);
+    // Safe zone — full bleed for large format, constrained for everything else
+    const isFullBleed = FULL_BLEED_TYPES.has(materialType);
+    const szW = isFullBleed ? containerWidth * 0.96 : Math.min(containerWidth * 0.55, 320);
+    const szH = isFullBleed ? containerHeight * 0.96 : Math.min(containerHeight * 0.55, 320);
+    const safeZoneLabel = isFullBleed ? "✦ Full Design Area" : "✦ Print / Engrave Area";
     const sz = new fabric.Rect({
       left: containerWidth / 2,
       top: containerHeight / 2,
@@ -119,10 +161,10 @@ export default function LiveCustomizer({
       originY: "center",
       width: szW,
       height: szH,
-      fill: "rgba(155,27,90,0.04)",
+      fill: isFullBleed ? "transparent" : "rgba(155,27,90,0.04)",
       stroke: "#9B1B5A",
-      strokeWidth: 2,
-      strokeDashArray: [6, 4],
+      strokeWidth: isFullBleed ? 1 : 2,
+      strokeDashArray: isFullBleed ? [3, 3] : [6, 4],
       selectable: false,
       evented: false,
       name: "safeZone",
@@ -130,8 +172,8 @@ export default function LiveCustomizer({
     initCanvas.add(sz);
     setSafeZone(sz);
 
-    // Add a subtle label
-    const label = new fabric.Text("✦ Engravable Area", {
+    // Safe zone label
+    const label = new fabric.Text(safeZoneLabel, {
       left: containerWidth / 2 - szW / 2 + 4,
       top: containerHeight / 2 - szH / 2 - 18,
       fontSize: 11,
@@ -360,6 +402,7 @@ export default function LiveCustomizer({
             fulfillmentPayload: {
               product_name: productName,
               customization_type: MATERIAL_EFFECTS[materialEffect]?.label ?? "Print",
+              print_location: printLocation || undefined,
               text_elements: textElements,
               has_logo: hasLogo,
               bulk_names: names,
@@ -630,6 +673,29 @@ export default function LiveCustomizer({
                       })}
                     </div>
                   </div>
+
+                  {/* Print Location Selector */}
+                  {PRINT_LOCATIONS[materialType] && (
+                    <div>
+                      <label className="text-[11px] font-semibold text-brand-muted block mb-2">Print Location</label>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {PRINT_LOCATIONS[materialType].map((loc) => (
+                          <button
+                            key={loc.label}
+                            onClick={() => setPrintLocation(loc.label)}
+                            className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-medium transition-all ${
+                              printLocation === loc.label
+                                ? "border-brand bg-brand/10 text-brand"
+                                : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
+                            }`}
+                          >
+                            <span className="text-base leading-none">{loc.emoji}</span>
+                            <span>{loc.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -712,7 +778,9 @@ export default function LiveCustomizer({
 
         <div
           ref={containerRef}
-          className="relative w-full max-w-3xl aspect-square md:aspect-[4/3] bg-white shadow-2xl overflow-hidden rounded-3xl border border-black/5"
+          className={`relative w-full max-w-3xl bg-white shadow-2xl overflow-hidden rounded-3xl border border-black/5 ${
+            CANVAS_ASPECT[materialType] ?? CANVAS_ASPECT.default
+          }`}
         >
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         </div>
