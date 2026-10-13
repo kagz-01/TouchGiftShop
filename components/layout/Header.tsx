@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
 import MegaMenu from "@/components/layout/MegaMenu";
 import NotificationBell from "@/components/layout/NotificationBell";
@@ -31,11 +31,28 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
   const [announcementIndex, setAnnouncementIndex] = useState(0);
   const [announcementVisible, setAnnouncementVisible] = useState(true);
   const router = useRouter();
+  const shellRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* The shell's height is dynamic — the seasonal bar appears and disappears
+     as events come and go, and the announcement bar changes height when the
+     page scrolls. LayoutWrapper's spacer used to hardcode 130px, which is
+     already wrong and drifts further every time the seasonal bar shows.
+     Publish the real height so the spacer can never disagree with us. */
+  useEffect(() => {
+    const el = shellRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   useEffect(() => {
@@ -69,11 +86,9 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
 
   return (
     <>
-      {/* ── SEASONAL PROMPT BAR ── */}
-      <SeasonalPromptBar />
-
-      {/* ── FIXED HEADER SHELL: announcement bar + main nav, floats over hero ── */}
+      {/* ── FIXED HEADER SHELL: seasonal bar + announcement bar + main nav ── */}
       <div
+        ref={shellRef}
         className={cn("hidden md:flex flex-col fixed top-0 left-0 right-0 z-50 transition-all duration-500")}
         style={{
           backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "blur(0px)",
@@ -82,6 +97,13 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
           boxShadow: scrolled ? "0 4px 30px rgba(155,27,90,0.08)" : "none",
         }}
       >
+        {/* ── SEASONAL PROMPT BAR ──
+            Lives INSIDE the fixed shell. It used to be a sibling rendered in
+            normal flow above it, which meant this shell (fixed, top:0, z-50)
+            painted straight over it — the Mashujaa Day countdown was rendered
+            but permanently buried under the announcement bar. */}
+        <SeasonalPromptBar />
+
         {/* ── ANNOUNCEMENT BAR ── */}
         <div className={cn("bg-brand/90 text-white text-center text-[11px] font-medium tracking-wide py-2 px-4 relative overflow-hidden transition-all duration-300", scrolled ? "py-1.5" : "py-2")}>
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_3s_ease-in-out_infinite] pointer-events-none" />
@@ -98,12 +120,14 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
           className={cn("hidden md:block transition-all duration-500")}
         >
         {/* TOP ROW: Logo | Search | Icons */}
-        <div className="page-container-capped py-3 flex items-center gap-4">
+        <div className="page-container-capped py-2 flex items-center gap-4">
 
-          {/* Logo */}
+          {/* Logo — 90px square was the single largest item in the header and
+              alone pushed the shell to 196px (22% of a 900px viewport).
+              52px keeps it legible at md and recovers 38px. */}
           <button onClick={handleLogoPress} aria-label="TouchGift — go to homepage" className="flex-shrink-0 relative group focus:outline-none">
             <span className="absolute inset-0 rounded-full transition-all duration-500 scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10" />
-            <Image src="/logo/logo.webp" alt="TouchGift" width={90} height={90} priority className="relative rounded-full object-cover transition-all duration-500 ring-2 ring-transparent group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]" />
+            <Image src="/logo/logo.webp" alt="TouchGift" width={52} height={52} priority className="relative w-[52px] h-[52px] rounded-full object-cover transition-all duration-500 ring-2 ring-transparent group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]" />
             <span className="sr-only">TouchGift</span>
           </button>
 

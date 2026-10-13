@@ -12,6 +12,7 @@ export interface CartItem {
   giftNote?: string;
   personalization?: string;
   customizationImageUrl?: string;
+  fulfillmentPayload?: Record<string, unknown>;
   giftWrapping?: boolean;
   giftWrappingStyle?: "classic" | "premium" | "luxury";
   selectedColor?: string;
@@ -20,7 +21,7 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => void;
+  addItem: (product: Product, quantity?: number, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "fulfillmentPayload" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -61,7 +62,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items, mounted]);
 
   const addItem = useCallback(
-    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => {
+    (product: Product, quantity = 1, options?: Partial<Pick<CartItem, "giftNote" | "personalization" | "customizationImageUrl" | "fulfillmentPayload" | "giftWrapping" | "giftWrappingStyle" | "selectedColor" | "selectedSize">>) => {
       // Calculate effective price: size variant override > sale price > regular price
       let effectivePrice = product.sale_price ?? product.price;
       if (options?.selectedSize && product.size_variants?.length) {
@@ -91,6 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             giftNote: options?.giftNote,
             personalization: options?.personalization,
             customizationImageUrl: options?.customizationImageUrl,
+            fulfillmentPayload: options?.fulfillmentPayload,
             giftWrapping: options?.giftWrapping,
             giftWrappingStyle: options?.giftWrappingStyle,
             selectedColor: options?.selectedColor,

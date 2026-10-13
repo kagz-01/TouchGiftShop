@@ -12,6 +12,7 @@ interface ProductGalleryProps {
   images?: string[];
   in_stock: boolean;
   is_personalizable: boolean;
+  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "default";
 }
 
 export default function ProductGallery({
@@ -20,6 +21,7 @@ export default function ProductGallery({
   images = [],
   in_stock,
   is_personalizable,
+  materialType = "default",
 }: ProductGalleryProps) {
   const allImages = images.length > 0 ? images : (image_url ? [image_url] : []);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -207,9 +209,11 @@ export default function ProductGallery({
 
       {/* Live Customizer Studio */}
       {showCustomizer && (
-        <LiveCustomizer 
-          baseImage={allImages[activeIndex] || ""} 
-          onClose={() => setShowCustomizer(false)} 
+        <LiveCustomizer
+          baseImage={allImages[activeIndex] || ""}
+          onClose={() => setShowCustomizer(false)}
+          productName={productName}
+          materialType={materialType}
         />
       )}
     </div>

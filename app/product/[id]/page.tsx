@@ -250,6 +250,18 @@ export default async function ProductPage({
             images={optimizeImageArray(product.images, 1200)}
             in_stock={product.in_stock}
             is_personalizable={autoPersonalizable}
+            materialType={
+              product.material_type ??
+              (() => {
+                const t = [...(product.tags ?? []), product.category ?? ""].join(" ").toLowerCase();
+                if (t.includes("leather") || t.includes("notebook") || t.includes("journal")) return "leather";
+                if (t.includes("metal") || t.includes("flask") || t.includes("steel") || t.includes("pen") || t.includes("engraving")) return "metal";
+                if (t.includes("wood") || t.includes("bamboo")) return "wood";
+                if (t.includes("glass") || t.includes("crystal")) return "glass";
+                if (t.includes("fabric") || t.includes("cotton") || t.includes("canvas")) return "fabric";
+                return "default";
+              })()
+            }
           />
 
           {/* ── Details panel ── */}

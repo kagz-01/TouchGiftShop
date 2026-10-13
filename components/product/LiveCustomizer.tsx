@@ -2,21 +2,60 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Type, Image as ImageIcon, Download, Square, Circle } from "lucide-react";
+import {
+  X, Type, Image as ImageIcon, Download, Trash2, Bold,
+  Italic, AlignCenter, AlignLeft, AlignRight, Layers,
+} from "lucide-react";
 import { fabric } from "fabric";
 
 interface LiveCustomizerProps {
   baseImage: string;
   onClose: () => void;
+  productName?: string;
+  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "default";
 }
 
-export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerProps) {
+const FONTS = [
+  { label: "Sans — Inter", value: "Inter, sans-serif" },
+  { label: "Serif — Playfair", value: "'Playfair Display', serif" },
+  { label: "Script — Dancing", value: "'Dancing Script', cursive" },
+  { label: "Mono", value: "'Courier New', monospace" },
+  { label: "Bold — Oswald", value: "'Oswald', sans-serif" },
+];
+
+const MATERIAL_EFFECTS: Record<string, { label: string; emoji: string; filters: any[]; tint?: string }> = {
+  none: { label: "Original", emoji: "🎨", filters: [] },
+  laser: { label: "Laser Engrave", emoji: "⚡", filters: [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.6 })] },
+  deboss: { label: "Leather Deboss", emoji: "🟤", filters: [new (fabric.Image.filters as any).Sepia(), new (fabric.Image.filters as any).Contrast({ contrast: 0.3 })] },
+  foil: { label: "Gold Foil", emoji: "✨", filters: [new (fabric.Image.filters as any).HueRotation({ rotation: 0.15 }), new (fabric.Image.filters as any).Brightness({ brightness: 0.2 })] },
+};
+
+export default function LiveCustomizer({
+  baseImage,
+  onClose,
+  productName = "Product",
+  materialType = "default",
+}: LiveCustomizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [selectedObject, setSelectedObject] = useState<fabric.Object | null>(null);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [bulkNames, setBulkNames] = useState("");
+  const [activeTab, setActiveTab] = useState<"add" | "props" | "bulk">("add");
+  const [materialEffect, setMaterialEffect] = useState("none");
+  const [safeZone, setSafeZone] = useState<fabric.Rect | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    // Load Google Fonts dynamically
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&family=Oswald:wght@400;600&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }, []);
 
   // Initialize Fabric Canvas
   useEffect(() => {
@@ -32,7 +71,7 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
       selection: true,
     });
 
-    // Set responsive background image
+    // Background image
     fabric.Image.fromURL(
       baseImage,
       (img) => {
@@ -40,7 +79,6 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
           containerWidth / (img.width || 1),
           containerHeight / (img.height || 1)
         );
-
         img.set({
           originX: "center",
           originY: "center",
@@ -49,95 +87,86 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
           scaleX: scale,
           scaleY: scale,
         });
-
         initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
       },
       { crossOrigin: "anonymous" }
     );
 
-    // Draw safe zone for engraving constraints
-    const safeZoneWidth = Math.min(containerWidth * 0.5, 300);
-    const safeZoneHeight = Math.min(containerHeight * 0.5, 300);
-    const safeZone = new fabric.Rect({
+    // Safe zone
+    const szW = Math.min(containerWidth * 0.55, 320);
+    const szH = Math.min(containerHeight * 0.55, 320);
+    const sz = new fabric.Rect({
       left: containerWidth / 2,
       top: containerHeight / 2,
       originX: "center",
       originY: "center",
-      width: safeZoneWidth,
-      height: safeZoneHeight,
-      fill: "transparent",
-      stroke: "#FF4500",
+      width: szW,
+      height: szH,
+      fill: "rgba(155,27,90,0.04)",
+      stroke: "#9B1B5A",
       strokeWidth: 2,
-      strokeDashArray: [5, 5],
+      strokeDashArray: [6, 4],
       selectable: false,
       evented: false,
-      name: "safeZone" // to identify it later
+      name: "safeZone",
     });
-    
-    initCanvas.add(safeZone);
+    initCanvas.add(sz);
+    setSafeZone(sz);
 
-    // Constraint Logic: Prevent dragging outside safe zone
+    // Add a subtle label
+    const label = new fabric.Text("✦ Engravable Area", {
+      left: containerWidth / 2 - szW / 2 + 4,
+      top: containerHeight / 2 - szH / 2 - 18,
+      fontSize: 11,
+      fill: "#9B1B5A",
+      fontFamily: "Inter, sans-serif",
+      selectable: false,
+      evented: false,
+      name: "safeZoneLabel",
+      opacity: 0.7,
+    });
+    initCanvas.add(label);
+
+    // Constrain objects to safe zone
     initCanvas.on("object:moving", (e) => {
       const obj = e.target;
-      if (!obj || obj.name === "safeZone") return;
-      
+      if (!obj || obj.name === "safeZone" || obj.name === "safeZoneLabel") return;
       obj.setCoords();
-      const objBounds = obj.getBoundingRect();
-      const safeBounds = safeZone.getBoundingRect();
-
-      // Basic clamping
-      if (objBounds.left < safeBounds.left) {
-        obj.left! += safeBounds.left - objBounds.left;
-      }
-      if (objBounds.top < safeBounds.top) {
-        obj.top! += safeBounds.top - objBounds.top;
-      }
-      
+      const ob = obj.getBoundingRect();
+      const sb = sz.getBoundingRect();
+      if (ob.left < sb.left) obj.left! += sb.left - ob.left;
+      if (ob.top < sb.top) obj.top! += sb.top - ob.top;
       obj.setCoords();
-      const updatedBounds = obj.getBoundingRect();
-      
-      if (updatedBounds.left + updatedBounds.width > safeBounds.left + safeBounds.width) {
-        obj.left! -= (updatedBounds.left + updatedBounds.width) - (safeBounds.left + safeBounds.width);
-      }
-      if (updatedBounds.top + updatedBounds.height > safeBounds.top + safeBounds.height) {
-        obj.top! -= (updatedBounds.top + updatedBounds.height) - (safeBounds.top + safeBounds.height);
-      }
+      const ub = obj.getBoundingRect();
+      if (ub.left + ub.width > sb.left + sb.width) obj.left! -= (ub.left + ub.width) - (sb.left + sb.width);
+      if (ub.top + ub.height > sb.top + sb.height) obj.top! -= (ub.top + ub.height) - (sb.top + sb.height);
     });
 
-    // Event listeners for selection
-    initCanvas.on("selection:created", (e) => setSelectedObject(e.selected?.[0] || null));
-    initCanvas.on("selection:updated", (e) => setSelectedObject(e.selected?.[0] || null));
-    initCanvas.on("selection:cleared", () => setSelectedObject(null));
+    initCanvas.on("selection:created", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
+    initCanvas.on("selection:updated", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
+    initCanvas.on("selection:cleared", () => { setSelectedObject(null); setActiveTab("add"); });
 
     setCanvas(initCanvas);
 
     const handleResize = () => {
       if (!containerRef.current) return;
-      // Basic resize handler - in production we'd recalculate scales
-      initCanvas.setDimensions({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight,
-      });
+      initCanvas.setDimensions({ width: containerRef.current.clientWidth, height: containerRef.current.clientHeight });
       initCanvas.renderAll();
     };
-
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      initCanvas.dispose();
-    };
+    return () => { window.removeEventListener("resize", handleResize); initCanvas.dispose(); };
   }, [baseImage]);
 
-  // Handle keyboard deletes
+  // Keyboard delete
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.key === "Delete" || e.key === "Backspace") && canvas) {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject && !(activeObject as any).isEditing) {
-          canvas.remove(activeObject);
+        const active = canvas.getActiveObject();
+        if (active && !(active as any).isEditing && active.name !== "safeZone" && active.name !== "safeZoneLabel") {
+          canvas.remove(active);
           canvas.discardActiveObject();
           canvas.renderAll();
+          setSelectedObject(null);
         }
       }
     };
@@ -146,111 +175,184 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
   }, [canvas]);
 
   const addText = () => {
-    if (!canvas) return;
-    const text = new fabric.IText("Your Name Here", {
-      left: canvas.width! / 2,
-      top: canvas.width! / 2,
+    if (!canvas || !safeZone) return;
+    const sb = safeZone.getBoundingRect();
+    const text = new fabric.IText("Your Name", {
+      left: sb.left + sb.width / 2,
+      top: sb.top + sb.height / 2,
       originX: "center",
       originY: "center",
-      fontFamily: "Inter",
-      fill: "#000000",
-      fontSize: 32,
+      fontFamily: "Inter, sans-serif",
+      fill: "#1a1a1a",
+      fontSize: 28,
       fontWeight: "600",
       transparentCorners: false,
-      cornerColor: "#000000",
+      cornerColor: "#9B1B5A",
       cornerStyle: "circle",
-      borderColor: "#000000",
+      borderColor: "#9B1B5A",
       cursorWidth: 1,
     });
     canvas.add(text);
     canvas.setActiveObject(text);
     canvas.renderAll();
+    setActiveTab("props");
   };
 
   const addLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!canvas) return;
+    if (!canvas || !safeZone) return;
     const file = e.target.files?.[0];
     if (!file) return;
+    const isSvg = file.type === "image/svg+xml";
 
     const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result as string;
-      fabric.Image.fromURL(dataUrl, (img) => {
-        // scale down if too big
-        if (img.width! > 300) {
-          img.scaleToWidth(300);
-        }
-        img.set({
-          left: canvas.width! / 2,
-          top: canvas.height! / 2,
-          originX: "center",
-          originY: "center",
-          transparentCorners: false,
-          cornerColor: "#000000",
-          cornerStyle: "circle",
-          borderColor: "#000000",
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+
+      if (isSvg) {
+        fabric.loadSVGFromString(dataUrl, (objects, options) => {
+          const group = fabric.util.groupSVGElements(objects, options);
+          const sb = safeZone.getBoundingRect();
+          const maxW = Math.min(sb.width * 0.7, 200);
+          if ((group.width || 0) > maxW) group.scaleToWidth(maxW);
+          group.set({
+            left: sb.left + sb.width / 2,
+            top: sb.top + sb.height / 2,
+            originX: "center",
+            originY: "center",
+            transparentCorners: false,
+            cornerColor: "#9B1B5A",
+            cornerStyle: "circle",
+            borderColor: "#9B1B5A",
+          });
+          canvas.add(group);
+          canvas.setActiveObject(group);
+          canvas.renderAll();
+          setActiveTab("props");
         });
-        canvas.add(img);
-        canvas.setActiveObject(img);
-        canvas.renderAll();
-      });
+      } else {
+        fabric.Image.fromURL(dataUrl, (img) => {
+          const sb = safeZone.getBoundingRect();
+          const maxW = Math.min(sb.width * 0.7, 220);
+          if ((img.width || 0) > maxW) img.scaleToWidth(maxW);
+          img.set({
+            left: sb.left + sb.width / 2,
+            top: sb.top + sb.height / 2,
+            originX: "center",
+            originY: "center",
+            transparentCorners: false,
+            cornerColor: "#9B1B5A",
+            cornerStyle: "circle",
+            borderColor: "#9B1B5A",
+          });
+          // Auto apply laser effect for metal material
+          if (materialType === "metal") {
+            img.filters = [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.5 })];
+            img.applyFilters();
+          }
+          canvas.add(img);
+          canvas.setActiveObject(img);
+          canvas.renderAll();
+          setActiveTab("props");
+        });
+      }
     };
     reader.readAsDataURL(file);
     e.target.value = "";
   };
 
+  const applyMaterialEffect = (effectKey: string) => {
+    if (!canvas || !selectedObject || selectedObject.type !== "image") return;
+    const img = selectedObject as fabric.Image;
+    const effect = MATERIAL_EFFECTS[effectKey];
+    img.filters = effect.filters;
+    img.applyFilters();
+    canvas.renderAll();
+    setMaterialEffect(effectKey);
+  };
+
   const handleSave = async () => {
     if (!canvas) return;
     setSaving(true);
-    
     try {
       canvas.discardActiveObject();
-      const safeZoneObj = canvas.getObjects().find(o => o.name === "safeZone");
-      if (safeZoneObj) safeZoneObj.set("opacity", 0);
-      canvas.renderAll();
-      
-      const dataUrl = canvas.toDataURL({
-        format: "png",
-        quality: 1,
-        multiplier: 2, // High-res export
+      // Hide safe zone for export
+      canvas.getObjects().forEach((o) => {
+        if (o.name === "safeZone" || o.name === "safeZoneLabel") o.set("opacity", 0);
       });
-      if (safeZoneObj) safeZoneObj.set("opacity", 1);
+      canvas.renderAll();
 
-      // Upload logic
+      const dataUrl = canvas.toDataURL({ format: "png", quality: 1, multiplier: 2 });
+
+      // Restore safe zone
+      canvas.getObjects().forEach((o) => {
+        if (o.name === "safeZone" || o.name === "safeZoneLabel") o.set("opacity", o.name === "safeZone" ? 1 : 0.7);
+      });
+      canvas.renderAll();
+
+      // Build fulfillment payload
+      const objects = canvas.getObjects().filter(
+        (o) => o.name !== "safeZone" && o.name !== "safeZoneLabel"
+      );
+      const textElements = objects
+        .filter((o) => o.type === "i-text" || o.type === "text")
+        .map((o: any) => ({
+          text: o.text,
+          font: o.fontFamily,
+          size: Math.round(o.fontSize * (o.scaleX || 1)),
+          color: o.fill,
+          x: Math.round(o.left),
+          y: Math.round(o.top),
+          bold: o.fontWeight === "bold" || o.fontWeight === "700",
+          italic: o.fontStyle === "italic",
+        }));
+      const hasLogo = objects.some((o) => o.type === "image" || o.type === "group");
+
+      // Upload to Supabase storage
       const res = await fetch("/api/customizations/upload", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: dataUrl }),
       });
-
       const { url, error } = await res.json();
       if (!res.ok) throw new Error(error ?? "Upload failed");
 
-      // Build summary
-      const objects = canvas.getObjects();
-      const texts = objects.filter(o => o.type === "i-text" || o.type === "text").map((o: any) => o.text).filter(Boolean);
-      const hasLogo = objects.some(o => o.type === "image");
-      
+      // Build text summary
+      const texts = textElements.map((t) => t.text).filter(Boolean);
       const summaryParts: string[] = [];
       if (texts.length > 0) summaryParts.push(texts.join(" | "));
-      if (hasLogo) summaryParts.push("(Includes Custom Logo)");
-      let calculatedQuantity = 1;
-      if (bulkNames.trim()) {
-        const names = bulkNames.split("\\n").filter(n => n.trim());
-        summaryParts.push(`(Bulk Names: ${names.join(", ")})`);
-        calculatedQuantity = Math.max(1, names.length);
-      }
-      const textSummary = summaryParts.join(" | ");
+      if (hasLogo) summaryParts.push("(Custom Logo)");
 
+      let calculatedQuantity = 1;
+      const names = bulkNames.trim()
+        ? bulkNames.split("\n").map((n) => n.trim()).filter(Boolean)
+        : [];
+      if (names.length > 0) {
+        summaryParts.push(`Bulk: ${names.slice(0, 3).join(", ")}${names.length > 3 ? ` +${names.length - 3} more` : ""}`);
+        calculatedQuantity = names.length;
+      }
+
+      // Dispatch saved event to AddToCartButton listener
       window.dispatchEvent(
         new CustomEvent("customizationSaved", {
-          detail: { imageUrl: url, text: textSummary, quantity: calculatedQuantity },
+          detail: {
+            imageUrl: url,
+            text: summaryParts.join(" · "),
+            quantity: calculatedQuantity,
+            fulfillmentPayload: {
+              product_name: productName,
+              customization_type: materialType === "metal" ? "Laser Engrave" : materialType === "leather" ? "Leather Deboss" : "Print",
+              text_elements: textElements,
+              has_logo: hasLogo,
+              bulk_names: names,
+              preview_url: url,
+            },
+          },
         })
       );
-      onClose();
+      setSaved(true);
+      setTimeout(onClose, 800);
     } catch (err) {
       console.error("Save failed:", err);
-      // Fallback
       window.dispatchEvent(
         new CustomEvent("customizationSaved", {
           detail: { imageUrl: null, text: "Customization attached" },
@@ -262,168 +364,325 @@ export default function LiveCustomizer({ baseImage, onClose }: LiveCustomizerPro
     }
   };
 
-  const updateSelectedColor = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const removeSelected = () => {
     if (!canvas || !selectedObject) return;
-    selectedObject.set("fill", e.target.value);
+    canvas.remove(selectedObject);
+    canvas.discardActiveObject();
     canvas.renderAll();
-    setSelectedObject({ ...selectedObject } as any); // trigger re-render
+    setSelectedObject(null);
   };
 
+  const iText = selectedObject?.type === "i-text" || selectedObject?.type === "text"
+    ? (selectedObject as fabric.IText)
+    : null;
+  const isImage = selectedObject?.type === "image" || selectedObject?.type === "group";
+
+  const userObjects = canvas?.getObjects().filter(
+    (o) => o.name !== "safeZone" && o.name !== "safeZoneLabel"
+  ) ?? [];
+
+  if (!mounted) return null;
+
   return createPortal(
-    <div className="fixed inset-0 z-[200] bg-surface dark:bg-[#101015] flex flex-col md:flex-row animate-fade-in">
-      {/* Sidebar Toolbar */}
-      <div className="w-full md:w-80 bg-white dark:bg-[#1A1A22] border-r border-surface-border dark:border-white/10 flex flex-col shadow-xl z-10 flex-shrink-0">
-        <div className="p-6 border-b border-surface-border dark:border-white/10 flex items-center justify-between">
-          <h2 className="font-display font-bold text-lg">Customization Studio</h2>
-          <button onClick={onClose} className="p-2 hover:bg-surface dark:hover:bg-white/10 rounded-full transition-colors">
-            <X className="w-5 h-5" />
+    <div className="fixed inset-0 z-[200] bg-white dark:bg-[#0D0D12] flex flex-col md:flex-row">
+      {/* ── SIDEBAR ── */}
+      <div className="w-full md:w-[320px] lg:w-[360px] bg-white dark:bg-[#151519] border-r border-black/8 dark:border-white/10 flex flex-col shadow-xl z-10 flex-shrink-0">
+
+        {/* Header */}
+        <div className="px-6 py-4 border-b border-black/8 dark:border-white/10 flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-brand/5 to-transparent">
+          <div>
+            <h2 className="font-display font-bold text-base text-brand-deep dark:text-white">Customization Studio</h2>
+            <p className="text-[11px] text-brand-muted mt-0.5 truncate max-w-[200px]">{productName}</p>
+          </div>
+          <button onClick={onClose} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors">
+            <X className="w-5 h-5 text-brand-muted" />
           </button>
         </div>
 
-        <div className="p-6 space-y-6 flex-1 overflow-y-auto">
-          {/* Add Tools */}
-          <div className="grid grid-cols-2 gap-3">
+        {/* Tabs */}
+        <div className="flex border-b border-black/8 dark:border-white/10 flex-shrink-0">
+          {(["add", "props", "bulk"] as const).map((tab) => (
             <button
-              onClick={addText}
-              className="flex flex-col items-center justify-center p-4 bg-surface dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 hover:border-brand hover:text-brand dark:hover:border-brand transition-colors gap-2"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-3 text-xs font-semibold uppercase tracking-wider transition-colors ${
+                activeTab === tab
+                  ? "text-brand border-b-2 border-brand bg-brand/3"
+                  : "text-brand-muted hover:text-brand-deep"
+              }`}
             >
-              <Type className="w-6 h-6" />
-              <span className="text-sm font-medium">Add Text</span>
+              {tab === "add" ? "✦ Add" : tab === "props" ? "✦ Style" : "✦ Bulk"}
             </button>
-            <label className="flex flex-col items-center justify-center p-4 bg-surface dark:bg-white/5 rounded-xl border border-surface-border dark:border-white/10 hover:border-brand hover:text-brand dark:hover:border-brand transition-colors gap-2 cursor-pointer">
-              <input type="file" accept="image/*" className="hidden" onChange={addLogo} />
-              <ImageIcon className="w-6 h-6" />
-              <span className="text-sm font-medium">Add Logo</span>
-            </label>
-          </div>
+          ))}
+        </div>
 
-          {/* Bulk Names Input */}
-          <div className="space-y-2 pt-4 border-t border-surface-border dark:border-white/10">
-            <h3 className="font-semibold text-sm text-brand-muted">Bulk Names (Corporate Orders)</h3>
-            <p className="text-xs text-brand-muted/70">Paste a list of names (one per line). We will apply the same logo to all.</p>
-            <textarea 
-              value={bulkNames}
-              onChange={(e) => setBulkNames(e.target.value)}
-              placeholder="John Doe\\nJane Smith\\nMichael Scott"
-              className="w-full h-24 p-3 bg-surface dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none resize-none transition-all"
-            />
-          </div>
+        {/* Tab Content */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-5">
 
-          {/* Properties Panel */}
-          {selectedObject && (
-            <div className="space-y-4 pt-6 border-t border-surface-border dark:border-white/10 animate-fade-in-up">
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-sm uppercase tracking-wider text-brand-muted">Properties</h3>
+          {/* ADD TAB */}
+          {activeTab === "add" && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
                 <button
-                  onClick={() => {
-                    canvas?.remove(selectedObject);
-                    canvas?.discardActiveObject();
-                    canvas?.renderAll();
-                  }}
-                  className="text-red-500 text-sm hover:underline font-medium"
+                  onClick={addText}
+                  className="flex flex-col items-center justify-center p-4 bg-brand/5 rounded-2xl border-2 border-brand/20 hover:border-brand hover:bg-brand/10 transition-all gap-2 group"
                 >
-                  Remove
+                  <Type className="w-6 h-6 text-brand group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-bold text-brand-deep dark:text-white">Add Text</span>
                 </button>
+                <label className="flex flex-col items-center justify-center p-4 bg-brand/5 rounded-2xl border-2 border-brand/20 hover:border-brand hover:bg-brand/10 transition-all gap-2 group cursor-pointer">
+                  <input type="file" accept="image/*,.svg" className="hidden" onChange={addLogo} />
+                  <ImageIcon className="w-6 h-6 text-brand group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-bold text-brand-deep dark:text-white">Upload Logo</span>
+                  <span className="text-[10px] text-brand-muted">PNG, JPG, SVG</span>
+                </label>
               </div>
 
-              {selectedObject.type === "i-text" && (
+              <div className="bg-brand/4 border border-brand/15 rounded-2xl p-4 space-y-2">
+                <p className="text-xs font-bold text-brand-deep dark:text-white uppercase tracking-wide">💡 Tips</p>
+                <ul className="text-[11px] text-brand-muted space-y-1">
+                  <li>• Double-click text to edit it directly</li>
+                  <li>• Drag to reposition · use corners to resize</li>
+                  <li>• Press <kbd className="px-1.5 py-0.5 bg-black/10 rounded text-[10px]">Delete</kbd> to remove selected</li>
+                  <li>• Stay inside the dashed engravable area</li>
+                </ul>
+              </div>
+
+              {/* Layer count */}
+              {userObjects.length > 0 && (
+                <div className="flex items-center gap-2 text-xs text-brand-muted">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>{userObjects.length} element{userObjects.length !== 1 ? "s" : ""} on canvas</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* PROPS TAB */}
+          {activeTab === "props" && (
+            <div className="space-y-5">
+              {!selectedObject && (
+                <div className="text-center py-8">
+                  <div className="text-3xl mb-2">👆</div>
+                  <p className="text-sm text-brand-muted">Select an element on the canvas to style it</p>
+                </div>
+              )}
+
+              {/* TEXT PROPERTIES */}
+              {iText && (
                 <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold uppercase tracking-wider text-brand-muted">Text Style</p>
+                    <button onClick={removeSelected} className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
+                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                    </button>
+                  </div>
+
+                  {/* Color */}
                   <div>
-                    <label className="text-xs font-medium text-brand-muted mb-1 block">Color</label>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Color</label>
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
-                        value={(selectedObject.fill as string) || "#000000"}
-                        onChange={updateSelectedColor}
-                        className="w-10 h-10 rounded cursor-pointer border-0 p-0 bg-transparent"
+                        value={(iText.fill as string) || "#000000"}
+                        onChange={(e) => { iText.set("fill", e.target.value); canvas?.renderAll(); setSelectedObject({ ...iText } as any); }}
+                        className="w-10 h-10 rounded-xl cursor-pointer border border-black/10 p-0.5 bg-transparent"
                       />
-                      <span className="text-sm font-medium uppercase">{selectedObject.fill as string}</span>
+                      <div className="flex gap-2">
+                        {["#1a1a1a", "#ffffff", "#9B1B5A", "#FFD700", "#2563eb"].map((c) => (
+                          <button
+                            key={c}
+                            onClick={() => { iText.set("fill", c); canvas?.renderAll(); setSelectedObject({ ...iText } as any); }}
+                            className="w-7 h-7 rounded-full border-2 transition-transform hover:scale-110"
+                            style={{ backgroundColor: c, borderColor: iText.fill === c ? "#9B1B5A" : "transparent" }}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
+
+                  {/* Font */}
                   <div>
-                    <label className="text-xs font-medium text-brand-muted mb-1 block">Font</label>
-                    <select
-                      value={(selectedObject as fabric.IText).fontFamily}
-                      onChange={(e) => {
-                        (selectedObject as fabric.IText).set("fontFamily", e.target.value);
-                        canvas?.renderAll();
-                      }}
-                      className="w-full border border-surface-border dark:border-white/15 dark:bg-[#1A1A22] dark:text-white dark:[color-scheme:dark] rounded-lg px-2 py-2 text-sm outline-none focus:border-brand"
-                    >
-                      <option value="Inter">Sans (Inter)</option>
-                      <option value="'Playfair Display', serif">Serif (Playfair)</option>
-                      <option value="'Dancing Script', cursive">Cursive</option>
-                      <option value="monospace">Mono</option>
-                    </select>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Font</label>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {FONTS.map((f) => (
+                        <button
+                          key={f.value}
+                          onClick={() => { iText.set("fontFamily", f.value); canvas?.renderAll(); }}
+                          className={`text-left px-3 py-2 rounded-xl border text-sm transition-all ${
+                            iText.fontFamily === f.value
+                              ? "border-brand bg-brand/5 text-brand font-semibold"
+                              : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
+                          }`}
+                          style={{ fontFamily: f.value }}
+                        >
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Style toggles */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Style</label>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => { iText.set("fontWeight", iText.fontWeight === "bold" ? "normal" : "bold"); canvas?.renderAll(); }}
+                        className={`p-2 rounded-lg border transition-colors ${iText.fontWeight === "bold" ? "border-brand bg-brand/10 text-brand" : "border-black/10 dark:border-white/10"}`}
+                      >
+                        <Bold className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => { iText.set("fontStyle", iText.fontStyle === "italic" ? "normal" : "italic"); canvas?.renderAll(); }}
+                        className={`p-2 rounded-lg border transition-colors ${iText.fontStyle === "italic" ? "border-brand bg-brand/10 text-brand" : "border-black/10 dark:border-white/10"}`}
+                      >
+                        <Italic className="w-4 h-4" />
+                      </button>
+                      {[
+                        { icon: <AlignLeft className="w-4 h-4" />, val: "left" },
+                        { icon: <AlignCenter className="w-4 h-4" />, val: "center" },
+                        { icon: <AlignRight className="w-4 h-4" />, val: "right" },
+                      ].map(({ icon, val }) => (
+                        <button
+                          key={val}
+                          onClick={() => { iText.set("textAlign", val); canvas?.renderAll(); }}
+                          className={`p-2 rounded-lg border transition-colors ${iText.textAlign === val ? "border-brand bg-brand/10 text-brand" : "border-black/10 dark:border-white/10"}`}
+                        >
+                          {icon}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Font size */}
+                  <div>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Size — {Math.round(iText.fontSize || 28)}pt</label>
+                    <input
+                      type="range"
+                      min={10}
+                      max={120}
+                      step={2}
+                      value={iText.fontSize || 28}
+                      onChange={(e) => { iText.set("fontSize", Number(e.target.value)); canvas?.renderAll(); }}
+                      className="w-full accent-brand"
+                    />
                   </div>
                 </div>
               )}
 
-              {selectedObject.type === "image" && (
+              {/* IMAGE / LOGO PROPERTIES */}
+              {isImage && (
                 <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-brand-muted mb-1 block">Material Effect</label>
-                    <button
-                      onClick={() => {
-                        const img = selectedObject as fabric.Image;
-                        if (!img.filters || img.filters.length === 0) {
-                           img.filters = [
-                             new fabric.Image.filters.Grayscale(),
-                             new fabric.Image.filters.Contrast({ contrast: 0.5 })
-                           ];
-                        } else {
-                           img.filters = [];
-                        }
-                        img.applyFilters();
-                        canvas?.renderAll();
-                      }}
-                      className="w-full py-2 bg-surface dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-lg text-sm font-medium hover:border-brand transition-colors"
-                    >
-                      Toggle Laser Engrave / Deboss
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold uppercase tracking-wider text-brand-muted">Logo / Image</p>
+                    <button onClick={removeSelected} className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
+                      <Trash2 className="w-3.5 h-3.5" /> Remove
                     </button>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Material Effect</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {Object.entries(MATERIAL_EFFECTS).map(([key, effect]) => (
+                        <button
+                          key={key}
+                          onClick={() => applyMaterialEffect(key)}
+                          className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all ${
+                            materialEffect === key
+                              ? "border-brand bg-brand/10 text-brand"
+                              : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
+                          }`}
+                        >
+                          <span>{effect.emoji}</span>
+                          <span>{effect.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           )}
+
+          {/* BULK TAB */}
+          {activeTab === "bulk" && (
+            <div className="space-y-4">
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-4">
+                <p className="text-sm font-bold text-amber-900 dark:text-amber-300 mb-1">🏢 Corporate Bulk Orders</p>
+                <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                  Enter one name per line. The same logo/design will be applied to all — each item will have its own unique name engraved.
+                </p>
+              </div>
+              <div>
+                <label className="text-[11px] font-bold text-brand-muted uppercase tracking-wide block mb-2">
+                  Names List ({bulkNames.split("\n").filter((n) => n.trim()).length} names)
+                </label>
+                <textarea
+                  value={bulkNames}
+                  onChange={(e) => setBulkNames(e.target.value)}
+                  placeholder={"John Doe\nJane Smith\nMichael Scott\nDwight Schrute"}
+                  rows={8}
+                  className="w-full p-3 bg-surface dark:bg-white/5 border border-surface-border dark:border-white/10 rounded-xl text-sm focus:border-brand focus:ring-1 focus:ring-brand outline-none resize-none transition-all font-mono"
+                />
+              </div>
+              <div className="bg-brand/5 border border-brand/15 rounded-xl p-3">
+                <p className="text-xs text-brand-muted">
+                  💡 You can also upload a <strong>.txt file</strong> with names, or copy-paste from Excel. Each line = one item.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="p-6 border-t border-surface-border dark:border-white/10 bg-white dark:bg-[#1A1A22] mt-auto">
+        {/* Footer CTA */}
+        <div className="p-5 border-t border-black/8 dark:border-white/10 bg-white dark:bg-[#151519] flex-shrink-0">
           <button
             onClick={handleSave}
-            disabled={saving || (canvas?.getObjects().length === 0)}
-            className="w-full btn-brand py-3 rounded-xl shadow-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            disabled={saving || userObjects.length === 0 || saved}
+            className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${
+              saved
+                ? "bg-emerald-500 text-white"
+                : userObjects.length === 0
+                ? "bg-black/10 text-black/40 cursor-not-allowed"
+                : "bg-brand text-white hover:bg-brand-dark shadow-lg hover:-translate-y-0.5 active:translate-y-0"
+            }`}
           >
-            {saving ? (
+            {saved ? (
+              <> ✓ Design Saved! Closing… </>
+            ) : saving ? (
               <>
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                Saving design...
+                Saving high-res design…
               </>
             ) : (
               <>
                 <Download className="w-4 h-4" />
-                Save & Preview
+                Save Design & Preview
+                {bulkNames.trim() && ` (${bulkNames.split("\n").filter((n) => n.trim()).length} items)`}
               </>
             )}
           </button>
-          <p className="text-xs text-brand-muted mt-3 text-center">
-            * Drag items to position. Double click text to edit. Use Delete key to remove.
-          </p>
+          {userObjects.length === 0 && (
+            <p className="text-[11px] text-brand-muted text-center mt-2">Add text or a logo to save your design</p>
+          )}
         </div>
       </div>
 
-      {/* Canvas Area */}
-      <div 
-        className="flex-1 bg-surface-secondary dark:bg-[#0D0D12] flex items-center justify-center p-4 md:p-8 overflow-hidden relative"
-      >
-        <div 
+      {/* ── CANVAS AREA ── */}
+      <div className="flex-1 bg-[#F7F5F8] dark:bg-[#08080C] flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
+        {/* Zoom hint */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[11px] px-3 py-1.5 rounded-full backdrop-blur-sm z-10 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse inline-block" />
+          Double-click text to edit · Drag to move · Scroll to zoom
+        </div>
+
+        <div
           ref={containerRef}
-          className="relative w-full max-w-3xl aspect-square md:aspect-[4/3] bg-white shadow-card overflow-hidden rounded-2xl"
+          className="relative w-full max-w-3xl aspect-square md:aspect-[4/3] bg-white shadow-2xl overflow-hidden rounded-3xl border border-black/5"
         >
-          <canvas ref={canvasRef} className="absolute inset-0" />
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         </div>
       </div>
     </div>,

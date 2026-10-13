@@ -123,6 +123,7 @@ export interface Product {
   size_variants: SizeVariant[] | null;
   is_coming_soon: boolean | null;
   product_specs?: { spec_key: string; spec_value: string; icon: string | null; sort_order?: number }[];
+  material_type?: "leather" | "metal" | "wood" | "glass" | "fabric" | "default";
 }
 
 export interface WishlistItem {

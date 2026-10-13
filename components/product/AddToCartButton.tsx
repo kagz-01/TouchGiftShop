@@ -20,20 +20,21 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const [addedToCart, setAddedToCart] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(undefined);
   const [selectedSize, setSelectedSize] = useState<string | undefined>(undefined);
+  const [fulfillmentPayload, setFulfillmentPayload] = useState<Record<string, unknown> | undefined>(undefined);
+  const [studioDesignSaved, setStudioDesignSaved] = useState(false);
 
   useEffect(() => { setMounted(true); }, []);
 
   // Listen for Live Customizer saves
   useEffect(() => {
     const handleCustomization = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      if (customEvent.detail) {
-        const { imageUrl, text, quantity } = customEvent.detail;
-        if (imageUrl) setCustomizationImageUrl(imageUrl);
-        if (text) setPersonalization(text);
-        if (quantity && quantity > 1) setQuantity(quantity);
-        setIsOpen(true);
-      }
+      const { imageUrl, text, quantity: qty, fulfillmentPayload: fp } = (e as CustomEvent).detail ?? {};
+      if (imageUrl) setCustomizationImageUrl(imageUrl);
+      if (text) setPersonalization(text);
+      if (qty && qty > 1) setQuantity(qty);
+      if (fp) setFulfillmentPayload(fp);
+      setStudioDesignSaved(true);
+      setIsOpen(true);
     };
     window.addEventListener("customizationSaved", handleCustomization);
     return () => window.removeEventListener("customizationSaved", handleCustomization);
@@ -63,6 +64,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
       giftNote,
       personalization,
       customizationImageUrl: customizationImageUrl ?? undefined,
+      fulfillmentPayload,
       selectedColor,
       selectedSize,
     });
@@ -74,6 +76,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
       setGiftNote("");
       setPersonalization("");
       setCustomizationImageUrl(null);
+      setFulfillmentPayload(undefined);
+      setStudioDesignSaved(false);
     }, 1200);
   }
 
@@ -163,6 +167,20 @@ export default function AddToCartButton({ product }: { product: Product }) {
                   </div>
                 </div>
               </div>
+
+              {/* Studio Design Badge */}
+              {studioDesignSaved && customizationImageUrl && (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex items-center gap-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={customizationImageUrl} alt="Your design" className="w-14 h-14 rounded-xl object-cover flex-shrink-0 border border-emerald-200" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
+                      <Check className="w-3.5 h-3.5" /> Studio Design Attached
+                    </p>
+                    <p className="text-[11px] text-emerald-600 mt-0.5 truncate">{personalization || "Custom design"}</p>
+                  </div>
+                </div>
+              )}
 
               {/* Color Variants */}
               {product.color_variants && product.color_variants.length > 0 && (

@@ -71,8 +71,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       <Header user={user} guest={guest} />
       <main className="flex-1 pb-20 md:pb-0 relative z-0">
         {/* Fixed header spacer — pushes page content below the header on all pages except the
-            homepage hero, which manages its own top padding internally. */}
-        <div className="hidden md:block h-[130px]" aria-hidden="true" />
+            homepage hero, which manages its own top padding internally.
+            Height comes from --header-h, published by Header's ResizeObserver.
+            It used to hardcode 130px against an actual 196px shell, so every
+            non-home page slid 66px up underneath the nav. */}
+        <div className="hidden md:block h-[var(--header-h,130px)]" aria-hidden="true" />
         {children}
       </main>
       <Footer />
