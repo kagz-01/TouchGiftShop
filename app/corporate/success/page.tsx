@@ -120,7 +120,7 @@ export default function CorporateSuccessPage() {
               <Wallet className="w-4 h-4" /> Bank Transfer Details
             </h3>
             <p className="text-xs text-amber-300/70">Complete payment to activate your gift links. Reference is required.</p>
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               {[
                 { label: "Bank", value: result.invoiceDetails.bankName },
                 { label: "Account Name", value: result.invoiceDetails.accountName },
@@ -129,7 +129,7 @@ export default function CorporateSuccessPage() {
                 { label: "Amount", value: `KES ${Number(result.invoiceDetails.amount).toLocaleString()}` },
                 { label: "Reference", value: result.invoiceDetails.reference },
               ].map(row => (
-                <div key={row.label} className="bg-black/30 rounded-xl p-3">
+                <div key={row.label} className="min-w-0 bg-black/30 rounded-xl p-3">
                   <p className="text-white/30 text-[10px] uppercase tracking-wider mb-0.5">{row.label}</p>
                   <p className="font-mono font-semibold text-white text-xs break-all">{row.value}</p>
                 </div>

@@ -436,11 +436,11 @@ export default function SubscriptionsPage() {
           <p className="text-sm font-semibold text-theme-heading mb-3 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-brand" /> Your wallet after...
           </p>
-          <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
             {[3, 6, 12].map((months) => (
-              <div key={months} className="bg-theme-surface rounded-xl p-3">
-                <p className="font-display font-bold text-brand">{fmtKsh(monthlySavings * months)}</p>
-                <p className="text-xs text-theme-muted mt-1">{months} months</p>
+              <div key={months} className="min-w-0 bg-theme-surface rounded-xl p-2 sm:p-3">
+                <p className="font-display font-bold text-brand text-sm sm:text-base truncate">{fmtKsh(monthlySavings * months)}</p>
+                <p className="text-[10px] sm:text-xs text-theme-muted mt-1 truncate">{months} months</p>
               </div>
             ))}
           </div>

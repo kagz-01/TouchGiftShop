@@ -460,6 +460,55 @@ html {
     color 0.5s ease;
 }
 
+/* ── HORIZONTAL OVERFLOW GUARD ──────────────────────────────────────────────
+   One oversized child (a wide table, a long unbroken string, a fixed-px
+   card) used to make the entire page pan sideways on a phone — you could
+   drag the viewport into empty space and lose the layout.
+
+   `clip` rather than `hidden`: hidden turns the element into a scroll
+   container, which silently breaks every `position: sticky` descendant
+   (the shop filter bar, sticky headers, table headers). `clip` does not.
+   Deliberately no iOS/Safari <16 fallback — overflow:clip is unsupported
+   there, so those browsers simply keep today's behaviour.
+   ────────────────────────────────────────────────────────────────────────── */
+html, body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Replaced images are the most common source of an over-wide box.
+   Deliberately not svg — Lucide icons size themselves via w- and h- scale
+   classes, and a `max-width` against a percentage-width parent can
+   collapse them to zero. */
+img, video {
+  max-width: 100%;
+}
+
+/* ── iOS FORM ZOOM GUARD ────────────────────────────────────────────────────
+   Safari on iOS zooms the whole viewport when you focus an input whose
+   computed font-size is under 16px, and it does not zoom back out — the
+   user is left staring at a magnified form they cannot reset without
+   pinching.
+
+   143 form controls across checkout, pool creation, subscriptions,
+   reminders and the admin were authored at text-xs / text-sm, so every
+   one of them triggered this on a phone. Enforcing the floor once here
+   is cheaper and more reliable than restyling 143 className strings.
+
+   Scoped to phones so desktop density is untouched.
+
+   !important is load-bearing, not laziness: Tailwind's `.text-sm` has
+   specificity (0,1,0) and an element selector only reaches (0,0,1), so
+   without it every utility class silently wins and the guard is inert.
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
 /* Presence toast slide-in animation */
 @keyframes slide-in-from-bottom-4 {
   from { transform: translateY(1rem); opacity: 0; }

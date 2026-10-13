@@ -175,7 +175,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -196,7 +196,7 @@ export default function Footer() {
                       href={link.href}
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
-                      className="text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -215,7 +215,7 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>

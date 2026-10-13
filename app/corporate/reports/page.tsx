@@ -234,12 +234,12 @@ export default function CorporateReports() {
                 {/* Order pipeline */}
                 <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10">
                   <h2 className="text-sm font-semibold text-white mb-5">Order Pipeline Status</h2>
-                  <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
                     {Object.entries(data.statusCounts).map(([status, count]) => (
-                      <div key={status} className="text-center p-4 bg-black/30 rounded-xl border border-white/5">
+                      <div key={status} className="min-w-0 text-center p-2 sm:p-4 bg-black/30 rounded-xl border border-white/5">
                         <div className={`w-3 h-3 ${STATUS_COLORS[status] ?? "bg-gray-500"} rounded-full mx-auto mb-2`} />
-                        <p className="text-2xl font-bold text-white">{count}</p>
-                        <p className="text-[10px] text-white/50 mt-0.5">{STATUS_LABELS[status] ?? status}</p>
+                        <p className="text-lg sm:text-2xl font-bold text-white truncate">{count}</p>
+                        <p className="text-[9px] sm:text-[10px] text-white/50 mt-0.5 truncate">{STATUS_LABELS[status] ?? status}</p>
                         {totalStatusOrders > 0 && (
                           <p className="text-[9px] text-white/30 mt-0.5">{Math.round((count / totalStatusOrders) * 100)}%</p>
                         )}
@@ -417,18 +417,18 @@ export default function CorporateReports() {
                           {rule.active ? "Active" : "Paused"}
                         </span>
                       </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="text-center p-3 bg-black/30 rounded-xl border border-white/5">
-                          <p className="text-lg font-bold text-violet-400">{rule.triggered}</p>
-                          <p className="text-[10px] text-white/40">Gifts Sent</p>
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                        <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-xl border border-white/5">
+                          <p className="text-base sm:text-lg font-bold text-violet-400 truncate">{rule.triggered}</p>
+                          <p className="text-[10px] text-white/40 truncate">Gifts Sent</p>
                         </div>
-                        <div className="text-center p-3 bg-black/30 rounded-xl border border-white/5">
-                          <p className="text-lg font-bold text-white">KSh {rule.budget.toLocaleString()}</p>
-                          <p className="text-[10px] text-white/40">Per Gift</p>
+                        <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-xl border border-white/5">
+                          <p className="text-base sm:text-lg font-bold text-white truncate">KSh {rule.budget.toLocaleString()}</p>
+                          <p className="text-[10px] text-white/40 truncate">Per Gift</p>
                         </div>
-                        <div className="text-center p-3 bg-black/30 rounded-xl border border-white/5">
-                          <p className="text-lg font-bold text-amber-400">KSh {rule.totalCost.toLocaleString()}</p>
-                          <p className="text-[10px] text-white/40">Total Cost</p>
+                        <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-xl border border-white/5">
+                          <p className="text-base sm:text-lg font-bold text-amber-400 truncate">KSh {rule.totalCost.toLocaleString()}</p>
+                          <p className="text-[10px] text-white/40 truncate">Total Cost</p>
                         </div>
                       </div>
                     </div>

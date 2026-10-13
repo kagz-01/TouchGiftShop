@@ -170,8 +170,8 @@ function UploadStep({ onDone }: { onDone: (r: Recipient[]) => void }) {
               <span className="text-emerald-400 font-bold">{recipients.length}</span> recipients imported
             </h3>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#1F1118]/50 backdrop-blur-sm">
-            <table className="w-full text-sm">
+          <div className="overflow-hidden overflow-x-auto rounded-2xl border border-white/10 bg-[#1F1118]/50 backdrop-blur-sm">
+            <table className="w-full text-sm min-w-[420px]">
               <thead className="bg-white/5 border-b border-white/10">
                 <tr>
                   {["#", "Name", "Phone", "Address", "Note"].map(h => (

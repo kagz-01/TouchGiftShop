@@ -127,7 +127,7 @@ export default function BuildSubscriptionPage() {
         {/* ─── RECIPIENT ─── */}
         <div className="bg-white rounded-2xl border border-surface-border p-5 space-y-4">
           <h2 className="font-display font-bold text-brand-deep">Recipient Details</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-brand-deep mb-1">Recipient Name <span className="text-red-400">*</span></label>
               <input
@@ -153,7 +153,7 @@ export default function BuildSubscriptionPage() {
         {/* ─── SCHEDULE ─── */}
         <div className="bg-white rounded-2xl border border-surface-border p-5 space-y-4">
           <h2 className="font-display font-bold text-brand-deep">Delivery Schedule</h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
               <label className="block text-xs font-semibold text-brand-deep mb-1">Frequency</label>
               <select

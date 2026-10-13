@@ -203,15 +203,15 @@ export default function LoyaltyPage() {
               </p>
 
               {/* Stats row */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3">
                 {[
                   { label: "Points", value: fmtPts(data?.totalPoints ?? 0) },
                   { label: "Value", value: fmtKsh(pointsValueKsh) },
                   { label: "Orders", value: data?.totalOrders ?? 0 },
                 ].map((stat) => (
-                  <div key={stat.label} className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
-                    <p className="font-display font-bold text-lg">{stat.value}</p>
-                    <p className="text-[10px] text-white/60 uppercase tracking-wider">{stat.label}</p>
+                  <div key={stat.label} className="min-w-0 bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
+                    <p className="font-display font-bold text-base sm:text-lg truncate">{stat.value}</p>
+                    <p className="text-[10px] text-white/60 uppercase tracking-wider truncate">{stat.label}</p>
                   </div>
                 ))}
               </div>

@@ -172,16 +172,16 @@ export default function ReferralsPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {[
             { label: "Total Referrals", value: data.totalReferrals, icon: Users },
             { label: "Successful", value: data.successfulReferrals, icon: Check },
             { label: "Points Earned", value: `${data.pointsEarned.toLocaleString()} pts`, icon: TrendingUp },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-2xl border border-black/6 shadow-sm p-4 text-center">
+            <div key={stat.label} className="min-w-0 bg-white rounded-2xl border border-black/6 shadow-sm p-3 sm:p-4 text-center">
               <stat.icon className="w-5 h-5 text-brand mx-auto mb-2" />
-              <p className="font-bold text-brand-deep text-lg">{stat.value}</p>
-              <p className="text-[10px] text-brand-muted uppercase tracking-wider">{stat.label}</p>
+              <p className="font-bold text-brand-deep text-base sm:text-lg truncate">{stat.value}</p>
+              <p className="text-[10px] text-brand-muted uppercase tracking-wider truncate">{stat.label}</p>
             </div>
           ))}
         </div>

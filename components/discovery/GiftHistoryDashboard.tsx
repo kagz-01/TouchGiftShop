@@ -98,18 +98,18 @@ export default function GiftHistoryDashboard() {
   return (
     <div className="space-y-4">
       {/* Summary bar */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-xl border border-gray-100 bg-white p-3 text-center">
-          <p className="text-lg font-bold text-gray-900">{summaries.length}</p>
-          <p className="text-xs text-gray-500">Recipients</p>
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
+          <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{summaries.length}</p>
+          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Recipients</p>
         </div>
-        <div className="rounded-xl border border-gray-100 bg-white p-3 text-center">
-          <p className="text-lg font-bold text-gray-900">{totalGiftsAll}</p>
-          <p className="text-xs text-gray-500">Gifts Given</p>
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
+          <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{totalGiftsAll}</p>
+          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Gifts Given</p>
         </div>
-        <div className="rounded-xl border border-gray-100 bg-white p-3 text-center">
-          <p className="text-lg font-bold text-gray-900">{formatKsh(totalSpentAll)}</p>
-          <p className="text-xs text-gray-500">Total Spent</p>
+        <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
+          <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{formatKsh(totalSpentAll)}</p>
+          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Total Spent</p>
         </div>
       </div>
 

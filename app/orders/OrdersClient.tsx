@@ -151,12 +151,12 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                         </div>
                       </div>
                       
-                      <div className="mt-4 pt-3 border-t border-surface-border grid grid-cols-2 gap-4 text-xs">
-                        <div>
+                      <div className="mt-4 pt-3 border-t border-surface-border grid grid-cols-2 gap-3 sm:gap-4 text-xs">
+                        <div className="min-w-0">
                           <p className="text-brand-muted font-medium mb-0.5">Recipient</p>
-                          <p className="font-semibold text-brand-deep">{order.recipient_name}</p>
+                          <p className="font-semibold text-brand-deep break-words">{order.recipient_name}</p>
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-brand-muted font-medium mb-0.5">Date</p>
                           <p className="font-semibold text-brand-deep">
                             {new Date(order.created_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}

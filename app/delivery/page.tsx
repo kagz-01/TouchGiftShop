@@ -75,84 +75,84 @@ export default function DeliveryPolicyPage() {
                 distances.
               </p>
 
-              <div className="mt-4 overflow-hidden rounded-xl border border-surface-border">
-                <table className="w-full text-sm">
+              <div className="mt-4 overflow-hidden overflow-x-auto rounded-xl border border-surface-border">
+                <table className="w-full text-sm min-w-[360px]">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Distance</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Examples</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
+                      <th className="text-left px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Distance</th>
+                      <th className="text-left px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Examples</th>
+                      <th className="text-right px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-border">
                     <tr>
-                      <td className="px-4 py-2.5">Under 500m</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Same building, next door</td>
-                      <td className="px-4 py-2.5 text-right font-medium text-brand-forest">Free</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">Under 500m</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Same building, next door</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium text-brand-forest">Free</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">500m – 1km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Walking distance</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 50</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">500m – 1km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Walking distance</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 50</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">1 – 2km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Parklands, Ngara, CBD</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 100</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">1 – 2km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Parklands, Ngara, CBD</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 100</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">2 – 5km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Westlands, Kilimani, Upper Hill</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 150</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">2 – 5km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Westlands, Kilimani, Upper Hill</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 150</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">5 – 10km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Langata, South B/C, Kasarani</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 250</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">5 – 10km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Langata, South B/C, Kasarani</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 250</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">10 – 15km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Runda, Karen, Kiambu</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 350</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">10 – 15km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Runda, Karen, Kiambu</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 350</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">15 – 25km</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Kitengela, Syokimau, Juja</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 450</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">15 – 25km</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Kitengela, Syokimau, Juja</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 450</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
 
-              <div className="mt-4 overflow-hidden rounded-xl border border-surface-border">
-                <table className="w-full text-sm">
+              <div className="mt-4 overflow-hidden overflow-x-auto rounded-xl border border-surface-border">
+                <table className="w-full text-sm min-w-[360px]">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Upcountry</th>
-                      <th className="text-left px-4 py-2.5 font-semibold text-brand-deep">Timeline</th>
-                      <th className="text-right px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
+                      <th className="text-left px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Upcountry</th>
+                      <th className="text-left px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Timeline</th>
+                      <th className="text-right px-2.5 sm:px-4 py-2.5 font-semibold text-brand-deep">Fee</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-surface-border">
                     <tr>
-                      <td className="px-4 py-2.5">Thika, Machakos</td>
-                      <td className="px-4 py-2.5 text-brand-muted">Next business day</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 400</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">Thika, Machakos</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">Next business day</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 400</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Nakuru, Nyeri, Meru</td>
-                      <td className="px-4 py-2.5 text-brand-muted">1–2 business days</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 500–550</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">Nakuru, Nyeri, Meru</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">1–2 business days</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 500–550</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Mombasa, Kisumu, Eldoret</td>
-                      <td className="px-4 py-2.5 text-brand-muted">2–3 business days</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 600</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">Mombasa, Kisumu, Eldoret</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">2–3 business days</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 600</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-2.5">Remote (Lodwar, Wajir, Lamu)</td>
-                      <td className="px-4 py-2.5 text-brand-muted">4–5 business days</td>
-                      <td className="px-4 py-2.5 text-right font-medium">KSh 850–900</td>
+                      <td className="px-2.5 sm:px-4 py-2.5">Remote (Lodwar, Wajir, Lamu)</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-brand-muted">4–5 business days</td>
+                      <td className="px-2.5 sm:px-4 py-2.5 text-right font-medium">KSh 850–900</td>
                     </tr>
                   </tbody>
                 </table>

@@ -195,7 +195,7 @@ function RemindersDashboard() {
                       <h3 className="font-display font-bold">New Occasion</h3>
                       <button type="button" onClick={() => setShowOccasionForm(false)} className="text-sm font-semibold text-brand-muted hover:text-brand">Cancel</button>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-xs font-semibold text-brand-deep mb-1">Recipient name</label>
                         <input required value={occForm.recipientName} onChange={(e) => setOccForm({ ...occForm, recipientName: e.target.value })} placeholder="e.g. Grace" className="w-full border border-surface-border rounded-xl px-3 py-2 text-sm focus:border-brand outline-none" />
@@ -205,7 +205,7 @@ function RemindersDashboard() {
                         <input value={occForm.relationship} onChange={(e) => setOccForm({ ...occForm, relationship: e.target.value })} placeholder="e.g. Sister" className="w-full border border-surface-border rounded-xl px-3 py-2 text-sm focus:border-brand outline-none" />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-xs font-semibold text-brand-deep mb-1">Date</label>
                         <input type="date" required value={occForm.occasionDate} onChange={(e) => setOccForm({ ...occForm, occasionDate: e.target.value })} className="w-full border border-surface-border rounded-xl px-3 py-2 text-sm focus:border-brand outline-none" />

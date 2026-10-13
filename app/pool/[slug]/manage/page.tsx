@@ -299,18 +299,18 @@ export default function PoolManagePage() {
             <div className="bg-white/5 backdrop-blur-md rounded-3xl border border-white/10 p-6">
               <MilestoneRing pct={pct} />
 
-              <div className="grid grid-cols-3 gap-3 mt-6">
-                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
-                  <p className="text-lg font-bold text-rose-400">KES {totalRaised.toLocaleString()}</p>
-                  <p className="text-[10px] text-white/40">Raised</p>
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-6">
+                <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-base sm:text-lg font-bold text-rose-400 truncate">KES {totalRaised.toLocaleString()}</p>
+                  <p className="text-[10px] text-white/40 truncate">Raised</p>
                 </div>
-                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
-                  <p className="text-lg font-bold text-white">{contributions.length}</p>
-                  <p className="text-[10px] text-white/40">Contributors</p>
+                <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-base sm:text-lg font-bold text-white truncate">{contributions.length}</p>
+                  <p className="text-[10px] text-white/40 truncate">Contributors</p>
                 </div>
-                <div className="text-center p-3 bg-black/30 rounded-2xl border border-white/5">
-                  <p className="text-lg font-bold text-amber-400">KES {remaining.toLocaleString()}</p>
-                  <p className="text-[10px] text-white/40">To Go</p>
+                <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
+                  <p className="text-base sm:text-lg font-bold text-amber-400 truncate">KES {remaining.toLocaleString()}</p>
+                  <p className="text-[10px] text-white/40 truncate">To Go</p>
                 </div>
               </div>
 
