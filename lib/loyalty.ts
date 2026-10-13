@@ -7,6 +7,7 @@ export interface LoyaltyTierInfo {
   minOrders: number;
   minSpend: number;
   perks: string[];
+  pointsMultiplier: number;
 }
 
 export const LOYALTY_TIERS: Record<LoyaltyTierName, LoyaltyTierInfo> = {
@@ -17,6 +18,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTierName, LoyaltyTierInfo> = {
     minOrders: 0,
     minSpend: 0,
     perks: ["Earn 1 point per KSh 10 spent"],
+    pointsMultiplier: 1,
   },
   silver: {
     name: "Silver",
@@ -25,6 +27,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTierName, LoyaltyTierInfo> = {
     minOrders: 5,
     minSpend: 10000,
     perks: ["5% off all orders", "Earn 1.5x points", "Early access to new gifts"],
+    pointsMultiplier: 1.5,
   },
   gold: {
     name: "Gold",
@@ -33,6 +36,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTierName, LoyaltyTierInfo> = {
     minOrders: 15,
     minSpend: 50000,
     perks: ["10% off all orders", "Earn 2x points", "Free gift wrapping", "Priority support"],
+    pointsMultiplier: 2,
   },
   platinum: {
     name: "Platinum",
@@ -41,6 +45,7 @@ export const LOYALTY_TIERS: Record<LoyaltyTierName, LoyaltyTierInfo> = {
     minOrders: 30,
     minSpend: 150000,
     perks: ["15% off all orders", "Earn 3x points", "Free express delivery", "Dedicated account manager", "Exclusive gifts"],
+    pointsMultiplier: 3,
   },
 };
 

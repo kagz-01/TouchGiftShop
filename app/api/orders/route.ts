@@ -3,6 +3,7 @@ import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
 import { maxRedeemablePoints, pointsDiscountKsh } from "@/lib/points";
+import { getLoyaltyTier } from "@/lib/loyalty";
 
 function normalizePhoneServer(phone: unknown, countryCode?: string): string | null {
   if (!phone || typeof phone !== "string") return null;
@@ -144,6 +145,24 @@ export async function POST(req: Request) {
   const supabase = createServerSupabase();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // ── Tier Discount (signed-in users only) ──
+  let tierDiscount = 0;
+  if (user) {
+    const { data: orders } = await supabaseAdmin
+      .from("orders")
+      .select("total_amount")
+      .eq("user_id", user.id)
+      .in("status", ["processing", "wrapped", "dispatched", "delivered"]);
+    
+    const totalOrders = orders?.length ?? 0;
+    const totalSpend = orders?.reduce((sum, o) => sum + Number(o.total_amount), 0) ?? 0;
+    const tier = getLoyaltyTier(totalOrders, totalSpend);
+
+    if (tier.discount > 0) {
+      tierDiscount = Math.round(input.totalAmount * (tier.discount / 100));
+    }
+  }
+
   // ── Points redemption (signed-in users only) ──
   let pointsRedeemed = 0;
   let pointsDiscount = 0;
@@ -253,6 +272,7 @@ export async function POST(req: Request) {
       points_discount: pointsDiscount,
       gift_card_code: giftCardCode,
       gift_card_discount: giftCardDiscount,
+      tier_discount: tierDiscount,
     })
     .select()
     .single();

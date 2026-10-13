@@ -244,7 +244,19 @@ async function handleOrderPayment(
   // Everything below this point is members-only.
   if (!order.user_id) return;
 
-  const points = Math.floor(Number(order.total_amount) / 10);
+  const { data: pastOrders } = await supabaseAdmin
+    .from("orders")
+    .select("total_amount")
+    .eq("user_id", order.user_id)
+    .eq("status", "PAID");
+
+  const totalOrders = pastOrders?.length ?? 0;
+  const totalSpend = (pastOrders ?? []).reduce((sum, o) => sum + Number(o.total_amount), 0);
+
+  const { getLoyaltyTier } = await import("@/lib/loyalty");
+  const tier = getLoyaltyTier(totalOrders, totalSpend);
+
+  const points = Math.floor((Number(order.total_amount) / 10) * tier.pointsMultiplier);
   if (points > 0) {
     await supabaseAdmin.from("loyalty_points").insert({
       user_id: order.user_id,

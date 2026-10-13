@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import {
@@ -19,7 +19,7 @@ const CARD_THEMES = [
   { id: "dark", label: "Midnight", color: "white" },
 ] as const;
 
-export default function CorporateCheckoutPage() {
+function CorporateCheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("product");
@@ -429,5 +429,13 @@ function Check({ className }: { className?: string }) {
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
     </svg>
+  );
+}
+
+export default function CorporateCheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin" /></div>}>
+      <CorporateCheckoutContent />
+    </Suspense>
   );
 }
