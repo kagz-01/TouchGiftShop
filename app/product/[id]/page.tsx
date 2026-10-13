@@ -253,12 +253,42 @@ export default async function ProductPage({
             materialType={
               product.material_type ??
               (() => {
-                const t = [...(product.tags ?? []), product.category ?? ""].join(" ").toLowerCase();
-                if (t.includes("leather") || t.includes("notebook") || t.includes("journal")) return "leather";
-                if (t.includes("metal") || t.includes("flask") || t.includes("steel") || t.includes("pen") || t.includes("engraving")) return "metal";
-                if (t.includes("wood") || t.includes("bamboo")) return "wood";
-                if (t.includes("glass") || t.includes("crystal")) return "glass";
-                if (t.includes("fabric") || t.includes("cotton") || t.includes("canvas")) return "fabric";
+                const t = [...(product.tags ?? []), product.category ?? "", product.name].join(" ").toLowerCase();
+                // Apparel & Textiles
+                if (
+                  t.includes("polo") || t.includes("shirt") || t.includes("hoodie") ||
+                  t.includes("overall") || t.includes("workwear") || t.includes("vest") ||
+                  t.includes("jacket") || t.includes("apron") || t.includes("beanie") ||
+                  t.includes("cap") || t.includes("hat") || t.includes("sock") ||
+                  t.includes("mask") || t.includes("sweatshirt") || t.includes("t-shirt") ||
+                  t.includes("tshirt") || t.includes("apparel") || t.includes("wristband") ||
+                  t.includes("lanyard") || t.includes("tote") || t.includes("backpack")
+                ) return "apparel";
+                // Fabric / Sublimation items
+                if (
+                  t.includes("fabric") || t.includes("cotton") || t.includes("canvas") ||
+                  t.includes("polyester") || t.includes("fleece") || t.includes("bag") ||
+                  t.includes("drawstring") || t.includes("waist bag")
+                ) return "fabric";
+                // Umbrellas
+                if (t.includes("umbrella") || t.includes("golf umbrella")) return "umbrella";
+                // Drinkware
+                if (
+                  t.includes("mug") || t.includes("tumbler") || t.includes("bottle") ||
+                  t.includes("thermos") || t.includes("drinkware") || t.includes("cup")
+                ) return "drinkware";
+                // Leather
+                if (t.includes("leather") || t.includes("notebook") || t.includes("journal") || t.includes("planner") || t.includes("diary")) return "leather";
+                // Metal
+                if (
+                  t.includes("metal") || t.includes("flask") || t.includes("steel") ||
+                  t.includes("pen") || t.includes("engraving") || t.includes("usb") ||
+                  t.includes("power bank") || t.includes("keychain")
+                ) return "metal";
+                // Wood
+                if (t.includes("wood") || t.includes("bamboo") || t.includes("timber")) return "wood";
+                // Glass
+                if (t.includes("glass") || t.includes("crystal") || t.includes("acrylic")) return "glass";
                 return "default";
               })()
             }

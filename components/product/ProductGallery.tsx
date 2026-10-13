@@ -12,7 +12,7 @@ interface ProductGalleryProps {
   images?: string[];
   in_stock: boolean;
   is_personalizable: boolean;
-  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "default";
+  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "apparel" | "drinkware" | "umbrella" | "default";
 }
 
 export default function ProductGallery({

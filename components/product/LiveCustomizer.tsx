@@ -12,7 +12,7 @@ interface LiveCustomizerProps {
   baseImage: string;
   onClose: () => void;
   productName?: string;
-  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "default";
+  materialType?: "leather" | "metal" | "wood" | "glass" | "fabric" | "apparel" | "drinkware" | "umbrella" | "default";
 }
 
 const FONTS = [
@@ -23,11 +23,28 @@ const FONTS = [
   { label: "Bold — Oswald", value: "'Oswald', sans-serif" },
 ];
 
-const MATERIAL_EFFECTS: Record<string, { label: string; emoji: string; filters: any[]; tint?: string }> = {
-  none: { label: "Original", emoji: "🎨", filters: [] },
-  laser: { label: "Laser Engrave", emoji: "⚡", filters: [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.6 })] },
-  deboss: { label: "Leather Deboss", emoji: "🟤", filters: [new (fabric.Image.filters as any).Sepia(), new (fabric.Image.filters as any).Contrast({ contrast: 0.3 })] },
-  foil: { label: "Gold Foil", emoji: "✨", filters: [new (fabric.Image.filters as any).HueRotation({ rotation: 0.15 }), new (fabric.Image.filters as any).Brightness({ brightness: 0.2 })] },
+const MATERIAL_EFFECTS: Record<string, { label: string; emoji: string; filters: any[] }> = {
+  none:        { label: "Original",        emoji: "🎨", filters: [] },
+  laser:       { label: "Laser Engrave",   emoji: "⚡", filters: [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.6 })] },
+  deboss:      { label: "Leather Deboss",  emoji: "🟤", filters: [new (fabric.Image.filters as any).Sepia(), new (fabric.Image.filters as any).Contrast({ contrast: 0.3 })] },
+  foil:        { label: "Gold Foil",       emoji: "✨", filters: [new (fabric.Image.filters as any).HueRotation({ rotation: 0.15 }), new (fabric.Image.filters as any).Brightness({ brightness: 0.2 })] },
+  embroidery:  { label: "Embroidery",      emoji: "🧵", filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.4 }), new (fabric.Image.filters as any).Pixelate({ blocksize: 2 })] },
+  screenprint: { label: "Screen Print",   emoji: "🖨️", filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.5 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.3 })] },
+  sublimation: { label: "Sublimation",     emoji: "🌈", filters: [new (fabric.Image.filters as any).Brightness({ brightness: 0.05 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.5 })] },
+  dtg:         { label: "DTG / Full Color",emoji: "🎯", filters: [] },
+};
+
+// Smart default effects per material type
+const RECOMMENDED_EFFECTS: Record<string, string[]> = {
+  metal:      ["laser", "foil", "none"],
+  leather:    ["deboss", "foil", "laser"],
+  wood:       ["laser", "none"],
+  glass:      ["laser", "foil", "none"],
+  apparel:    ["embroidery", "screenprint", "dtg", "none"],
+  fabric:     ["screenprint", "embroidery", "sublimation", "none"],
+  umbrella:   ["sublimation", "screenprint", "none"],
+  drinkware:  ["sublimation", "laser", "none"],
+  default:    ["none", "laser", "screenprint", "embroidery", "deboss", "foil", "sublimation", "dtg"],
 };
 
 export default function LiveCustomizer({
@@ -244,10 +261,12 @@ export default function LiveCustomizer({
             cornerStyle: "circle",
             borderColor: "#9B1B5A",
           });
-          // Auto apply laser effect for metal material
-          if (materialType === "metal") {
-            img.filters = [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.5 })];
+           // Auto-apply the first recommended effect for this material
+          const firstEffect = RECOMMENDED_EFFECTS[materialType]?.[0] ?? "none";
+          if (firstEffect !== "none" && MATERIAL_EFFECTS[firstEffect]) {
+            img.filters = MATERIAL_EFFECTS[firstEffect].filters;
             img.applyFilters();
+            setMaterialEffect(firstEffect);
           }
           canvas.add(img);
           canvas.setActiveObject(img);
@@ -340,7 +359,7 @@ export default function LiveCustomizer({
             quantity: calculatedQuantity,
             fulfillmentPayload: {
               product_name: productName,
-              customization_type: materialType === "metal" ? "Laser Engrave" : materialType === "leather" ? "Leather Deboss" : "Print",
+              customization_type: MATERIAL_EFFECTS[materialEffect]?.label ?? "Print",
               text_elements: textElements,
               has_logo: hasLogo,
               bulk_names: names,
@@ -580,22 +599,35 @@ export default function LiveCustomizer({
                     </button>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Material Effect</label>
+                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">
+                      Branding Method
+                    </label>
+                    {/* Recommended for this material */}
+                    {materialType !== "default" && (
+                      <p className="text-[10px] text-brand-muted/70 mb-2">
+                        ✦ Recommended for{" "}
+                        <span className="capitalize font-semibold text-brand">{materialType}</span>
+                      </p>
+                    )}
                     <div className="grid grid-cols-2 gap-2">
-                      {Object.entries(MATERIAL_EFFECTS).map(([key, effect]) => (
-                        <button
-                          key={key}
-                          onClick={() => applyMaterialEffect(key)}
-                          className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all ${
-                            materialEffect === key
-                              ? "border-brand bg-brand/10 text-brand"
-                              : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
-                          }`}
-                        >
-                          <span>{effect.emoji}</span>
-                          <span>{effect.label}</span>
-                        </button>
-                      ))}
+                      {(RECOMMENDED_EFFECTS[materialType] ?? RECOMMENDED_EFFECTS.default).map((key) => {
+                        const effect = MATERIAL_EFFECTS[key];
+                        if (!effect) return null;
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => applyMaterialEffect(key)}
+                            className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-medium transition-all ${
+                              materialEffect === key
+                                ? "border-brand bg-brand/10 text-brand"
+                                : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
+                            }`}
+                          >
+                            <span>{effect.emoji}</span>
+                            <span>{effect.label}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
