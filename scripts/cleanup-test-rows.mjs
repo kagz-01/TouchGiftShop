@@ -12,7 +12,8 @@
  *   node scripts/cleanup-test-rows.mjs --apply    # actually delete
  *
  * Test markers (case-insensitive substring match on company_name):
- *   corporate_quote_requests : DiagCo, FallbackProof, FallbackCheck, DiagPolo, Diagnostic
+ *   corporate_quote_requests : DiagCo, FallbackProof, FallbackCheck, DiagPolo,
+                              Diagnostic, MigrationProof, PostMigration
  *   corporate_inquiries      : DiagCo
  */
 
@@ -42,7 +43,7 @@ if (!url) {
 }
 
 const MARKERS = {
-  corporate_quote_requests: ["diagco", "fallbackproof", "fallbackcheck", "diagpolo", "diagnostic"],
+  corporate_quote_requests: ["diagco", "fallbackproof", "fallbackcheck", "diagpolo", "diagnostic", "migrationproof", "postmigration"],
   corporate_inquiries: ["diagco"],
 };
 
