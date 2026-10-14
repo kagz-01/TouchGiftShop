@@ -11,6 +11,8 @@ import {
   Globe, Clock, Award, TrendingUp, Palette, Layers, ShoppingBag, Star,
 } from "lucide-react";
 import { MERCH_CATEGORIES, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
+import { JOURNEYS } from "@/lib/corporate-journeys";
+import CorporateSectionTabs from "@/components/corporate/CorporateSectionTabs";
 
 type Product = {
   id: string;
@@ -220,8 +222,98 @@ export default function CorporateHero({ products }: { products: Product[] }) {
       </div>
       </section>
 
+      {/* ── Section tabs (scroll-spy + TouchLine exit) ── */}
+      <CorporateSectionTabs />
+
+      {/* ── Journeys: client / team / onboarding ──
+          Organised by moment rather than by product category, per
+          `coporate side.txt`. The old page led with "Corporate Packs", which
+          asks a visitor to do the merchandising thinking; someone arriving on
+          a corporate page is thinking "thank a client" or "onboard a hire". */}
+      {JOURNEYS.map((j) => (
+        <section key={j.id} id={j.id} className="relative z-10 max-w-7xl mx-auto px-4 pt-20 pb-8 scroll-mt-20">
+          <div className="max-w-3xl mb-10">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border mb-4"
+              style={{
+                background: "var(--corp-surface)",
+                borderColor: "var(--corp-border)",
+              }}
+            >
+              <j.icon className="w-3.5 h-3.5" style={{ color: "var(--corp-accent-soft)" }} />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)]">
+                {j.tab}
+              </span>
+            </div>
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-[color:var(--corp-text)] mb-3">
+              {j.title}
+            </h2>
+            <p className="text-base text-[color:var(--corp-text-muted)] leading-relaxed">
+              {j.lede}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {j.moments.map((m) => (
+              <div
+                key={m.label}
+                className="group flex flex-col rounded-2xl border p-5 transition-colors hover:border-[color:var(--corp-accent)]/50"
+                style={{ background: "var(--corp-surface)", borderColor: "var(--corp-border)" }}
+              >
+                <h3 className="font-bold text-[color:var(--corp-text)] mb-2">{m.label}</h3>
+                <p className="text-[13px] text-[color:var(--corp-text-muted)] leading-relaxed mb-4 flex-1">
+                  {m.note}
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {[...new Set(m.slugs)].map((sl) => {
+                    const cat = MERCH_CATEGORIES.find((c) => c.slug === sl);
+                    return (
+                      <a
+                        key={sl}
+                        href={`/corporate/catalog?category=${sl}`}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold border transition-colors hover:border-[color:var(--corp-accent)]"
+                        style={{
+                          background: "var(--corp-surface-2)",
+                          borderColor: "var(--corp-border)",
+                          color: "var(--corp-text-muted)",
+                        }}
+                      >
+                        {cat?.emoji} {cat?.label ?? sl}
+                      </a>
+                    );
+                  })}
+                </div>
+                <a
+                  href="/corporate/catalog"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[color:var(--corp-accent-soft)] hover:gap-2.5 transition-all"
+                >
+                  Start a quote <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            ))}
+          </div>
+
+          {/* Ops handoff script — doc item 4. Gift orders stay here; anything
+              with uniforms or signage goes to TouchLine. */}
+          <details
+            className="mt-4 rounded-2xl border border-dashed p-4"
+            style={{ borderColor: "var(--corp-border-str)", background: "var(--corp-surface)" }}
+          >
+            <summary className="flex items-center gap-2 cursor-pointer select-none text-xs font-bold text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-text)] transition-colors">
+              <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+              Reply script for {j.tab.toLowerCase()} enquiries
+              <span className="ml-auto text-[10px] font-normal opacity-60">show</span>
+            </summary>
+            <p className="mt-3 text-[13px] leading-relaxed text-[color:var(--corp-text-muted)] border-l-2 pl-3"
+               style={{ borderColor: "var(--corp-accent)" }}>
+              {j.whatsappScript}
+            </p>
+          </details>
+        </section>
+      ))}
+
       {/* ── Corporate Packs ── */}
-      <section id="packs" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+      <section id="packs" className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-28 scroll-mt-20">
         <div className="flex items-center gap-4 mb-12">
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold">Curated Team Packs</h2>
@@ -287,7 +379,9 @@ export default function CorporateHero({ products }: { products: Product[] }) {
       </section>
 
       {/* ── Features ── */}
-      <section id="features" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+      <section id="how" className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-28 scroll-mt-20">
+      {/* anchor retained: #features was linked from elsewhere in the app */}
+      <span id="features" className="sr-only" aria-hidden="true" />
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">Enterprise-Grade Features</h2>
           <p className="text-[color:var(--corp-text-muted)] text-sm max-w-lg mx-auto">Everything your HR and executive team needs to reward at scale, beautifully.</p>
@@ -313,7 +407,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
       </section>
 
       {/* ── Branded Merchandise Hub ── */}
-      <section id="merch" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+      <section id="merch" className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-28 scroll-mt-20">
         {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -477,7 +571,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
       </section>
 
       {/* ── Milestone Automation ── */}
-      <section id="milestones" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+      <section id="milestones" className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-28 scroll-mt-20">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
