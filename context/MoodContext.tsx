@@ -14,6 +14,16 @@ export interface MoodMeta {
   heroSub: string;
   cta: string;
   urgencyBadge?: string;
+  /* Where the hero CTA navigates. Categories are slug-keyed to match
+     ?category= on the shop filter bar. */
+  shopHref?: string;
+  /* Set instead of shopHref when we do not stock this yet — the CTA then
+     renders as a non-navigating teaser explaining what we're working on,
+     rather than dumping the visitor on an empty category page. */
+  comingSoon?: string;
+  /* Wording for the pill on a coming-soon CTA. Plain "Soon" reads like a
+     dead end; a warmer phrase sells the wait. Defaults to "Soon". */
+  soonBadge?: string;
   // Custom mood fields
   customLabel?: string;
   customEmoji?: string;
@@ -31,6 +41,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Elevate the art of gifting",
     heroSub: "Beautifully curated gifts for every occasion. Find the perfect gift here, and we'll route you to the official partner stores for a seamless checkout.",
     cta: "Explore the Collection",
+    shopHref: "/shop",
   },
   {
     id: "corporate",
@@ -40,6 +51,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Make business feel personal",
     heroSub: "Executive gifting and branded merchandise that leaves a lasting impression on clients and teams alike.",
     cta: "Explore Corporate Gifting",
+    shopHref: "/corporate",
   },
   {
     id: "flowers",
@@ -49,6 +61,8 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Say more without saying more",
     heroSub: "Breathtaking floral arrangements designed to feel intimate, intentional and completely unforgettable.",
     cta: "Send a Bouquet Today",
+    soonBadge: "Almost Here",
+    comingSoon: "We're in the fields right now — cutting, conditioning and wrapping every stem by hand. Fresh blooms land here shortly.",
   },
   {
     id: "liquor",
@@ -58,6 +72,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Raise a glass to the milestone",
     heroSub: "Premium spirits, champagne, and curated boxes to mark the moments that truly matter.",
     cta: "Find the Perfect Bottle",
+    shopHref: "/shop?category=drinks",
   },
   {
     id: "perfumes",
@@ -67,15 +82,18 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "A memory in a bottle",
     heroSub: "Authentic designer fragrances and beauty curations for the ultimate, deeply personal sensory gift.",
     cta: "Find Their Signature Scent",
+    shopHref: "/shop?category=perfumes",
   },
   {
     id: "hampers",
-    emoji: "🧺",
-    label: "Give Them Everything",
-    tagline: "Generosity, beautifully packed",
-    heroTitle: "Generosity, beautifully packaged",
-    heroSub: "Overflowing hampers of fresh fruits, artisan treats, and bespoke gifts they'll unbox in pure delight.",
-    cta: "Send an Abundant Hamper",
+    emoji: "🍎",
+    label: "Fresh From The Orchard",
+    tagline: "Picked at peak ripeness",
+    heroTitle: "Picked for them, not off a shelf",
+    heroSub: "Sun-ripened fruit, hand-selected at its sweetest and packed the day it leaves us.",
+    cta: "Taste What's Ripe",
+    soonBadge: "Almost Here",
+    comingSoon: "Our growers are picking right now. Fruit only ever tastes like this when it never sits in a warehouse — so we're building that supply chain first, and the crates go live shortly.",
   },
   // ── EMOTIONAL SITUATION MOODS ────────────────────────────────────────────
   {
@@ -86,6 +104,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Love, delivered",
     heroSub: "From first bloom to forever — curated pieces that say everything you mean but can't quite find the words to.",
     cta: "Send Love",
+    comingSoon: "Love is on its way — we're cutting, conditioning and wrapping every stem by hand so the bouquet arrives already in bloom.",
   },
   {
     id: "apology",
@@ -95,6 +114,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "We've got you covered",
     heroSub: "Heartfelt gifts, delivered in hours. Because some moments can't wait until tomorrow.",
     cta: "Fix It Now",
+    shopHref: "/shop?category=gift-sets",
     urgencyBadge: "Same-day delivery available",
   },
   {
@@ -105,6 +125,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Let's celebrate!",
     heroSub: "Bold, vibrant, impossible to ignore. Give them a moment they'll be talking about for years.",
     cta: "Shop Celebrations",
+    shopHref: "/shop?category=drinks",
   },
   // ── CORPORATE CONTEXT MOODS ───────────────────────────────────────────────
   {
@@ -115,6 +136,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Appreciation they'll remember",
     heroSub: "Show your clients they matter with curated, premium hampers that say thank you in the most elegant way.",
     cta: "Shop Client Gifts",
+    shopHref: "/corporate/clients",
   },
   {
     id: "corp_milestone",
@@ -124,6 +146,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "Recognize the hard work",
     heroSub: "Reward your team for hitting targets and going above and beyond. Great gifts drive great culture.",
     cta: "Shop Team Gifts",
+    shopHref: "/corporate/milestones",
   },
   {
     id: "corp_welcome",
@@ -133,6 +156,7 @@ export const MOODS: MoodMeta[] = [
     heroTitle: "First impressions, perfected",
     heroSub: "Onboarding hampers that make new hires feel valued, excited, and proud to be part of your team from day one.",
     cta: "Shop Onboarding",
+    shopHref: "/corporate/milestones",
   },
 ];
 

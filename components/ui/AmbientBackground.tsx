@@ -1,7 +1,43 @@
 "use client";
 
 import { useTheme } from "@/components/ui/ThemeProvider";
+import { usePathname } from "next/navigation";
 import { Gift, Heart, Sparkles, Star } from "lucide-react";
+
+/* Two palettes. The storefront runs plum/pink; /corporate runs the steel-navy
+   + gold identity declared in globals.css [data-mood="corporate"], so the
+   falling gifts read as the same brand on both rather than a pink consumer
+   page bleeding into a B2B one. */
+const PALETTE = {
+  consumer: {
+    baseDark:  "linear-gradient(180deg, #1A002A 0%, #0F0014 100%)",
+    baseLight: "linear-gradient(180deg, #FFF9F0 0%, #FDF5EE 50%, #FDECD5 100%)",
+    trailDark: "rgba(255, 180, 220, 0.8)",  trailLight: "rgba(215, 115, 145, 0.65)",
+    iconDark:  "#FFF",                        iconLight:  "#C45B78",
+    glowDark:  "rgba(224, 96, 168, 0.8)",    glowLight:  "rgba(196, 91, 120, 0.5)",
+    particleDark: "rgba(255, 180, 220, 0.7)", particleLight: "rgba(215, 115, 145, 0.6)",
+    particleGlowDark: "0 0 6px 1px rgba(224, 96, 168, 0.4)",
+    particleGlowLight: "0 0 5px 1px rgba(196, 91, 120, 0.3)",
+    hangTrailDark: "rgba(255, 180, 220, 0.6)", hangTrailLight: "rgba(215, 115, 145, 0.5)",
+    monochromeDark: "grayscale(1) sepia(1) hue-rotate(290deg) saturate(3) brightness(0.85) contrast(1.2)",
+    monochromeLight: "grayscale(1) sepia(1) hue-rotate(330deg) saturate(2) brightness(1.1) contrast(1.1)",
+  },
+  corporate: {
+    // #0F2027 -> #081216 is the mood's own page gradient; #2C5364 is its
+    // gradient end-stop, and gold #D4AF37 is --color-gold.
+    baseDark:  "linear-gradient(180deg, #0F2027 0%, #081216 100%)",
+    baseLight: "linear-gradient(180deg, #F7F9FB 0%, #EDF2F7 100%)",
+    trailDark: "rgba(126, 178, 224, 0.75)", trailLight: "rgba(44, 83, 100, 0.6)",
+    iconDark:  "#CFE3F2",                     iconLight:  "#2C5364",
+    glowDark:  "rgba(212, 175, 55, 0.65)",    glowLight:  "rgba(44, 83, 100, 0.4)",
+    particleDark: "rgba(212, 175, 55, 0.65)", particleLight: "rgba(44, 83, 100, 0.55)",
+    particleGlowDark: "0 0 6px 1px rgba(212, 175, 55, 0.35)",
+    particleGlowLight: "0 0 5px 1px rgba(44, 83, 100, 0.3)",
+    hangTrailDark: "rgba(126, 178, 224, 0.55)", hangTrailLight: "rgba(44, 83, 100, 0.45)",
+    monochromeDark: "grayscale(1) sepia(1) hue-rotate(155deg) saturate(2.2) brightness(0.9) contrast(1.15)",
+    monochromeLight: "grayscale(1) sepia(1) hue-rotate(155deg) saturate(1.8) brightness(1.05) contrast(1.05)",
+  },
+} as const;
 
 // Deterministic PRNG. These values are computed during render, so Math.random()
 // made server HTML differ from client HTML and React discarded the server
@@ -18,7 +54,13 @@ function mulberry32(seed: number) {
 
 export default function AmbientBackground() {
   const { theme } = useTheme();
+  const pathname = usePathname();
   const isDark = theme === "dark";
+  /* Corporate is the one route with its own identity. /admin stays on the
+     consumer palette because it's an internal tool, not a branded surface. */
+  const isCorporate = pathname?.startsWith("/corporate") ?? false;
+  const P = isCorporate ? PALETTE.corporate : PALETTE.consumer;
+  const pick = <T,>(dark: T, light: T) => (isDark ? dark : light);
   
   // Configuration for 3D falling strings (just glowing lines that fall straight down with small icons)
   const fallingItems = [
@@ -59,14 +101,14 @@ export default function AmbientBackground() {
   })();
 
   return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-700 bg-[#120018]">
+    <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none transition-colors duration-700">
       {/* ── Base Background Gradient (Layer 0 — slowest) ── */}
       <div className="parallax-bg absolute inset-0">
       {isDark ? (
         <>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(180deg, #1A002A 0%, #0F0014 100%)",
+            background: P.baseDark,
           }} />
           <div style={{ position: "absolute", inset: 0, opacity: 0.15, backgroundImage: "var(--noise-texture)", mixBlendMode: "overlay" }} />
         </>
@@ -74,7 +116,7 @@ export default function AmbientBackground() {
         <>
           <div style={{
             position: "absolute", inset: 0,
-            background: "linear-gradient(180deg, #FFF9F0 0%, #FDF5EE 50%, #FDECD5 100%)",
+            background: P.baseLight,
           }} />
         </>
       )}
@@ -89,13 +131,9 @@ export default function AmbientBackground() {
         const blur = (1 - item.z) * 4; // 0px to 4px
         const trailWidth = item.z > 0.7 ? "2px" : "1px";
         
-        const trailColor = isDark 
-          ? "rgba(255, 180, 220, 0.8)" 
-          : "rgba(215, 115, 145, 0.65)";
-        const iconColor = isDark ? "#FFF" : "#C45B78";
-        const dropShadow = isDark 
-          ? "drop-shadow(0 0 10px rgba(224, 96, 168, 0.8))" 
-          : "drop-shadow(0 0 8px rgba(196, 91, 120, 0.5))";
+        const trailColor = pick(P.trailDark, P.trailLight);
+        const iconColor = pick(P.iconDark, P.iconLight);
+        const dropShadow = `drop-shadow(0 0 ${isDark ? 10 : 8}px ${pick(P.glowDark, P.glowLight)})`;
 
         return (
           <div
@@ -137,17 +175,11 @@ export default function AmbientBackground() {
         const blur = (1 - item.z) * 3;
         const trailWidth = item.z > 0.7 ? "2px" : "1px";
         
-        const trailColor = isDark 
-          ? "rgba(255, 180, 220, 0.6)" 
-          : "rgba(215, 115, 145, 0.5)";
+        const trailColor = pick(P.hangTrailDark, P.hangTrailLight);
         
-        const monochromeFilter = isDark
-          ? "grayscale(1) sepia(1) hue-rotate(290deg) saturate(3) brightness(0.85) contrast(1.2)"
-          : "grayscale(1) sepia(1) hue-rotate(330deg) saturate(2) brightness(1.1) contrast(1.1)";
+        const monochromeFilter = pick(P.monochromeDark, P.monochromeLight);
         
-        const dropShadow = isDark 
-          ? "drop-shadow(0 0 12px rgba(224, 96, 168, 0.6))" 
-          : "drop-shadow(0 0 8px rgba(196, 91, 120, 0.4))";
+        const dropShadow = `drop-shadow(0 0 ${isDark ? 12 : 8}px ${pick(P.glowDark, P.glowLight)})`;
 
         return (
           <div
@@ -192,8 +224,8 @@ export default function AmbientBackground() {
               top: `${p.top}%`,
               width: `${p.size}px`,
               height: `${p.size}px`,
-              backgroundColor: isDark ? "rgba(255, 180, 220, 0.7)" : "rgba(215, 115, 145, 0.6)",
-              boxShadow: isDark ? "0 0 6px 1px rgba(224, 96, 168, 0.4)" : "0 0 5px 1px rgba(196, 91, 120, 0.3)",
+              backgroundColor: pick(P.particleDark, P.particleLight),
+              boxShadow: pick(P.particleGlowDark, P.particleGlowLight),
               animationDuration: `${p.dur}s`,
               animationDelay: `${p.delay}s`,
             }}

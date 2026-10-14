@@ -1472,3 +1472,71 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
 .gcface-cf.on { animation: none; }
 .gcface-card, .gcface-flip { transition: none; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CORPORATE SHELL TOKENS
+   /corporate had no theme layer at all — CorporateHero hardcoded a near-black
+   ground, white text and blue accents, so it ignored the platform toggle
+   entirely and looked broken the moment the site was flipped to light.
+
+   These are scoped to .corporate-shell rather than redefined on :root, so the
+   B2B navy/gold identity stays independent of the consumer plum/pink palette.
+   Values come from the corporate mood in [data-mood="corporate"] above:
+   #0F2027 → #203A43 → #2C5364 steel-navy, gold #D4AF37.
+   ══════════════════════════════════════════════════════════════════════════ */
+.corporate-shell {
+  /* Hero tokens are deliberately NOT overridden by the theme block below.
+     The hero is a fixed cinematic dark plate — same decision as the homepage
+     hero — so flipping to light mode restyles the page beneath it but leaves
+     the hero untouched. Its own text tokens exist for the same reason:
+     --corp-text inverts to near-black in light mode and would vanish. */
+  --corp-hero-bg:     #0B1620;
+  --corp-hero-scrim:  linear-gradient(180deg, rgba(11,22,32,0.93) 0%, rgba(11,22,32,0.82) 55%, rgba(11,22,32,0.74) 100%);
+  --corp-hero-text:   #FFFFFF;
+  --corp-hero-muted:  rgba(255, 255, 255, 0.62);
+  --corp-hero-border: rgba(255, 255, 255, 0.10);
+  --corp-hero-card:   rgba(255, 255, 255, 0.04);
+  --corp-hero-glow:   rgba(59, 130, 246, 0.28);
+  --corp-hero-accent: #3B82F6;
+  --corp-hero-accent-text: #04121C;
+  --corp-hero-accent-hover: #60A5FA;
+  --corp-hero-gold:   #D4AF37;
+
+  --corp-bg:          #F4F7FA;
+  --corp-bg-alt:      #E8EEF4;
+  --corp-surface:     #FFFFFF;
+  --corp-surface-2:   #F0F4F8;
+  --corp-border:      rgba(15, 32, 39, 0.12);
+  --corp-border-str:  rgba(15, 32, 39, 0.22);
+  --corp-text:        #0F2027;
+  --corp-text-muted:  #4A5F6B;
+  --corp-text-faint:  #7B8E99;
+  --corp-accent:      #1D4E6B;
+  --corp-accent-soft: #2C5364;
+  --corp-accent-text: #0F2027;   /* text placed ON the accent fill */
+  --corp-gold:        #9A7B18;
+  --corp-scrim:       rgba(244, 247, 250, 0.86);
+  --corp-header-bg:   rgba(244, 247, 250, 0.92);
+  --corp-glow:        rgba(29, 78, 107, 0.18);
+  --corp-shadow:      0 4px 24px rgba(15, 32, 39, 0.08);
+}
+
+[data-theme="dark"] .corporate-shell {
+  --corp-bg:          #0B1620;
+  --corp-bg-alt:      #081116;
+  --corp-surface:     rgba(255, 255, 255, 0.04);
+  --corp-surface-2:   rgba(255, 255, 255, 0.07);
+  --corp-border:      rgba(255, 255, 255, 0.10);
+  --corp-border-str:  rgba(255, 255, 255, 0.18);
+  --corp-text:        #FFFFFF;
+  --corp-text-muted:  rgba(255, 255, 255, 0.62);
+  --corp-text-faint:  rgba(255, 255, 255, 0.40);
+  --corp-accent:      #3B82F6;
+  --corp-accent-soft: #2C5364;
+  --corp-accent-text: #04121C;
+  --corp-gold:        #D4AF37;
+  --corp-scrim:       rgba(11, 22, 32, 0.86);
+  --corp-header-bg:   rgba(11, 22, 32, 0.82);
+  --corp-glow:        rgba(59, 130, 246, 0.28);
+  --corp-shadow:      0 8px 32px rgba(0, 0, 0, 0.45);
+}

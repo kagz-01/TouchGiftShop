@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2, Users, Sparkles, ArrowRight, ShieldCheck, Zap,
@@ -34,9 +36,9 @@ const MERCH_CATEGORIES = [
     count: "20 styles",
     moq: "25 units",
     href: "/corporate/catalog?category=apparel",
-    color: "from-emerald-500/20 to-teal-500/10",
-    border: "border-emerald-500/20",
-    badge: "bg-emerald-500/10 text-emerald-400",
+    color: "from-blue-500/20 to-indigo-400/10",
+    border: "border-[color:var(--corp-hero-accent)]/20",
+    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
   },
   {
     emoji: "🧥",
@@ -90,8 +92,8 @@ const MERCH_CATEGORIES = [
     moq: "10 units",
     href: "/corporate/catalog?category=umbrellas",
     color: "from-sky-500/20 to-indigo-500/10",
-    border: "border-sky-500/20",
-    badge: "bg-sky-500/10 text-sky-400",
+    border: "border-[color:var(--corp-hero-accent)]/20",
+    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
   },
   {
     emoji: "🏆",
@@ -122,9 +124,9 @@ const MERCH_CATEGORIES = [
     count: "5 styles",
     moq: "15 units",
     href: "/corporate/catalog?category=fabric",
-    color: "from-teal-500/20 to-green-500/10",
-    border: "border-teal-500/20",
-    badge: "bg-teal-500/10 text-teal-400",
+    color: "from-indigo-400/20 to-green-500/10",
+    border: "border-[color:var(--corp-hero-accent)]/20",
+    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
   },
 ];
 
@@ -179,24 +181,38 @@ export default function CorporateHero({ products }: { products: Product[] }) {
   const [teamSize, setTeamSize] = useState(50);
 
   return (
-    <div className="min-h-screen bg-[#050304] text-white selection:bg-emerald-500/30 font-sans">
+    /* Transparent on purpose: AmbientBackground is mounted in the root layout
+       at z-[-1] and paints BEHIND this component. The opaque ground that used
+       to live here covered the falling-gifts layer completely, which is why
+       corporate looked flat while every other page animated. The palette
+       still comes through — AmbientBackground renders the corporate
+       steel-navy + gold variant on /corporate. */
+    <div className="corporate-shell relative min-h-screen text-[var(--corp-hero-text)] selection:bg-[color:var(--corp-hero-accent)]/30 font-sans">
 
       {/* Fixed ambient glow */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-30%] left-[10%] w-[80%] h-[60%] bg-emerald-900/15 rounded-full blur-[150px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-teal-900/10 rounded-full blur-[120px]" />
+        <div className="absolute top-[-30%] left-[10%] w-[80%] h-[60%] bg-[var(--corp-hero-accent)]/15 rounded-full blur-[150px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[var(--corp-hero-gold)]/10 rounded-full blur-[120px]" />
       </div>
 
       {/* ── Header ── */}
-      <header className="sticky top-0 z-40 bg-[#050304]/70 backdrop-blur-2xl border-b border-white/5">
+      <header className="sticky top-0 z-40 border-b" style={{ background: "var(--corp-header-bg)", backdropFilter: "blur(20px)", borderColor: "var(--corp-hero-border)" }}>
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-emerald-400" />
-            </div>
+            {/* The real TouchGift mark, not a generic Building2 glyph — the
+                corporate page is still the same brand as the storefront and
+                should be recognisable as such at a glance. */}
+            <Image
+              src="/logo/logo.webp"
+              alt="TouchGift"
+              width={40}
+              height={40}
+              priority
+              className="w-10 h-10 rounded-full object-cover ring-2" style={{ "--tw-ring-color": "var(--corp-border-str)" } as React.CSSProperties}
+            />
             <div>
               <p className="font-display font-bold text-base leading-tight">TouchGift</p>
-              <p className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">Corporate</p>
+              <p className="text-[10px] text-[color:var(--corp-hero-accent)] font-semibold uppercase tracking-wider">Corporate</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
@@ -206,53 +222,80 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               { label: "Milestones", href: "#milestones" },
               { label: "Pricing", href: "#packs" },
             ].map(n => (
-              <a key={n.label} href={n.href} className="text-sm font-semibold text-white/50 hover:text-white transition-colors">
+              <a key={n.label} href={n.href} className="text-sm font-semibold transition-colors text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-hero-text)]">
                 {n.label}
               </a>
             ))}
           </nav>
-          <Link
-            href="/corporate/dashboard"
-            className="hidden md:flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#050304] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.2)] hover:shadow-[0_0_40px_rgba(16,185,129,0.4)]"
-          >
-            Client Portal <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* /corporate renders no Header, so the platform toggle was simply
+                absent here. Same component the storefront uses, so the two
+                stay in sync. */}
+            <ThemeToggle />
+            <Link
+              href="/corporate/dashboard"
+              className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_var(--corp-hero-glow)] hover:shadow-[0_0_40px_var(--corp-hero-glow)] whitespace-nowrap"
+            >
+              Client Portal <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* ── Hero ── */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 pt-20 pb-28 text-center">
+      {/* ── Hero ──
+          `relative` + its own overflow-hidden scopes the backdrop to this
+          section only. It previously sat on the page root, which put the
+          photo behind every section below.
+
+          Stack order matters: opaque ground FIRST so nothing from the page
+          behind can bleed through, then the photo, then the scrim. Putting
+          the ground last (as an earlier attempt did) hid the photo entirely. */}
+      <section className="relative z-10 overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0" style={{ background: "var(--corp-hero-bg)" }} />
+          <Image
+            src="/hero/hero-corporate.webp"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center opacity-35"
+          />
+          <div className="absolute inset-0" style={{ background: "var(--corp-hero-scrim)" }} />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 pt-20 pb-28 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 mb-8">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs font-bold text-emerald-400 tracking-widest uppercase">B2B Gifting, Reinvented</span>
+          <div className="inline-flex items-center gap-2 border rounded-full px-4 py-1.5 mb-8" style={{ background: "var(--corp-hero-card)", borderColor: "var(--corp-hero-border)" }}>
+            <Sparkles className="w-4 h-4 text-[color:var(--corp-hero-accent)]" />
+            <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--corp-hero-gold)" }}>B2B Gifting, Reinvented</span>
           </div>
 
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6 max-w-4xl mx-auto">
+          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6 max-w-4xl mx-auto text-[color:var(--corp-hero-text)]">
             Reward your team<br />
-            <span className="italic font-light text-emerald-400">at scale.</span>
+            <span className="italic font-light text-[color:var(--corp-hero-accent)]">at scale.</span>
           </h1>
-          <p className="text-white/60 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto">
-            Forget spreadsheets and logistics. Send 50 or 5,000 gifts instantly via Magic Links or SMS.
-            They unbox digitally — we handle the rest.
+          <p className="text-lg md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto" style={{ color: "var(--corp-hero-muted)" }}>
+            Curated gifts for clients, teams, and milestones — branded when it matters,
+            delivered when it counts.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#packs"
-              className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-[#050304] font-bold text-base rounded-2xl transition-all shadow-[0_0_40px_rgba(16,185,129,0.25)] hover:shadow-[0_0_60px_rgba(16,185,129,0.45)] flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-base rounded-2xl transition-all shadow-[0_0_40px_var(--corp-hero-glow)] hover:shadow-[0_0_60px_var(--corp-hero-glow)] flex items-center justify-center gap-2"
             >
               <Gift className="w-5 h-5" /> Browse Gift Packs
             </a>
             <Link
               href="/corporate/dashboard"
-              className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-500/30 text-white font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2"
+              className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2"
             >
-              <BarChart3 className="w-5 h-5 text-emerald-400" /> View Dashboard
+              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> View Dashboard
             </Link>
           </div>
         </motion.div>
@@ -265,13 +308,14 @@ export default function CorporateHero({ products }: { products: Product[] }) {
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-20"
         >
           {STATS.map((s, i) => (
-            <div key={i} className="bg-white/[0.03] border border-white/5 rounded-2xl p-5 flex flex-col items-center gap-2 hover:border-emerald-500/20 transition-colors">
-              <s.icon className="w-5 h-5 text-emerald-400" />
-              <span className="font-display text-2xl font-bold text-white">{s.value}</span>
-              <span className="text-white/40 text-xs font-medium">{s.label}</span>
+            <div key={i} className="border rounded-2xl p-5 flex flex-col items-center gap-2 transition-colors hover:border-[color:var(--corp-hero-accent)]/40" style={{ background: "var(--corp-hero-card)", borderColor: "var(--corp-hero-border)" }}>
+              <s.icon className="w-5 h-5" style={{ color: "var(--corp-hero-gold)" }} />
+              <span className="font-display text-2xl font-bold" style={{ color: "var(--corp-hero-text)" }}>{s.value}</span>
+              <span className="text-xs font-medium" style={{ color: "var(--corp-hero-muted)" }}>{s.label}</span>
             </div>
           ))}
         </motion.div>
+      </div>
       </section>
 
       {/* ── Corporate Packs ── */}
@@ -279,20 +323,20 @@ export default function CorporateHero({ products }: { products: Product[] }) {
         <div className="flex items-center gap-4 mb-12">
           <div>
             <h2 className="font-display text-3xl md:text-4xl font-bold">Curated Team Packs</h2>
-            <p className="text-white/50 text-sm mt-1">Each pack is purpose-built for specific team moments.</p>
+            <p className="text-[color:var(--corp-text-muted)] text-sm mt-1">Each pack is purpose-built for specific team moments.</p>
           </div>
           <div className="ml-auto hidden md:block">
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-4 py-2 text-xs text-emerald-400 font-bold">
+            <div className="bg-[color:var(--corp-accent)]/10 border border-[color:var(--corp-accent)]/20 rounded-2xl px-4 py-2 text-xs text-[color:var(--corp-accent-soft)] font-bold">
               Volume discounts: 50+ (5%) · 100+ (10%) · 500+ (15%)
             </div>
           </div>
         </div>
 
         {products.length === 0 ? (
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-16 text-center">
-            <Gift className="w-12 h-12 text-white/20 mx-auto mb-4" />
-            <p className="text-white/40 text-sm">Corporate packs coming soon. Tag products with "Corporate" to show them here.</p>
-            <Link href="/shop" className="inline-flex items-center gap-2 mt-4 text-emerald-400 text-sm font-semibold hover:text-emerald-300 transition-colors">
+          <div className="bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] rounded-3xl p-16 text-center">
+            <Gift className="w-12 h-12 text-[color:var(--corp-text-muted)] mx-auto mb-4" />
+            <p className="text-[color:var(--corp-text-muted)] text-sm">Corporate packs coming soon. Tag products with "Corporate" to show them here.</p>
+            <Link href="/shop" className="inline-flex items-center gap-2 mt-4 text-[color:var(--corp-accent-soft)] text-sm font-semibold hover:text-[color:var(--corp-accent-soft)] transition-colors">
               Browse All Products <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -304,33 +348,33 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07 }}
-                className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 transition-all duration-500 rounded-[2rem] overflow-hidden group flex flex-col"
+                className="bg-white/[0.02] border border-[color:var(--corp-border)] hover:border-[color:var(--corp-accent)]/30 transition-all duration-500 rounded-[2rem] overflow-hidden group flex flex-col"
               >
-                <div className="h-52 relative overflow-hidden bg-gradient-to-br from-emerald-900/30 to-teal-900/20">
+                <div className="h-52 relative overflow-hidden bg-gradient-to-br from-blue-950/30 to-indigo-950/20">
                   {product.media_urls?.[0] ? (
                     <img src={product.media_urls[0]} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-80 group-hover:opacity-100" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Gift className="w-16 h-16 text-emerald-400/30" />
+                      <Gift className="w-16 h-16 text-[color:var(--corp-accent-soft)]/30" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050304] via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[color:var(--corp-bg)] via-transparent to-transparent" />
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col -mt-8 relative z-10">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
+                    <span className="px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-[color:var(--corp-border)] text-[10px] font-bold text-[color:var(--corp-accent-soft)] uppercase tracking-wider">
                       KES {Number(product.price).toLocaleString("en-US")} / head
                     </span>
                   </div>
-                  <h3 className="font-display text-xl font-bold italic mb-2 text-white group-hover:text-emerald-300 transition-colors">{product.name}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">{product.description}</p>
+                  <h3 className="font-display text-xl font-bold italic mb-2 text-[color:var(--corp-text)] group-hover:text-[color:var(--corp-accent-soft)] transition-colors">{product.name}</h3>
+                  <p className="text-[color:var(--corp-text-muted)] text-sm leading-relaxed mb-6 flex-1 line-clamp-3">{product.description}</p>
 
                   <button
                     onClick={() => setSelectedProduct(product)}
-                    className="w-full py-4 bg-white/5 hover:bg-emerald-500 hover:text-[#050304] transition-all duration-300 rounded-xl flex items-center justify-center gap-2 font-bold border border-white/10 hover:border-emerald-400 text-sm group/btn"
+                    className="w-full py-4 bg-[color:var(--corp-surface)] hover:bg-[color:var(--corp-accent)] hover:text-[color:var(--corp-accent-text)] transition-all duration-300 rounded-xl flex items-center justify-center gap-2 font-bold border border-[color:var(--corp-border)] hover:border-[color:var(--corp-accent-soft)] text-sm group/btn"
                   >
-                    <Users className="w-4 h-4 text-emerald-400 group-hover/btn:text-[#050304] transition-colors" />
+                    <Users className="w-4 h-4 text-[color:var(--corp-accent-soft)] group-hover/btn:text-[color:var(--corp-accent-text)] transition-colors" />
                     Order for Team
                   </button>
                 </div>
@@ -344,7 +388,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
       <section id="features" className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">Enterprise-Grade Features</h2>
-          <p className="text-white/50 text-sm max-w-lg mx-auto">Everything your HR and executive team needs to reward at scale, beautifully.</p>
+          <p className="text-[color:var(--corp-text-muted)] text-sm max-w-lg mx-auto">Everything your HR and executive team needs to reward at scale, beautifully.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {FEATURES.map((f, i) => (
@@ -354,13 +398,13 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
-              className="bg-white/[0.02] border border-white/5 hover:border-emerald-500/20 rounded-3xl p-6 transition-all group"
+              className="bg-white/[0.02] border border-[color:var(--corp-border)] hover:border-[color:var(--corp-accent)]/20 rounded-3xl p-6 transition-all group"
             >
-              <div className={`w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
-                <f.icon className="w-6 h-6 text-emerald-400" />
+              <div className={`w-12 h-12 rounded-2xl bg-[color:var(--corp-accent)]/10 border border-[color:var(--corp-accent)]/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
+                <f.icon className="w-6 h-6 text-[color:var(--corp-accent-soft)]" />
               </div>
               <h3 className="font-bold text-base mb-2">{f.title}</h3>
-              <p className="text-white/50 text-sm leading-relaxed">{f.desc}</p>
+              <p className="text-[color:var(--corp-text-muted)] text-sm leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -385,21 +429,21 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               <span className="italic font-light text-amber-400">anything</span>{" "}
               with your logo.
             </h2>
-            <p className="text-white/50 mt-3 text-sm max-w-xl leading-relaxed">
+            <p className="text-[color:var(--corp-text-muted)] mt-3 text-sm max-w-xl leading-relaxed">
               Upload your logo once. Our Live Customization Studio lets you preview exactly how it looks on every product — embroidered on caps, screen-printed on polos, sublimated on umbrellas — before placing a single order.
             </p>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-3 text-xs text-white/50">
+            <div className="flex items-center gap-3 text-xs text-[color:var(--corp-text-muted)]">
               <Check className="w-4 h-4 text-amber-400 shrink-0" /> Live design preview before ordering
             </div>
-            <div className="flex items-center gap-3 text-xs text-white/50">
+            <div className="flex items-center gap-3 text-xs text-[color:var(--corp-text-muted)]">
               <Check className="w-4 h-4 text-amber-400 shrink-0" /> Bulk names for uniforms (1 design → 500 names)
             </div>
-            <div className="flex items-center gap-3 text-xs text-white/50">
+            <div className="flex items-center gap-3 text-xs text-[color:var(--corp-text-muted)]">
               <Check className="w-4 h-4 text-amber-400 shrink-0" /> Digital proof before production
             </div>
-            <div className="flex items-center gap-3 text-xs text-white/50">
+            <div className="flex items-center gap-3 text-xs text-[color:var(--corp-text-muted)]">
               <Check className="w-4 h-4 text-amber-400 shrink-0" /> Invoice / LPO / M-Pesa payment
             </div>
           </div>
@@ -419,18 +463,18 @@ export default function CorporateHero({ products }: { products: Product[] }) {
             >
               <span className="text-3xl shrink-0 mt-0.5">{cat.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-white text-sm">{cat.label}</p>
-                <p className="text-white/50 text-[11px] mt-0.5 leading-snug">{cat.desc}</p>
+                <p className="font-bold text-[color:var(--corp-text)] text-sm">{cat.label}</p>
+                <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-0.5 leading-snug">{cat.desc}</p>
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.badge}`}>
                     {cat.count}
                   </span>
-                  <span className="text-[10px] text-white/40">
+                  <span className="text-[10px] text-[color:var(--corp-text-muted)]">
                     MOQ: {cat.moq}
                   </span>
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+              <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] group-hover:translate-x-1 transition-all shrink-0 mt-1" />
             </motion.a>
           ))}
 
@@ -441,14 +485,14 @@ export default function CorporateHero({ products }: { products: Product[] }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.45 }}
-            className="group border border-white/10 border-dashed rounded-2xl p-5 hover:border-white/30 transition-all flex flex-col items-center justify-center gap-3 text-center"
+            className="group border border-[color:var(--corp-border)] border-dashed rounded-2xl p-5 hover:border-[color:var(--corp-border)] transition-all flex flex-col items-center justify-center gap-3 text-center"
           >
-            <Layers className="w-8 h-8 text-white/20 group-hover:text-white/50 transition-colors" />
+            <Layers className="w-8 h-8 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] transition-colors" />
             <div>
-              <p className="font-bold text-white/40 group-hover:text-white/70 text-sm transition-colors">View All Products</p>
-              <p className="text-white/25 text-[11px] mt-1">170+ brandable items</p>
+              <p className="font-bold text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text)] text-sm transition-colors">View All Products</p>
+              <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-1">170+ brandable items</p>
             </div>
-            <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-white/60 group-hover:translate-x-1 transition-all" />
+            <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] group-hover:translate-x-1 transition-all" />
           </motion.a>
         </div>
 
@@ -466,10 +510,10 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               <Star className="w-4 h-4 text-amber-400" />
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Live Customization Studio</span>
             </div>
-            <h3 className="font-display text-xl md:text-2xl font-bold text-white">
+            <h3 className="font-display text-xl md:text-2xl font-bold text-[color:var(--corp-text)]">
               See your logo on the product <span className="italic text-amber-400">before</span> you order.
             </h3>
-            <p className="text-white/50 text-sm mt-2 leading-relaxed">
+            <p className="text-[color:var(--corp-text-muted)] text-sm mt-2 leading-relaxed">
               Choose embroidery, screen print, DTG, sublimation or laser engrave. Position your artwork. Add names for each team member. Export a proof — all in real time.
             </p>
           </div>
@@ -482,7 +526,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
             </a>
             <a
               href="/corporate/build"
-              className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm rounded-xl flex items-center gap-2 transition-all"
+              className="px-6 py-3 bg-[color:var(--corp-surface)] hover:bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] text-[color:var(--corp-text)] font-bold text-sm rounded-xl flex items-center gap-2 transition-all"
             >
               <Palette className="w-4 h-4 text-amber-400" /> Open Studio
             </a>
@@ -506,7 +550,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               Automate milestone<br />
               <span className="italic font-light text-rose-400">gifting forever.</span>
             </h2>
-            <p className="text-white/60 mb-8 leading-relaxed text-sm">
+            <p className="text-[color:var(--corp-text-muted)] mb-8 leading-relaxed text-sm">
               Connect your HRIS or upload a roster once. TouchGift automatically sends gifts on work anniversaries, birthdays, and performance milestones — no manual intervention needed.
             </p>
             <Link href="/corporate/milestones" className="inline-flex items-center gap-2 px-6 py-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 font-bold text-sm rounded-xl transition-all">
@@ -527,23 +571,23 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 hover:border-rose-500/20 rounded-2xl transition-all group"
+                className="flex items-center gap-4 p-4 bg-white/[0.02] border border-[color:var(--corp-border)] hover:border-rose-500/20 rounded-2xl transition-all group"
               >
                 <div className="w-10 h-10 bg-rose-500/10 border border-rose-500/20 rounded-xl flex items-center justify-center shrink-0">
                   <Zap className="w-5 h-5 text-rose-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xs text-white/40 mb-0.5">Trigger</p>
-                  <p className="text-sm font-semibold text-white">{m.trigger}</p>
+                  <p className="text-xs text-[color:var(--corp-text-muted)] mb-0.5">Trigger</p>
+                  <p className="text-sm font-semibold text-[color:var(--corp-text)]">{m.trigger}</p>
                 </div>
-                <ArrowRight className="w-4 h-4 text-white/20 group-hover:text-rose-400 group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:text-rose-400 group-hover:translate-x-1 transition-all" />
                 <div className="flex-1 text-right">
-                  <p className="text-xs text-white/40 mb-0.5">Gift</p>
+                  <p className="text-xs text-[color:var(--corp-text-muted)] mb-0.5">Gift</p>
                   <p className="text-sm font-semibold text-rose-300">{m.gift}</p>
                 </div>
                 {m.auto && (
-                  <div className="shrink-0 w-6 h-6 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="shrink-0 w-6 h-6 bg-[color:var(--corp-accent)]/10 border border-[color:var(--corp-accent)]/20 rounded-full flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5 text-[color:var(--corp-accent-soft)]" />
                   </div>
                 )}
               </motion.div>
@@ -554,21 +598,21 @@ export default function CorporateHero({ products }: { products: Product[] }) {
 
       {/* ── CTA Banner ── */}
       <section className="relative z-10 max-w-4xl mx-auto px-4 pb-32">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-900/40 to-teal-900/30 border border-emerald-500/20 p-12 text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
-          <div className="absolute -top-20 -right-20 w-60 h-60 bg-emerald-500/10 rounded-full blur-[80px]" />
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-950/40 to-indigo-950/30 border border-[color:var(--corp-accent)]/20 p-12 text-center">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none" />
+          <div className="absolute -top-20 -right-20 w-60 h-60 bg-[color:var(--corp-accent)]/10 rounded-full blur-[80px]" />
 
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 relative z-10">
             Ready to transform employee recognition?
           </h2>
-          <p className="text-white/60 mb-8 relative z-10">
+          <p className="text-[color:var(--corp-text-muted)] mb-8 relative z-10">
             Join 2,400+ companies using TouchGift to reward what matters most — their people.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-            <a href="#packs" className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-[#050304] font-bold rounded-2xl transition-all shadow-[0_0_30px_rgba(16,185,129,0.3)] flex items-center justify-center gap-2">
+            <a href="#packs" className="px-8 py-4 bg-[color:var(--corp-accent)] hover:bg-[color:var(--corp-accent-soft)] text-[color:var(--corp-accent-text)] font-bold rounded-2xl transition-all shadow-[0_0_30px_var(--corp-glow)] flex items-center justify-center gap-2">
               Get Started <ChevronRight className="w-5 h-5" />
             </a>
-            <a href="mailto:corporate@touchgift.shop" className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
+            <a href="mailto:corporate@touchgift.shop" className="px-8 py-4 bg-[color:var(--corp-surface)] hover:bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] text-[color:var(--corp-text)] font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
               Talk to Sales
             </a>
           </div>
@@ -592,37 +636,37 @@ export default function CorporateHero({ products }: { products: Product[] }) {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 60, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="w-full max-w-lg bg-[#0A0508] border border-white/10 rounded-3xl p-6 shadow-2xl"
+              className="w-full max-w-lg bg-[#0A0508] border border-[color:var(--corp-border)] rounded-3xl p-6 shadow-2xl"
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
               <div className="flex items-start justify-between mb-6">
                 <div>
                   <h3 className="font-display text-xl font-bold italic">{selectedProduct.name}</h3>
-                  <p className="text-white/50 text-sm mt-1">KES {Number(selectedProduct.price).toLocaleString("en-US")} / recipient</p>
+                  <p className="text-[color:var(--corp-text-muted)] text-sm mt-1">KES {Number(selectedProduct.price).toLocaleString("en-US")} / recipient</p>
                 </div>
-                <button onClick={() => setSelectedProduct(null)} className="p-2 hover:bg-white/10 rounded-xl transition-colors">
-                  <X className="w-5 h-5 text-white/50" />
+                <button onClick={() => setSelectedProduct(null)} className="p-2 hover:bg-[color:var(--corp-surface)] rounded-xl transition-colors">
+                  <X className="w-5 h-5 text-[color:var(--corp-text-muted)]" />
                 </button>
               </div>
 
               {/* Team size slider */}
               <div className="mb-6">
                 <div className="flex justify-between mb-2">
-                  <span className="text-xs font-bold text-white/50 uppercase tracking-wider">Team Size</span>
-                  <span className="font-display text-2xl font-bold text-emerald-400">{teamSize} people</span>
+                  <span className="text-xs font-bold text-[color:var(--corp-text-muted)] uppercase tracking-wider">Team Size</span>
+                  <span className="font-display text-2xl font-bold text-[color:var(--corp-accent-soft)]">{teamSize} people</span>
                 </div>
                 <input
                   type="range" min="10" max="1000" step="10"
                   value={teamSize}
                   onChange={e => setTeamSize(Number(e.target.value))}
-                  className="w-full accent-emerald-500"
+                  className="w-full accent-blue-500"
                 />
-                <div className="flex justify-between text-[10px] text-white/30 mt-2 font-bold uppercase tracking-wider">
+                <div className="flex justify-between text-[10px] text-[color:var(--corp-text-muted)] mt-2 font-bold uppercase tracking-wider">
                   <span>10</span>
-                  <span className={teamSize >= 50 && teamSize < 100 ? "text-emerald-400" : ""}>50+ (5% off)</span>
-                  <span className={teamSize >= 100 && teamSize < 500 ? "text-emerald-400" : ""}>100+ (10% off)</span>
-                  <span className={teamSize >= 500 ? "text-emerald-400" : ""}>500+ (15% off)</span>
+                  <span className={teamSize >= 50 && teamSize < 100 ? "text-[color:var(--corp-accent-soft)]" : ""}>50+ (5% off)</span>
+                  <span className={teamSize >= 100 && teamSize < 500 ? "text-[color:var(--corp-accent-soft)]" : ""}>100+ (10% off)</span>
+                  <span className={teamSize >= 500 ? "text-[color:var(--corp-accent-soft)]" : ""}>500+ (15% off)</span>
                 </div>
               </div>
 
@@ -633,20 +677,20 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                 const discount = base * pct;
                 const final = base - discount;
                 return (
-                  <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 space-y-2 text-sm">
+                  <div className="bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] rounded-2xl p-4 mb-6 space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-white/50">Subtotal</span>
+                      <span className="text-[color:var(--corp-text-muted)]">Subtotal</span>
                       <span>KES {base.toLocaleString("en-US")}</span>
                     </div>
                     {pct > 0 && (
-                      <div className="flex justify-between text-emerald-400">
+                      <div className="flex justify-between text-[color:var(--corp-accent-soft)]">
                         <span>Volume Discount ({pct * 100}%)</span>
                         <span>- KES {discount.toLocaleString("en-US")}</span>
                       </div>
                     )}
-                    <div className="border-t border-white/10 pt-2 flex justify-between font-bold text-base">
+                    <div className="border-t border-[color:var(--corp-border)] pt-2 flex justify-between font-bold text-base">
                       <span>Total</span>
-                      <span className="text-emerald-400">KES {final.toLocaleString("en-US")}</span>
+                      <span className="text-[color:var(--corp-accent-soft)]">KES {final.toLocaleString("en-US")}</span>
                     </div>
                   </div>
                 );
@@ -654,11 +698,11 @@ export default function CorporateHero({ products }: { products: Product[] }) {
 
               <Link
                 href={`/corporate/checkout?product=${selectedProduct.id}&qty=${teamSize}`}
-                className="w-full py-4 bg-emerald-500 hover:bg-emerald-400 text-[#050304] font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_rgba(16,185,129,0.25)] hover:shadow-[0_0_50px_rgba(16,185,129,0.45)]"
+                className="w-full py-4 bg-[color:var(--corp-accent)] hover:bg-[color:var(--corp-accent-soft)] text-[color:var(--corp-accent-text)] font-bold rounded-2xl flex items-center justify-center gap-2 transition-all shadow-[0_0_30px_var(--corp-glow)] hover:shadow-[0_0_50px_var(--corp-glow)]"
               >
                 Continue to Checkout <ArrowRight className="w-5 h-5" />
               </Link>
-              <p className="text-center text-[11px] text-white/30 mt-3">
+              <p className="text-center text-[11px] text-[color:var(--corp-text-muted)] mt-3">
                 Supports M-Pesa, Bank Wire, and Proforma Invoicing
               </p>
             </motion.div>

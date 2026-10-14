@@ -9,7 +9,6 @@ import NotificationBell from "@/components/layout/NotificationBell";
 import { Bell, Search, X, UserRound, MessageCircle, Briefcase } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ThemeToggle from "@/components/ui/ThemeToggle";
-import VibeSelector from "@/components/ui/VibeSelector";
 import MoodChip from "@/components/ui/MoodChip";
 import CartBadge from "@/components/layout/CartBadge";
 import SplashReveal from "@/components/ui/SplashReveal";

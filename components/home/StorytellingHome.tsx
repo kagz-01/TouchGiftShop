@@ -171,7 +171,7 @@ const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
   flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
   liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
   perfumes:     ["A sensory journey in every spray. ✨", "Authentic fragrances, delivered today.", "Leave a scent they'll never forget."],
-  hampers:      ["Because one gift is never enough. 🧺", "Artisan treats and fresh fruit baskets.", "Overflowing abundance delivered to their door."],
+  hampers:      ["Picked the morning they receive it. 🍎", "Sun-ripened, hand-selected, never warehouse-fresh.", "Fruit at the exact moment it's sweetest."],
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -319,19 +319,43 @@ export function HeroCinematic() {
           {/* CTA & Features */}
           <div className={`flex flex-col items-start transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-4 md:mb-6 w-full sm:w-auto">
-              <Link
-                href={moodMeta.id === "corporate" ? "/corporate" : "/shop"}
-                className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px]"
-                style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
-              >
-                <span className="relative z-10 flex items-center justify-center gap-2">
-                  <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
-                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                  </svg>
-                </span>
-                <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              </Link>
+              {moodMeta.comingSoon ? (
+                /* We don't stock this category yet. Render a teaser instead of a
+                   dead link — sending visitors to an empty category page reads
+                   as a broken site, not a launch. */
+                <div className="w-full sm:w-auto">
+                  <div
+                    className="relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg w-full sm:w-auto text-center min-w-[180px] border border-white/25 bg-white/10 backdrop-blur-md text-white/90 cursor-default"
+                    aria-disabled="true"
+                  >
+                    <span className="relative z-10 flex flex-col items-center justify-center gap-1">
+                      <span className="inline-flex items-center gap-2">
+                        <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-white/15 text-white/80 whitespace-nowrap">
+                          {moodMeta.soonBadge ?? "Soon"}
+                        </span>
+                      </span>
+                    </span>
+                  </div>
+                  <p key={`soon-${moodMeta.id}`} className="mt-3 text-xs md:text-sm text-white/70 max-w-sm leading-relaxed animate-fade-in">
+                    {moodMeta.comingSoon}
+                  </p>
+                </div>
+              ) : (
+                <Link
+                  href={moodMeta.shopHref ?? "/shop"}
+                  className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px]"
+                  style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
+                >
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
+                    <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    </svg>
+                  </span>
+                  <div className="absolute inset-0 bg-white/30 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                </Link>
+              )}
               
               {moodMeta.id === "default" && (
                 <Link
