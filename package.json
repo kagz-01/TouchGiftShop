@@ -11,7 +11,8 @@
     "migrate:status": "node scripts/migrate.mjs --status",
     "cleanup:test-rows": "node scripts/cleanup-test-rows.mjs",
     "convert:wrappers": "node scripts/convert-wrappers-to-webp.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:diff": "node scripts/migrate.mjs --diff"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

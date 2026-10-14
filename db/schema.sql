@@ -2,6 +2,24 @@
 -- Add products/categories tables (standard e-commerce shape) before Stage 1
 -- launch; omitted here since they're conventional and not the differentiated
 -- part of the system.
+--
+-- ── WHERE THE SCHEMA LIVES ────────────────────────────────────────────────
+-- db/schema.sql   this file. The canonical "build from scratch" reference:
+--                 the latest intended state of every table.
+-- db/migrations/  incremental changes applied ON TOP of an existing database,
+--                 executed by `npm run migrate`.
+--
+-- There used to be a second directory, supabase/migrations/, holding 10 files
+-- that were almost entirely a duplicate of what is already declared below and
+-- nothing ever executed. That directory has been removed. One thing existed
+-- ONLY there — `orders.tier_discount` — and it is now declared on `orders`.
+--
+-- Every table here is defined exactly once. A table appearing twice means two
+-- generations of the same table were pasted in over time; resolve by keeping
+-- the union of columns and deleting the older copy.
+--
+-- To see how the live database differs from this file:
+--     npm run migrate:diff
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -58,6 +76,10 @@ CREATE TABLE orders (
     refund_status TEXT,
     refund_message TEXT,
     refunded_at TIMESTAMPTZ,
+    -- Loyalty tier discount applied at checkout (commit b0201ef).
+    -- Was only ever in supabase/migrations/, which nothing executed — see
+    -- the header note on the migration directories.
+    tier_discount NUMERIC DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -96,7 +118,8 @@ CREATE TABLE group_gifting_pools (
     milestone_50_sent BOOLEAN DEFAULT FALSE,
     milestone_75_sent BOOLEAN DEFAULT FALSE,
     milestone_100_sent BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE pool_contributions (
@@ -302,17 +325,6 @@ CREATE TABLE user_metrics (
   pools_joined INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE wallet_transactions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  amount DECIMAL(12,2) NOT NULL,
-  type VARCHAR(20) NOT NULL CHECK (type IN ('credit', 'debit')),
-  source VARCHAR(50), -- 'pool_refund', 'pool_overage', 'gift_card', 'manual'
-  reference_id UUID, -- pool_id, gift_card_id, etc.
-  description TEXT,
-  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_user_metrics_user ON user_metrics(user_id);
@@ -848,17 +860,6 @@ CREATE TABLE vendor_payouts (
 -- ---------------------------------------------------------------------
 
 -- Existing tables (original)
-CREATE INDEX idx_products_slug ON products(slug);
-CREATE INDEX idx_reminders_user_date ON reminders(user_id, occasion_date);
-CREATE INDEX idx_gift_cards_code ON gift_cards(code);
-CREATE INDEX idx_reviews_product_id ON reviews(product_id);
-CREATE INDEX idx_reviews_order_id ON reviews(order_id);
-CREATE INDEX idx_reviews_user_id ON reviews(user_id);
-CREATE INDEX idx_reviews_status ON reviews(status);
-CREATE INDEX idx_reviews_created_at ON reviews(created_at DESC);
-CREATE INDEX idx_review_media_review_id ON review_media(review_id);
-CREATE INDEX idx_review_votes_review_id ON review_votes(review_id);
-
 -- Pool v2 indexes
 CREATE INDEX idx_pools_organiser ON group_gifting_pools(organiser_user_id);
 CREATE INDEX idx_pools_status ON group_gifting_pools(status);
@@ -1298,16 +1299,6 @@ CREATE TABLE referral_codes (
 CREATE INDEX idx_referral_codes_code ON referral_codes(code);
 
 -- Corporate brand configs (logo + color per user)
-CREATE TABLE corporate_brand_configs (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-    logo_url TEXT,
-    brand_color VARCHAR(7) DEFAULT '#9B1B5A',
-    company_name VARCHAR(255),
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE INDEX idx_corporate_brand_configs_user ON corporate_brand_configs(user_id);
 
 -- Hamper builds (server-side hamper records)
@@ -1518,54 +1509,6 @@ CREATE TABLE IF NOT EXISTS corporate_brand_configs (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_corporate_brand_configs_user_id ON corporate_brand_configs(user_id);
 
-CREATE TABLE IF NOT EXISTS milestone_rules (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  corporate_account_id UUID,
-  name TEXT NOT NULL,
-  description TEXT,
-  trigger_type TEXT NOT NULL,
-  gift_budget NUMERIC NOT NULL,
-  gift_product_id UUID REFERENCES products(id) ON DELETE SET NULL,
-  gift_template_id UUID,
-  custom_message_template TEXT,
-  auto_order BOOLEAN NOT NULL DEFAULT false,
-  auto_pool BOOLEAN NOT NULL DEFAULT false,
-  notify_hr BOOLEAN NOT NULL DEFAULT true,
-  send_whatsapp BOOLEAN NOT NULL DEFAULT true,
-  trigger_days_before INTEGER NOT NULL DEFAULT 0,
-  trigger_time TIME NOT NULL DEFAULT '09:00:00',
-  escalation_enabled BOOLEAN NOT NULL DEFAULT false,
-  escalation_tiers JSONB NOT NULL DEFAULT '[]'::jsonb,
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  total_triggered INTEGER NOT NULL DEFAULT 0,
-  last_triggered_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS corporate_calendar_events (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  corporate_account_id UUID,
-  title TEXT NOT NULL,
-  description TEXT,
-  event_date DATE NOT NULL,
-  event_type TEXT NOT NULL,
-  recipient_name TEXT NOT NULL,
-  recipient_email TEXT,
-  recipient_phone TEXT,
-  department TEXT,
-  role TEXT,
-  gift_budget NUMERIC,
-  gift_product_id UUID REFERENCES products(id) ON DELETE SET NULL,
-  gift_template_id UUID,
-  custom_message TEXT,
-  auto_order BOOLEAN NOT NULL DEFAULT false,
-  auto_pool BOOLEAN NOT NULL DEFAULT false,
-  reminder_days_before INTEGER NOT NULL DEFAULT 7,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
 CREATE TABLE IF NOT EXISTS corporate_whatsapp_flows (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   flow_id TEXT NOT NULL,
@@ -1716,91 +1659,12 @@ CREATE TABLE IF NOT EXISTS digital_gift_cards (
 
 -- Migration: supabase/migrations/20260904_admin_sessions.sql
 -- Admin sessions table for persistent auth across serverless instances
-create table if not exists admin_sessions (
-  token text primary key,
-  expires_at timestamptz not null
-);
-
 -- Auto-cleanup expired sessions (run periodically or on each check)
 -- ALTER TABLE admin_sessions ADD CONSTRAINT expires_at_check CHECK (expires_at > now());
 
 
 -- Migration: supabase/migrations/corporate_features.sql
 -- Create missing corporate tables
-
-CREATE TABLE IF NOT EXISTS corporate_brand_configs (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  company_name TEXT,
-  brand_color TEXT DEFAULT '#9B1B5A',
-  logo_url TEXT,
-  custom_domain TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_corporate_brand_configs_user_id ON corporate_brand_configs(user_id);
-
-CREATE TABLE IF NOT EXISTS milestone_rules (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  corporate_account_id UUID,
-  name TEXT NOT NULL,
-  description TEXT,
-  trigger_type TEXT NOT NULL,
-  gift_budget NUMERIC NOT NULL,
-  gift_product_id UUID REFERENCES products(id) ON DELETE SET NULL,
-  gift_template_id UUID,
-  custom_message_template TEXT,
-  auto_order BOOLEAN NOT NULL DEFAULT false,
-  auto_pool BOOLEAN NOT NULL DEFAULT false,
-  notify_hr BOOLEAN NOT NULL DEFAULT true,
-  send_whatsapp BOOLEAN NOT NULL DEFAULT true,
-  trigger_days_before INTEGER NOT NULL DEFAULT 0,
-  trigger_time TIME NOT NULL DEFAULT '09:00:00',
-  escalation_enabled BOOLEAN NOT NULL DEFAULT false,
-  escalation_tiers JSONB NOT NULL DEFAULT '[]'::jsonb,
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  total_triggered INTEGER NOT NULL DEFAULT 0,
-  last_triggered_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS corporate_calendar_events (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  corporate_account_id UUID,
-  title TEXT NOT NULL,
-  description TEXT,
-  event_date DATE NOT NULL,
-  event_type TEXT NOT NULL,
-  recipient_name TEXT NOT NULL,
-  recipient_email TEXT,
-  recipient_phone TEXT,
-  department TEXT,
-  role TEXT,
-  gift_budget NUMERIC,
-  gift_product_id UUID REFERENCES products(id) ON DELETE SET NULL,
-  gift_template_id UUID,
-  custom_message TEXT,
-  auto_order BOOLEAN NOT NULL DEFAULT false,
-  auto_pool BOOLEAN NOT NULL DEFAULT false,
-  reminder_days_before INTEGER NOT NULL DEFAULT 7,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS corporate_whatsapp_flows (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  flow_id TEXT NOT NULL,
-  corporate_account_id UUID,
-  title TEXT NOT NULL,
-  description TEXT,
-  trigger_rule TEXT NOT NULL,
-  message_template TEXT NOT NULL,
-  is_enabled BOOLEAN NOT NULL DEFAULT true,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_corp_wa_flows_unique ON corporate_whatsapp_flows(corporate_account_id, flow_id);
 
 -- Storage bucket for brand logos (if not exists)
 INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', true) ON CONFLICT (id) DO NOTHING;
@@ -1810,29 +1674,7 @@ INSERT INTO storage.buckets (id, name, public) VALUES ('avatars', 'avatars', tru
 -- Run this in your Supabase SQL editor or via the CLI
 -- Creates the corporate_inquiries table to store all bulk upload requests
 
-CREATE TABLE IF NOT EXISTS corporate_inquiries (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  ref_code TEXT NOT NULL UNIQUE,
-  company_name TEXT NOT NULL,
-  contact_name TEXT NOT NULL,
-  contact_phone TEXT NOT NULL,
-  contact_email TEXT NOT NULL,
-  gift_description TEXT,
-  budget TEXT,
-  delivery_date DATE,
-  notes TEXT,
-  recipient_count INTEGER NOT NULL DEFAULT 0,
-  recipients JSONB NOT NULL DEFAULT '[]'::jsonb,
-  status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_progress', 'quoted', 'confirmed', 'completed', 'cancelled')),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
 -- Index for fast status filtering in admin
-CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_status ON corporate_inquiries(status);
-CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_created ON corporate_inquiries(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_company ON corporate_inquiries(company_name);
-
 -- Auto-update updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -1861,41 +1703,6 @@ CREATE POLICY "Service role full access" ON corporate_inquiries
 -- Migration: supabase/migrations/ecommerce_vibe_engine.sql
 -- E-Commerce Shop Core Tables: Vibe Engine & Blind Gifting
 
-CREATE TABLE IF NOT EXISTS shop_products (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  description TEXT,
-  price NUMERIC NOT NULL,
-  vibe_tags TEXT[] NOT NULL DEFAULT '{}',
-  media_urls TEXT[] NOT NULL DEFAULT '{}',
-  stock INTEGER NOT NULL DEFAULT 0,
-  is_active BOOLEAN NOT NULL DEFAULT true,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS shop_orders (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  product_id UUID REFERENCES shop_products(id),
-  buyer_id TEXT, -- User ID (if authenticated)
-  buyer_email TEXT,
-  buyer_phone TEXT,
-  amount NUMERIC NOT NULL,
-  status TEXT NOT NULL DEFAULT 'pending_payment', -- pending_payment, pending_address, processing, shipped
-  payment_ref TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS shop_gift_links (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_id UUID REFERENCES shop_orders(id) ON DELETE CASCADE,
-  slug TEXT UNIQUE NOT NULL,
-  recipient_name TEXT,
-  recipient_phone TEXT,
-  delivery_address TEXT,
-  unboxed_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
 -- Seed Data for Vibe Engine
 INSERT INTO shop_products (name, description, price, vibe_tags, media_urls, stock, is_active)
 VALUES
@@ -1911,122 +1718,10 @@ VALUES
 -- DIGITAL GIFT CARDS, WALLETS & OTP SYSTEM
 -- ============================================================================
 
-CREATE TABLE IF NOT EXISTS user_wallets (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  phone TEXT UNIQUE NOT NULL,
-  balance NUMERIC NOT NULL DEFAULT 0,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS wallet_transactions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  wallet_id UUID REFERENCES user_wallets(id) ON DELETE CASCADE,
-  amount NUMERIC NOT NULL,
-  type TEXT NOT NULL, -- 'credit', 'debit'
-  reference_type TEXT NOT NULL, -- 'gift_card_claim', 'order_payment', 'refund'
-  reference_id TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS otp_sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  phone TEXT NOT NULL,
-  code TEXT NOT NULL,
-  expires_at TIMESTAMPTZ NOT NULL,
-  verified BOOLEAN NOT NULL DEFAULT false,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE TABLE IF NOT EXISTS digital_gift_cards (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT UNIQUE NOT NULL, -- The magic link ID
-  amount NUMERIC NOT NULL,
-  theme_style TEXT NOT NULL DEFAULT 'glassmorphism',
-  voice_note_url TEXT,
-  sender_name TEXT,
-  status TEXT NOT NULL DEFAULT 'active', -- active, claimed
-  claimed_by_phone TEXT, -- Who claimed it (links to wallet)
-  claimed_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-
 -- Migration: supabase/migrations/gift_pools.sql
 -- ============================================================================
 -- DIGITAL GIFT POOLS (GROUP GIFTING)
 -- ============================================================================
-
-CREATE TABLE IF NOT EXISTS group_gifting_pools (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  slug TEXT UNIQUE NOT NULL,
-  organiser_user_id UUID NOT NULL, -- The organiser (auth.users)
-  creator_id UUID NOT NULL,
-  
-  recipient_name TEXT NOT NULL,
-  recipient_photo_url TEXT,
-  occasion TEXT,
-  
-  title TEXT NOT NULL,
-  description TEXT,
-  
-  gift_product_id UUID, -- nullable FK to products
-  gift_name TEXT,
-  gift_price NUMERIC,
-  gift_image_url TEXT,
-  
-  target_amount NUMERIC NOT NULL,
-  current_balance NUMERIC NOT NULL DEFAULT 0,
-  min_contribution NUMERIC NOT NULL DEFAULT 50,
-  
-  over_target_behaviour TEXT NOT NULL DEFAULT 'wallet_credit',
-  under_target_action TEXT,
-  expires_at TIMESTAMPTZ NOT NULL,
-  
-  privacy_mode TEXT NOT NULL DEFAULT 'named',
-  surprise_mode BOOLEAN NOT NULL DEFAULT true,
-  ghost_mode_allowed BOOLEAN NOT NULL DEFAULT true,
-  
-  is_poll_mode BOOLEAN NOT NULL DEFAULT false,
-  poll_options JSONB,
-  
-  status TEXT NOT NULL DEFAULT 'active', -- active, closed, cancelled, fulfilled
-  
-  milestone_25_sent BOOLEAN NOT NULL DEFAULT false,
-  milestone_50_sent BOOLEAN NOT NULL DEFAULT false,
-  milestone_75_sent BOOLEAN NOT NULL DEFAULT false,
-  milestone_100_sent BOOLEAN NOT NULL DEFAULT false,
-  
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  closed_at TIMESTAMPTZ
-);
-
-CREATE TABLE IF NOT EXISTS pool_contributions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  pool_id UUID NOT NULL REFERENCES group_gifting_pools(id) ON DELETE CASCADE,
-  
-  contributor_user_id UUID, -- optional, if they are logged in
-  contributor_name TEXT,
-  contributor_phone TEXT NOT NULL,
-  
-  amount NUMERIC NOT NULL,
-  message TEXT,
-  
-  payment_method TEXT NOT NULL,
-  payment_ref TEXT NOT NULL,
-  pesapal_tracking_id TEXT,
-  
-  is_anonymous BOOLEAN NOT NULL DEFAULT false,
-  is_ghost_mode BOOLEAN NOT NULL DEFAULT false,
-  is_verified BOOLEAN NOT NULL DEFAULT false,
-  
-  poll_vote_index INTEGER,
-  
-  split_parent_id UUID REFERENCES pool_contributions(id) ON DELETE SET NULL,
-  
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
 
 -- Migration: supabase/migrations/update_gift_pools_live.sql
 DO $$ 

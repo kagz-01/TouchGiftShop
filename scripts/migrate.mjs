@@ -12,6 +12,7 @@
  * Usage:
  *   node scripts/migrate.mjs                  # apply everything pending
  *   node scripts/migrate.mjs --status         # list applied / pending
+ *   node scripts/migrate.mjs --diff           # compare live DB against db/schema.sql
  *   node scripts/migrate.mjs --file <path>    # apply one file
  *
  * Requires DIRECT_DATABASE_URL or DATABASE_URL in .env.local (Supabase's
@@ -24,10 +25,12 @@ import postgres from "postgres";
 
 const ROOT = resolve(process.cwd());
 const MIGRATIONS_DIR = join(ROOT, "db", "migrations");
+const SCHEMA_FILE = join(ROOT, "db", "schema.sql");
 const TRACKING_TABLE = "schema_migrations";
 
 const args = process.argv.slice(2);
 const wantStatus = args.includes("--status");
+const wantDiff = args.includes("--diff");
 const fileIdx = args.indexOf("--file");
 const onlyFile = fileIdx !== -1 ? args[fileIdx + 1] : null;
 
@@ -100,6 +103,85 @@ async function apply(name) {
 
 // ── main ───────────────────────────────────────────────────────────────
 try {
+  if (wantDiff) {
+    // db/schema.sql is the "build from scratch" reference and is ahead of the
+    // live database in places. Only the live database can settle which shape is
+    // real, so compare instead of guessing.
+    if (!existsSync(SCHEMA_FILE)) {
+      console.error(`No ${SCHEMA_FILE}`);
+      await sql.end();
+      process.exit(1);
+    }
+    const schema = readFileSync(SCHEMA_FILE, "utf8");
+
+    const liveTables = await sql.unsafe(`
+      SELECT table_name FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+      ORDER BY table_name
+    `);
+    const liveCols = await sql.unsafe(`
+      SELECT table_name, column_name FROM information_schema.columns
+      WHERE table_schema = 'public'
+    `);
+    const live = new Map();
+    for (const c of liveCols) {
+      if (!live.has(c.table_name)) live.set(c.table_name, new Set());
+      live.get(c.table_name).add(c.column_name);
+    }
+
+    // tables declared in schema.sql
+    const declared = new Map();
+    const re = /CREATE TABLE(?: IF NOT EXISTS)?\s+([a-z_]+)\s*\(/gi;
+    let m;
+    while ((m = re.exec(schema)) !== null) {
+      const name = m[1];
+      if (!declared.has(name)) declared.set(name, new Set());
+      let i = schema.indexOf("(", m.index + m[0].length - 1);
+      let depth = 0;
+      while (i < schema.length) {
+        if (schema[i] === "(") depth++;
+        else if (schema[i] === ")") { depth--; if (!depth) break; }
+        i++;
+      }
+      const body = schema.slice(m.index, i);
+      const colRe = /^\s{2,}([a-z_][a-z0-9_]*)\s+[a-z]/gim;
+      let c;
+      while ((c = colRe.exec(body)) !== null) declared.get(name).add(c[1]);
+    }
+
+    const liveNames = new Set(liveTables.map((t) => t.table_name));
+    let drift = 0;
+
+    console.log("\n── tables in schema.sql but NOT in the live database ──");
+    for (const t of [...declared.keys()].sort()) {
+      if (!liveNames.has(t)) { console.log(`  - ${t}`); drift++; }
+    }
+    if (!drift) console.log("  (none)");
+
+    console.log("\n── columns in schema.sql but NOT live ──");
+    let colDrift = 0;
+    for (const t of [...declared.keys()].sort()) {
+      if (!liveNames.has(t)) continue;
+      const missing = [...declared.get(t)].filter((c) => !live.get(t).has(c));
+      if (missing.length) { console.log(`  ${t}: ${missing.join(", ")}`); colDrift++; }
+    }
+    if (!colDrift) console.log("  (none)");
+
+    console.log("\n── live tables NOT in schema.sql ──");
+    let extra = 0;
+    for (const t of [...liveNames].sort()) {
+      if (!declared.has(t)) { console.log(`  + ${t}`); extra++; }
+    }
+    if (!extra) console.log("  (none)");
+
+    console.log(
+      `\n${liveNames.size} live tables, ${declared.size} declared. ` +
+        `${drift} missing table(s), ${colDrift} table(s) with missing columns, ${extra} undeclared.\n`
+    );
+    await sql.end();
+    process.exit(0);
+  }
+
   const done = await applied();
   const all = listMigrations();
   const pending = all.filter((f) => !done.has(f));
