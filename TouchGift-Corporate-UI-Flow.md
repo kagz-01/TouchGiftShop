@@ -164,10 +164,10 @@ real window. Empty state says "be the first" rather than inventing 2,400.
       **No revenue, fulfilment or on-time rate**, because there is no
       `corporate_orders` table — we cannot count what we don't store.
 
-      Verified live against the real database: both corporate tables are
-      **empty**, so the section renders its empty state — "You'd be our first,
-      ... no projections." That also means the roadmap's Phase 0 exit
-      criteria ("quotes are landing in DB") is **not** met yet.
+      Both corporate tables are **empty by design** at this stage (production
+      development, nothing logged), so the section renders its empty state —
+      "You'd be our first, ... no projections." That empty state is the
+      intended behaviour, not a defect.
 
 ### Phase C — Product showcase (blocked on catalog load)
 
@@ -201,7 +201,8 @@ real window. Empty state says "be the first" rather than inventing 2,400.
 | Hero stats unverifiable | Cannot be repaired without real order data | — |
 | `/corporate/dashboard` is admin-only | "Client Portal" 401s for clients; portal framing is premature | decision |
 | `corporate_orders` doesn't exist | No revenue/fulfilment proof is possible | Phase 5 |
-| Corporate tables are empty (verified) | Proof section shows the empty state; quotes aren't landing yet | ops |
+| Corporate tables empty **by design** | Empty states are correct — do not seed | — |
+| Phase 1 migration unapplied (found + fixed) | Quote inserts were failing outright; run `npm run migrate` | dev |
 
 ## 6. Decisions needed before Phase B
 

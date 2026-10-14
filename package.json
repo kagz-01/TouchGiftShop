@@ -7,6 +7,9 @@
     "test:e2e": "playwright test",
     "build": "next build",
     "start": "next start -p 3001",
+    "migrate": "node scripts/migrate.mjs",
+    "migrate:status": "node scripts/migrate.mjs --status",
+    "cleanup:test-rows": "node scripts/cleanup-test-rows.mjs",
     "convert:wrappers": "node scripts/convert-wrappers-to-webp.js",
     "lint": "next lint"
   },
