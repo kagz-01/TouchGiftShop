@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { MERCH_CATEGORIES, MERCH_TOTAL_SKUS } from "@/lib/corporate-merch";
+import { MERCH_CATEGORIES } from "@/lib/corporate-merch";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -43,7 +43,7 @@ const BULK_TIERS = [
    callers read as "no filter" — so six of nine categories silently displayed
    the entire shop under a heading like "Banners & Displays". */
 const CATEGORIES = [
-  { key: "all", label: `All ${MERCH_TOTAL_SKUS} Styles`, emoji: "🗂️", moq: null as number | null },
+  { key: "all", label: "All Products", emoji: "🗂️", moq: null as number | null },
   ...MERCH_CATEGORIES.map((c) => ({
     key: c.slug,
     label: c.label,

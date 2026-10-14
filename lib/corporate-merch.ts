@@ -1,21 +1,29 @@
 /**
- * Corporate merchandise taxonomy — generated from catalog/brandables.csv.
+ * Corporate merchandise taxonomy — the intended range, per catalog/brandables.csv.
  *
- * DO NOT hand-edit the counts: they mirror the CSV exactly (48 SKUs). Both the
- * corporate hero hub and the catalog sidebar read this module so the two can't
- * drift apart, which is exactly what happened before — the hero advertised
- * "Jackets & Workwear · 32 styles" and "Banners & Displays · 11 formats" that
- * existed in neither the CSV nor the database.
+ * ⚠ NOT LIVE INVENTORY. The CSV is a reference of the range we intend to carry;
+ * none of it is loaded into the `products` table yet and none of it has product
+ * imagery. `count` is therefore kept for planning only and is deliberately NOT
+ * rendered in the UI — advertising "48 styles" for products that aren't in the
+ * database is exactly the fabricated-counts problem this module was written to
+ * fix. Surface the counts once the catalog is actually loaded.
+ *
+ * What this module DOES own today, and why it is worth keeping:
+ *   1. The 8 real gift-first categories and their gift-language framing, so the
+ *      page stops advertising industrial categories it won't sell.
+ *   2. `slug` values that resolve in lib/category-map.ts. The previous sidebar
+ *      used `workwear`, `caps`, `banners`, `umbrellas`, `fabric`, `stationery`
+ *      — none in TAXONOMY. getDbSlugs() returns [] for an unknown slug and
+ *      callers read that as "no filter", so six of nine categories silently
+ *      displayed the whole shop under a "Banners & Displays" heading.
+ *   3. The TouchLine boundary from `coporate side.txt`.
+ *
+ * DO NOT hand-edit `count` — it mirrors the CSV. Regenerate against the CSV.
  *
  * Brand framing follows `coporate side.txt`:
  *   TouchGift sells what someone RECEIVES. Workwear, hi-vis, banners, gazebos
  *   and uniforms are B2B supply and route to TouchLine (touchlineltd.co.ke),
  *   so they are deliberately absent from this list. See TOUCHLINE_BRIDGE.
- *
- * `slug` values must exist in the TAXONOMY set in lib/category-map.ts — an
- * unknown slug resolves to [] and silently drops the filter, which is how the
- * old sidebar ended up showing every product in the shop under a
- * "Banners & Displays" heading.
  */
 
 export type MerchCategory = {
@@ -23,12 +31,13 @@ export type MerchCategory = {
   key: string;
   label: string;
   emoji: string;
-  count: number;
   /** Category slug understood by lib/category-map.ts. */
   slug: string;
   /** Short, gift-framed line for the card. */
   blurb: string;
   moq: number;
+  /** Planning figure from the CSV. Do not render until the catalog is loaded. */
+  count: number;
 };
 
 export const MERCH_CATEGORIES: MerchCategory[] = [
@@ -106,6 +115,8 @@ export const MERCH_CATEGORIES: MerchCategory[] = [
   },
 ];
 
+/** Planning total from the CSV. Exported for internal use only — do not render
+ *  it in the UI while the catalog is unloaded. See the header note. */
 export const MERCH_TOTAL_SKUS = MERCH_CATEGORIES.reduce((n, c) => n + c.count, 0);
 
 /**

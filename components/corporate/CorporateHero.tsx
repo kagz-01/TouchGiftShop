@@ -10,7 +10,7 @@ import {
   Gift, BarChart3, MessageSquare, X, ChevronRight, Check,
   Globe, Clock, Award, TrendingUp, Palette, Layers, ShoppingBag, Star,
 } from "lucide-react";
-import { MERCH_CATEGORIES, MERCH_TOTAL_SKUS, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
+import { MERCH_CATEGORIES, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
 
 type Product = {
   id: string;
@@ -351,10 +351,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
           </div>
         </motion.div>
 
-        {/* Category grid — counts are the real SKU counts from brandables.csv */}
-        <p className="text-center text-[11px] text-[color:var(--corp-text-muted)] mb-6">
-          {MERCH_TOTAL_SKUS} gift-ready branded styles, ready to personalise
-        </p>
+        {/* Category grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
           {MERCH_CATEGORIES.map((cat, i) => (
             <motion.a
@@ -372,7 +369,7 @@ export default function CorporateHero({ products }: { products: Product[] }) {
                 <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-0.5 leading-snug">{cat.blurb}</p>
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[color:var(--corp-accent)]/12 text-[color:var(--corp-accent-soft)]">
-                    {cat.count} styles
+                    Personalisable
                   </span>
                   <span className="text-[10px] text-[color:var(--corp-text-muted)] whitespace-nowrap">
                     MOQ {cat.moq}
