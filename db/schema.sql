@@ -2066,12 +2066,32 @@ CREATE TABLE IF NOT EXISTS corporate_quote_requests (
   status          text NOT NULL DEFAULT 'pending'
                     CHECK (status IN ('pending','quoted','accepted','declined')),
   quoted_at       timestamptz,
+
+  -- ── Phase 1 ops columns (roadmap §3) ───────────────────────────────────
+  -- See supabase/migrations/corporate_quote_requests_phase1.sql for the
+  -- ALTER-based migration that adds these to a live database. Keep the two
+  -- definitions in sync.
+  assignee            text,                      -- ops owner
+  internal_notes      text,                      -- ops-only; `notes` is customer-facing
+  quoted_amount       numeric(12,2),             -- what ops quoted (vs customer estimate)
+  valid_until         timestamptz,               -- quote expiry
+  category            text,                      -- enables the category filter
+  phone               text,                      -- WhatsApp deep link needs this
+  moq_tier            text,                      -- bulk price tier quoted
+  design_payload      jsonb,                     -- Studio fulfillment JSON
+  design_preview_url  text,                      -- rendered PNG from customizations upload
+  corporate_account_id uuid REFERENCES corporate_accounts(id) ON DELETE SET NULL,  -- Phase 2.3
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+
   created_at      timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_corp_quotes_status    ON corporate_quote_requests (status);
 CREATE INDEX IF NOT EXISTS idx_corp_quotes_created   ON corporate_quote_requests (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_corp_quotes_email     ON corporate_quote_requests (email);
+CREATE INDEX IF NOT EXISTS idx_corp_quotes_assignee  ON corporate_quote_requests (assignee);
+CREATE INDEX IF NOT EXISTS idx_corp_quotes_category  ON corporate_quote_requests (category);
+CREATE INDEX IF NOT EXISTS idx_corp_quotes_account   ON corporate_quote_requests (corporate_account_id);
 
 ALTER TABLE corporate_quote_requests ENABLE ROW LEVEL SECURITY;
 

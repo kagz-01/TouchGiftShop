@@ -3,27 +3,12 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  BarChart3, TrendingUp, Users, Gift, Clock,
-  DollarSign, Target, ArrowUpRight, Calendar,
-  Sparkles, Package, Building2, ShoppingBag, RefreshCw,
-  Inbox, CheckCircle, XCircle, Send, ChevronRight,
-  Loader2, AlertCircle, Palette,
+  BarChart3, TrendingUp, Users, Gift, DollarSign, Target, ArrowUpRight, Calendar, Package, Building2, ShoppingBag, RefreshCw, Inbox, Loader2, AlertCircle, Palette,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
+import QuoteOpsPanel from "@/components/corporate/QuoteOpsPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type QuoteStatus = "pending" | "quoted" | "accepted" | "declined";
-
-interface QuoteRow {
-  id: string;
-  product_name: string;
-  company_name: string;
-  quantity: number;
-  total_estimate: number | null;
-  status: QuoteStatus;
-  created_at: string;
-}
-
 interface Stats {
   totalOrders: number;
   monthOrders: number;
@@ -42,207 +27,6 @@ interface Stats {
   pendingQuotes: number;
   quotedQuotes: number;
   totalQuotes: number;
-  recentQuotes: QuoteRow[];
-}
-
-// ─── Status badge ─────────────────────────────────────────────────────────────
-const STATUS_CONFIG: Record<QuoteStatus, { label: string; cls: string; dot: string }> = {
-  pending:  { label: "Pending",  cls: "bg-amber-500/10 text-amber-400 border-amber-500/20",   dot: "bg-amber-400" },
-  quoted:   { label: "Quoted",   cls: "bg-blue-500/10 text-blue-400 border-blue-500/20",      dot: "bg-blue-400" },
-  accepted: { label: "Accepted", cls: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", dot: "bg-emerald-400" },
-  declined: { label: "Declined", cls: "bg-red-500/10 text-red-400 border-red-500/20",         dot: "bg-red-400" },
-};
-
-function StatusBadge({ status }: { status: QuoteStatus }) {
-  const c = STATUS_CONFIG[status] ?? STATUS_CONFIG.pending;
-  return (
-    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-full border ${c.cls}`}>
-      <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
-      {c.label}
-    </span>
-  );
-}
-
-// ─── Quote Requests Panel ────────────────────────────────────────────────────
-function QuotesPanel({ initialQuotes, initialPending }: { initialQuotes: QuoteRow[]; initialPending: number }) {
-  const [quotes, setQuotes] = useState<QuoteRow[]>(initialQuotes);
-  const [filterStatus, setFilterStatus] = useState<"all" | QuoteStatus>("all");
-  const [updating, setUpdating] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(initialPending);
-
-  const fetchQuotes = useCallback(async (status: string, pageNum: number) => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({ limit: "20", page: String(pageNum) });
-      if (status !== "all") params.set("status", status);
-      const res = await fetch(`/api/corporate/quotes?${params}`);
-      const data = await res.json();
-      setQuotes(data.quotes ?? []);
-      setTotal(data.total ?? 0);
-      setPage(pageNum);
-    } catch {}
-    setLoading(false);
-  }, []);
-
-  function handleFilterChange(status: "all" | QuoteStatus) {
-    setFilterStatus(status);
-    fetchQuotes(status, 1);
-  }
-
-  async function updateStatus(id: string, status: QuoteStatus) {
-    setUpdating(id);
-    try {
-      await fetch("/api/corporate/quotes", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
-      });
-      setQuotes(prev => prev.map(q => q.id === id ? { ...q, status } : q));
-    } catch {}
-    setUpdating(null);
-  }
-
-  const tabs: { key: "all" | QuoteStatus; label: string; count?: number }[] = [
-    { key: "all",      label: "All" },
-    { key: "pending",  label: "Pending",  count: initialPending },
-    { key: "quoted",   label: "Quoted" },
-    { key: "accepted", label: "Accepted" },
-    { key: "declined", label: "Declined" },
-  ];
-
-  return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
-      {/* Header */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center">
-            <Inbox className="w-4 h-4 text-amber-400" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-white">Quote Requests</h2>
-            <p className="text-[10px] text-white/40">{total} total · {initialPending} awaiting response</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          {initialPending > 0 && (
-            <span className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center text-[9px] font-bold text-black">
-              {initialPending}
-            </span>
-          )}
-          <Link href="/corporate/catalog" className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 font-semibold">
-            View Catalog <ChevronRight className="w-3 h-3" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 px-4 pt-3 pb-0 overflow-x-auto hide-scrollbar">
-        {tabs.map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => handleFilterChange(tab.key)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold whitespace-nowrap transition-all ${
-              filterStatus === tab.key
-                ? "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-                : "text-white/40 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            {tab.label}
-            {tab.count !== undefined && tab.count > 0 && (
-              <span className="w-4 h-4 bg-amber-500 rounded-full text-[8px] font-bold text-black flex items-center justify-center">
-                {tab.count}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* Table */}
-      <div className="px-4 pb-4 mt-3">
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
-          </div>
-        ) : quotes.length === 0 ? (
-          <div className="flex flex-col items-center py-10 text-center">
-            <Inbox className="w-8 h-8 text-white/10 mb-3" />
-            <p className="text-white/40 text-sm">No {filterStatus !== "all" ? filterStatus : ""} quotes yet.</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {quotes.map(q => (
-              <div key={q.id}
-                className="flex items-center gap-3 p-3 bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-white/10 rounded-xl transition-all group">
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                    <p className="text-xs font-semibold text-white truncate">{q.product_name}</p>
-                    <StatusBadge status={q.status} />
-                  </div>
-                  <div className="flex items-center gap-3 text-[10px] text-white/40">
-                    <span className="flex items-center gap-1">
-                      <Building2 className="w-3 h-3" />{q.company_name}
-                    </span>
-                    <span>{q.quantity} units</span>
-                    {q.total_estimate && (
-                      <span className="text-amber-400 font-semibold">{formatKsh(q.total_estimate)}</span>
-                    )}
-                    <span>{new Date(q.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
-                  </div>
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                  {q.status === "pending" && (
-                    <>
-                      <button
-                        onClick={() => updateStatus(q.id, "quoted")}
-                        disabled={updating === q.id}
-                        className="flex items-center gap-1 px-2.5 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/20 text-blue-400 text-[10px] font-bold rounded-lg transition-all disabled:opacity-50"
-                      >
-                        {updating === q.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
-                        Send Quote
-                      </button>
-                      <button
-                        onClick={() => updateStatus(q.id, "declined")}
-                        disabled={updating === q.id}
-                        className="flex items-center gap-1 px-2.5 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 text-[10px] font-bold rounded-lg transition-all disabled:opacity-50"
-                      >
-                        <XCircle className="w-3 h-3" /> Decline
-                      </button>
-                    </>
-                  )}
-                  {q.status === "quoted" && (
-                    <button
-                      onClick={() => updateStatus(q.id, "accepted")}
-                      disabled={updating === q.id}
-                      className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg transition-all disabled:opacity-50"
-                    >
-                      {updating === q.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle className="w-3 h-3" />}
-                      Mark Accepted
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-
-            {/* Pagination */}
-            {total > 20 && (
-              <div className="flex items-center justify-center gap-3 pt-2">
-                <button onClick={() => fetchQuotes(filterStatus, page - 1)} disabled={page === 1 || loading}
-                  className="px-3 py-1.5 text-[11px] text-white/40 hover:text-white disabled:opacity-30 transition-colors">← Prev</button>
-                <span className="text-[10px] text-white/30">Page {page}</span>
-                <button onClick={() => fetchQuotes(filterStatus, page + 1)} disabled={quotes.length < 20 || loading}
-                  className="px-3 py-1.5 text-[11px] text-white/40 hover:text-white disabled:opacity-30 transition-colors">Next →</button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
 }
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
@@ -345,7 +129,7 @@ export default function CorporateDashboard() {
           {/* Quote Requests — takes 2 cols */}
           <div className="lg:col-span-2">
             {stats ? (
-              <QuotesPanel initialQuotes={stats.recentQuotes} initialPending={stats.pendingQuotes} />
+              <QuoteOpsPanel initialPending={stats.pendingQuotes} />
             ) : (
               <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 flex items-center justify-center">
                 <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />

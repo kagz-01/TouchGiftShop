@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/admin-auth";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -7,6 +8,9 @@ const supabase = createClient(
 );
 
 export async function GET() {
+  if (!(await requireAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+
   const now = new Date();
   const monthAgo = new Date(now.getTime() - 30 * 86400000).toISOString();
   const quarterAgo = new Date(now.getTime() - 90 * 86400000).toISOString();

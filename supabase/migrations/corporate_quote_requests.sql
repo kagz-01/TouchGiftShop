@@ -12,6 +12,22 @@ CREATE TABLE IF NOT EXISTS corporate_quote_requests (
   status          text NOT NULL DEFAULT 'pending'
                     CHECK (status IN ('pending','quoted','accepted','declined')),
   quoted_at       timestamptz,
+
+  -- ── Phase 1 ops columns ────────────────────────────────────────────────
+  -- Superset baseline; see corporate_quote_requests_phase1.sql which adds
+  -- these to a database that only has the original definition.
+  assignee            text,
+  internal_notes      text,
+  quoted_amount       numeric(12,2),
+  valid_until         timestamptz,
+  category            text,
+  phone               text,
+  moq_tier            text,
+  design_payload      jsonb,
+  design_preview_url  text,
+  corporate_account_id uuid REFERENCES corporate_accounts(id) ON DELETE SET NULL,
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+
   created_at      timestamptz NOT NULL DEFAULT now()
 );
 

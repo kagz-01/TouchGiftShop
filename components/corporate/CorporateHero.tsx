@@ -10,6 +10,7 @@ import {
   Gift, BarChart3, MessageSquare, X, ChevronRight, Check,
   Globe, Clock, Award, TrendingUp, Palette, Layers, ShoppingBag, Star,
 } from "lucide-react";
+import { MERCH_CATEGORIES, MERCH_TOTAL_SKUS, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
 
 type Product = {
   id: string;
@@ -27,109 +28,10 @@ const STATS = [
   { value: "4.9★", label: "Client Rating", icon: Award },
 ];
 
-// Branded merchandise catalog categories for awareness
-const MERCH_CATEGORIES = [
-  {
-    emoji: "👕",
-    label: "T-shirts & Polos",
-    desc: "DTG, screen print, embroidery",
-    count: "20 styles",
-    moq: "25 units",
-    href: "/corporate/catalog?category=apparel",
-    color: "from-blue-500/20 to-indigo-400/10",
-    border: "border-[color:var(--corp-hero-accent)]/20",
-    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
-  },
-  {
-    emoji: "🧥",
-    label: "Jackets & Workwear",
-    desc: "Softshell, parka, overalls, hi-vis",
-    count: "32 styles",
-    moq: "10 units",
-    href: "/corporate/catalog?category=workwear",
-    color: "from-cyan-500/20 to-blue-500/10",
-    border: "border-cyan-500/20",
-    badge: "bg-cyan-500/10 text-cyan-400",
-  },
-  {
-    emoji: "🧢",
-    label: "Caps & Headwear",
-    desc: "Baseball, trucker, snapback, bucket",
-    count: "9 styles",
-    moq: "25 units",
-    href: "/corporate/catalog?category=caps",
-    color: "from-orange-500/20 to-amber-500/10",
-    border: "border-orange-500/20",
-    badge: "bg-orange-500/10 text-orange-400",
-  },
-  {
-    emoji: "🎒",
-    label: "Bags & Totes",
-    desc: "Cotton, jute, duffel, laptop bags",
-    count: "15 styles",
-    moq: "25 units",
-    href: "/corporate/catalog?category=bags",
-    color: "from-rose-500/20 to-pink-500/10",
-    border: "border-rose-500/20",
-    badge: "bg-rose-500/10 text-rose-400",
-  },
-  {
-    emoji: "🪧",
-    label: "Banners & Displays",
-    desc: "Roll-up, X-banner, media wall, pop-up",
-    count: "11 formats",
-    moq: "1 unit",
-    href: "/corporate/catalog?category=banners",
-    color: "from-violet-500/20 to-purple-500/10",
-    border: "border-violet-500/20",
-    badge: "bg-violet-500/10 text-violet-400",
-  },
-  {
-    emoji: "☂️",
-    label: "Umbrellas & Tents",
-    desc: "Golf, compact, 3×3 branded gazebos",
-    count: "6 styles",
-    moq: "10 units",
-    href: "/corporate/catalog?category=umbrellas",
-    color: "from-sky-500/20 to-indigo-500/10",
-    border: "border-[color:var(--corp-hero-accent)]/20",
-    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
-  },
-  {
-    emoji: "🏆",
-    label: "Drinkware & Awards",
-    desc: "Mugs, tumblers, bottles, laser engrave",
-    count: "18 styles",
-    moq: "12 units",
-    href: "/corporate/catalog?category=drinkware",
-    color: "from-yellow-500/20 to-amber-500/10",
-    border: "border-yellow-500/20",
-    badge: "bg-yellow-500/10 text-yellow-400",
-  },
-  {
-    emoji: "📓",
-    label: "Notebooks & Pens",
-    desc: "Leather journals, deboss, gold foil",
-    count: "12 styles",
-    moq: "20 units",
-    href: "/corporate/catalog?category=stationery",
-    color: "from-stone-500/20 to-neutral-500/10",
-    border: "border-stone-500/20",
-    badge: "bg-stone-500/10 text-stone-400",
-  },
-  {
-    emoji: "🧣",
-    label: "Blankets & Towels",
-    desc: "Fleece throw, beach, golf, picnic",
-    count: "5 styles",
-    moq: "15 units",
-    href: "/corporate/catalog?category=fabric",
-    color: "from-indigo-400/20 to-green-500/10",
-    border: "border-[color:var(--corp-hero-accent)]/20",
-    badge: "bg-[color:var(--corp-hero-accent)]/10 text-[color:var(--corp-hero-accent)]",
-  },
-];
-
+/* Category cards now come from lib/corporate-merch.ts, which mirrors
+   catalog/brandables.csv. The previous nine cards were invented — style counts
+   that matched no data, and three of them (workwear, banners, tents) are
+   explicitly TouchLine territory per `coporate side.txt`. */
 const FEATURES = [
   {
     icon: Zap,
@@ -449,32 +351,35 @@ export default function CorporateHero({ products }: { products: Product[] }) {
           </div>
         </motion.div>
 
-        {/* Category grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+        {/* Category grid — counts are the real SKU counts from brandables.csv */}
+        <p className="text-center text-[11px] text-[color:var(--corp-text-muted)] mb-6">
+          {MERCH_TOTAL_SKUS} gift-ready branded styles, ready to personalise
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-10">
           {MERCH_CATEGORIES.map((cat, i) => (
             <motion.a
-              key={cat.label}
-              href={cat.href}
+              key={cat.key}
+              href={`/corporate/catalog?category=${cat.slug}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className={`group relative bg-gradient-to-br ${cat.color} border ${cat.border} rounded-2xl p-5 hover:scale-[1.02] transition-all cursor-pointer flex gap-4 items-start`}
+              transition={{ delay: i * 0.04 }}
+              className="group relative bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] rounded-2xl p-4 sm:p-5 hover:border-[color:var(--corp-accent)]/50 transition-all cursor-pointer flex gap-3 sm:gap-4 items-start"
             >
-              <span className="text-3xl shrink-0 mt-0.5">{cat.emoji}</span>
+              <span className="text-2xl sm:text-3xl shrink-0 mt-0.5" aria-hidden>{cat.emoji}</span>
               <div className="flex-1 min-w-0">
-                <p className="font-bold text-[color:var(--corp-text)] text-sm">{cat.label}</p>
-                <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-0.5 leading-snug">{cat.desc}</p>
+                <p className="font-bold text-[color:var(--corp-text)] text-sm truncate">{cat.label}</p>
+                <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-0.5 leading-snug">{cat.blurb}</p>
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.badge}`}>
-                    {cat.count}
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[color:var(--corp-accent)]/12 text-[color:var(--corp-accent-soft)]">
+                    {cat.count} styles
                   </span>
-                  <span className="text-[10px] text-[color:var(--corp-text-muted)]">
-                    MOQ: {cat.moq}
+                  <span className="text-[10px] text-[color:var(--corp-text-muted)] whitespace-nowrap">
+                    MOQ {cat.moq}
                   </span>
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+              <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:translate-x-1 group-hover:text-[color:var(--corp-text)] transition-all shrink-0 mt-1" />
             </motion.a>
           ))}
 
@@ -532,6 +437,46 @@ export default function CorporateHero({ products }: { products: Product[] }) {
             </a>
           </div>
         </motion.div>
+      </section>
+
+      {/* ── TouchLine bridge ──
+          Required by `coporate side.txt` §"Soft bridge": a clear but SECONDARY
+          exit, on the corporate page only. The homepage and main catalog stay
+          gift-led; this is where heavy brandable work gets handed off so the
+          two brands stop competing for the same jobs. */}
+      <section className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+        <div className="rounded-3xl border border-dashed border-[color:var(--corp-border-str)] bg-[color:var(--corp-surface)] p-6 sm:p-10">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)] mb-2">
+                {TOUCHLINE_BRIDGE.eyebrow}
+              </p>
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-[color:var(--corp-text)] mb-2">
+                {TOUCHLINE_BRIDGE.heading}
+              </h3>
+              <p className="text-sm text-[color:var(--corp-text-muted)] leading-relaxed max-w-2xl">
+                {TOUCHLINE_BRIDGE.body}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-col gap-3 shrink-0 w-full sm:w-auto">
+              <a
+                href={TOUCHLINE_BRIDGE.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-[color:var(--corp-accent)] hover:bg-[color:var(--corp-accent-soft)] text-[color:var(--corp-accent-text)] font-bold text-sm rounded-xl transition-all"
+              >
+                {TOUCHLINE_BRIDGE.cta}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <a
+                href="#packs"
+                className="flex items-center justify-center gap-2 px-6 py-3 border border-[color:var(--corp-border-str)] text-[color:var(--corp-text)] font-bold text-sm rounded-xl hover:bg-[color:var(--corp-surface-2)] transition-all"
+              >
+                {TOUCHLINE_BRIDGE.secondaryCta}
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── Milestone Automation ── */}

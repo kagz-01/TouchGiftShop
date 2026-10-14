@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { MERCH_CATEGORIES, MERCH_TOTAL_SKUS } from "@/lib/corporate-merch";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -35,17 +36,20 @@ const BULK_TIERS = [
   { min: 500, max: null, label: "500+ units",   pct: 25 },
 ];
 
+/* Mirrors lib/corporate-merch.ts so the sidebar can't drift from the hero hub.
+   The old list used slugs (`workwear`, `caps`, `banners`, `umbrellas`,
+   `fabric`, `stationery`) that are absent from the TAXONOMY set in
+   lib/category-map.ts. getDbSlugs() returns [] for an unknown slug, which
+   callers read as "no filter" — so six of nine categories silently displayed
+   the entire shop under a heading like "Banners & Displays". */
 const CATEGORIES = [
-  { key: "all",        label: "All Products",       emoji: "🗂️",  moq: null },
-  { key: "apparel",    label: "T-shirts & Polos",   emoji: "👕",  moq: 25 },
-  { key: "workwear",   label: "Jackets & Workwear", emoji: "🧥",  moq: 10 },
-  { key: "caps",       label: "Caps & Headwear",    emoji: "🧢",  moq: 25 },
-  { key: "bags",       label: "Bags & Totes",       emoji: "🎒",  moq: 25 },
-  { key: "banners",    label: "Banners & Displays", emoji: "🪧",  moq: 1  },
-  { key: "umbrellas",  label: "Umbrellas & Tents",  emoji: "☂️",  moq: 10 },
-  { key: "drinkware",  label: "Drinkware & Awards", emoji: "🏆",  moq: 12 },
-  { key: "stationery", label: "Notebooks & Pens",   emoji: "📓",  moq: 20 },
-  { key: "fabric",     label: "Blankets & Towels",  emoji: "🧣",  moq: 15 },
+  { key: "all", label: `All ${MERCH_TOTAL_SKUS} Styles`, emoji: "🗂️", moq: null as number | null },
+  ...MERCH_CATEGORIES.map((c) => ({
+    key: c.slug,
+    label: c.label,
+    emoji: c.emoji,
+    moq: c.moq as number | null,
+  })),
 ];
 
 function getBrandingMethods(name: string, tags?: string[]): string[] {
