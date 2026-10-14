@@ -1,6 +1,6 @@
 # Corporate UI — Flow Design & Build TODO
 
-_Status: Phase A complete, Phase B (sections 3-5) complete except Proof_
+_Status: Phase A + B complete. Phase C blocked on catalog imagery._
 _Last updated: 2026-10-14_
 
 ---
@@ -156,7 +156,18 @@ real window. Empty state says "be the first" rather than inventing 2,400.
       "Everything" tab. `CorporateSectionTabs` keeps section-level scroll-spy
       for Range / How only — two distinct jobs, deliberately not merged.
 - [x] **B3.** Portal CTA is terminal; TouchLine sits after it as the exit.
-- [ ] **B4.** Proof section — still open, see §6 decision 2.
+- [x] **B4.** Proof section (`CorporateProof`) + public aggregate endpoint
+      `/api/corporate/proof`. Counts only — no company name, contact, email or
+      note is ever returned. Reports companies enquired / quote requests /
+      bulk inquiries / recipients covered.
+
+      **No revenue, fulfilment or on-time rate**, because there is no
+      `corporate_orders` table — we cannot count what we don't store.
+
+      Verified live against the real database: both corporate tables are
+      **empty**, so the section renders its empty state — "You'd be our first,
+      ... no projections." That also means the roadmap's Phase 0 exit
+      criteria ("quotes are landing in DB") is **not** met yet.
 
 ### Phase C — Product showcase (blocked on catalog load)
 
@@ -189,14 +200,15 @@ real window. Empty state says "be the first" rather than inventing 2,400.
 | `shop_products` may be empty | "Corporate Packs" likely already renders an empty state | verify |
 | Hero stats unverifiable | Cannot be repaired without real order data | — |
 | `/corporate/dashboard` is admin-only | "Client Portal" 401s for clients; portal framing is premature | decision |
-| Hero stats have no data source | Can't be made truthful without order data | — |
+| `corporate_orders` doesn't exist | No revenue/fulfilment proof is possible | Phase 5 |
+| Corporate tables are empty (verified) | Proof section shows the empty state; quotes aren't landing yet | ops |
 
 ## 6. Decisions needed before Phase B
 
 1. **Tabs: scroll-spy or true switching?** Scroll-spy is friendlier and keeps
    deep links working, but a buyer looking for "Team gifts" wants to *switch*,
    not scroll. Hybrid: true switching for the three journeys, scroll-spy for the rest.
-2. **Keep the hero stats with real numbers, or drop them?** Dropping is faster;
-   real numbers need a data source agreed.
-3. **Does the portal door say "Client Portal" or "Ops Dashboard"?** They are
-   different audiences and today only ops can reach it.
+2. ~~Keep the hero stats with real numbers, or drop them?~~ **Resolved:** dropped
+   the invented ones; Proof now shows real counts with an honest empty state.
+3. ~~Does the portal door say "Client Portal" or "Ops Dashboard"?~~ **Resolved:**
+   "Ops Dashboard" until the customer portal actually exists (Phase 2/6).

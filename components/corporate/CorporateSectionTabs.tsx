@@ -23,6 +23,7 @@ import { ArrowUpRight } from "lucide-react";
 const SECTION_IDS = [
   { id: "range", label: "The range" },
   { id: "how", label: "How it works" },
+  { id: "proof", label: "Where we are" },
 ] as const;
 
 export default function CorporateSectionTabs() {

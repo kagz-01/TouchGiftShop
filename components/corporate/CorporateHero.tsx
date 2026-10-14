@@ -14,6 +14,7 @@ import { MERCH_CATEGORIES, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
 import { CAPABILITIES, CAPABILITY_STATE_LABEL } from "@/lib/corporate-capabilities";
 import CorporateSectionTabs from "@/components/corporate/CorporateSectionTabs";
 import CorporateRangeSection from "@/components/corporate/CorporateRangeSection";
+import CorporateProof from "@/components/corporate/CorporateProof";
 
 
 /* Category cards now come from lib/corporate-merch.ts, which mirrors
@@ -238,6 +239,9 @@ export default function CorporateHero() {
           ))}
         </div>
       </section>
+
+      {/* ── Proof: real numbers or an honest empty state ── */}
+      <CorporateProof />
 
       {/* ── Branded Merchandise Hub ── */}
       <section id="merch" className="relative z-10 max-w-7xl mx-auto px-4 pt-16 pb-28 scroll-mt-20">
