@@ -1,6 +1,6 @@
 # Corporate UI — Flow Design & Build TODO
 
-_Status: design agreed for discussion, nothing in Phase A built yet_
+_Status: Phase A complete, Phase B (sections 3-5) complete except Proof_
 _Last updated: 2026-10-14_
 
 ---
@@ -132,28 +132,31 @@ real window. Empty state says "be the first" rather than inventing 2,400.
 
 ### Phase A — Remove what doesn't hold up (no blockers)
 
-- [ ] **A0.** Resolve the "Client Portal" label (see §2). Blocking for §3's
-      portal section — do not build a section around a link that 401s.
-- [ ] **A1.** Delete the `Corporate Packs` section + its `shop_products` query.
-      Verify `shop_products` isn't left orphaned for `/shop/checkout` and
-      `/corporate/checkout`, which also read it.
-- [ ] **A2.** Remove the `Milestones` section; fold milestones into the
-      "Send" capability card as `In build`.
-- [ ] **A3.** Strip the four hero stats and the "Join 2,400+" line. Replace
-      with something honest or nothing.
-- [ ] **A4.** Rewrite `FEATURES` to the four Send/Brand/Track/Pay cards with
-      Live / In-build labels.
-- [ ] **A5.** Move the TouchLine bridge below the portal CTA.
+- [x] **A0.** Relabelled "Client Portal" → "Ops Dashboard". The route is
+      `requireAdmin()`-gated, so the old label sent clients to a 401.
+- [x] **A1.** Deleted `Corporate Packs` + its `shop_products` query. `app/corporate/page.tsx`
+      is now a pure metadata route. `shop_products` is still read by
+      `/shop/checkout` and `/corporate/checkout` — left in place, not orphaned.
+- [x] **A2.** Removed `Milestones`; automation now sits in the `Automate`
+      capability card as `In build`.
+- [x] **A3.** Removed the four stats and "Join 2,400+". Replaced with three
+      claims we can actually stand behind (Studio, structured quotes, delivery).
+- [x] **A4.** `FEATURES` → `lib/corporate-capabilities.ts`: Send / Brand /
+      Track / Pay / Automate, each labelled `Live` or `In build`. Verified in
+      the browser: 3 Live, 2 In build.
+- [x] **A5.** TouchLine bridge moved below the portal CTA.
+- [x] **A6.** Removed the "Order for Team" modal — `setSelectedProduct` was
+      only ever called with `null` once Corporate Packs went, so nothing could
+      open it. To be reattached to the product showcase in Phase C.
 
 ### Phase B — Restructure to the new order (no blockers)
 
-- [ ] **B1.** Move the range/showcase to position 2, directly under the hero.
-- [ ] **B2.** Convert the three journeys from stacked sections into the tab
-      set; extend `CorporateSectionTabs` from scroll-spy to real tab switching
-      for this group only (keep scroll-spy for How/Portal).
-- [ ] **B3.** Promote the portal CTA to a terminal section with the dashboard
-      as its primary action, and surface the ops-dashboard affordance.
-- [ ] **B4.** Add the Proof section with a real-data query and an empty state.
+- [x] **B1.** Range is now position 2, directly under the hero and tab bar.
+- [x] **B2.** Journeys are real tabs (`CorporateRangeSection`) with a fourth
+      "Everything" tab. `CorporateSectionTabs` keeps section-level scroll-spy
+      for Range / How only — two distinct jobs, deliberately not merged.
+- [x] **B3.** Portal CTA is terminal; TouchLine sits after it as the exit.
+- [ ] **B4.** Proof section — still open, see §6 decision 2.
 
 ### Phase C — Product showcase (blocked on catalog load)
 

@@ -11,22 +11,23 @@ export const metadata: Metadata = {
     title: "TouchGift Corporate — Reward Your Team at Scale",
     description:
       "Forget spreadsheets. Send branded gifts to your entire team in minutes.",
-    type: "website",
+    url: "https://touchgiftshop.co.ke/corporate",
   },
 };
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export default async function CorporatePortalPage() {
-  const { data: products } = await supabase
-    .from("shop_products")
-    .select("id, name, description, price, media_urls, vibe_tags")
-    .contains("vibe_tags", ["Corporate"])
-    .eq("is_active", true)
-    .limit(12);
-
-  return <CorporateHero products={products ?? []} />;
+/* This page no longer fetches anything itself.
+ *
+ * It used to query shop_products filtered on `vibe_tags contains ['Corporate']`.
+ * That is a different table from `products` — the one the storefront and the
+ * catalog actually read — and no import path anywhere writes that tag, so the
+ * section fed by it ("Curated Team Packs") rendered an empty grid and duplicated
+ * the branded-merchandise hub that sits below it. Both are gone.
+ *
+ * The range, the quote CTA and the portal links are all client-side now, so
+ * this is a pure metadata + composition route. If the showcase later needs
+ * server-rendered product data, fetch from `products` (not `shop_products`)
+ * and key it to lib/corporate-merch.ts slugs.
+ */
+export default function CorporatePortalPage() {
+  return <CorporateHero />;
 }

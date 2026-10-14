@@ -15,6 +15,10 @@
 import { Gift, Users, UserPlus, type LucideIcon } from "lucide-react";
 import { MERCH_CATEGORIES } from "@/lib/corporate-merch";
 
+/* Category KEY (the CSV grouping), not slug. Four distinct categories share the
+ * `accessories` slug — umbrellas, headwear, home and travel — so keying off
+ * slug collapsed "Team gifts" to two cards and made the tab look broken. */
+
 export type Journey = {
   id: string;
   /** Tab label. Keep short — this renders in a sticky bar. */
@@ -23,8 +27,8 @@ export type Journey = {
   title: string;
   lede: string;
   icon: LucideIcon;
-  /** 2–3 concrete moments inside this journey. */
-  moments: { label: string; note: string; slugs: string[] }[];
+  /** 2–3 concrete moments inside this journey. `keys` are MERCH_CATEGORIES keys. */
+  moments: { label: string; note: string; keys: string[] }[];
   /**
    * Ops handoff script. Doc item 4: a gift order stays on TouchGift, anything
    * with uniforms or signage goes to TouchLine. Giving ops the exact wording
@@ -32,9 +36,6 @@ export type Journey = {
    */
   whatsappScript: string;
 };
-
-const slug = (key: string) =>
-  MERCH_CATEGORIES.find((c) => c.key === key)?.slug ?? "apparel";
 
 export const JOURNEYS: Journey[] = [
   {
@@ -47,17 +48,17 @@ export const JOURNEYS: Journey[] = [
       {
         label: "Thank a client",
         note: "End-of-project and contract-signature gestures, delivered to their door with your branding on it.",
-        slugs: [slug("Branded Apparel"), slug("Branded Bags")],
+        keys: ["Branded Apparel", "Branded Bags"],
       },
       {
         label: "Welcome a new account",
         note: "A first-meeting kit that makes you the vendor who remembered.",
-        slugs: [slug("Desk Gifts"), slug("Travel Gifts")],
+        keys: ["Desk Gifts", "Travel Gifts"],
       },
       {
         label: "Festive & seasonal",
         note: "Year-end client gifts that don't land in a drawer.",
-        slugs: [slug("Branded Accessories"), slug("Home & Comfort Gifts")],
+        keys: ["Branded Accessories", "Home & Comfort Gifts"],
       },
     ],
     whatsappScript:
@@ -73,17 +74,17 @@ export const JOURNEYS: Journey[] = [
       {
         label: "Hit a target",
         note: "Quarter and month-end wins, shipped to everyone who hit it.",
-        slugs: [slug("Branded Headwear"), slug("Branded Apparel")],
+        keys: ["Branded Headwear", "Branded Apparel"],
       },
       {
         label: "Work anniversary",
         note: "One, three, five years. A keep-forever layer rather than a token.",
-        slugs: [slug("Branded Outerwear"), slug("Branded Apparel")],
+        keys: ["Branded Outerwear", "Branded Apparel"],
       },
       {
         label: "The long-hauler",
         note: "For the people who quietly kept things running.",
-        slugs: [slug("Home & Comfort Gifts"), slug("Travel Gifts")],
+        keys: ["Home & Comfort Gifts", "Travel Gifts"],
       },
     ],
     whatsappScript:
@@ -99,17 +100,17 @@ export const JOURNEYS: Journey[] = [
       {
         label: "Before they start",
         note: "Something waiting at their desk or delivered to their door on day one.",
-        slugs: [slug("Branded Bags"), slug("Travel Gifts")],
+        keys: ["Branded Bags", "Travel Gifts"],
       },
       {
         label: "First project shipped",
         note: "The small win that makes the first month feel like progress.",
-        slugs: [slug("Desk Gifts"), slug("Branded Headwear")],
+        keys: ["Desk Gifts", "Branded Headwear"],
       },
       {
         label: "First 90 days",
         note: "A marker for the moment they stop being new.",
-        slugs: [slug("Branded Apparel"), slug("Branded Accessories")],
+        keys: ["Branded Apparel", "Branded Accessories"],
       },
     ],
     whatsappScript:
@@ -117,9 +118,5 @@ export const JOURNEYS: Journey[] = [
   },
 ];
 
-/** Section ids for the sticky tab bar, in page order. */
-export const SECTION_IDS = [
-  ...JOURNEYS.map((j) => ({ id: j.id, label: j.tab })),
-  { id: "merch", label: "The range" },
-  { id: "how", label: "How it works" },
-] as const;
+/* NOTE: journey `id`s are tab keys used by CorporateRangeSection, not DOM
+   section ids. Section-level wayfinding lives in CorporateSectionTabs. */

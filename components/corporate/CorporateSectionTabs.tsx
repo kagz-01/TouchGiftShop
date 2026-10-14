@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SECTION_IDS } from "@/lib/corporate-journeys";
 import { TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
 import { ArrowUpRight } from "lucide-react";
 
@@ -18,6 +17,14 @@ import { ArrowUpRight } from "lucide-react";
  * uniforms / events? → TouchLine") because that is the moment someone realises
  * they are in the wrong place for their job.
  */
+/** Section-level wayfinding only. The three journeys are real tabs inside
+ *  #range (CorporateRangeSection) — deliberately a different job from this bar,
+ *  which just tracks where you are on the page. */
+const SECTION_IDS = [
+  { id: "range", label: "The range" },
+  { id: "how", label: "How it works" },
+] as const;
+
 export default function CorporateSectionTabs() {
   const [active, setActive] = useState<string>(SECTION_IDS[0].id);
   const [stuck, setStuck] = useState(false);
