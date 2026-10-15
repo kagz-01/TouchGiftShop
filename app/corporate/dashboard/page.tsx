@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
-  BarChart3, TrendingUp, Users, Gift, DollarSign, Target, ArrowUpRight, Calendar, Package, Building2, ShoppingBag, RefreshCw, Inbox, Loader2, AlertCircle, Palette,
+  BarChart3, TrendingUp, Users, Gift, DollarSign, Target, ArrowUpRight, Calendar, Package, Building2, ShoppingBag, RefreshCw, Inbox, AlertCircle, Palette,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import QuoteOpsPanel from "@/components/corporate/QuoteOpsPanel";
@@ -33,14 +33,25 @@ interface Stats {
 export default function CorporateDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [statsError, setStatsError] = useState<string | null>(null);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
+    setStatsError(null);
     try {
       const res = await fetch("/api/corporate/stats");
-      if (res.ok) setStats(await res.json());
-    } catch {}
-    setLoading(false);
+      if (!res.ok) {
+        // Keep whatever we already had on screen — a blip shouldn't wipe
+        // the dashboard back to empty.
+        setStatsError(`Could not load stats (${res.status}).`);
+        return;
+      }
+      setStats(await res.json());
+    } catch {
+      setStatsError("Could not reach the server.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
@@ -111,6 +122,18 @@ export default function CorporateDashboard() {
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="bg-white/5 rounded-2xl p-4 border border-white/8 animate-pulse h-24" />
               ))
+            : statsError && !stats
+            ? (
+                /* No stats at all — say so instead of rendering an empty grid
+                   that looks like the business simply has no numbers. */
+                <div className="col-span-2 sm:col-span-3 lg:col-span-6 bg-red-500/5 border border-red-500/20 rounded-2xl p-4 flex items-center gap-3">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <p className="text-xs text-red-300 flex-1">{statsError} Quote requests below still work.</p>
+                  <button onClick={fetchStats} className="px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs text-white/70 hover:text-white transition-colors">
+                    Retry
+                  </button>
+                </div>
+              )
             : metrics.map(m => (
                 <div key={m.label} className={`bg-white/[0.03] border rounded-2xl p-4 hover:bg-white/[0.06] transition-all ${m.glow}`}>
                   <div className={`w-7 h-7 rounded-xl flex items-center justify-center mb-3 ${m.glow}`}>
@@ -126,15 +149,11 @@ export default function CorporateDashboard() {
         {/* Main grid: Quote panel + sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-          {/* Quote Requests — takes 2 cols */}
+          {/* Quote Requests — takes 2 cols. It fetches its own rows, so it is
+              deliberately NOT gated on the stats call: a stats failure used to
+              leave this area spinning forever even though quotes were fine. */}
           <div className="lg:col-span-2">
-            {stats ? (
-              <QuoteOpsPanel initialPending={stats.pendingQuotes} />
-            ) : (
-              <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-8 flex items-center justify-center">
-                <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
-              </div>
-            )}
+            <QuoteOpsPanel initialPending={stats?.pendingQuotes ?? 0} />
           </div>
 
           {/* Right sidebar */}
