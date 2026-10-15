@@ -5,6 +5,7 @@ import PortalShell from "@/components/corporate/portal/PortalShell";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession, canSeeFinancials } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
+import { statusLabel, statusColour } from "@/lib/portal-status";
 
 
 export const dynamic = "force-dynamic";
@@ -264,11 +265,3 @@ const moneyCell = (q: QuoteSummary) => {
   if (q.total_estimate != null) return `~${formatMoney(q.total_estimate)}`;
   return "Awaiting pricing";
 };
-
-import { statusLabel, statusColour } from "@/lib/portal-status";
-  ({
-    pending: "var(--portal-text-faint)",
-    quoted: "var(--portal-accent)",
-    accepted: "var(--portal-positive)",
-    declined: "var(--portal-stop)",
-  })[status] ?? "var(--portal-text-faint)";

@@ -75,20 +75,17 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No such corporate account" }, { status: 404 });
   }
 
-  // A revoke is a revoke: reinviting the same address must not resurrect it.
+  /* A revoked row is matched on purpose so the invite lands on the same person
+     rather than creating a second membership. Re-inviting is allowed: ops
+     removing someone for a mistake and adding them back a week later is a real
+     sequence, and it takes a deliberate POST either way. What must never happen
+     is a revoked member quietly regaining access without that POST. */
   const { data: existing } = await supabase
     .from("corporate_account_members")
     .select("id, status")
     .eq("corporate_account_id", corporate_account_id)
     .ilike("email", clean)
     .maybeSingle();
-
-  if (existing?.status === "revoked") {
-    return NextResponse.json(
-      { error: "This person was removed from the account. Re-add them from the members list." },
-      { status: 409 }
-    );
-  }
 
   const { data, error } = existing
     ? await supabase
@@ -156,18 +153,20 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "membership_id is required" }, { status: 400 });
   }
 
+  /* Both states can be revoked: a mistake at invitation time has to be
+     undoable, and only a `revoked` row is a dead end. */
   const { data, error } = await supabase
     .from("corporate_account_members")
     .update({ status: "revoked" })
     .eq("id", parsed.data.membership_id)
-    .eq("status", "active")
+    .in("status", ["invited", "active"])
     .select("id")
     .maybeSingle();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   if (!data) {
     return NextResponse.json(
-      { error: "That member is not active" },
+      { error: "That member has already been removed" },
       { status: 409 }
     );
   }

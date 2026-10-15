@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import QuoteOpsPanel from "@/components/corporate/QuoteOpsPanel";
+import PortalAccessPanel from "@/components/corporate/PortalAccessPanel";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Stats {
@@ -210,6 +211,10 @@ export default function CorporateDashboard() {
                 </div>
               </div>
             )}
+
+            {/* Portal access — staff only, and the only place a client login
+                is ever created. */}
+            <PortalAccessPanel />
 
             {/* Quick actions */}
             <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-5">
