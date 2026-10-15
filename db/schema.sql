@@ -399,6 +399,49 @@ CREATE TABLE corporate_accounts (
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ── Corporate account membership (portal identity) ──────────────────────────
+-- The portal authenticates against this table, not against corporate_accounts:
+-- `user_id` above is a single nullable owner pointer that nothing writes, and a
+-- company has more than one person. A membership is created by ops (invite) or
+-- approved by ops — never by a visitor typing a company name, because company
+-- names on quote requests are free text.
+CREATE TABLE corporate_account_members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  corporate_account_id UUID NOT NULL REFERENCES corporate_accounts(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner','member','viewer')),
+  status TEXT NOT NULL DEFAULT 'invited' CHECK (status IN ('invited','active','revoked')),
+  full_name TEXT,
+  job_title TEXT,
+  invited_by TEXT,
+  last_seen_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_corp_members_account_email
+  ON corporate_account_members (corporate_account_id, lower(email));
+CREATE UNIQUE INDEX IF NOT EXISTS idx_corp_members_user_active
+  ON corporate_account_members (user_id) WHERE user_id IS NOT NULL AND status <> 'revoked';
+CREATE INDEX IF NOT EXISTS idx_corp_members_email ON corporate_account_members (lower(email));
+CREATE INDEX IF NOT EXISTS idx_corp_members_account ON corporate_account_members (corporate_account_id);
+
+ALTER TABLE corporate_account_members ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Members read own membership" ON corporate_account_members
+  FOR SELECT USING (
+    status <> 'revoked' AND EXISTS (
+      SELECT 1 FROM auth.users u
+      WHERE u.id = auth.uid()
+        AND (corporate_account_members.user_id = u.id
+             OR lower(corporate_account_members.email) = lower(u.email))
+    )
+  );
+
+CREATE POLICY "Service role manages members" ON corporate_account_members
+  FOR ALL USING (auth.role() = 'service_role') WITH CHECK (auth.role() = 'service_role');
+
 CREATE TABLE brand_profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   corporate_account_id UUID REFERENCES corporate_accounts(id) ON DELETE CASCADE,
@@ -1542,6 +1585,7 @@ CREATE TABLE IF NOT EXISTS corporate_inquiries (
   recipient_count INTEGER NOT NULL DEFAULT 0,
   recipients JSONB NOT NULL DEFAULT '[]'::jsonb,
   status TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'in_progress', 'quoted', 'confirmed', 'completed', 'cancelled')),
+  corporate_account_id UUID REFERENCES corporate_accounts(id) ON DELETE SET NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -1549,6 +1593,7 @@ CREATE TABLE IF NOT EXISTS corporate_inquiries (
 CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_status ON corporate_inquiries(status);
 CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_created ON corporate_inquiries(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_corporate_inquiries_company ON corporate_inquiries(company_name);
+CREATE INDEX IF NOT EXISTS idx_corp_inquiries_account ON corporate_inquiries(corporate_account_id);
 
 CREATE TRIGGER update_corporate_inquiries_updated_at
   BEFORE UPDATE ON corporate_inquiries
@@ -1775,11 +1820,21 @@ CREATE TABLE IF NOT EXISTS corporate_quote_requests (
   moq_tier            text,                      -- bulk price tier quoted
   design_payload      jsonb,                     -- Studio fulfillment JSON
   design_preview_url  text,                      -- rendered PNG from customizations upload
-  corporate_account_id uuid REFERENCES corporate_accounts(id) ON DELETE SET NULL,  -- Phase 2.3
+  corporate_account_id uuid REFERENCES corporate_accounts(id) ON DELETE SET NULL,
   updated_at          timestamptz NOT NULL DEFAULT now(),
+
+  -- ── Portal identity (migration 2026-10-15) ────────────────────────────────
+  -- reference is the string a client can read over the phone: TGQ-4KP7M.
+  -- customer_response is the accept/decline the client sends back, kept
+  -- separate from `status` so ops' own transitions stay auditable.
+  reference            text,                      -- human quote reference, unique when set
+  customer_response    jsonb,                     -- { decision, message, responded_by }
+  customer_responded_at timestamptz,
 
   created_at      timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_corp_quote_reference ON corporate_quote_requests (reference) WHERE reference IS NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_corp_quotes_status    ON corporate_quote_requests (status);
 CREATE INDEX IF NOT EXISTS idx_corp_quotes_created   ON corporate_quote_requests (created_at DESC);
@@ -1796,3 +1851,14 @@ CREATE POLICY "Service role full access"
   TO service_role
   USING (true)
   WITH CHECK (true);
+
+-- ---------------------------------------------------------------------
+-- MIGRATION TRACKING
+-- Owned by scripts/migrate.mjs, which applies db/migrations/*.sql in order
+-- and records each filename here. Declared so a fresh build matches a live
+-- database; never write to it by hand.
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  name       TEXT PRIMARY KEY,
+  applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
