@@ -13,7 +13,8 @@
  *
  * Test markers (case-insensitive substring match on company_name):
  *   corporate_quote_requests : DiagCo, FallbackProof, FallbackCheck, DiagPolo,
-                              Diagnostic, MigrationProof, PostMigration
+ *                              Diagnostic, MigrationProof, PostMigration,
+ *                              Dashboard QA
  *   corporate_inquiries      : DiagCo
  */
 
@@ -43,21 +44,24 @@ if (!url) {
 }
 
 const MARKERS = {
-  corporate_quote_requests: ["diagco", "fallbackproof", "fallbackcheck", "diagpolo", "diagnostic", "migrationproof", "postmigration"],
+  corporate_quote_requests: ["diagco", "fallbackproof", "fallbackcheck", "diagpolo", "diagnostic", "migrationproof", "postmigration", "dashboard qa"],
   corporate_inquiries: ["diagco"],
 };
 
 const sql = postgres(url, { max: 1, ssl: "require", connect_timeout: 15 });
 
+/* Built outside the query template on purpose: nesting a tagged template
+   literal directly inside a `${}` inside another template literal trips the
+   Node parser ("Missing } in template expression"), so the clause is composed
+   first and interpolated as a plain string. */
+const ilikeCompany = (m) => `company_name ILIKE ${sql`'%${m}%'`}`;
+
 try {
   console.log(apply ? "\nAPPLYING\n" : "\nDRY RUN — nothing will be deleted. Pass --apply to confirm.\n");
 
   for (const [table, markers] of Object.entries(MARKERS)) {
-    const rows = await sql.unsafe(
-      `SELECT id, company_name FROM ${table} WHERE ${markers
-        .map((m) => `company_name ILIKE ${sql`'%${m}%'}`)
-        .join(" OR ")}`
-    );
+    const clause = markers.map(ilikeCompany).join(" OR ");
+    const rows = await sql.unsafe(`SELECT id, company_name FROM ${table} WHERE ${clause}`);
     if (!rows.length) {
       console.log(`  ${table}: nothing matching`);
       continue;
@@ -67,11 +71,7 @@ try {
       console.log(`    ${r.id}  "${r.company_name}"`);
     }
     if (apply) {
-      await sql.unsafe(
-        `DELETE FROM ${table} WHERE ${markers
-          .map((m) => `company_name ILIKE ${sql`'%${m}%'}`)
-          .join(" OR ")}`
-      );
+      await sql.unsafe(`DELETE FROM ${table} WHERE ${clause}`);
       console.log(`    → deleted`);
     }
   }
