@@ -120,6 +120,8 @@ export async function GET(req: NextRequest) {
         `email.ilike.${term}`,
         `phone.ilike.${term}`,
         `product_name.ilike.${term}`,
+        // Ops is asked for the reference on the phone, not the company name.
+        `reference.ilike.${term}`,
       ].join(",")
     );
   }

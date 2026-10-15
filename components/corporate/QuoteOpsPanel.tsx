@@ -35,6 +35,9 @@ export interface QuoteRow {
   status: QuoteStatus;
   quoted_at: string | null;
   created_at: string;
+  /** Set when the client answers from their own portal. */
+  customer_response: { decision?: string; message?: string | null; responded_by?: string; responded_at?: string } | null;
+  customer_responded_at: string | null;
 }
 
 /* Mirrors TRANSITIONS in app/api/corporate/quotes/route.ts. Duplicated on
@@ -444,7 +447,7 @@ export default function QuoteOpsPanel({
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search company, email, phone, product…"
+              placeholder="Search company, email, phone, product, or TGQ reference…"
               aria-label="Search quotes"
               className="w-full bg-black/30 border border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-amber-400 focus:outline-none transition-colors min-w-0"
             />
@@ -587,6 +590,40 @@ export default function QuoteOpsPanel({
                       ))}
                     </div>
                   </div>
+
+                  {q.customer_response && (
+                    /* The other half of the loop: the client answered from
+                       their portal, so ops sees it without having to ask. */
+                    <div
+                      className="mx-3 mb-3 rounded-lg border px-3 py-2.5"
+                      style={{
+                        borderColor:
+                          q.customer_response.decision === "accept"
+                            ? "rgba(16,185,129,0.28)"
+                            : "rgba(248,113,113,0.28)",
+                        background:
+                          q.customer_response.decision === "accept"
+                            ? "rgba(16,185,129,0.08)"
+                            : "rgba(248,113,113,0.08)",
+                      }}
+                    >
+                      <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+                        <MessageCircle className="h-3 w-3" />
+                        Client{" "}
+                        {q.customer_response.decision === "accept" ? "accepted" : "declined"}
+                        {q.customer_response.responded_by && (
+                          <span className="font-normal normal-case tracking-normal text-white/40">
+                            from {q.customer_response.responded_by}
+                          </span>
+                        )}
+                      </p>
+                      {q.customer_response.message && (
+                        <p className="mt-1.5 text-[11px] leading-relaxed text-white/70 whitespace-pre-wrap break-words">
+                          {q.customer_response.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
 
                   {open && (
                     <div className="px-3 pb-3">
