@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { requireAdmin } from "@/lib/admin-auth";
+import { verifyAdmin } from "@/lib/admin-auth";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -46,6 +46,20 @@ async function unauthorized() {
   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 }
 
+/* A dead pooler connection must not read as a bad session: the operator would
+   be told to sign in again over a transient network blip. */
+async function guard() {
+  const auth = await verifyAdmin();
+  if (auth.ok) return null;
+  if (auth.reason === "unavailable") {
+    return NextResponse.json(
+      { error: "Could not verify your session right now. Try again." },
+      { status: 503 }
+    );
+  }
+  return unauthorized();
+}
+
 /* Supabase's .or() and .ilike() take raw filter strings, so user input has to
    be escaped or a quote in a search box breaks the query (or injects a clause).
    Postgres escapes a literal with a backslash. */
@@ -59,7 +73,8 @@ function escapeLike(input: string) {
 //   &category=<slug>   &from=<YYYY-MM-DD>   &to=<YYYY-MM-DD>
 //   &assignee=<name>   &limit=50   &page=1
 export async function GET(req: NextRequest) {
-  if (!(await requireAdmin())) return unauthorized();
+  const denied = await guard();
+  if (denied) return denied;
 
   const { searchParams } = new URL(req.url);
   const status = searchParams.get("status") ?? "all";
@@ -119,7 +134,8 @@ export async function GET(req: NextRequest) {
 // Only whitelisted fields are written; `id` and `created_at` are never accepted
 // from the body, so a crafted request cannot repoint the update at another row.
 export async function PATCH(req: NextRequest) {
-  if (!(await requireAdmin())) return unauthorized();
+  const denied = await guard();
+  if (denied) return denied;
 
   let body: Record<string, unknown>;
   try {
@@ -163,6 +179,18 @@ export async function PATCH(req: NextRequest) {
     if (from === to) {
       // Idempotent no-op — clicking "Send Quote" twice shouldn't 400.
       delete update.status;
+
+      // ...but it must not fall through to an UPDATE with an empty patch.
+      // PostgREST returns zero rows for that, so .single() raises and the
+      // route 500s. Reply with the unchanged row instead.
+      if (!Object.keys(update).length) {
+        const { data: unchanged } = await supabase
+          .from("corporate_quote_requests")
+          .select("*")
+          .eq("id", id)
+          .single();
+        return NextResponse.json({ quote: unchanged, unchanged: true });
+      }
     } else if (!TRANSITIONS[from]?.includes(to)) {
       return NextResponse.json(
         { error: `Cannot move a quote from "${from}" to "${next}"` },
