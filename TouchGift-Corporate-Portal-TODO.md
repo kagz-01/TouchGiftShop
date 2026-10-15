@@ -1,8 +1,8 @@
 # Corporate Client Portal — Build TODO
 
-_Status: Phases 0–3 complete. Phase 4 (orders) is the next real blocker._
+_Status: Phases 0–3 complete, Phase 4 half done (the spine works; the screens do not)._
 _Last updated: 2026-10-15_
-_Last build commits: `6e08ff6` (migrate runner), `4fa1b1e` (identity schema), `034b470` (client session), `ea46c5a` (quote references), `eb6f20b` (portal), `65cd951` (portal pages + invite panel)_
+_Last build commits: `6e08ff6` (migrate runner), `4fa1b1e` (identity), `034b470` (client session), `ea46c5a` (quote references), `eb6f20b` (portal), `65cd951` (portal pages), `dfad906` (ops sees responses), `0586b35` (order spine), `b65d8b3` (test-tenant cleanup)_
 
 ---
 
@@ -211,20 +211,20 @@ This is the loop that makes it a portal rather than a report.
 
 ## 7. Phase 4 — Orders and delivery
 
-- [ ] **4.1.** Choose the order spine. `corporate_orders` is the right table and
+- [x] **4.1.** Choose the order spine. `corporate_orders` is the right table and
       already modelled; `orders` is the fulfilment table. Corporate order →
       fan out to one `orders` row per recipient (the shape
       `POST /api/orders/corporate` already attempts).
-- [ ] **4.2.** Rewrite `POST /api/orders/corporate`. It inserts `product_name`,
+- [x] **4.2.** Rewrite `POST /api/orders/corporate`. It inserts `product_name`,
       `order_type` and `corporate_meta` on `orders`, then updates
       `payment_tracking_id` and `payment_merchant_ref` — **none of those columns
       exist**. Real column is `pesapal_tracking_id`. Adopt the two-phase
       fallback already proven in `quote-request` (`42703`/`PGRST204`).
-- [ ] **4.3.** Rewrite `POST /api/corporate/bulk-order`. It writes seven columns
+- [x] **4.3.** Rewrite `POST /api/corporate/bulk-order`. It writes seven columns
       `corporate_orders` does not have, sets `'pending_invoice'` which is not in
       `corporate_order_status`, and swallows the error (`route.ts:74-77`) before
       minting gift cards against an order that was never written.
-- [ ] **4.4.** Replace the placeholder bank details in `bulk-order/route.ts:159-166`
+- [x] **4.4.** Replace the placeholder bank details in `bulk-order/route.ts:159-166`
       (`KCB Bank Kenya / TouchGift Ltd / 1234567890 / KCBLKENX`) with
       env-driven values, and refuse to run the route if they are unset.
 - [ ] **4.5.** Order list and detail in the portal: items, recipients, delivery
@@ -236,7 +236,7 @@ This is the loop that makes it a portal rather than a report.
 - [ ] **4.8.** Fix the pool share link: `POST /api/corporate/pools` mints
       `/pool/{slug}` from `corporate_gift_pools`, but `/pool/[slug]` serves
       `group_gifting_pools`.
-- [ ] **4.9.** Decide whether `orders` gains a company link. Every
+- [x] **4.9.** Decide whether `orders` gains a company link. Every
       corporate-vs-consumer query currently filters `orders.is_corporate`, which
       does not exist — either add the column or stop querying it.
 
@@ -358,10 +358,10 @@ None of these are portal features. They are live pages that render shell and lie
 
 | Surface | Reality | Action |
 |---|---|---|
-| `/api/corporate/stats` | Filters `orders.is_corporate` — column absent. Errors swallowed, every order metric reads 0 | Fix in Phase 4 |
-| `/api/corporate/reports` | Same, plus `corporate_gift_pools.current_amount` (real: `current_balance`) | Fix in Phase 5 |
-| `/api/orders/corporate` | Writes 5 non-existent `orders` columns; 500 | Phase 4 |
-| `/api/corporate/bulk-order` | Writes 7 non-existent `corporate_orders` columns, invalid enum, swallowed error, placeholder bank details | Phase 4 |
+| `/api/corporate/stats` | Filtered `orders.is_corporate` — column absent. Errors swallowed, every order metric read 0 | **Fixed** — real figures now |
+| `/api/corporate/reports` | Same, plus `orders.department` and `corporate_gift_pools.current_amount` | **Fixed** — department read from the parent order |
+| `/api/orders/corporate` | Wrote 5 non-existent `orders` columns; 500 | **Fixed** — parent + fulfilment rows, rolls back |
+| `/api/corporate/bulk-order` | Wrote 7 non-existent `corporate_orders` columns, invalid enum, swallowed error, hardcoded KCB bank details | **Fixed** — env-driven, refuses without them |
 | `/corporate/success` | `sessionStorage` only — not reloadable, not shareable | Phase 4 |
 | `/corporate/clients`, `/calendar`, `/milestones`, `/pools`, `/reports`, `/marketplace`, `/whatsapp` | Publicly reachable; their APIs are admin-gated, so anonymous visitors see an empty shell | Phase 9 |
 | `/corporate/whitelabel/dashboard` | 100% hardcoded data | Phase 8 |
