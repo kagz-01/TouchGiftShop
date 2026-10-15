@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { sendEmail } from "@/lib/notifications";
+import { resolveCorporateAccount, assignQuoteReference } from "@/lib/corporate-accounts";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -51,6 +52,7 @@ async function notifyOps(args: {
   total: number;
   notes?: string;
   dashboardUrl: string;
+  reference?: string | null;
 }) {
   const to = process.env.NOTIFY_EMAIL;
   if (!to) {
@@ -66,6 +68,7 @@ async function notifyOps(args: {
     ["Email", args.email],
     ["Phone", args.phone ?? "—"],
     ["Estimate", `KES ${args.total.toLocaleString("en-KE")}`],
+    ["Reference", args.reference ?? "—"],
     ["Notes", args.notes || "—"],
   ];
 
@@ -89,6 +92,54 @@ async function notifyOps(args: {
 
   if (!result.success) {
     console.warn("[quote-request] ops email not sent:", result.reason);
+  }
+}
+
+/**
+ * The client-side confirmation. Sent with the reference because a buyer needs
+ * something to quote back before they have any way to track a request — and a
+ * request they cannot name is a request they have to phone about.
+ */
+async function notifyClient(args: {
+  to: string;
+  company: string;
+  productName: string;
+  qty: number;
+  total: number;
+  reference: string;
+  portalUrl: string;
+}) {
+  if (!process.env.NOTIFY_EMAIL) return; // no mail transport configured locally
+
+  const result = await sendEmail(
+    args.to,
+    `We have your quote request ${args.reference}`,
+    `<div style="font-family:system-ui,sans-serif;color:#1A000A;max-width:560px">
+       <p style="font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#9B1B5A">Quote request received</p>
+       <h1 style="font-size:22px;margin:8px 0 16px">${args.reference}</h1>
+       <p>Hello,</p>
+       <p>Thank you for your interest in TouchGift. Your request is with our team and
+          someone will come back to you with pricing shortly.</p>
+       <table cellpadding="6" style="border-collapse:collapse;margin:16px 0">
+         <tr><td style="color:#6D5B64">Item</td><td><strong>${args.productName}</strong></td></tr>
+         <tr><td style="color:#6D5B64">Quantity</td><td>${args.qty} units</td></tr>
+         <tr><td style="color:#6D5B64">Indicative total</td><td>KES ${args.total.toLocaleString("en-KE")}</td></tr>
+       </table>
+       <p style="color:#6D5B64;font-size:13px">
+         Quote your reference when you speak to us. If your company already has a
+         TouchGift account, <a href="${args.portalUrl}">sign in to the client portal</a>
+         to follow this and every other request in one place.
+       </p>
+     </div>`,
+    `Quote ${args.reference} — ${args.productName} × ${args.qty} for ${args.company}
+` +
+      `Indicative total KES ${args.total.toLocaleString("en-KE")}
+` +
+      `Track it at ${args.portalUrl}`
+  );
+
+  if (!result.success) {
+    console.warn("[quote-request] client email not sent:", result.reason);
   }
 }
 
@@ -187,6 +238,36 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    /* File the quote against a company and give it a reference the client can
+       read back. Both are best-effort: the lead is already saved, and neither
+       grants anyone access — access is a membership, issued by ops. */
+    let reference: string | null = null;
+    let accountCreated = false;
+
+    if (insertedId) {
+      const account = await resolveCorporateAccount({
+        company: data.company,
+        email: data.email,
+        phone: data.phone ?? null,
+      }).catch((e) => {
+        console.error("[quote-request] account resolution failed:", e);
+        return null;
+      });
+
+      if (account?.id) {
+        accountCreated = account.created;
+        await supabase
+          .from("corporate_quote_requests")
+          .update({ corporate_account_id: account.id })
+          .eq("id", insertedId);
+      }
+
+      reference = await assignQuoteReference(insertedId).catch((e) => {
+        console.error("[quote-request] reference assignment failed:", e);
+        return null;
+      });
+    }
+
     const site = process.env.NEXT_PUBLIC_SITE_URL ?? "";
     const dashboardUrl = `${site}/corporate/dashboard`;
 
@@ -201,9 +282,30 @@ export async function POST(req: NextRequest) {
       total: data.total,
       notes: data.notes,
       dashboardUrl,
+      reference,
     }).catch((e) => console.error("[quote-request] notify failed:", e));
 
-    return NextResponse.json({ success: true, id: insertedId, enrichmentPending });
+    /* Tell the client their reference. They have to be able to name the quote
+       before they have an account to log into, which is most of the time. */
+    if (reference) {
+      void notifyClient({
+        to: data.email,
+        company: data.company,
+        productName: data.productName,
+        qty: data.qty,
+        total: data.total,
+        reference,
+        portalUrl: `${site}/corporate/portal`,
+      }).catch((e) => console.error("[quote-request] client email failed:", e));
+    }
+
+    return NextResponse.json({
+      success: true,
+      id: insertedId,
+      reference,
+      accountCreated,
+      enrichmentPending,
+    });
   } catch (err) {
     if (err instanceof z.ZodError) {
       return NextResponse.json({ error: err.errors[0].message }, { status: 400 });
