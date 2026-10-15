@@ -316,7 +316,19 @@ export default function QuoteOpsPanel({
         if (from) params.set("from", from);
         if (to) params.set("to", to);
 
-        const res = await fetch(`/api/corporate/quotes?${params}`);
+        /* The pooler drops connections often enough that a single failed read
+           used to leave the panel empty with no way back short of a reload, so
+           one 503/network failure is retried before we surface anything. */
+        const request = async () => {
+          const res = await fetch(`/api/corporate/quotes?${params}`);
+          if (res.status === 503 || res.status >= 500) {
+            await new Promise((r) => setTimeout(r, 1500));
+            return fetch(`/api/corporate/quotes?${params}`);
+          }
+          return res;
+        };
+
+        const res = await request();
         if (res.status === 401) {
           setError("Your session expired — sign in again.");
           setQuotes([]);
