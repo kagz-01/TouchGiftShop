@@ -18,50 +18,30 @@
  *   corporate_inquiries      : DiagCo
  */
 
-import { readFileSync, existsSync } from "node:fs";
-import { join, resolve } from "node:path";
-import postgres from "postgres";
+import { withSql } from "./db.mjs";
 
-const ROOT = resolve(process.cwd());
 const apply = process.argv.includes("--apply");
-
-function loadEnv() {
-  const path = join(ROOT, ".env.local");
-  if (!existsSync(path)) return;
-  for (const line of readFileSync(path, "utf8").split("\n")) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (!m) continue;
-    const value = m[2].replace(/^["']|["']$/g, "");
-    if (!process.env[m[1]]) process.env[m[1]] = value;
-  }
-}
-loadEnv();
-
-const url = process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL;
-if (!url) {
-  console.error("No DIRECT_DATABASE_URL or DATABASE_URL in .env.local.");
-  process.exit(1);
-}
 
 const MARKERS = {
   corporate_quote_requests: ["diagco", "fallbackproof", "fallbackcheck", "diagpolo", "diagnostic", "migrationproof", "postmigration", "dashboard qa"],
   corporate_inquiries: ["diagco"],
 };
 
-const sql = postgres(url, { max: 1, ssl: "require", connect_timeout: 15 });
+/* Positional parameters rather than an interpolated tagged template: nesting
+   sql`...` inside a plain template literal stringifies it into a JS array and
+   the server sees a literal "[". Numbered placeholders take a parameter list,
+   so a marker containing a quote can never become SQL. */
+const clauseFor = (markers) =>
+  markers.map((_, i) => `company_name ILIKE $${i + 1}`).join(" OR ");
+const valuesFor = (markers) => markers.map((m) => `%${m}%`);
 
-/* Built outside the query template on purpose: nesting a tagged template
-   literal directly inside a `${}` inside another template literal trips the
-   Node parser ("Missing } in template expression"), so the clause is composed
-   first and interpolated as a plain string. */
-const ilikeCompany = (m) => `company_name ILIKE ${sql`'%${m}%'`}`;
-
-try {
+await withSql(async (sql) => {
   console.log(apply ? "\nAPPLYING\n" : "\nDRY RUN — nothing will be deleted. Pass --apply to confirm.\n");
 
   for (const [table, markers] of Object.entries(MARKERS)) {
-    const clause = markers.map(ilikeCompany).join(" OR ");
-    const rows = await sql.unsafe(`SELECT id, company_name FROM ${table} WHERE ${clause}`);
+    const clause = clauseFor(markers);
+    const values = valuesFor(markers);
+    const rows = await sql.unsafe(`SELECT id, company_name FROM ${table} WHERE ${clause}`, values);
     if (!rows.length) {
       console.log(`  ${table}: nothing matching`);
       continue;
@@ -71,16 +51,13 @@ try {
       console.log(`    ${r.id}  "${r.company_name}"`);
     }
     if (apply) {
-      await sql.unsafe(`DELETE FROM ${table} WHERE ${clause}`);
+      await sql.unsafe(`DELETE FROM ${table} WHERE ${clause}`, values);
       console.log(`    → deleted`);
     }
   }
 
   console.log(apply ? "\nDone. Counts should now read 0.\n" : "\nNothing was deleted.\n");
-  await sql.end();
-  process.exit(0);
-} catch (err) {
-  console.error("\n", err.message, "\n");
-  await sql.end().catch(() => {});
+}).catch((err) => {
+  console.error(`\nCleanup failed: ${err?.message ?? err}\n`);
   process.exit(1);
-}
+});
