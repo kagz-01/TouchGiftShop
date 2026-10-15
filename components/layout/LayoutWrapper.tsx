@@ -59,7 +59,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   /* The client portal is its own quiet surface — a floating chat bubble and an
      AI mascot on every screen is not "calm and unhurried", and they cover the
      primary action on a phone. The portal offers the same help by name. */
-  const isPortal = pathname.startsWith("/corporate/portal");
+  /* The portal and a shared gift pool are quiet surfaces: someone opening them
+     is either working or contributing to a colleague's gift, and a floating
+     chat bubble on top of the primary action helps neither. */
+  const isPortal =
+    pathname.startsWith("/corporate/portal") || pathname.startsWith("/corporate/pool");
 
   if (isAdmin || pathname.startsWith("/corporate")) {
     return (

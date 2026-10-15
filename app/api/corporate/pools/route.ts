@@ -134,7 +134,11 @@ export async function POST(req: NextRequest) {
     }
 
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-    const shareUrl = `${siteUrl}/pool/${slug}`;
+    /* /pool/{slug} serves `group_gifting_pools`, a different table with no
+       shared ids or slugs — every corporate share link pointed at a 404 (or at
+       somebody else's pool, if a slug ever collided). Corporate pools live under
+       /corporate/pool/{slug}. */
+    const shareUrl = `${siteUrl}/corporate/pool/${slug}`;
 
     return NextResponse.json({ pool: data, shareUrl }, { status: 201 });
   } catch (error) {
