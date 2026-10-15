@@ -312,8 +312,10 @@ export default function MegaMenu() {
   return (
     <div ref={menuRef} className="relative" onMouseLeave={handleMouseLeave}>
 
-      {/* NAV LINKS */}
-      <nav className="flex items-center justify-center gap-10 py-3.5">
+      {/* NAV LINKS — gaps tighten below lg because the nav now shares its row
+          with the spanning logo column; at gap-10 the first and last labels
+          wrapped mid-word at 768px and pushed the header 19px taller. */}
+      <nav className="flex items-center justify-center gap-5 sm:gap-6 lg:gap-10 py-3.5">
         {menus.map((item) => {
           const isActive = activeMenu === item.id;
           return (
@@ -321,7 +323,7 @@ export default function MegaMenu() {
               key={item.id}
               onMouseEnter={() => handleMouseEnter(item.id)}
               onClick={() => setActiveMenu(isActive ? null : item.id)}
-              className={`relative flex items-center gap-1 text-[13px] font-bold tracking-wide transition-all duration-200 select-none group ${
+              className={`relative flex items-center gap-1 text-[13px] font-bold tracking-wide transition-all duration-200 select-none whitespace-nowrap group ${
                 isActive
                   ? "text-brand dark:text-brand-light"
                   : item.highlight
@@ -357,7 +359,11 @@ export default function MegaMenu() {
         <div
           onMouseEnter={() => handleMouseEnter(activeData.id)}
           className="absolute top-[calc(100%+4px)] left-1/2 -translate-x-1/2 z-50"
-          style={{ width: "min(1140px, calc(100vw - 3rem))" }}
+          /* The nav now lives in the header's right-hand column, beside the
+             logo that spans both rows. Sizing off the viewport pushed the
+             panel past the right edge and got it clipped; 100% keeps it
+             inside its own column at every width. */
+          style={{ width: "min(1140px, 100%)" }}
         >
           {/* Animation lives on its own layer: the keyframes set transform,
               which would otherwise wipe out -translate-x-1/2 above. */}

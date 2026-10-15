@@ -92,21 +92,31 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
             the announcement bar's ~34px. */}
         <SeasonalPromptBar announcements={ANNOUNCEMENTS} />
 
-        {/* ── MAIN HEADER ── */}
+        {/* ── MAIN HEADER ──
+            Two rows — search/actions, then the category nav — stacked as a grid
+            so the logo sits in its own column and spans BOTH rows. The header
+            used to read as three unrelated stripes because the logo lived
+            inside the top row only, leaving a dead gap above the nav. One
+            spanning logo reads as a single masthead instead. */}
         <header
           className={cn("hidden md:block transition-all duration-500")}
         >
-        {/* TOP ROW: Logo | Search | Icons */}
-        <div className="page-container-capped py-2 flex items-center gap-4">
+        <div className="page-container-capped grid grid-cols-[60px_1fr] gap-x-4 items-stretch">
 
-          {/* Logo — 90px square was the single largest item in the header and
-              alone pushed the shell to 196px (22% of a 900px viewport).
-              52px keeps it legible at md and recovers 38px. */}
-          <button onClick={handleLogoPress} aria-label="TouchGift — go to homepage" className="flex-shrink-0 relative group focus:outline-none">
-            <span className="absolute inset-0 rounded-full transition-all duration-500 scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10" />
-            <Image src="/logo/logo.webp" alt="TouchGift" width={52} height={52} priority className="relative w-[52px] h-[52px] rounded-full object-cover transition-all duration-500 ring-2 ring-transparent group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]" />
-            <span className="sr-only">TouchGift</span>
-          </button>
+          {/* Logo — spans the search row and the nav row. 90px square was the
+              single largest item in the header and alone pushed the shell to
+              196px (22% of a 900px viewport); the taller cell now gives it room
+              to breathe without costing header height. */}
+          <div className="row-span-2 flex items-center justify-center">
+            <button onClick={handleLogoPress} aria-label="TouchGift — go to homepage" className="relative group focus:outline-none">
+              <span className="absolute inset-0 rounded-full transition-all duration-500 scale-100 opacity-0 group-hover:opacity-100 group-hover:scale-125 bg-brand/10" />
+              <Image src="/logo/logo.webp" alt="TouchGift" width={56} height={56} priority className="relative w-14 h-14 rounded-full object-cover transition-all duration-500 ring-2 ring-transparent group-hover:scale-110 group-hover:ring-brand/30 group-hover:shadow-[0_0_20px_rgba(155,27,90,0.25)]" />
+              <span className="sr-only">TouchGift</span>
+            </button>
+          </div>
+
+          {/* TOP ROW: Search | Icons */}
+          <div className="flex items-center gap-4 py-2">
 
           {/* Inline Search */}
           <div className="flex-1 max-w-xl">
@@ -195,13 +205,13 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
               </>
             )}
           </div>
-        </div>
-
-        {/* BOTTOM ROW: Mega Menu */}
-        <div className="border-t border-surface-border/50">
-          <div className="page-container-capped">
-            <MegaMenu />
           </div>
+
+        {/* BOTTOM ROW: Mega Menu — starts beside the spanning logo so its
+            divider never slices through the mark. */}
+        <div className="border-t border-surface-border/50">
+          <MegaMenu />
+        </div>
         </div>
 
         {/* Accent border on scroll */}
