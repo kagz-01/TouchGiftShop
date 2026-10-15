@@ -26,6 +26,8 @@ const apply = process.argv.includes("--apply");
 const LABEL_COLUMN = {
   corporate_accounts: "company_name",
   corporate_account_members: "email",
+  orders: "recipient_name",
+  digital_gift_cards: "sender_name",
 };
 
 const MARKERS = {
@@ -34,8 +36,13 @@ const MARKERS = {
     "diagnostic", "migrationproof", "postmigration", "dashboard qa",
   ],
   corporate_inquiries: ["diagco"],
-  corporate_accounts: ["portal qa"],
+  corporate_accounts: ["portal qa", "spine qa"],
   corporate_account_members: ["portal-qa"],
+  // Fulfilment rows and gift cards hanging off a test tenant. Deleting only the
+  // account would leave them behind with a null parent — rows that belong to
+  // nothing and that the next person mistakes for real sales.
+  orders: ["spine qa"],
+  digital_gift_cards: ["spine qa"],
 };
 
 /* Positional parameters rather than an interpolated tagged template: nesting
@@ -57,6 +64,17 @@ await withSql(async (sql) => {
     accountValues
   );
   const accountIds = accounts.map((a) => a.id);
+
+  /* Orders belonging to a test account — the fulfilment rows have no company
+     name of their own, only a pointer up to corporate_orders. */
+  let corporateOrderIds = [];
+  if (accountIds.length) {
+    const owned = await sql.unsafe(
+      "SELECT id FROM corporate_orders WHERE corporate_account_id = ANY($1)",
+      [`{${accountIds.join(",")}}`]
+    );
+    corporateOrderIds = owned.map((r) => r.id);
+  }
 
   // 2. Members of those accounts, plus any stragglers matched by email marker.
   const memberClauses = [`corporate_account_id = ANY($1)`];
@@ -87,6 +105,41 @@ await withSql(async (sql) => {
       label: "company_name",
       clauses: ["corporate_account_id = ANY($1)", ...MARKERS.corporate_inquiries.map((_, i) => `company_name ILIKE $${i + 2}`)],
       values: [`{${accountIds.join(",")}}`, ...valuesFor(MARKERS.corporate_inquiries)],
+    },
+    /* Fulfilment rows and gift cards carry no company name — they hang off the
+       corporate order. Left behind, they are rows that belong to nothing and
+       that the next person reads as real sales. */
+    {
+      table: "digital_gift_cards",
+      label: "sender_name",
+      clauses: [
+        "corporate_order_id = ANY($1)",
+        ...MARKERS.digital_gift_cards.map((_, i) => `sender_name ILIKE $${i + 2}`),
+      ],
+      values: [`{${corporateOrderIds.join(",")}}`, ...valuesFor(MARKERS.digital_gift_cards)],
+    },
+    {
+      table: "corporate_order_recipients",
+      label: "recipient_name",
+      clauses: ["corporate_order_id = ANY($1)"],
+      values: [`{${corporateOrderIds.join(",")}}`],
+    },
+    {
+      table: "orders",
+      label: "recipient_name",
+      clauses: ["corporate_order_id = ANY($1)"],
+      values: [`{${corporateOrderIds.join(",")}}`],
+    },
+    /* The parent itself. Deleting the account first would set
+       corporate_orders.corporate_account_id to NULL and orphan these. */
+    {
+      table: "corporate_orders",
+      label: "company_name",
+      clauses: [
+        "id = ANY($1)",
+        ...MARKERS.corporate_accounts.map((_, i) => `company_name ILIKE $${i + 2}`),
+      ],
+      values: [`{${corporateOrderIds.join(",")}}`, ...valuesFor(MARKERS.corporate_accounts)],
     },
   ];
 
