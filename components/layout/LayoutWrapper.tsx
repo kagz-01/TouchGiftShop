@@ -56,12 +56,17 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     return () => subscription.unsubscribe();
   }, []);
 
+  /* The client portal is its own quiet surface — a floating chat bubble and an
+     AI mascot on every screen is not "calm and unhurried", and they cover the
+     primary action on a phone. The portal offers the same help by name. */
+  const isPortal = pathname.startsWith("/corporate/portal");
+
   if (isAdmin || pathname.startsWith("/corporate")) {
     return (
       <main className="flex-1 relative z-0">
         {children}
-        {!isAdmin && <WhatsAppFloat />}
-        {!isAdmin && <GiftChatWidget />}
+        {!isAdmin && !isPortal && <WhatsAppFloat />}
+        {!isAdmin && !isPortal && <GiftChatWidget />}
       </main>
     );
   }
