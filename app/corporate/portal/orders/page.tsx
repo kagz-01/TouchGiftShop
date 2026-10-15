@@ -101,7 +101,11 @@ export default async function PortalOrdersPage() {
       ) : (
         <ul className="portal-card divide-y overflow-hidden" style={{ borderColor: "var(--portal-border-soft)" }}>
           {orders.map((o) => (
-            <li key={o.id} className="flex flex-wrap items-center gap-4 px-5 py-4">
+            <li key={o.id}>
+            <Link
+              href={`/corporate/portal/orders/${o.id}`}
+              className="flex flex-wrap items-center gap-4 px-5 py-4 transition-colors hover:bg-[color:var(--portal-surface-2)]"
+            >
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">
                   {o.recipient_count ? `${o.recipient_count} recipients` : "Order"}
@@ -119,6 +123,7 @@ export default async function PortalOrdersPage() {
               <span className="portal-status" style={{ color: ORDER_COLOUR[o.status] ?? "var(--portal-text-faint)" }}>
                 {ORDER_STATUS[o.status] ?? o.status}
               </span>
+            </Link>
             </li>
           ))}
         </ul>

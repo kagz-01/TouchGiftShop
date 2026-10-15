@@ -116,24 +116,23 @@ function CorporateCheckoutContent() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Order failed");
 
-      // Store response for success page
-      sessionStorage.setItem("corp_order_result", JSON.stringify({
-        links: data.links,
-        method: deliveryMethod,
-        paymentMethod,
-        orderId: data.orderId,
-        invoiceDetails: data.invoiceDetails,
-        count: data.count,
-        companyName: companyName.trim(),
-      }));
-
+      /* The order id is the receipt — the success page reads it back from the
+         server, so a refresh keeps the gift links instead of losing them.
+         Bank details stay in this browser only: the receipt endpoint is
+         reachable by anyone holding the order id, and account numbers do not
+         belong there. */
+      if (data.invoiceDetails) {
+        try {
+          sessionStorage.setItem("corp_invoice_details", JSON.stringify(data.invoiceDetails));
+        } catch { /* private mode — the page will say where the details went */ }
+      }
       // Redirect to PesaPal if M-Pesa
       if (paymentMethod === "mpesa" && data.paymentRedirectUrl) {
         window.location.href = data.paymentRedirectUrl;
         return;
       }
 
-      router.push("/corporate/success");
+      router.push(`/corporate/success?order=${encodeURIComponent(data.orderId)}`);
     } catch (err: any) {
       setError(err.message);
       setPaying(false);

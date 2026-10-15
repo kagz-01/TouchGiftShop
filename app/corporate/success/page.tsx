@@ -8,20 +8,29 @@ import ReactConfetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
 type OrderResult = {
-  links: { id: string; slug: string; url: string; phone: string | null }[];
-  method: "links" | "csv";
-  paymentMethod: "mpesa" | "bank";
+  links: { slug: string; url: string; phone: string | null }[];
+  deliveryMethod: "links" | "csv" | null;
+  paymentMethod: "mpesa" | "bank" | null;
   orderId: string;
+  totalAmount: number | null;
+  unitAmount: number | null;
+  createdAt: string;
+  count: number;
+  companyName: string | null;
+  /**
+   * Bank details stay in this browser. They are not fetched from the summary
+   * endpoint on purpose: that endpoint is reachable by anyone holding the order
+   * id, and account numbers do not belong there. A reload after checkout simply
+   * says where the details went instead of quietly losing them.
+   */
   invoiceDetails: {
     amount: number;
     reference: string;
     bankName: string;
     accountName: string;
     accountNumber: string;
-    swiftCode: string;
+    swiftCode?: string;
   } | null;
-  count: number;
-  companyName: string;
 };
 
 export default function CorporateSuccessPage() {
@@ -30,16 +39,45 @@ export default function CorporateSuccessPage() {
   const [copied, setCopied] = useState(false);
   const [copiedRow, setCopiedRow] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(true);
+  const [failed, setFailed] = useState(false);
   const { width, height } = useWindowSize();
 
   useEffect(() => {
-    const raw = sessionStorage.getItem("corp_order_result");
-    if (raw) {
-      try { setResult(JSON.parse(raw)); } catch { /* noop */ }
-    }
+    /* The order id is the receipt. This page used to take its whole result out
+       of sessionStorage, which made it unreloadable: refresh and the buyer lost
+       every gift link with nothing to recover them from. */
+    const id = new URLSearchParams(window.location.search).get("order");
+    if (!id) { setFailed(true); return; }
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/corporate/order-summary?id=${encodeURIComponent(id)}`, {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? "Could not load this order");
+        if (cancelled) return;
+
+        const invoice = readStoredInvoice();
+        setResult({ ...data, invoiceDetails: data.paymentMethod === "bank" ? invoice : null });
+      } catch {
+        if (!cancelled) setFailed(true);
+      }
+    })();
+
     const t = setTimeout(() => setShowConfetti(false), 5000);
-    return () => clearTimeout(t);
+    return () => { cancelled = true; clearTimeout(t); };
   }, []);
+
+  function readStoredInvoice() {
+    try {
+      const raw = sessionStorage.getItem("corp_invoice_details");
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  }
 
   const handleCopyAll = () => {
     if (!result) return;
@@ -66,10 +104,27 @@ export default function CorporateSuccessPage() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `touchgift_${result.companyName.replace(/\s/g, "_")}_links.csv`;
+    a.download = `touchgift_${(result.companyName ?? "gift").replace(/\s/g, "_")}_links.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  if (failed) {
+    return (
+      <div className="min-h-screen bg-[#050304] text-white flex items-center justify-center px-6">
+        <div className="max-w-md text-center">
+          <h1 className="font-display text-2xl font-bold mb-3">We could not find that order</h1>
+          <p className="text-white/50 text-sm leading-relaxed mb-6">
+            Check the link you were sent, or email us with the reference and we will
+            resend your gift links.
+          </p>
+          <a href="mailto:corporate@touchgift.co.ke" className="inline-block px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-[#050304] text-sm font-bold rounded-xl transition-colors">
+            Email TouchGift
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   if (!result) {
     return (
@@ -105,7 +160,7 @@ export default function CorporateSuccessPage() {
           </div>
           <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-1.5 mb-5">
             <Building2 className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">{result.companyName}</span>
+            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">{result.companyName ?? "Your company"}</span>
           </div>
           <h1 className="font-display text-5xl font-bold tracking-tight mb-4">Deployment Authorized</h1>
           <p className="text-white/50 text-lg">
@@ -139,7 +194,7 @@ export default function CorporateSuccessPage() {
         )}
 
         {/* ── Links mode ── */}
-        {result.method === "links" ? (
+        {result.deliveryMethod !== "csv" ? (
           <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="bg-white/[0.02] border border-white/5 rounded-3xl p-7 backdrop-blur-xl shadow-2xl">
             <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent rounded-t-3xl" />
 
