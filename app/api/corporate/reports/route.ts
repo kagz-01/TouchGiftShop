@@ -25,11 +25,17 @@ export async function GET(req: Request) {
   }
 
   // ── 1. Total spend & orders in range ──────────────────────────
-  const { data: ordersInRange } = await supabase
+  /* `department` was read off `orders`, where it does not exist, so every order
+     fell into "Unassigned". Nothing on the schema records a department, but the
+     corporate order writes one into its notes — so read it from the parent
+     rather than inventing a column on the fulfilment row. */
+  const { data: ordersInRange, error: ordersErr } = await supabase
     .from("orders")
-    .select("id, total_amount, status, department, recipient_name, created_at")
-    .eq("is_corporate", true)
+    .select("id, total_amount, status, recipient_name, created_at, corporate_orders(notes)")
+    .not("corporate_order_id", "is", null)
     .gte("created_at", fromDate);
+
+  if (ordersErr) console.error("[corporate/reports] orders failed:", ordersErr.message);
 
   const orders = ordersInRange ?? [];
   const totalSpend = orders.reduce((s, o) => s + (Number(o.total_amount) || 0), 0);
@@ -39,7 +45,9 @@ export async function GET(req: Request) {
   // ── 2. Spend by department ─────────────────────────────────────
   const deptMap: Record<string, { spend: number; count: number }> = {};
   for (const o of orders) {
-    const dept = (o.department as string) || "Unassigned";
+    const parent = Array.isArray(o.corporate_orders) ? o.corporate_orders[0] : o.corporate_orders;
+    const note = (parent as { notes?: string | null } | null)?.notes ?? "";
+    const dept = /^Department:\s*(.+)$/m.exec(note)?.[1]?.trim() || "Unassigned";
     if (!deptMap[dept]) deptMap[dept] = { spend: 0, count: 0 };
     deptMap[dept].spend += Number(o.total_amount) || 0;
     deptMap[dept].count += 1;
@@ -104,11 +112,11 @@ export async function GET(req: Request) {
   // ── 7. Pool stats ─────────────────────────────────────────────
   const { data: pools } = await supabase
     .from("corporate_gift_pools")
-    .select("id, status, target_amount, current_amount, contributor_count")
+    .select("id, status, target_amount, current_balance, contributor_count")
     .gte("created_at", fromDate);
 
   const poolsData = pools ?? [];
-  const totalPoolsRaised = poolsData.reduce((s, p) => s + (Number(p.current_amount) || 0), 0);
+  const totalPoolsRaised = poolsData.reduce((s, p) => s + (Number(p.current_balance) || 0), 0);
   const avgContribution = poolsData.reduce((s, p) => s + (Number(p.contributor_count) || 0), 0);
   const poolStats = {
     total: poolsData.length,

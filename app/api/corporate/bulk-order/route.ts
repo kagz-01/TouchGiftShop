@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
+import { resolveCorporateAccount } from "@/lib/corporate-accounts";
 
 function generateSlug(length = 10) {
   return Math.random().toString(36).substring(2, 2 + length);
@@ -12,87 +14,133 @@ function normalizePhone(raw: string): string {
   return digits;
 }
 
+const bodySchema = z.object({
+  productId: z.string().uuid().optional(),
+  quantity: z.coerce.number().int().min(1).max(2000),
+  companyName: z.string().min(1).max(200),
+  senderName: z.string().max(100).optional(),
+  contactPhone: z.string().min(1).max(30).optional(),
+  contactEmail: z.string().email().optional(),
+  deliveryMethod: z.enum(["links", "csv"]).default("links"),
+  csvPhones: z.array(z.string()).max(2000).default([]),
+  paymentMethod: z.enum(["mpesa", "bank"]).default("bank"),
+  amount: z.coerce.number().positive(),
+  totalAmount: z.coerce.number().positive().optional(),
+  style: z.string().max(40).default("glassmorphism"),
+});
+
+/**
+ * Bank details for invoice payments.
+ *
+ * These used to be hardcoded — "KCB Bank Kenya / TouchGift Ltd / 1234567890" —
+ * and served to whoever reached this public endpoint. A customer who paid into
+ * that account would have paid a stranger. They come from the environment now,
+ * and the bank path refuses to start without them rather than inventing them.
+ */
+function bankDetails(reference: string, amount: number) {
+  const name = process.env.BANK_ACCOUNT_NAME;
+  const number = process.env.BANK_ACCOUNT_NUMBER;
+  const bank = process.env.BANK_NAME;
+  if (!name || !number || !bank) return null;
+  return {
+    amount,
+    reference,
+    bankName: bank,
+    accountName: name,
+    accountNumber: number,
+    ...(process.env.BANK_SWIFT_CODE ? { swiftCode: process.env.BANK_SWIFT_CODE } : {}),
+  };
+}
+
 /**
  * POST /api/corporate/bulk-order
- * Creates N gift cards for bulk corporate orders.
  *
- * Body:
- *   productId    - which product / pack
- *   quantity     - number of recipients
- *   companyName  - company name
- *   contactPhone - billing phone for M-Pesa STK
- *   contactEmail - for invoice / receipt
- *   deliveryMethod - "links" | "csv"
- *   csvPhones    - string[] (only when deliveryMethod === "csv")
- *   paymentMethod - "mpesa" | "bank"
- *   amount       - per-unit amount in KES
- *   totalAmount  - final total (after discount)
- *   style        - card theme
+ * The gift-link factory: mint N shareable gift cards against one corporate
+ * order, optionally texting each recipient.
+ *
+ * What changed: this used to insert seven columns `corporate_orders` does not
+ * have (product_id, contact_phone, contact_email, quantity, unit_amount,
+ * payment_method, delivery_method) and a status that is not in the enum, then
+ * swallow the failure and mint gift cards pointing at an order id it made up.
+ * Cards went out for orders that did not exist.
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const parsed = bodySchema.safeParse(await req.json());
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0]?.message ?? "Invalid order" },
+        { status: 400 }
+      );
+    }
+
     const {
-      productId,
-      quantity = 1,
-      companyName,
-      contactPhone,
-      contactEmail,
-      deliveryMethod = "links",
-      csvPhones = [],
-      paymentMethod = "bank",
-      amount,
-      totalAmount,
-      style = "glassmorphism",
-    } = body;
+      productId, quantity, companyName, senderName, contactPhone, contactEmail,
+      deliveryMethod, csvPhones, paymentMethod, amount, totalAmount, style,
+    } = parsed.data;
 
-    if (!quantity || quantity < 1) {
-      return NextResponse.json({ error: "quantity must be >= 1" }, { status: 400 });
-    }
-    if (!amount) {
-      return NextResponse.json({ error: "amount required" }, { status: 400 });
+    const total = totalAmount ?? amount * quantity;
+
+    if (paymentMethod === "bank" && !bankDetails("preview", 0)) {
+      /* Refusing beats inventing. Without real bank details the buyer would be
+         told to transfer money to an account we made up. */
+      console.error("[Corporate] bank payment requested but BANK_* is not configured");
+      return NextResponse.json(
+        { error: "Bank transfer is not available right now. Please choose M-Pesa or contact your account manager." },
+        { status: 503 }
+      );
     }
 
-    // 1. Create a master corporate order record
+    const account = companyName
+      ? await resolveCorporateAccount({ company: companyName, email: contactEmail ?? "" }).catch(() => null)
+      : null;
+
+    /* 1. The master order. A failure here is fatal — cards minted against an id
+          that resolves to nothing are the exact bug this file used to have. */
     const { data: masterOrder, error: orderErr } = await supabaseAdmin
       .from("corporate_orders")
       .insert({
+        corporate_account_id: account?.id ?? null,
+        status: "pending_payment",
+        company_name: companyName,
+        sender_name: senderName ?? companyName,
+        sender_phone: normalizePhone(contactPhone ?? "0"),
         product_id: productId ?? null,
-        company_name: companyName ?? "Corporate Client",
-        contact_phone: contactPhone ? normalizePhone(contactPhone) : null,
-        contact_email: contactEmail ?? null,
-        quantity,
         unit_amount: amount,
-        total_amount: totalAmount ?? amount * quantity,
+        recipient_count: quantity,
+        subtotal: amount * quantity,
+        total_amount: total,
         payment_method: paymentMethod,
         delivery_method: deliveryMethod,
-        status: paymentMethod === "bank" ? "pending_invoice" : "pending_payment",
       })
       .select("id")
       .single();
 
     if (orderErr) {
-      // Table may not exist yet — fall through gracefully
-      console.warn("[Corporate] corporate_orders insert failed:", orderErr.message);
+      console.error("[Corporate] corporate_orders insert failed:", orderErr.message, orderErr.code);
+      return NextResponse.json(
+        { error: "Could not create this order. Please try again." },
+        { status: 500 }
+      );
     }
 
-    const masterOrderId = masterOrder?.id ?? `corp_${Date.now()}`;
-
-    // 2. Generate gift cards in bulk
+    /* 2. Gift cards, pointing at a real order. */
     const giftCards = Array.from({ length: quantity }, (_, i) => {
-      const phone = deliveryMethod === "csv" && csvPhones[i]
-        ? normalizePhone(csvPhones[i])
-        : null;
+      const phone =
+        deliveryMethod === "csv" && csvPhones[i] ? normalizePhone(csvPhones[i]) : null;
 
       return {
         slug: generateSlug(12),
         amount,
         theme_style: style,
-        sender_name: companyName ?? "Your Company",
+        sender_name: companyName,
         status: "active",
-        claimed_by_phone: null,
-        // store reference back to bulk order
-        metadata: { corporate_order_id: masterOrderId, recipient_index: i + 1, ...(phone ? { phone } : {}) },
+        corporate_order_id: masterOrder.id,
+        metadata: {
+          corporate_order_id: masterOrder.id,
+          recipient_index: i + 1,
+          ...(phone ? { phone } : {}),
+        },
       };
     });
 
@@ -102,71 +150,81 @@ export async function POST(req: NextRequest) {
       .select("id, slug, metadata");
 
     if (cardsErr) {
-      return NextResponse.json({ error: cardsErr.message }, { status: 500 });
+      // Half-minted is worse than none: take the whole thing back.
+      console.error("[Corporate] gift card insert failed:", cardsErr.message);
+      await supabaseAdmin.from("digital_gift_cards").delete().eq("corporate_order_id", masterOrder.id);
+      await supabaseAdmin.from("corporate_orders").delete().eq("id", masterOrder.id);
+      return NextResponse.json({ error: "Could not create gift links. Please try again." }, { status: 500 });
     }
 
-    const links = cards.map(c => ({
+    const links = (cards ?? []).map((c: { id: string; slug: string; metadata: unknown }) => ({
       id: c.id,
       slug: c.slug,
       url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://touchgift.shop"}/open/gc/${c.slug}`,
-      phone: (c.metadata as any)?.phone ?? null,
+      phone: (c.metadata as { phone?: string } | null)?.phone ?? null,
     }));
 
-    // 3. If CSV mode with phones — fire off SMS blast (async, non-blocking)
-    if (deliveryMethod === "csv" && links.length > 0) {
+    /* 3. Text the recipients. Fire and forget — the cards exist, a failed SMS is
+          the buyer's next problem, not a reason to fail the order. */
+    if (deliveryMethod === "csv") {
       const { sendSms } = await import("@/lib/notifications");
-      const smsPromises = links
-        .filter(l => l.phone)
-        .map(l =>
+      const blasts = links
+        .filter((l) => l.phone)
+        .map((l) =>
           sendSms(
             `+${l.phone}`,
-            `🎁 ${companyName ?? "Your company"} sent you a TouchGift! Open your exclusive gift: ${l.url}`
-          ).catch(err => console.error("[SMS Blast] failed for", l.phone, err))
+            `🎁 ${companyName} sent you a TouchGift! Open your exclusive gift: ${l.url}`
+          ).catch((err) => console.error("[SMS Blast] failed for", l.phone, err))
         );
-      // Fire and forget — don't await
-      Promise.allSettled(smsPromises);
+      void Promise.allSettled(blasts);
     }
 
-    // 4. Initiate payment if M-Pesa
+    /* 4. M-Pesa. */
     let paymentRedirectUrl: string | null = null;
-    if (paymentMethod === "mpesa" && contactPhone && totalAmount) {
+    if (paymentMethod === "mpesa" && contactPhone) {
       try {
-        const payRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/payment/create-order`, {
+        const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+        const payRes = await fetch(`${base}/api/payment/create-order`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount: totalAmount,
-            merchantReference: masterOrderId,
-            description: `TouchGift Corporate – ${companyName ?? "Bulk"} – ${quantity} gifts`,
+            amount: total,
+            merchantReference: masterOrder.id,
+            description: `TouchGift Corporate – ${companyName} – ${quantity} gifts`,
             phoneNumber: normalizePhone(contactPhone),
           }),
         });
         const payData = await payRes.json();
-        if (payData.redirectUrl) paymentRedirectUrl = payData.redirectUrl;
+        paymentRedirectUrl = payData.redirectUrl ?? null;
+
+        if (payData.orderTrackingId) {
+          await supabaseAdmin
+            .from("corporate_orders")
+            .update({
+              payment_tracking_id: payData.orderTrackingId,
+              payment_merchant_ref: masterOrder.id,
+            })
+            .eq("id", masterOrder.id);
+        }
       } catch (e) {
-        console.error("[Corporate] PesaPal payment initiation failed:", e);
+        console.error("[Corporate] payment initiation failed:", e);
       }
     }
 
     return NextResponse.json({
       success: true,
-      orderId: masterOrderId,
-      count: cards.length,
+      orderId: masterOrder.id,
+      count: links.length,
       links,
       paymentMethod,
       paymentRedirectUrl,
-      // For bank transfer — show invoice details
-      invoiceDetails: paymentMethod === "bank" ? {
-        amount: totalAmount ?? amount * quantity,
-        reference: masterOrderId,
-        bankName: "KCB Bank Kenya",
-        accountName: "TouchGift Ltd",
-        accountNumber: "1234567890",
-        swiftCode: "KCBLKENX",
-      } : null,
+      invoiceDetails: paymentMethod === "bank" ? bankDetails(masterOrder.id, total) : null,
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error("[Corporate bulk-order]", err);
-    return NextResponse.json({ error: err.message ?? "Internal error" }, { status: 500 });
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Internal error" },
+      { status: 500 }
+    );
   }
 }

@@ -15,30 +15,38 @@ export async function GET() {
   const monthAgo = new Date(now.getTime() - 30 * 86400000).toISOString();
   const quarterAgo = new Date(now.getTime() - 90 * 86400000).toISOString();
 
+  /* Corporate orders.
+     These filtered on `orders.is_corporate`, a column that was never created.
+     Every query errored, and because head:true swallows the error the metrics
+     quietly reported 0 — which is exactly how a dashboard ends up looking like
+     a business with no sales. The real link is orders.corporate_order_id. */
+
   // Corporate orders
-  const { count: totalOrders } = await supabase
+  const { count: totalOrders, error: totalErr } = await supabase
     .from("orders")
     .select("id", { count: "exact", head: true })
-    .eq("is_corporate", true);
+    .not("corporate_order_id", "is", null);
+
+  if (totalErr) console.error("[corporate/stats] order count failed:", totalErr.message);
 
   const { count: monthOrders } = await supabase
     .from("orders")
     .select("id", { count: "exact", head: true })
-    .eq("is_corporate", true)
+    .not("corporate_order_id", "is", null)
     .gte("created_at", monthAgo);
 
   // Delivered count
   const { count: deliveredCount } = await supabase
     .from("orders")
     .select("id", { count: "exact", head: true })
-    .eq("is_corporate", true)
+    .not("corporate_order_id", "is", null)
     .eq("status", "delivered");
 
   // Revenue from corporate orders
   const { data: quarterRevenue } = await supabase
     .from("orders")
     .select("total_amount")
-    .eq("is_corporate", true)
+    .not("corporate_order_id", "is", null)
     .eq("status", "delivered")
     .gte("created_at", quarterAgo);
 
@@ -96,7 +104,7 @@ export async function GET() {
     const { count } = await supabase
       .from("orders")
       .select("id", { count: "exact", head: true })
-      .eq("is_corporate", true)
+      .not("corporate_order_id", "is", null)
       .eq("status", s);
     statusCounts[s] = count ?? 0;
   }
@@ -110,7 +118,7 @@ export async function GET() {
     const { count } = await supabase
       .from("orders")
       .select("id", { count: "exact", head: true })
-      .eq("is_corporate", true)
+      .not("corporate_order_id", "is", null)
       .gte("created_at", monthStart)
       .lte("created_at", monthEnd);
     monthlyActivity.push({

@@ -495,6 +495,14 @@ CREATE TABLE corporate_orders (
   brand_profile_id UUID REFERENCES brand_profiles(id) ON DELETE SET NULL,
   template_id UUID REFERENCES hamper_templates(id) ON DELETE SET NULL,
   hamper_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  -- Gift-link flow inputs (migration 2026-10-15). Previously the intake route
+  -- wrote product_id / contact_phone / contact_email / quantity / unit_amount /
+  -- payment_method / delivery_method and an enum value that does not exist, so
+  -- every bulk order failed and the failure was swallowed.
+  product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+  unit_amount DECIMAL(12,2),
+  payment_method VARCHAR(30),
+  delivery_method VARCHAR(30),
   recipient_count INTEGER DEFAULT 0,
   subtotal DECIMAL(12,2) DEFAULT 0.00,
   bulk_discount_percent DECIMAL(5,2) DEFAULT 0.00,
@@ -508,6 +516,24 @@ CREATE TABLE corporate_orders (
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_corp_orders_product ON corporate_orders (product_id);
+
+-- Fulfilment rows link back to the corporate order they belong to. Without
+-- this, "which company is this order for" is a join through
+-- corporate_order_recipients — and three ops routes were querying
+-- orders.is_corporate, a column that was never created.
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS corporate_order_id UUID
+  REFERENCES corporate_orders(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_orders_corporate ON orders (corporate_order_id)
+  WHERE corporate_order_id IS NOT NULL;
+
+ALTER TABLE digital_gift_cards ADD COLUMN IF NOT EXISTS corporate_order_id UUID
+  REFERENCES corporate_orders(id) ON DELETE SET NULL;
+
+CREATE INDEX IF NOT EXISTS idx_gift_cards_corporate ON digital_gift_cards (corporate_order_id)
+  WHERE corporate_order_id IS NOT NULL;
 
 CREATE TABLE corporate_order_recipients (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
