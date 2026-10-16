@@ -59,24 +59,26 @@ const MARKERS = {
    numbering exact, which is what postgres.js needs. */
 function invoiceSteps() {
   const markers = MARKERS.corporate_accounts;
-  return markers.flatMap((_, i) => {
-    const n = i + 1;
+  /* Each step is its own statement with its own single parameter, so the
+     placeholder is always $1 — numbering them by the marker's index makes the
+     second marker reference $2 with one value bound. */
+  return markers.flatMap((m) => {
     return [
       {
         table: "corporate_invoice_lines",
         label: "description",
         clauses: [
-          `invoice_id IN (SELECT id FROM corporate_invoices WHERE corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $${n}::text))`,
+          `invoice_id IN (SELECT id FROM corporate_invoices WHERE corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $1::text))`,
         ],
-        values: [`%${markers[i]}%`],
+        values: [`%${m}%`],
       },
       {
         table: "corporate_invoices",
         label: "invoice_number",
         clauses: [
-          `corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $${n}::text)`,
+          `corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $1::text)`,
         ],
-        values: [`%${markers[i]}%`],
+        values: [`%${m}%`],
       },
     ];
   });
@@ -103,14 +105,14 @@ await withSql(async (sql) => {
   let corporateOrderIds = [];
   if (accountIds.length) {
     const owned = await sql.unsafe(
-      "SELECT id FROM corporate_orders WHERE corporate_account_id = ANY($1)",
+      "SELECT id FROM corporate_orders WHERE corporate_account_id = ANY($1::uuid[])",
       [`{${accountIds.join(",")}}`]
     );
     corporateOrderIds = owned.map((r) => r.id);
   }
 
   // 2. Members of those accounts, plus any stragglers matched by email marker.
-  const memberClauses = [`corporate_account_id = ANY($1)`];
+  const memberClauses = [`corporate_account_id = ANY($1::uuid[])`];
   const memberValues = [`{${accountIds.join(",")}}`];
   if (MARKERS.corporate_account_members.length) {
     MARKERS.corporate_account_members.forEach((_, i) => memberClauses.push(`email ILIKE $${i + 2}`));
@@ -119,7 +121,7 @@ await withSql(async (sql) => {
 
   // 3. Quotes and inquiries: by name marker, or by belonging to a test account.
   const ownedClauses = (markerStart) => {
-    const clauses = ["corporate_account_id = ANY($1)"];
+    const clauses = ["corporate_account_id = ANY($1::uuid[])"];
     const values = [`{${accountIds.join(",")}}`];
     MARKERS.corporate_quote_requests.forEach((_, i) => clauses.push(`company_name ILIKE $${i + markerStart}`));
     values.push(...valuesFor(MARKERS.corporate_quote_requests));
@@ -151,7 +153,7 @@ await withSql(async (sql) => {
     {
       table: "corporate_pool_contributions",
       label: "contributor_name",
-      clauses: ["pool_id = ANY($1)"],
+      clauses: ["pool_id = ANY($1::uuid[])"],
       values: [`{${poolIds.join(",")}}`],
     },
     {
@@ -169,7 +171,7 @@ await withSql(async (sql) => {
     {
       table: "corporate_inquiries",
       label: "company_name",
-      clauses: ["corporate_account_id = ANY($1)", ...MARKERS.corporate_inquiries.map((_, i) => `company_name ILIKE $${i + 2}`)],
+      clauses: ["corporate_account_id = ANY($1::uuid[])", ...MARKERS.corporate_inquiries.map((_, i) => `company_name ILIKE $${i + 2}`)],
       values: [`{${accountIds.join(",")}}`, ...valuesFor(MARKERS.corporate_inquiries)],
     },
     /* Fulfilment rows and gift cards carry no company name — they hang off the
@@ -179,7 +181,7 @@ await withSql(async (sql) => {
       table: "digital_gift_cards",
       label: "sender_name",
       clauses: [
-        "corporate_order_id = ANY($1)",
+        "corporate_order_id = ANY($1::uuid[])",
         ...MARKERS.digital_gift_cards.map((_, i) => `sender_name ILIKE $${i + 2}`),
       ],
       values: [`{${corporateOrderIds.join(",")}}`, ...valuesFor(MARKERS.digital_gift_cards)],
@@ -187,13 +189,13 @@ await withSql(async (sql) => {
     {
       table: "corporate_order_recipients",
       label: "recipient_name",
-      clauses: ["corporate_order_id = ANY($1)"],
+      clauses: ["corporate_order_id = ANY($1::uuid[])"],
       values: [`{${corporateOrderIds.join(",")}}`],
     },
     {
       table: "orders",
       label: "recipient_name",
-      clauses: ["corporate_order_id = ANY($1)"],
+      clauses: ["corporate_order_id = ANY($1::uuid[])"],
       values: [`{${corporateOrderIds.join(",")}}`],
     },
     /* The parent itself. Deleting the account first would set
@@ -202,7 +204,7 @@ await withSql(async (sql) => {
       table: "corporate_orders",
       label: "company_name",
       clauses: [
-        "id = ANY($1)",
+        "id = ANY($1::uuid[])",
         ...MARKERS.corporate_accounts.map((_, i) => `company_name ILIKE $${i + 2}`),
       ],
       values: [`{${corporateOrderIds.join(",")}}`, ...valuesFor(MARKERS.corporate_accounts)],
