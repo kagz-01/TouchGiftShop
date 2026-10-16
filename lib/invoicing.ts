@@ -129,32 +129,47 @@ export function buildLines(order: OrderForInvoice, product?: Product | null): In
     }
   }
 
-  if (lines.length === 0) {
+  /* Whether wrapping is its own line or already inside the unit price depends
+     on where the lines came from, and getting it wrong charges the client
+     twice. Itemised hamper contents are priced before wrapping, so wrapping is
+     a separate line. The single-line fallback uses `unit_amount`, which the
+     intake route already has wrapping folded in — so adding a wrapping line
+     there double-counts it. */
+  const fromItemisedLines = lines.length > 0;
+
+  if (!fromItemisedLines) {
     const qty = num(order.recipient_count, 1);
     const price = num(order.unit_amount, num(order.total_amount) / qty);
+    const wrap = num(order.wrap_surcharge);
+    const label = [
+      product?.name ?? "Corporate gift order",
+      `${qty} ${qty === 1 ? "recipient" : "recipients"}`,
+      wrap > 0 ? `${order.gift_wrap ?? "standard"} wrapping included` : null,
+    ]
+      .filter(Boolean)
+      .join(" — ");
+
     lines.push({
       line_no: n++,
-      description: product?.name
-        ? `${product.name} — gift for ${qty} ${qty === 1 ? "recipient" : "recipients"}`
-        : `Corporate gift order for ${qty} ${qty === 1 ? "recipient" : "recipients"}`,
+      description: label,
       quantity: qty,
       unit_price: Math.round(price * 100) / 100,
       line_total: Math.round(qty * price * 100) / 100,
       is_discount: false,
       meta: product ? { product_id: product.id } : {},
     });
-  }
-
-  const wrap = num(order.wrap_surcharge);
-  if (wrap > 0) {
-    lines.push({
-      line_no: n++,
-      description: `Gift wrapping — ${order.gift_wrap ?? "standard"}`,
-      quantity: num(order.recipient_count, 1),
-      unit_price: wrap,
-      line_total: wrap,
-      is_discount: false,
-    });
+  } else {
+    const wrap = num(order.wrap_surcharge);
+    if (wrap > 0) {
+      lines.push({
+        line_no: n++,
+        description: `Gift wrapping — ${order.gift_wrap ?? "standard"}`,
+        quantity: num(order.recipient_count, 1),
+        unit_price: wrap,
+        line_total: wrap,
+        is_discount: false,
+      });
+    }
   }
 
   const discount = num(order.bulk_discount_amount);
@@ -224,6 +239,10 @@ export function computeTotals(lines: InvoiceLine[]) {
 export async function issueInvoiceForOrder(
   orderId: string,
   opts: {
+    /** A draft draws a number but is not a document anyone files. It exists so
+     *  ops can see the layout and the arithmetic before the registered entity
+     *  details are settled — it must never reach a client. */
+    draft?: boolean;
     paymentTermsDays?: number;
     buyerOverride?: { name?: string; taxId?: string; address?: string; email?: string };
     pspReference?: string | null;
@@ -251,7 +270,9 @@ export async function issueInvoiceForOrder(
     .from("corporate_invoices")
     .select("invoice_number, status")
     .eq("corporate_order_id", orderId)
-    .neq("status", "void")
+    /* Drafts do not count: a draft that has been looked at and discarded must
+       not stop the real document being issued. */
+    .eq("status", "issued")
     .maybeSingle();
 
   if (existing) {
@@ -285,7 +306,9 @@ export async function issueInvoiceForOrder(
 
   /* The number comes from a Postgres sequence, not from the application: an
      app-side counter resets on deploy, races under concurrency, and repeats
-     after a rollback. The prefix and fiscal year are formatted around it. */
+     after a rollback. Drafts are stamped DRAFT-<seq> from the same sequence
+     rather than the official format, so looking at a draft cannot leave a hole
+     in the client's numbering. */
   const { data: seq, error: seqErr } = await db.rpc("next_corporate_invoice_number");
 
   if (seqErr || seq == null) {
@@ -305,6 +328,7 @@ type CreateArgs = {
   dueAt: Date | null;
   termsDays: number;
   opts: {
+    draft?: boolean;
     paymentTermsDays?: number;
     buyerOverride?: { name?: string; taxId?: string; address?: string; email?: string };
     pspReference?: string | null;
@@ -323,7 +347,9 @@ async function createWithNumber(
   args: CreateArgs
 ) {
   const db = supabase();
-  const invoiceNumber = formatInvoiceNumber(seq, args.issuedAt);
+  const invoiceNumber = args.opts.draft
+    ? `DRAFT-${String(seq).padStart(4, "0")}`
+    : formatInvoiceNumber(seq, args.issuedAt);
 
   const { data: invoice, error } = await db
     .from("corporate_invoices")
@@ -333,8 +359,8 @@ async function createWithNumber(
       corporate_order_id: order.id,
       corporate_account_id: order.corporate_account_id,
 
-      status: "issued",
-      issued_at: args.issuedAt.toISOString(),
+      status: args.opts.draft ? "draft" : "issued",
+      issued_at: args.opts.draft ? null : args.issuedAt.toISOString(),
       paid_at: args.opts.markPaid ? args.issuedAt.toISOString() : null,
       psp_reference: args.opts.pspReference ?? null,
 

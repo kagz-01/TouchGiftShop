@@ -23,6 +23,7 @@ const issueSchema = z.object({
     .optional(),
   psp_reference: z.string().max(100).nullish(),
   mark_paid: z.boolean().default(false),
+  draft: z.boolean().default(false),
   email_to: z.string().email().optional(),
 });
 
@@ -76,10 +77,10 @@ export async function POST(req: NextRequest) {
 
   const { missing, config } = sellerReadiness();
 
-  /* Drafts are fine without a PIN — they are a working document. Anything that
-     goes out to a client has to be filed, so it needs the registered entity. */
-  const wantsIssued = true;
-  if (wantsIssued && missing.length > 0) {
+  /* A draft is a working document — ops can see the layout and the arithmetic
+     before the registered entity details are settled. Anything that goes to a
+     client has to be filed, so it needs them. */
+  if (!parsed.data.draft && missing.length > 0) {
     return NextResponse.json(
       {
         error: `Invoice cannot be issued until these are set: ${missing.join(", ")}`,
@@ -91,6 +92,7 @@ export async function POST(req: NextRequest) {
   }
 
   const result = await issueInvoiceForOrder(orderId, {
+    draft: parsed.data.draft,
     paymentTermsDays: parsed.data.payment_terms_days,
     buyerOverride: parsed.data.buyer_override,
     pspReference: parsed.data.psp_reference ?? null,
@@ -123,6 +125,12 @@ export async function POST(req: NextRequest) {
     resource: "corporate_invoices",
     resourceRef: result.invoice.invoice_number,
   });
+
+  /* A draft never leaves the building. Emailing one would put an unfiled
+     document in a client's inbox with a DRAFT number on it. */
+  if (parsed.data.draft) {
+    return NextResponse.json({ invoice: result.invoice, draft: true, emailed: false }, { status: 201 });
+  }
 
   /* Email is best-effort: the document exists whether or not the mail sends,
      and the portal is the record of truth. */
