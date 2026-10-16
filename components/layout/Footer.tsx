@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { showsFullFooter } from "@/lib/footer-paths";
+
+/** The registered business behind the storefront. Kept in one place so the
+ *  footer, the invoices and the PesaPal statements cannot drift apart. */
+const LEGAL_ENTITY = process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME || "Touchline Branding";
 
 const QUICK_LINKS = [
   { href: "/gift-finder", label: "AI Gift Finder" },
@@ -72,11 +77,10 @@ export default function Footer() {
   const [subscribed, setSubscribed] = useState(false);
   const pathname = usePathname()!;
 
-  // Define which paths should show the footer. 
-  // We keep it off app-like pages (dashboard, shop, product, checkout, etc) for a cleaner UX.
-  const SHOW_FOOTER_PATHS = ["/", "/corporate", "/terms", "/privacy", "/returns", "/delivery", "/login"];
-  
-  if (!SHOW_FOOTER_PATHS.includes(pathname)) {
+  // Kept off app-like pages (dashboard, shop, product, checkout) so browsing
+  // does not end in a wall of links — those pages get LegalStrip instead, so
+  // the terms link and the entity disclosure are never more than one glance away.
+  if (!showsFullFooter(pathname)) {
     return null;
   }
 
@@ -257,9 +261,18 @@ export default function Footer() {
 
           {/* Bottom Bar */}
           <div className="mt-4 pt-5 border-t border-gray-700/30 flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-on-theme">
-              © {new Date().getFullYear()} TouchGift — Just Say It 🎁
-            </p>
+            <div className="text-xs text-on-theme">
+              <p>
+                © {new Date().getFullYear()} TouchGift — Just Say It 🎁
+              </p>
+              {/* TouchGift is the storefront; Touchline Branding is the
+                  registered business selling through it. Naming the entity is
+                  not pedantry — it is what a card issuer's statement descriptor
+                  and a consumer's chargeback both turn up against. */}
+              <p className="mt-1 text-[11px] text-on-theme/60">
+                TouchGift is a storefront operated by {LEGAL_ENTITY}.
+              </p>
+            </div>
           </div>
         </div>
       </div>

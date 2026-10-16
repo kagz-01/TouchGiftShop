@@ -19,6 +19,9 @@ const PESAPAL_BASE =
     ? "https://pay.pesapal.com/v3"
     : "https://cybqa.pesapal.com/pesapalv3";
 
+/** Registered entity behind the storefront — TouchGift trades as Touchline Branding. */
+const LEGAL_ENTITY = (process.env.LEGAL_ENTITY_NAME || "TouchGift").split(/\s+/).slice(-1)[0];
+
 let cachedToken: { value: string; expiresAt: number } | null = null;
 
 async function getAccessToken(): Promise<string> {
@@ -95,7 +98,13 @@ export async function createPaymentOrder(params: {
         email_address: params.email || "",
         country_code: "KE",
         first_name: params.name ? params.name.split(" ")[0] : "Customer",
-        last_name: params.name ? params.name.split(" ").slice(1).join(" ") || "TouchGift" : "TouchGift",
+        // The registered entity, not the trading brand. This is the name that
+        // appears on the buyer's PesaPal statement and on their card issuer's
+        // descriptor — "TouchGift" there is a mismatch the buyer has to argue
+        // with their bank about.
+        last_name: params.name
+          ? params.name.split(" ").slice(1).join(" ") || LEGAL_ENTITY
+          : LEGAL_ENTITY,
       },
     }),
   });

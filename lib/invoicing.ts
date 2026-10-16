@@ -55,6 +55,10 @@ export function sellerReadiness() {
   if (!process.env.LEGAL_ENTITY_NAME) missing.push("LEGAL_ENTITY_NAME");
   if (!process.env.LEGAL_ENTITY_PIN) missing.push("LEGAL_ENTITY_PIN");
   if (!process.env.LEGAL_ENTITY_ADDRESS) missing.push("LEGAL_ENTITY_ADDRESS");
+  /* A VAT invoice without a VAT registration number is not a VAT invoice. The
+     alternative — charging 16.5% and printing no number — produces a document
+     the client's finance team rejects and we cannot defend. */
+  if (c.vatRegistered && !c.vatNumber) missing.push("LEGAL_ENTITY_VAT_NUMBER");
   return { config: c, missing };
 }
 

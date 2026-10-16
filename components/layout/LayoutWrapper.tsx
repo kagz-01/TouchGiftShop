@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
+import LegalStrip from "@/components/layout/LegalStrip";
+import { showsFullFooter, isInternalCorporate, hasOwnChrome } from "@/lib/footer-paths";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
@@ -62,16 +64,22 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   /* The portal and a shared gift pool are quiet surfaces: someone opening them
      is either working or contributing to a colleague's gift, and a floating
      chat bubble on top of the primary action helps neither. */
-  const isPortal =
-    pathname.startsWith("/corporate/portal") || pathname.startsWith("/corporate/pool");
+  const isPortal = hasOwnChrome(pathname);
 
   if (isAdmin || pathname.startsWith("/corporate")) {
+    /* A client browsing the corporate catalogue owes them the same disclosure
+       as anyone on /shop. Staff screens and the portal's own surfaces do not. */
+    const legalStrip = !isAdmin && !isPortal && !isInternalCorporate(pathname);
+
     return (
-      <main className="flex-1 relative z-0">
-        {children}
-        {!isAdmin && !isPortal && <WhatsAppFloat />}
-        {!isAdmin && !isPortal && <GiftChatWidget />}
-      </main>
+      <>
+        <main className="flex-1 relative z-0">
+          {children}
+          {!isAdmin && !isPortal && <WhatsAppFloat />}
+          {!isAdmin && !isPortal && <GiftChatWidget />}
+        </main>
+        {legalStrip && <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} />}
+      </>
     );
   }
 
@@ -88,6 +96,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         {children}
       </main>
       <Footer />
+      {!showsFullFooter(pathname) && (
+        <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} />
+      )}
       <BottomNav />
       <WhatsAppFloat />
       <GiftChatWidget />
