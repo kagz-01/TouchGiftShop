@@ -107,7 +107,7 @@ export default async function PortalOrderDetailPage({
      document we should already have produced. */
   const { data: invoice } = await db
     .from("corporate_invoices")
-    .select("invoice_number, status")
+    .select("invoice_number, invoice_slug, status")
     .eq("corporate_order_id", order.id)
     .neq("status", "draft")
     .maybeSingle();
@@ -238,7 +238,7 @@ export default async function PortalOrderDetailPage({
                   it as a PDF for your finance team.
                 </p>
                 <Link
-                  href={`/corporate/portal/invoices/${encodeURIComponent(invoice.invoice_number)}`}
+                  href={invoice.invoice_slug ? `/corporate/portal/invoices/${invoice.invoice_slug}` : "#"}
                   className="mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
                   style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}
                 >

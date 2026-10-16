@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import PortalPrintButton from "@/components/corporate/portal/PortalPrintButton";
 import { getCorporateSession } from "@/lib/corporate-auth";
+import { verifyAdmin } from "@/lib/admin-auth";
 import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
@@ -16,6 +17,9 @@ export const dynamic = "force-dynamic";
  *
  * The "print" stylesheet is the real UI here; the screen version is a preview.
  */
+
+const SELLER_TAX_AREA = process.env.LEGAL_ENTITY_TAX_AREA || null;
+const SELLER_LR_NUMBER = process.env.LEGAL_ENTITY_LR_NUMBER || null;
 
 const money = (n: number) =>
   `KES ${Number(n).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -53,29 +57,44 @@ export default async function InvoiceDocumentPage({
 }: {
   params: Promise<{ number: string }>;
 }) {
+  const { number } = await params;
+
+  /* Staff get a preview as well as the client. Ops issues invoices, so ops has
+     to be able to open one and see exactly what went out — otherwise the only
+     way to check the document is to ask the client what they received. */
   const auth = await getCorporateSession();
-  if (!auth.ok && auth.reason === "signed_out") {
+  const staff = auth.ok ? null : await verifyAdmin();
+  const isStaffPreview = !!staff?.ok;
+
+  if (!auth.ok && !isStaffPreview && auth.reason === "signed_out") {
     redirect("/corporate/portal/sign-in?next=/corporate/portal/invoices");
   }
 
-  const { number } = await params;
+  /* A member only ever reaches their own account's invoices. Staff reach any,
+   * which is the whole point of having them — so the account filter is dropped
+   * entirely for staff rather than passed as null, because `eq.null` is not a
+   * "match nothing" in PostgREST, it is a syntax error. */
+  const accountScope = auth.ok ? auth.session.account.id : null;
+  const findInvoice = () => {
+    let q = db.from("corporate_invoices").select("*").eq("invoice_slug", number);
+    if (accountScope) q = q.eq("corporate_account_id", accountScope);
+    return q.maybeSingle();
+  };
   const db = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   );
 
-  const { data: invoice } = await db
-    .from("corporate_invoices")
-    .select("*")
-    .eq("invoice_number", number.toUpperCase())
-    /* Scoped to the caller's account: a guessed invoice number must return
-       somebody else's 404, not a price list. */
-    .eq("corporate_account_id", auth.ok ? auth.session.account.id : null)
-    .maybeSingle();
+  /* Scoped to the caller's account: a guessed invoice number must return
+     somebody else's 404, not a price list. */
+  const { data: invoice } = await findInvoice();
 
-  if (!invoice || (auth.ok && invoice.status === "draft")) notFound();
+  if (!invoice) notFound();
 
   const inv = invoice as unknown as Invoice;
+
+  // A client never sees a draft. Staff may, so they can proof it before issue.
+  if (inv.status === "draft" && !isStaffPreview) notFound();
 
   const { data: lines } = await db
     .from("corporate_invoice_lines")
@@ -103,12 +122,17 @@ export default async function InvoiceDocumentPage({
 
       <div className="no-print mx-auto mb-6 flex max-w-[210mm] items-center justify-between gap-4 px-4">
         <a
-          href="/corporate/portal/invoices"
+          href={isStaffPreview ? "/corporate/dashboard" : "/corporate/portal/invoices"}
           className="text-sm text-[color:var(--portal-text-muted)] hover:text-[color:var(--portal-text)]"
         >
-          ← All invoices
+          {isStaffPreview ? "← Ops dashboard" : "← All invoices"}
         </a>
         <div className="flex items-center gap-3">
+          {isStaffPreview && (
+            <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+              Staff preview — not visible to the client
+            </span>
+          )}
           <span className="text-xs text-[color:var(--portal-text-faint)]">
             {paid ? "Paid" : inv.due_at ? `Due ${date(inv.due_at)}` : "Payable on receipt"}
           </span>
@@ -144,6 +168,20 @@ export default async function InvoiceDocumentPage({
                 <div className="flex gap-2">
                   <dt className="w-24">Email</dt>
                   <dd>{inv.seller_email}</dd>
+                </div>
+              )}
+              {/* The tax area and LR number are not decoration: they are what
+                  makes correspondence traceable to the right KRA office. */}
+              {SELLER_TAX_AREA && (
+                <div className="flex gap-2">
+                  <dt className="w-24">Tax area</dt>
+                  <dd>{SELLER_TAX_AREA}</dd>
+                </div>
+              )}
+              {SELLER_LR_NUMBER && (
+                <div className="flex gap-2">
+                  <dt className="w-24">L.R. No.</dt>
+                  <dd>{SELLER_LR_NUMBER}</dd>
                 </div>
               )}
             </dl>

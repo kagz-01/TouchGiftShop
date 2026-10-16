@@ -10,6 +10,7 @@ export const dynamic = "force-dynamic";
 type Invoice = {
   id: string;
   invoice_number: string;
+  invoice_slug: string | null;
   status: string;
   total_amount: number;
   issued_at: string | null;
@@ -46,7 +47,7 @@ export default async function PortalInvoicesPage() {
 
   const { data } = await db
     .from("corporate_invoices")
-    .select("id, invoice_number, status, total_amount, issued_at, due_at, paid_at")
+    .select("id, invoice_number, invoice_slug, status, total_amount, issued_at, due_at, paid_at")
     .eq("corporate_account_id", session.account.id)
     /* Drafts are a working document ops assembles, not something a client has
        been sent. */
@@ -99,7 +100,7 @@ export default async function PortalInvoicesPage() {
           {invoices.map((i) => (
             <li key={i.id}>
               <Link
-                href={`/corporate/portal/invoices/${encodeURIComponent(i.invoice_number)}`}
+                href={`/corporate/portal/invoices/${i.invoice_slug}`}
                 className="flex flex-wrap items-center gap-4 px-5 py-4 transition-colors hover:bg-[color:var(--portal-surface-2)]"
               >
                 <span className="min-w-0 flex-1">

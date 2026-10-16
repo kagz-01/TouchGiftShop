@@ -148,13 +148,13 @@ export async function POST(req: NextRequest) {
              ? `, due ${new Date(result.invoice.due_at).toLocaleDateString("en-GB")}`
              : ""
          }</p>
-         <p><a href="${site}/corporate/portal/invoices/${encodeURIComponent(result.invoice.invoice_number)}">
+         <p><a href="${site}/corporate/portal/invoices/${result.invoice.invoice_slug}">
            View and download the invoice →
          </a></p>
        </div>`,
       `Invoice ${result.invoice.invoice_number} from ${config.name}\n` +
         `KES ${Number(result.invoice.total_amount).toLocaleString("en-KE")}\n` +
-        `${site}/corporate/portal/invoices/${result.invoice.invoice_number}`
+        `${site}/corporate/portal/invoices/${result.invoice.invoice_slug}`
     );
     emailed = emailed$.success;
     if (emailed) {

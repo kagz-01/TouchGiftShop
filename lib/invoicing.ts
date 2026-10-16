@@ -39,6 +39,8 @@ export function sellerConfig() {
     vatNumber: process.env.LEGAL_ENTITY_VAT_NUMBER || null,
     address: process.env.LEGAL_ENTITY_ADDRESS || null,
     email: process.env.LEGAL_ENTITY_EMAIL || process.env.NOTIFY_EMAIL || null,
+    taxArea: process.env.LEGAL_ENTITY_TAX_AREA || null,
+    lrNumber: process.env.LEGAL_ENTITY_LR_NUMBER || null,
     vatRegistered: registered,
     vatRate: registered ? num(process.env.VAT_RATE, 16.5) : 0,
     /* Kenyan retail quotes tax-inclusive. If the business ever switches to
@@ -65,6 +67,12 @@ export function sellerReadiness() {
 export function formatInvoiceNumber(seq: number, date = new Date()) {
   const { prefix } = sellerConfig();
   return `${prefix}/${date.getFullYear()}/${String(seq).padStart(4, "0")}`;
+}
+
+/** The URL-safe form. Slashes in an invoice number cannot survive a single
+ *  dynamic route segment, so links and emails use this instead. */
+export function invoiceSlug(number: string) {
+  return number.replace(/[^A-Za-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
 }
 
 export type InvoiceLine = {
@@ -350,11 +358,13 @@ async function createWithNumber(
   const invoiceNumber = args.opts.draft
     ? `DRAFT-${String(seq).padStart(4, "0")}`
     : formatInvoiceNumber(seq, args.issuedAt);
+  const slug = invoiceSlug(invoiceNumber);
 
   const { data: invoice, error } = await db
     .from("corporate_invoices")
     .insert({
       invoice_number: invoiceNumber,
+      invoice_slug: slug,
       fiscal_year: args.issuedAt.getFullYear(),
       corporate_order_id: order.id,
       corporate_account_id: order.corporate_account_id,
