@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { requireCorporate } from "@/lib/corporate-auth";
 import { sendEmail } from "@/lib/notifications";
+import { auditPortal } from "@/lib/portal-audit";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -29,7 +30,10 @@ export async function POST(
   { params }: { params: { reference: string } }
 ) {
   const auth = await requireCorporate();
-  if (!auth.ok) return auth.response;
+  if (!auth.ok) {
+    await auditPortal({ req, action: "quotes.respond", outcome: "denied" });
+    return auth.response;
+  }
 
   const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
@@ -100,6 +104,17 @@ export async function POST(
       { status: 409 }
     );
   }
+
+  await auditPortal({
+    req,
+    action: "quotes.respond",
+    corporateAccountId: session.account.id,
+    actorUserId: session.userId,
+    actorEmail: session.email,
+    actorRole: session.membership.role,
+    resource: "corporate_quote_requests",
+    resourceRef: quote.reference,
+  });
 
   // Ops hears about it immediately. A mail failure must not lose the decision —
   // it is already in the database.

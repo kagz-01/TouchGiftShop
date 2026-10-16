@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { guard } from "@/lib/portal-guard";
+import { auditPortal } from "@/lib/portal-audit";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -117,6 +118,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: conflict }, { status: 409 });
   }
 
+  await auditPortal({
+    req,
+    action: "members.invite",
+    corporateAccountId: corporate_account_id,
+    // Deliberately the invited address, not the staff operator: the audit is
+    // about who gained access to a client's data, and that is the record that
+    // matters six months later.
+    actorEmail: clean,
+    resource: "corporate_account_members",
+    resourceRef: data?.email ?? clean,
+  });
+
   return NextResponse.json({ member: data }, { status: 201 });
 }
 
@@ -170,5 +183,13 @@ export async function DELETE(req: NextRequest) {
       { status: 409 }
     );
   }
+
+  await auditPortal({
+    req,
+    action: "members.revoke",
+    resource: "corporate_account_members",
+    resourceRef: data.id,
+  });
+
   return NextResponse.json({ revoked: data.id });
 }

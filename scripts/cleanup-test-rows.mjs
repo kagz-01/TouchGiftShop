@@ -37,9 +37,12 @@ const MARKERS = {
     "diagnostic", "migrationproof", "postmigration", "dashboard qa",
   ],
   corporate_inquiries: ["diagco"],
-  corporate_accounts: ["portal qa", "spine qa", "receipt qa"],
+  corporate_accounts: ["portal qa", "spine qa", "receipt qa", "audit qa"],
   corporate_gift_pools: ["diwali hamper"],
-  corporate_account_members: ["portal-qa"],
+  /* Audit rows are themselves test residue: an operator reading them months
+     later has no way to tell a QA run from a real client's activity. */
+  corporate_portal_audit: ["audit-qa"],
+  corporate_account_members: ["portal-qa", "audit-qa"],
   // Fulfilment rows and gift cards hanging off a test tenant. Deleting only the
   // account would leave them behind with a null parent — rows that belong to
   // nothing and that the next person mistakes for real sales.
@@ -108,6 +111,12 @@ await withSql(async (sql) => {
     : [];
 
   const steps = [
+    {
+      table: "corporate_portal_audit",
+      label: "actor_email",
+      clauses: [clauseFor(MARKERS.corporate_portal_audit, "actor_email")],
+      values: valuesFor(MARKERS.corporate_portal_audit),
+    },
     {
       table: "corporate_pool_contributions",
       label: "contributor_name",

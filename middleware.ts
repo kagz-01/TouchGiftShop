@@ -31,6 +31,24 @@ export async function middleware(request: NextRequest) {
     if (rateLimited) return rateLimited;
   }
 
+  /* Portal APIs must never answer an anonymous caller. Each route already
+     checks for a membership, but this is the belt to that route's braces: the
+     one corporate surface where forgetting to scope returns another company's
+     data rather than an error.
+
+     Deliberately a cheap cookie-presence check, not a session lookup. A 401
+     here does not mean "signed in but not allowed" — the route decides that —
+     and answering in JSON keeps a stray fetch from hanging on a login page. */
+  if (request.nextUrl.pathname.startsWith("/api/corporate/portal/")) {
+    const signedIn = request.cookies
+      .getAll()
+      .some((c) => c.name.startsWith("sb-") || c.name.includes("auth-token"));
+
+    if (!signedIn) {
+      return NextResponse.json({ error: "Sign in to continue" }, { status: 401 });
+    }
+  }
+
   let response = NextResponse.next({ request: { headers: request.headers } });
 
   // Only build a Supabase client when an auth cookie is actually present.

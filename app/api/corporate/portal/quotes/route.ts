@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { requireCorporate } from "@/lib/corporate-auth";
+import { auditPortal } from "@/lib/portal-audit";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,7 +22,15 @@ const CUSTOMER_FIELDS =
 
 export async function GET(req: NextRequest) {
   const auth = await requireCorporate();
-  if (!auth.ok) return auth.response;
+  if (!auth.ok) {
+    await auditPortal({
+      req,
+      action: "quotes.list",
+      outcome: "denied",
+      actorEmail: null,
+    });
+    return auth.response;
+  }
 
   const { session } = auth;
   const { searchParams } = new URL(req.url);
@@ -48,6 +57,17 @@ export async function GET(req: NextRequest) {
     console.error("[portal/quotes]", error.message);
     return NextResponse.json({ error: "Could not load your quotes" }, { status: 500 });
   }
+
+  await auditPortal({
+    req,
+    action: "quotes.list",
+    corporateAccountId: session.account.id,
+    actorUserId: session.userId,
+    actorEmail: session.email,
+    actorRole: session.membership.role,
+    resource: "corporate_quote_requests",
+    resourceRef: status,
+  });
 
   return NextResponse.json({ quotes: data ?? [], total: count ?? 0 });
 }
