@@ -26,6 +26,7 @@ const apply = process.argv.includes("--apply");
 const LABEL_COLUMN = {
   corporate_accounts: "company_name",
   corporate_account_members: "email",
+  corporate_gift_pools: "title",
   orders: "recipient_name",
   digital_gift_cards: "sender_name",
 };
@@ -36,7 +37,8 @@ const MARKERS = {
     "diagnostic", "migrationproof", "postmigration", "dashboard qa",
   ],
   corporate_inquiries: ["diagco"],
-  corporate_accounts: ["portal qa", "spine qa"],
+  corporate_accounts: ["portal qa", "spine qa", "receipt qa"],
+  corporate_gift_pools: ["diwali hamper"],
   corporate_account_members: ["portal-qa"],
   // Fulfilment rows and gift cards hanging off a test tenant. Deleting only the
   // account would leave them behind with a null parent — rows that belong to
@@ -93,7 +95,31 @@ await withSql(async (sql) => {
     return { clauses, values };
   };
 
+  /* Pools are identified by title; their contributions by the pool they hang
+     off. Contributions first — they cascade, but being explicit about the order
+     is what stops the next person adding a table here and breaking it. */
+  const poolIds = MARKERS.corporate_gift_pools.length
+    ? (
+        await sql.unsafe(
+          `SELECT id FROM corporate_gift_pools WHERE ${clauseFor(MARKERS.corporate_gift_pools, "title")}`,
+          valuesFor(MARKERS.corporate_gift_pools)
+        )
+      ).map((p) => p.id)
+    : [];
+
   const steps = [
+    {
+      table: "corporate_pool_contributions",
+      label: "contributor_name",
+      clauses: ["pool_id = ANY($1)"],
+      values: [`{${poolIds.join(",")}}`],
+    },
+    {
+      table: "corporate_gift_pools",
+      label: "title",
+      clauses: [clauseFor(MARKERS.corporate_gift_pools, "title")],
+      values: valuesFor(MARKERS.corporate_gift_pools),
+    },
     { table: "corporate_account_members", label: "email", clauses: memberClauses, values: memberValues },
     {
       table: "corporate_quote_requests",
