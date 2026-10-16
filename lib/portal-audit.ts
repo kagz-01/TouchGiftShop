@@ -26,7 +26,8 @@ type Action =
   | "members.invite"
   | "members.revoke"
   | "invoices.issue"
-  | "invoices.void";
+  | "invoices.void"
+  | "invoices.credit";
 
 export async function auditPortal(args: {
   req?: NextRequest | Request;

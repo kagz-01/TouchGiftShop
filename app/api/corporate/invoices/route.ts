@@ -169,3 +169,112 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ invoice: result.invoice, emailed, emailedTo: emailed ? to : null }, { status: 201 });
 }
+const creditNoteSchema = z.object({
+  invoice_id: z.string().uuid(),
+  reason: z.enum([
+    "duplicate",
+    "incorrect_amount",
+    "goods_returned",
+    "service_not_delivered",
+    "other",
+  ]),
+  reason_note: z.string().max(500).optional(),
+  /** Omit to credit the full remaining amount — the common case. */
+  amount: z.number().positive().optional(),
+  line_refs: z.array(z.number().int()).optional(),
+});
+
+const voidSchema = z.object({
+  invoice_id: z.string().uuid(),
+  reason: z.string().min(3).max(200),
+  note: z.string().max(500).optional(),
+});
+
+/**
+ * Withdraw an invoice, or credit it back.
+ *
+ * Voiding is for an invoice that has not been paid — it keeps its number and
+ * records why. A paid invoice cannot be voided; it needs a credit note and a
+ * refund, because retracting the charge while the money sits in the account
+ * leaves the client owed nothing and us holding cash they never asked to pay.
+ */
+export async function PUT(req: NextRequest) {
+  const denied = await guard();
+  if (denied) return denied;
+
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+  const parsed = voidSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "A reason is required to void an invoice" },
+      { status: 400 }
+    );
+  }
+
+  const { voidInvoice } = await import("@/lib/invoicing");
+  const result = await voidInvoice({
+    invoiceId: parsed.data.invoice_id,
+    reason: parsed.data.reason,
+    note: parsed.data.note,
+    actor: "ops",
+  });
+
+  if (!result.ok) {
+    const errors: Record<string, string> = {
+      not_found: "No such invoice",
+      already_void: "This invoice has already been voided",
+      is_paid: "This invoice is paid. Raise a credit note instead of voiding it.",
+      already_credited: "A credit note has already been raised against this invoice",
+      no_reason: "A reason is required to void an invoice",
+    };
+    return NextResponse.json({ error: errors[result.code] }, { status: 409 });
+  }
+
+  return NextResponse.json({ invoice: result.invoice, voided: true });
+}
+
+export async function PATCH(req: NextRequest) {
+  const denied = await guard();
+  if (denied) return denied;
+
+  const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+  const parsed = creditNoteSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid credit note" },
+      { status: 400 }
+    );
+  }
+
+  const { issueCreditNote, recordInvoiceEvent } = await import("@/lib/invoicing");
+  const result = await issueCreditNote({
+    invoiceId: parsed.data.invoice_id,
+    reason: parsed.data.reason,
+    reasonNote: parsed.data.reason_note,
+    amount: parsed.data.amount,
+    lineRefs: parsed.data.line_refs,
+    actor: "ops",
+  });
+
+  if (!result.ok) {
+    const errors: Record<string, string> = {
+      not_found: "No such invoice",
+      no_lines: "That invoice has no line items to credit",
+      amount_exceeds_invoice: "That is more than the invoice has left to credit",
+      already_fully_credited: "This invoice has already been credited in full",
+      bad_reason: "Choose a reason for the credit note",
+    };
+    return NextResponse.json({ error: errors[result.code] }, { status: 409 });
+  }
+
+  await auditPortal({
+    req,
+    action: "invoices.credit",
+    corporateAccountId: (result.creditNote as { corporate_account_id?: string }).corporate_account_id ?? null,
+    resource: "corporate_credit_notes",
+    resourceRef: String((result.creditNote as { credit_note_number?: string }).credit_note_number ?? ""),
+  });
+  void recordInvoiceEvent;
+
+  return NextResponse.json({ creditNote: result.creditNote }, { status: 201 });
+}

@@ -157,7 +157,7 @@ export async function PATCH(
 
   const { data: previous, error: previousError } = await supabase
     .from("orders")
-    .select("status, gift_card_code")
+    .select("status, gift_card_code, corporate_order_id")
     .eq("id", params.id)
     .maybeSingle();
 
@@ -175,6 +175,17 @@ export async function PATCH(
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  /* A corporate order's parent has to follow its fulfilment rows, and dispatch
+     is where the invoice is raised. Ops sometimes dispatch from the normal
+     admin screen rather than the corporate one, and without this the parent
+     sits at "wrapped" while every hamper is on a van. */
+  if (previous?.corporate_order_id) {
+    const { syncParentFromChildren } = await import("@/lib/invoice-automation");
+    void syncParentFromChildren(previous.corporate_order_id).catch((e) =>
+      console.error("[admin] corporate parent sync failed:", e)
+    );
   }
 
   // An order that reverses must give back any gift card value it consumed,

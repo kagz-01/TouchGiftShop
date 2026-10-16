@@ -422,3 +422,270 @@ async function createWithNumber(
 
   return { ok: true as const, invoice };
 }
+/* ─────────────────────────────────────────────────────────────────────────────
+ * Void, credit notes, and the event trail
+ *
+ * Invoicing is automatic from dispatch onward, which means nobody is watching
+ * each order. "Why does this order have an invoice" therefore needs an answer
+ * that outlives the code that produced it — hence corporate_invoice_events.
+ * ───────────────────────────────────────────────────────────────────────────── */
+
+export async function recordInvoiceEvent(args: {
+  event: string;
+  corporateOrderId?: string | null;
+  invoiceId?: string | null;
+  creditNoteId?: string | null;
+  actor?: string | null;
+  detail?: Record<string, unknown>;
+}) {
+  try {
+    const db = supabase();
+    const { error } = await db.from("corporate_invoice_events").insert({
+      event: args.event,
+      corporate_order_id: args.corporateOrderId ?? null,
+      invoice_id: args.invoiceId ?? null,
+      credit_note_id: args.creditNoteId ?? null,
+      actor: args.actor ?? "system",
+      detail: args.detail ?? {},
+    });
+    if (error) console.error("[invoicing] event write failed:", error.message);
+  } catch (e) {
+    console.error("[invoicing] event threw:", e);
+  }
+}
+
+export type VoidResult =
+  | { ok: true; invoice: { id: string; invoice_number: string; status: string } }
+  | { ok: false; code: "not_found" | "already_void" | "is_paid" | "already_credited" | "no_reason" };
+
+/**
+ * Withdraw an issued invoice. The number is kept — a voided invoice that
+ * silently vanished is indistinguishable from one that was never issued, and
+ * the client may already have filed it.
+ *
+ * A *paid* invoice cannot be voided. Once money has moved, the answer is a
+ * credit note and a refund, not a retraction that leaves the payment orphaned.
+ */
+export async function voidInvoice(args: {
+  invoiceId: string;
+  reason: string;
+  note?: string;
+  actor?: string;
+}): Promise<VoidResult> {
+  const db = supabase();
+
+  const { data: invoice, error } = await db
+    .from("corporate_invoices")
+    .select("id, invoice_number, status, corporate_order_id, corporate_account_id")
+    .eq("id", args.invoiceId)
+    .maybeSingle();
+
+  if (error) throw new Error(`Could not read the invoice: ${error.message}`);
+  if (!invoice) return { ok: false, code: "not_found" };
+  if (invoice.status === "void") return { ok: false, code: "already_void" };
+  if (invoice.status === "paid") return { ok: false, code: "is_paid" };
+  if (!args.reason.trim()) return { ok: false, code: "no_reason" };
+
+  const { data: credits } = await db
+    .from("corporate_credit_notes")
+    .select("id")
+    .eq("invoice_id", invoice.id)
+    .neq("status", "draft")
+    .limit(1);
+  if (credits?.length) return { ok: false, code: "already_credited" };
+
+  const { data: updated, error: updateErr } = await db
+    .from("corporate_invoices")
+    .update({
+      status: "void",
+      voided_at: new Date().toISOString(),
+      void_reason: args.reason.trim(),
+    })
+    .eq("id", invoice.id)
+    .eq("status", invoice.status)
+    .select("id, invoice_number, status")
+    .maybeSingle();
+
+  if (updateErr) throw new Error(`Could not void the invoice: ${updateErr.message}`);
+  if (!updated) return { ok: false, code: "already_void" };
+
+  await recordInvoiceEvent({
+    event: "invoice.voided",
+    corporateOrderId: invoice.corporate_order_id,
+    invoiceId: invoice.id,
+    actor: args.actor ?? null,
+    detail: { reason: args.reason.trim(), note: args.note ?? null },
+  });
+
+  return { ok: true, invoice: updated };
+}
+
+export type CreditNoteResult =
+  | { ok: true; creditNote: Record<string, unknown> }
+  | {
+      ok: false;
+      code:
+        | "not_found"
+        | "no_lines"
+        | "amount_exceeds_invoice"
+        | "already_fully_credited"
+        | "bad_reason"
+    };
+
+/**
+ * Raise a credit note against an issued or paid invoice.
+ *
+ * The amount defaults to the full invoice — the common case is "this was wrong,
+ * here is the credit" — but it can be partial, because "three of the fifty
+ * hampers were never delivered" is the more common case than people assume.
+ * The ceiling is enforced here rather than trusted from the client.
+ */
+export async function issueCreditNote(args: {
+  invoiceId: string;
+  reason: string;
+  reasonNote?: string;
+  amount?: number;
+  lineRefs?: number[];
+  actor?: string;
+}): Promise<CreditNoteResult> {
+  const db = supabase();
+
+  const REASONS = new Set([
+    "duplicate",
+    "incorrect_amount",
+    "goods_returned",
+    "service_not_delivered",
+    "other",
+  ]);
+  if (!REASONS.has(args.reason)) return { ok: false, code: "bad_reason" };
+
+  const { data: invoice, error } = await db
+    .from("corporate_invoices")
+    .select("*")
+    .eq("id", args.invoiceId)
+    .maybeSingle();
+
+  if (error) throw new Error(`Could not read the invoice: ${error.message}`);
+  if (!invoice) return { ok: false, code: "not_found" };
+  if (invoice.status === "void") return { ok: false, code: "not_found" };
+
+  const { data: lines } = await db
+    .from("corporate_invoice_lines")
+    .select("line_no, description, quantity, unit_price, line_total")
+    .eq("invoice_id", invoice.id)
+    .order("line_no", { ascending: true });
+
+  if (!lines?.length) return { ok: false, code: "no_lines" };
+
+  /* What has already been credited against this invoice, so a second note
+     cannot credit the same money twice. */
+  const { data: priorCredits } = await db
+    .from("corporate_credit_notes")
+    .select("total_amount")
+    .eq("invoice_id", invoice.id)
+    .neq("status", "draft");
+
+  const alreadyCredited = (priorCredits ?? []).reduce(
+    (sum, c) => sum + Number(c.total_amount ?? 0),
+    0
+  );
+  const invoiceTotal = Number(invoice.total_amount ?? 0);
+  const remaining = Math.round((invoiceTotal - alreadyCredited) * 100) / 100;
+
+  if (remaining <= 0) return { ok: false, code: "already_fully_credited" };
+
+  const creditAmount =
+    args.amount == null ? remaining : Math.round(args.amount * 100) / 100;
+
+  if (creditAmount <= 0 || creditAmount > remaining) {
+    return { ok: false, code: "amount_exceeds_invoice" };
+  }
+
+  /* Scale the invoice's net/VAT across the credit in the same proportion, so a
+     partial credit does not distort the VAT line. */
+  const ratio = invoiceTotal > 0 ? creditAmount / invoiceTotal : 1;
+  const netAmount = Math.round(Number(invoice.subtotal ?? 0) * ratio * 100) / 100;
+  const vatAmount = Math.round(Number(invoice.vat_amount ?? 0) * ratio * 100) / 100;
+
+  const creditedLines = args.lineRefs?.length
+    ? lines.filter((l) => args.lineRefs!.includes(Number(l.line_no)))
+    : lines;
+
+  const { data: seq, error: seqErr } = await db.rpc("next_corporate_credit_note_number");
+  if (seqErr || seq == null) {
+    throw new Error("Credit note numbering is unavailable");
+  }
+
+  const { prefix } = sellerConfig();
+  const now = new Date();
+  const number = `${prefix}CN/${now.getFullYear()}/${String(seq).padStart(4, "0")}`;
+
+  const { data: creditNote, error: insertErr } = await db
+    .from("corporate_credit_notes")
+    .insert({
+      credit_note_number: number,
+      fiscal_year: now.getFullYear(),
+      invoice_id: invoice.id,
+      corporate_order_id: invoice.corporate_order_id,
+      corporate_account_id: invoice.corporate_account_id,
+      status: "issued",
+      reason: args.reason,
+      reason_note: args.reasonNote?.trim() || null,
+
+      vat_registered: invoice.vat_registered,
+      vat_rate: invoice.vat_rate,
+      subtotal: netAmount,
+      vat_amount: vatAmount,
+      total_amount: creditAmount,
+
+      lines: creditedLines.map((l) => ({
+        line_no: l.line_no,
+        description: l.description,
+        quantity: Number(l.quantity),
+        unit_price: Number(l.unit_price),
+        // Negative: a credit reduces what is owed.
+        line_total: -Math.round(Number(l.line_total) * ratio * 100) / 100,
+      })),
+
+      seller_name: invoice.seller_name,
+      seller_pin: invoice.seller_pin,
+      seller_vat_number: invoice.seller_vat_number,
+      seller_address: invoice.seller_address,
+      buyer_name: invoice.buyer_name,
+      buyer_tax_id: invoice.buyer_tax_id,
+      buyer_address: invoice.buyer_address,
+      buyer_email: invoice.buyer_email,
+
+      issued_by: args.actor ?? null,
+      issued_at: now.toISOString(),
+    })
+    .select()
+    .single();
+
+  if (insertErr) throw new Error(`Could not write the credit note: ${insertErr.message}`);
+
+  await recordInvoiceEvent({
+    event: "credit_note.issued",
+    corporateOrderId: invoice.corporate_order_id,
+    invoiceId: invoice.id,
+    creditNoteId: creditNote.id,
+    actor: args.actor ?? null,
+    detail: { credit_note_number: number, amount: creditAmount, reason: args.reason },
+  });
+
+  return { ok: true, creditNote };
+}
+
+/** What has been credited against an invoice, for the ops screen. */
+export async function creditSummary(invoiceId: string) {
+  const db = supabase();
+  const { data } = await db
+    .from("corporate_credit_notes")
+    .select("id, credit_note_number, total_amount, reason, issued_at")
+    .eq("invoice_id", invoiceId)
+    .neq("status", "draft")
+    .order("issued_at", { ascending: false });
+
+  const total = (data ?? []).reduce((s, c) => s + Number(c.total_amount ?? 0), 0);
+  return { notes: data ?? [], creditedTotal: total };
+}
