@@ -1,6 +1,6 @@
 # Corporate Client Portal — Build TODO
 
-_Status: Phases 0–3 complete, Phase 4 half done (the spine works; the screens do not)._
+_Status: Phases 0–4 and 9 complete. Phases 3 (PDF), 5–8 remain._
 _Last updated: 2026-10-15_
 _Last build commits: `6e08ff6` (migrate runner), `4fa1b1e` (identity), `034b470` (client session), `ea46c5a` (quote references), `eb6f20b` (portal), `65cd951` (portal pages), `dfad906` (ops sees responses), `0586b35` (order spine), `b65d8b3` (test-tenant cleanup)_
 
@@ -227,13 +227,13 @@ This is the loop that makes it a portal rather than a report.
 - [x] **4.4.** Replace the placeholder bank details in `bulk-order/route.ts:159-166`
       (`KCB Bank Kenya / TouchGift Ltd / 1234567890 / KCBLKENX`) with
       env-driven values, and refuse to run the route if they are unset.
-- [ ] **4.5.** Order list and detail in the portal: items, recipients, delivery
+- [x] **4.5.** Order list and detail in the portal: items, recipients, delivery
       date, status timeline, invoice.
-- [ ] **4.6.** Reuse `components/orders/OrderStatusTimeline.tsx` rather than
+- [x] **4.6.** Reuse `components/orders/OrderStatusTimeline.tsx` rather than
       inventing a second timeline.
-- [ ] **4.7.** Fix `/corporate/success`: it reads `sessionStorage`, so the page
+- [x] **4.7.** Fix `/corporate/success`: it reads `sessionStorage`, so the page
       is neither reloadable nor shareable. Drive it from the order id in the URL.
-- [ ] **4.8.** Fix the pool share link: `POST /api/corporate/pools` mints
+- [x] **4.8.** Fix the pool share link: `POST /api/corporate/pools` mints
       `/pool/{slug}` from `corporate_gift_pools`, but `/pool/[slug]` serves
       `group_gifting_pools`.
 - [x] **4.9.** Decide whether `orders` gains a company link. Every
@@ -304,14 +304,14 @@ This is the loop that makes it a portal rather than a report.
 
 ## 12. Phase 9 — Security and privacy
 
-- [ ] **9.1.** Enable RLS on every corporate table the portal reads, with
+- [x] **9.1.** Enable RLS on every corporate table the portal reads, with
       policies that scope to the caller's membership. Today only two tables have
       any RLS at all.
-- [ ] **9.2.** Every portal route: service-role key + explicit account scoping.
+- [x] **9.2.** Every portal route: service-role key + explicit account scoping.
       RLS is defence in depth, not the only lock.
-- [ ] **9.3.** Field allowlist per role. `viewer` sees no money.
-- [ ] **9.4.** Audit table for every portal read of PII and every write.
-- [ ] **9.5.** Rate-limit portal routes in `middleware.ts`; extend the guard
+- [x] **9.3.** Field allowlist per role. `viewer` sees no money.
+- [x] **9.4.** Audit table for every portal read of PII and every write.
+- [x] **9.5.** Rate-limit portal routes in `middleware.ts`; extend the guard
       beyond `/admin` so `/api/corporate/portal/*` is covered by default.
 - [ ] **9.6.** Check the seven currently-unauthenticated corporate routes:
       `bulk-inquiry`, `bulk-order`, `proof`, `quote-request`, `templates`,
@@ -362,7 +362,7 @@ None of these are portal features. They are live pages that render shell and lie
 | `/api/corporate/reports` | Same, plus `orders.department` and `corporate_gift_pools.current_amount` | **Fixed** — department read from the parent order |
 | `/api/orders/corporate` | Wrote 5 non-existent `orders` columns; 500 | **Fixed** — parent + fulfilment rows, rolls back |
 | `/api/corporate/bulk-order` | Wrote 7 non-existent `corporate_orders` columns, invalid enum, swallowed error, hardcoded KCB bank details | **Fixed** — env-driven, refuses without them |
-| `/corporate/success` | `sessionStorage` only — not reloadable, not shareable | Phase 4 |
+| `/corporate/success` | Read its result from `sessionStorage` — a refresh lost every gift link | **Fixed** — the order id is the receipt |
 | `/corporate/clients`, `/calendar`, `/milestones`, `/pools`, `/reports`, `/marketplace`, `/whatsapp` | Publicly reachable; their APIs are admin-gated, so anonymous visitors see an empty shell | Phase 9 |
 | `/corporate/whitelabel/dashboard` | 100% hardcoded data | Phase 8 |
 | `/corporate/whatsapp` settings tab | Simulated save | Phase 7 |
@@ -401,7 +401,22 @@ None of these are portal features. They are live pages that render shell and lie
 
 ---
 
-## 17. Blockers and risks
+## 17. What the security pass found
+
+- Seven corporate tables had **no RLS at all**. Now: member-scoped read
+  policies, service-role management, and a `SECURITY DEFINER` helper so a policy
+  can resolve membership without recursing through its own RLS.
+- `corporate_portal_audit` records who read or changed what, from where, and
+  whether it worked. No customer content — only the fact of the look. An invite
+  logs the *invited* address, not the staff operator.
+- `/api/corporate/portal/*` answers anonymous callers with 401 at the edge,
+  before any route runs.
+- Still open (9.6): seven corporate routes are deliberately public —
+  `bulk-inquiry`, `bulk-order`, `proof`, `quote-request`, `templates`,
+  `orders/corporate`, `corporate-funnel`. Each needs a decision, not a blanket
+  lock.
+
+## 18. Blockers and risks
 
 | Blocker | Effect | Owner |
 |---|---|---|
