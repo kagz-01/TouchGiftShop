@@ -78,7 +78,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           {!isAdmin && !isPortal && <WhatsAppFloat />}
           {!isAdmin && !isPortal && <GiftChatWidget />}
         </main>
-        {legalStrip && <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} />}
+        {legalStrip && <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} regNo={process.env.LEGAL_ENTITY_COMPANY_NUMBER ?? null} />}
       </>
     );
   }
@@ -97,7 +97,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       </main>
       <Footer />
       {!showsFullFooter(pathname) && (
-        <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} />
+        <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} regNo={process.env.LEGAL_ENTITY_COMPANY_NUMBER ?? null} />
       )}
       <BottomNav />
       <WhatsAppFloat />

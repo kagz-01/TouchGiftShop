@@ -41,6 +41,11 @@ export function sellerConfig() {
     email: process.env.LEGAL_ENTITY_EMAIL || process.env.NOTIFY_EMAIL || null,
     taxArea: process.env.LEGAL_ENTITY_TAX_AREA || null,
     lrNumber: process.env.LEGAL_ENTITY_LR_NUMBER || null,
+    /* The company number answers to the Registrar of Companies; the PIN answers
+       to KRA. Printing one without the other leaves a client unable to verify
+       the seller against the register they were told to check. */
+    companyNumber: process.env.LEGAL_ENTITY_COMPANY_NUMBER || null,
+    phone: process.env.LEGAL_ENTITY_PHONE || null,
     vatRegistered: registered,
     vatRate: registered ? num(process.env.VAT_RATE, 16.5) : 0,
     /* Kenyan retail quotes tax-inclusive. If the business ever switches to

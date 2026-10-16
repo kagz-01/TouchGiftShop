@@ -20,6 +20,8 @@ export const dynamic = "force-dynamic";
 
 const SELLER_TAX_AREA = process.env.LEGAL_ENTITY_TAX_AREA || null;
 const SELLER_LR_NUMBER = process.env.LEGAL_ENTITY_LR_NUMBER || null;
+const SELLER_COMPANY_NUMBER = process.env.LEGAL_ENTITY_COMPANY_NUMBER || null;
+const SELLER_PHONE = process.env.LEGAL_ENTITY_PHONE || null;
 
 const money = (n: number) =>
   `KES ${Number(n).toLocaleString("en-KE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -184,6 +186,18 @@ export default async function InvoiceDocumentPage({
                   <dd>{SELLER_LR_NUMBER}</dd>
                 </div>
               )}
+              {SELLER_COMPANY_NUMBER && (
+                <div className="flex gap-2">
+                  <dt className="w-24">Reg. No.</dt>
+                  <dd className="font-medium text-black/80">{SELLER_COMPANY_NUMBER}</dd>
+                </div>
+              )}
+              {SELLER_PHONE && (
+                <div className="flex gap-2">
+                  <dt className="w-24">Telephone</dt>
+                  <dd>{SELLER_PHONE}</dd>
+                </div>
+              )}
             </dl>
           </div>
 
@@ -325,7 +339,8 @@ export default async function InvoiceDocumentPage({
 
         <footer className="mt-10 border-t border-black/10 pt-3 text-[10px] leading-relaxed text-black/40">
           {inv.seller_name}
-          {inv.seller_pin ? ` · KRA PIN ${inv.seller_pin}` : ""} · Generated for{" "}
+          {inv.seller_pin ? ` · KRA PIN ${inv.seller_pin}` : ""}
+          {SELLER_COMPANY_NUMBER ? ` · Reg. No. ${SELLER_COMPANY_NUMBER}` : ""} · Generated for{" "}
           {inv.buyer_name}. This invoice reflects the record at the time of issue.
         </footer>
       </article>

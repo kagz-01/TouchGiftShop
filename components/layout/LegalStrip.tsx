@@ -15,9 +15,11 @@ import Link from "next/link";
 export default function LegalStrip({
   entity = process.env.NEXT_PUBLIC_LEGAL_ENTITY_NAME || "Touchline Branding",
   kraPin,
+  regNo,
 }: {
   entity?: string;
   kraPin?: string | null;
+  regNo?: string | null;
 }) {
   return (
     <div className="border-t border-black/5 bg-[var(--portal-bg-alt,#F4F1ED)]">
@@ -28,7 +30,8 @@ export default function LegalStrip({
       <div className="page-container-capped flex flex-col gap-2 pb-24 pt-5 text-xs text-[color:var(--portal-text-muted,#5C534B)] md:flex-row md:items-center md:justify-between md:pb-5">
         <p className="leading-relaxed">
           TouchGift is a storefront operated by {entity}
-          {kraPin ? ` · KRA PIN ${kraPin}` : ""}.
+          {kraPin ? ` · KRA PIN ${kraPin}` : ""}
+          {regNo ? ` · Reg. No. ${regNo}` : ""}.
         </p>
         <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
           <Link href="/terms" className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
