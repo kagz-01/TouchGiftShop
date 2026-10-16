@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Copy, Download, Mail, ArrowRight, ExternalLink, Wallet, Building2, Link as LinkIcon } from "lucide-react";
+import { CheckCircle2, Copy, Download, Mail, ArrowRight, ExternalLink, Building2, Link as LinkIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import ReactConfetti from "react-confetti";
 import { useWindowSize } from "react-use";
@@ -10,27 +10,13 @@ import { useWindowSize } from "react-use";
 type OrderResult = {
   links: { slug: string; url: string; phone: string | null }[];
   deliveryMethod: "links" | "csv" | null;
-  paymentMethod: "mpesa" | "bank" | null;
+  paymentMethod: string | null;
   orderId: string;
   totalAmount: number | null;
   unitAmount: number | null;
   createdAt: string;
   count: number;
   companyName: string | null;
-  /**
-   * Bank details stay in this browser. They are not fetched from the summary
-   * endpoint on purpose: that endpoint is reachable by anyone holding the order
-   * id, and account numbers do not belong there. A reload after checkout simply
-   * says where the details went instead of quietly losing them.
-   */
-  invoiceDetails: {
-    amount: number;
-    reference: string;
-    bankName: string;
-    accountName: string;
-    accountNumber: string;
-    swiftCode?: string;
-  } | null;
 };
 
 export default function CorporateSuccessPage() {
@@ -59,8 +45,7 @@ export default function CorporateSuccessPage() {
         if (!res.ok) throw new Error(data.error ?? "Could not load this order");
         if (cancelled) return;
 
-        const invoice = readStoredInvoice();
-        setResult({ ...data, invoiceDetails: data.paymentMethod === "bank" ? invoice : null });
+        setResult(data);
       } catch {
         if (!cancelled) setFailed(true);
       }
@@ -69,15 +54,6 @@ export default function CorporateSuccessPage() {
     const t = setTimeout(() => setShowConfetti(false), 5000);
     return () => { cancelled = true; clearTimeout(t); };
   }, []);
-
-  function readStoredInvoice() {
-    try {
-      const raw = sessionStorage.getItem("corp_invoice_details");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  }
 
   const handleCopyAll = () => {
     if (!result) return;
@@ -167,31 +143,6 @@ export default function CorporateSuccessPage() {
             <span className="text-emerald-400 font-bold text-2xl">{result.count}</span> secure gift links have been provisioned.
           </p>
         </motion.div>
-
-        {/* ── Bank Invoice (if bank transfer) ── */}
-        {result.paymentMethod === "bank" && result.invoiceDetails && (
-          <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} className="bg-amber-500/5 border border-amber-500/20 rounded-3xl p-6 mb-6 space-y-3">
-            <h3 className="font-bold text-sm text-amber-400 flex items-center gap-2">
-              <Wallet className="w-4 h-4" /> Bank Transfer Details
-            </h3>
-            <p className="text-xs text-amber-300/70">Complete payment to activate your gift links. Reference is required.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              {[
-                { label: "Bank", value: result.invoiceDetails.bankName },
-                { label: "Account Name", value: result.invoiceDetails.accountName },
-                { label: "Account No.", value: result.invoiceDetails.accountNumber },
-                { label: "Swift / BIC", value: result.invoiceDetails.swiftCode },
-                { label: "Amount", value: `KES ${Number(result.invoiceDetails.amount).toLocaleString()}` },
-                { label: "Reference", value: result.invoiceDetails.reference },
-              ].map(row => (
-                <div key={row.label} className="min-w-0 bg-black/30 rounded-xl p-3">
-                  <p className="text-white/30 text-[10px] uppercase tracking-wider mb-0.5">{row.label}</p>
-                  <p className="font-mono font-semibold text-white text-xs break-all">{row.value}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
 
         {/* ── Links mode ── */}
         {result.deliveryMethod !== "csv" ? (

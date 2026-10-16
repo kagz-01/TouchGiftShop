@@ -37,7 +37,7 @@ const MARKERS = {
     "diagnostic", "migrationproof", "postmigration", "dashboard qa",
   ],
   corporate_inquiries: ["diagco"],
-  corporate_accounts: ["portal qa", "spine qa", "receipt qa", "audit qa"],
+  corporate_accounts: ["portal qa", "spine qa", "receipt qa", "audit qa", "ipn qa"],
   corporate_gift_pools: ["diwali hamper"],
   /* Audit rows are themselves test residue: an operator reading them months
      later has no way to tell a QA run from a real client's activity. */

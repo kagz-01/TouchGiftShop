@@ -40,6 +40,8 @@ export async function POST(req: Request) {
       await handleGiftCardPayment(merchantReference, status.receiptNumber);
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolPayment(merchantReference, status.receiptNumber);
+    } else if (merchantReference.startsWith("corp-")) {
+      await handleCorporateOrderPayment(merchantReference.replace("corp-", ""), status.receiptNumber);
     } else if (merchantReference.startsWith("multi-")) {
       const orderIds = merchantReference.replace("multi-", "").split(",");
       for (const oid of orderIds) {
@@ -53,6 +55,10 @@ export async function POST(req: Request) {
       await handleGiftCardFailure(merchantReference);
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolFailure(merchantReference);
+    } else if (merchantReference.startsWith("corp-")) {
+      await handleCorporateOrderPayment(merchantReference.replace("corp-", ""), status.receiptNumber);
+    } else if (merchantReference.startsWith("corp-")) {
+      await handleCorporateOrderFailure(merchantReference.replace("corp-", ""));
     } else if (merchantReference.startsWith("multi-")) {
       const orderIds = merchantReference.replace("multi-", "").split(",");
       for (const oid of orderIds) {
@@ -192,6 +198,86 @@ async function redeemGiftCardBalance(
   return fail("Could not deduct balance (concurrent redemption)");
 }
 
+/**
+ * `orders.status` is an enum (`pending_payment, processing, wrapped, dispatched,
+ * delivered, failed, refunded, cancelled`). Every filter here used to include
+ * "pending" as well, which is not a member of it — so the UPDATE was rejected
+ * wholesale with `invalid input value for enum order_status_enum: "pending"`,
+ * the error was swallowed by an early `return`, and **no order ever moved off
+ * pending_payment when payment completed.** The parent and its children now
+ * filter on the one state that actually means "not paid yet".
+ */
+
+/**
+ * A corporate order is paid as ONE transaction covering a parent
+ * `corporate_orders` row and every fulfilment `orders` row under it.
+ *
+ * Both corporate intake routes used to send references this handler could not
+ * route — "CORP-xxxxxxxx-TIMESTAMP" and a bare corporate_orders uuid both fell
+ * through to the consumer branch, which updated `orders` by that id and matched
+ * nothing. With bank transfer removed, PesaPal is the only way money arrives,
+ * so a paid corporate order would have sat at pending_payment forever.
+ */
+async function handleCorporateOrderPayment(
+  corporateOrderId: string,
+  receiptNumber: string | undefined
+) {
+  if (!/^[0-9a-f-]{36}$/i.test(corporateOrderId)) {
+    console.error(`[ipn] malformed corporate order reference: ${corporateOrderId}`);
+    return;
+  }
+
+  const { data: parent, error: parentErr } = await supabaseAdmin
+    .from("corporate_orders")
+    .update({ status: "processing" })
+    .eq("id", corporateOrderId)
+    .in("status", ["draft", "pending_payment"])
+    .select("id")
+    .maybeSingle();
+
+  if (parentErr) {
+    console.error(`[ipn] corporate order update failed (${corporateOrderId}):`, parentErr.message);
+    return;
+  }
+  if (!parent) {
+    // Already handled, or never existed. Either way there is nothing left to do
+    // and re-running must not be destructive — PesaPal retries IPNs.
+    console.log(`[ipn] corporate order ${corporateOrderId} already past pending`);
+  }
+
+  /* The child rows are what fulfilment works from, so they move with the parent.
+     Scoped to pending states so a retry cannot knock an order that is already
+     wrapped back into production. */
+  const { error: childErr } = await supabaseAdmin
+    .from("orders")
+    .update({
+      status: "processing",
+      mpesa_receipt_number: receiptNumber ?? null,
+    })
+    .eq("corporate_order_id", corporateOrderId)
+    .in("status", ["pending_payment"]);
+
+  if (childErr) {
+    console.error(`[ipn] corporate fulfilment rows failed (${corporateOrderId}):`, childErr.message);
+  }
+}
+
+async function handleCorporateOrderFailure(corporateOrderId: string) {
+  if (!/^[0-9a-f-]{36}$/i.test(corporateOrderId)) return;
+
+  await supabaseAdmin
+    .from("corporate_orders")
+    .update({ status: "cancelled", notes: "Payment failed at PesaPal" })
+    .eq("id", corporateOrderId)
+    .in("status", ["draft", "pending_payment"]);
+
+  await supabaseAdmin
+    .from("orders")
+    .update({ status: "cancelled" })
+    .eq("corporate_order_id", corporateOrderId)
+    .in("status", ["pending_payment"]);
+}
+
 async function handleOrderPayment(
   orderId: string,
   receiptNumber: string | undefined
@@ -203,7 +289,7 @@ async function handleOrderPayment(
       mpesa_receipt_number: receiptNumber ?? null,
     })
     .eq("id", orderId)
-    .in("status", ["pending_payment", "pending"]);
+    .in("status", ["pending_payment"]);
 
   if (error) return;
 
@@ -332,7 +418,7 @@ async function handleOrderFailure(orderId: string) {
     .from("orders")
     .update({ status: "failed" })
     .eq("id", orderId)
-    .in("status", ["pending_payment", "pending"]);
+    .in("status", ["pending_payment"]);
 }
 
 async function handlePoolPayment(

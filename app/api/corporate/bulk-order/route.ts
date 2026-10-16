@@ -23,34 +23,10 @@ const bodySchema = z.object({
   contactEmail: z.string().email().optional(),
   deliveryMethod: z.enum(["links", "csv"]).default("links"),
   csvPhones: z.array(z.string()).max(2000).default([]),
-  paymentMethod: z.enum(["mpesa", "bank"]).default("bank"),
   amount: z.coerce.number().positive(),
   totalAmount: z.coerce.number().positive().optional(),
   style: z.string().max(40).default("glassmorphism"),
 });
-
-/**
- * Bank details for invoice payments.
- *
- * These used to be hardcoded — "KCB Bank Kenya / TouchGift Ltd / 1234567890" —
- * and served to whoever reached this public endpoint. A customer who paid into
- * that account would have paid a stranger. They come from the environment now,
- * and the bank path refuses to start without them rather than inventing them.
- */
-function bankDetails(reference: string, amount: number) {
-  const name = process.env.BANK_ACCOUNT_NAME;
-  const number = process.env.BANK_ACCOUNT_NUMBER;
-  const bank = process.env.BANK_NAME;
-  if (!name || !number || !bank) return null;
-  return {
-    amount,
-    reference,
-    bankName: bank,
-    accountName: name,
-    accountNumber: number,
-    ...(process.env.BANK_SWIFT_CODE ? { swiftCode: process.env.BANK_SWIFT_CODE } : {}),
-  };
-}
 
 /**
  * POST /api/corporate/bulk-order
@@ -76,20 +52,10 @@ export async function POST(req: NextRequest) {
 
     const {
       productId, quantity, companyName, senderName, contactPhone, contactEmail,
-      deliveryMethod, csvPhones, paymentMethod, amount, totalAmount, style,
+      deliveryMethod, csvPhones, amount, totalAmount, style,
     } = parsed.data;
 
     const total = totalAmount ?? amount * quantity;
-
-    if (paymentMethod === "bank" && !bankDetails("preview", 0)) {
-      /* Refusing beats inventing. Without real bank details the buyer would be
-         told to transfer money to an account we made up. */
-      console.error("[Corporate] bank payment requested but BANK_* is not configured");
-      return NextResponse.json(
-        { error: "Bank transfer is not available right now. Please choose M-Pesa or contact your account manager." },
-        { status: 503 }
-      );
-    }
 
     const account = companyName
       ? await resolveCorporateAccount({ company: companyName, email: contactEmail ?? "" }).catch(() => null)
@@ -110,7 +76,7 @@ export async function POST(req: NextRequest) {
         recipient_count: quantity,
         subtotal: amount * quantity,
         total_amount: total,
-        payment_method: paymentMethod,
+        payment_method: "pesapal",
         delivery_method: deliveryMethod,
       })
       .select("id")
@@ -179,9 +145,13 @@ export async function POST(req: NextRequest) {
       void Promise.allSettled(blasts);
     }
 
-    /* 4. M-Pesa. */
+    /* 4. PesaPal. The reference is `corp-<id>` because that is what the IPN
+       handler routes on; it used to pass the bare uuid, which the handler read
+       as a consumer `orders` id and matched nothing — so a paid bulk order was
+       never confirmed. */
     let paymentRedirectUrl: string | null = null;
-    if (paymentMethod === "mpesa" && contactPhone) {
+    let paymentError: string | null = null;
+    if (contactPhone) {
       try {
         const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
         const payRes = await fetch(`${base}/api/payment/create-order`, {
@@ -189,24 +159,28 @@ export async function POST(req: NextRequest) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             amount: total,
-            merchantReference: masterOrder.id,
-            description: `TouchGift Corporate – ${companyName} – ${quantity} gifts`,
+            merchantReference: `corp-${masterOrder.id}`,
+            description: `Corporate gifts – ${companyName} – ${quantity}`,
             phoneNumber: normalizePhone(contactPhone),
+            email: contactEmail,
+            name: senderName ?? companyName,
           }),
         });
         const payData = await payRes.json();
         paymentRedirectUrl = payData.redirectUrl ?? null;
+        if (payData.error) paymentError = payData.error;
 
         if (payData.orderTrackingId) {
           await supabaseAdmin
             .from("corporate_orders")
             .update({
               payment_tracking_id: payData.orderTrackingId,
-              payment_merchant_ref: masterOrder.id,
+              payment_merchant_ref: `corp-${masterOrder.id}`,
             })
             .eq("id", masterOrder.id);
         }
       } catch (e) {
+        paymentError = "Could not start the payment";
         console.error("[Corporate] payment initiation failed:", e);
       }
     }
@@ -216,9 +190,8 @@ export async function POST(req: NextRequest) {
       orderId: masterOrder.id,
       count: links.length,
       links,
-      paymentMethod,
       paymentRedirectUrl,
-      invoiceDetails: paymentMethod === "bank" ? bankDetails(masterOrder.id, total) : null,
+      ...(paymentError ? { paymentError } : {}),
     });
   } catch (err) {
     console.error("[Corporate bulk-order]", err);

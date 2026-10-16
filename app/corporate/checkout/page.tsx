@@ -11,7 +11,6 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 type DeliveryMethod = "links" | "csv";
-type PaymentMethod = "mpesa" | "bank";
 
 const CARD_THEMES = [
   { id: "glassmorphism", label: "Frost Glass", color: "emerald" },
@@ -32,7 +31,6 @@ function CorporateCheckoutContent() {
   // Config
   const [quantity, setQuantity] = useState(initQty);
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("links");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
   const [cardTheme, setCardTheme] = useState<string>("glassmorphism");
 
   // Company details
@@ -106,7 +104,6 @@ function CorporateCheckoutContent() {
           contactEmail: contactEmail.trim(),
           deliveryMethod,
           csvPhones: deliveryMethod === "csv" ? csvPhones : [],
-          paymentMethod,
           amount: product?.price ?? 0,
           totalAmount: finalAmt,
           style: cardTheme,
@@ -117,18 +114,16 @@ function CorporateCheckoutContent() {
       if (!res.ok) throw new Error(data.error ?? "Order failed");
 
       /* The order id is the receipt — the success page reads it back from the
-         server, so a refresh keeps the gift links instead of losing them.
-         Bank details stay in this browser only: the receipt endpoint is
-         reachable by anyone holding the order id, and account numbers do not
-         belong there. */
-      if (data.invoiceDetails) {
-        try {
-          sessionStorage.setItem("corp_invoice_details", JSON.stringify(data.invoiceDetails));
-        } catch { /* private mode — the page will say where the details went */ }
-      }
-      // Redirect to PesaPal if M-Pesa
-      if (paymentMethod === "mpesa" && data.paymentRedirectUrl) {
+         server, so a refresh keeps the gift links instead of losing them. */
+      if (data.paymentRedirectUrl) {
         window.location.href = data.paymentRedirectUrl;
+        return;
+      }
+      if (data.paymentError) {
+        // The order exists but payment could not start. Say so plainly rather
+        // than dropping the buyer on a success page for an unpaid order.
+        setError(`${data.paymentError}. Your order is saved — try paying again or contact your account manager.`);
+        setPaying(false);
         return;
       }
 
@@ -362,29 +357,22 @@ function CorporateCheckoutContent() {
               </div>
             </div>
 
-            {/* Payment method */}
+            {/* Settlement */}
             <div>
-              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">Settlement Method</label>
-              <div className="space-y-2">
-                {([
-                  { id: "bank" as const, label: "Wire Transfer / Proforma Invoice", icon: FileText, desc: "Ideal for procurement teams. Invoice sent to your email." },
-                  { id: "mpesa" as const, label: "Pesapal Corporate M-Pesa", icon: CreditCard, desc: "Instant STK push to your billing phone." },
-                ] as const).map(pm => (
-                  <button
-                    key={pm.id}
-                    onClick={() => setPaymentMethod(pm.id)}
-                    className={`w-full flex items-start gap-3 p-4 rounded-xl border transition-all text-left ${paymentMethod === pm.id ? "border-emerald-500/50 bg-emerald-500/10" : "border-white/10 bg-white/5 hover:border-white/20"}`}
-                  >
-                    <pm.icon className={`w-5 h-5 mt-0.5 shrink-0 ${paymentMethod === pm.id ? "text-emerald-400" : "text-white/40"}`} />
-                    <div>
-                      <p className="text-xs font-bold">{pm.label}</p>
-                      <p className="text-[11px] text-white/40 mt-0.5">{pm.desc}</p>
-                    </div>
-                    {paymentMethod === pm.id && <CheckCircle2 className="w-4 h-4 text-emerald-400 ml-auto shrink-0 mt-0.5" />}
-                  </button>
-                ))}
+              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">Settlement</label>
+              <div className="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
+                <CreditCard className="w-5 h-5 mt-0.5 shrink-0 text-emerald-400" />
+                <div>
+                  <p className="text-sm font-bold text-white">PesaPal — M-Pesa or card</p>
+                  <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                    You will be taken to PesaPal to pay. We are notified the moment it
+                    clears, so there is nothing to send us afterwards and no bank
+                    details to copy down.
+                  </p>
+                </div>
               </div>
             </div>
+
 
             {error && (
               <div className="flex items-start gap-2 px-4 py-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-300 text-sm">

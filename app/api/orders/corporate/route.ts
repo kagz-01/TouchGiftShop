@@ -197,7 +197,12 @@ export async function POST(req: NextRequest) {
     /* 4. Payment. `pesapal_tracking_id` is the real column on `orders`;
           payment_merchant_ref lives on the parent. */
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-    const merchantReference = `CORP-${parent.id.slice(0, 8)}-${Date.now().toString(36).toUpperCase()}`;
+    /* The reference is what the IPN routes on, so it has to name the order it
+       belongs to. This used to be "CORP-xxxxxxxx-TIMESTAMP", which the IPN
+       handler could not route at all: a paid corporate order stayed
+       pending_payment forever because the callback looked for an `orders` row
+       with that id and there never was one. */
+    const merchantReference = `corp-${parent.id}`;
 
     let payment: { orderTrackingId: string; redirectUrl: string } | null = null;
     let paymentError: string | null = null;
