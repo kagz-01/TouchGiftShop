@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
-  LayoutGrid, FileText, Package, Wallet, Users, Settings, LogOut, Menu, X,
+  LayoutGrid, FileText, Package, Wallet, Users, Settings, LogOut, Menu, X, ReceiptText,
 } from "lucide-react";
 import { useState } from "react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -35,6 +35,7 @@ export default function PortalShell({
     { href: "/corporate/portal", label: "Overview", icon: LayoutGrid },
     { href: "/corporate/portal/quotes", label: "Quotes", icon: FileText },
     { href: "/corporate/portal/orders", label: "Orders", icon: Package },
+    { href: "/corporate/portal/invoices", label: "Invoices", icon: ReceiptText },
     { href: "/corporate/portal/spend", label: "Spend", icon: Wallet },
     { href: "/corporate/portal/people", label: "People", icon: Users },
     { href: "/corporate/portal/settings", label: "Settings", icon: Settings },

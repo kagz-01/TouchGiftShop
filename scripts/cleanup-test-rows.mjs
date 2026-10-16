@@ -54,6 +54,34 @@ const MARKERS = {
    sql`...` inside a plain template literal stringifies it into a JS array and
    the server sees a literal "[". Numbered placeholders take a parameter list,
    so a marker containing a quote can never become SQL. */
+/* An invoice has no company name of its own — it points up at the order, which
+   points up at the account. One statement per marker keeps the parameter
+   numbering exact, which is what postgres.js needs. */
+function invoiceSteps() {
+  const markers = MARKERS.corporate_accounts;
+  return markers.flatMap((_, i) => {
+    const n = i + 1;
+    return [
+      {
+        table: "corporate_invoice_lines",
+        label: "description",
+        clauses: [
+          `invoice_id IN (SELECT id FROM corporate_invoices WHERE corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $${n}::text))`,
+        ],
+        values: [`%${markers[i]}%`],
+      },
+      {
+        table: "corporate_invoices",
+        label: "invoice_number",
+        clauses: [
+          `corporate_order_id IN (SELECT id FROM corporate_orders WHERE company_name ILIKE $${n}::text)`,
+        ],
+        values: [`%${markers[i]}%`],
+      },
+    ];
+  });
+}
+
 const clauseFor = (markers, column = "company_name") =>
   markers.map((_, i) => `${column} ILIKE $${i + 1}`).join(" OR ");
 const valuesFor = (markers) => markers.map((m) => `%${m}%`);
@@ -111,6 +139,9 @@ await withSql(async (sql) => {
     : [];
 
   const steps = [
+    /* Invoice lines first — they cascade, but ordering it explicitly is what
+       stops the next person adding a table here and quietly breaking it. */
+    ...invoiceSteps(),
     {
       table: "corporate_portal_audit",
       label: "actor_email",

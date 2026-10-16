@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ChevronLeft, Mail } from "lucide-react";
+import { ChevronLeft, Mail, ReceiptText } from "lucide-react";
 import PortalShell from "@/components/corporate/portal/PortalShell";
 import PortalState from "@/components/corporate/portal/PortalState";
 import PortalOrderTimeline from "@/components/corporate/portal/PortalOrderTimeline";
@@ -101,6 +101,16 @@ export default async function PortalOrderDetailPage({
     .maybeSingle();
 
   if (!order) notFound();
+
+  /* Whether an invoice exists decides what the client is told to do next.
+     "Request an invoice" was a dead end — it asked them to email us for a
+     document we should already have produced. */
+  const { data: invoice } = await db
+    .from("corporate_invoices")
+    .select("invoice_number, status")
+    .eq("corporate_order_id", order.id)
+    .neq("status", "draft")
+    .maybeSingle();
 
   const { data: recipients } = await db
     .from("corporate_order_recipients")
@@ -220,19 +230,38 @@ export default async function PortalOrderDetailPage({
 
           <section className="portal-card p-6">
             <h2 className="font-display mb-2 text-lg font-bold">Documents</h2>
-            <p className="text-sm leading-relaxed text-[color:var(--portal-text-muted)]">
-              Invoices and delivery notes are issued by your account manager. Ask and
-              it will arrive the same day.
-            </p>
-            <a
-              href={`mailto:corporate@touchgift.co.ke?subject=${encodeURIComponent(
-                `Invoice request — ${o.recipient_count ?? ""} gifts placed ${date(o.created_at)}`
-              )}`}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
-              style={{ borderColor: "var(--portal-border)", color: "var(--portal-text-muted)" }}
-            >
-              <Mail className="h-4 w-4" /> Request an invoice
-            </a>
+            {invoice ? (
+              <>
+                <p className="text-sm leading-relaxed text-[color:var(--portal-text-muted)]">
+                  Invoice <span className="font-mono">{invoice.invoice_number}</span>{" "}
+                  {invoice.status === "paid" ? "is settled." : "is ready."} Print it or save
+                  it as a PDF for your finance team.
+                </p>
+                <Link
+                  href={`/corporate/portal/invoices/${encodeURIComponent(invoice.invoice_number)}`}
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-colors"
+                  style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}
+                >
+                  <ReceiptText className="h-4 w-4" /> View invoice
+                </Link>
+              </>
+            ) : (
+              <>
+                <p className="text-sm leading-relaxed text-[color:var(--portal-text-muted)]">
+                  No invoice yet — one is raised when the order goes out. Need a proforma
+                  invoice for procurement now? Ask and it will arrive the same day.
+                </p>
+                <a
+                  href={`mailto:corporate@touchgift.co.ke?subject=${encodeURIComponent(
+                    `Proforma invoice — ${o.recipient_count ?? ""} gifts placed ${date(o.created_at)}`
+                  )}`}
+                  className="mt-4 inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors"
+                  style={{ borderColor: "var(--portal-border)", color: "var(--portal-text-muted)" }}
+                >
+                  <Mail className="h-4 w-4" /> Ask for a proforma invoice
+                </a>
+              </>
+            )}
           </section>
         </div>
       </div>
