@@ -98,15 +98,31 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 function Badge({ status }: { status: string }) {
+  const alertStatuses = ["overdue", "cancelled", "unpaid"];
+  const warnStatuses  = ["pending_payment", "pending", "quoted"];
+  const okStatuses    = ["paid", "delivered"];
+  const isAlert = alertStatuses.includes(status);
+  const isWarn  = warnStatuses.includes(status);
+  const isOk    = okStatuses.includes(status);
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold ${STATUS_COLORS[status] ?? "bg-gray-100 text-gray-500"}`}>
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold"
+      style={{
+        background: isAlert ? "var(--portal-stop-tint)"
+          : isWarn ? "var(--portal-warn-tint, rgba(180,90,30,0.12))"
+          : isOk    ? "var(--portal-positive-tint, rgba(47,107,79,0.1))"
+          : "var(--portal-border)",
+        color: isAlert ? "var(--portal-stop)"
+          : isWarn ? "var(--portal-warn)"
+          : isOk   ? "var(--portal-positive)"
+          : "var(--portal-text-faint)",
+      }}>
       {STATUS_LABELS[status] ?? status}
     </span>
   );
 }
 
 function Skeleton({ h = 4, w = "full" }: { h?: number; w?: string }) {
-  return <div className={`h-${h} w-${w} bg-gray-100 rounded animate-pulse`} />;
+  return <div className={`h-${h} w-${w} rounded animate-pulse`} style={{ background: "var(--portal-border)" }} />;
 }
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
@@ -150,22 +166,23 @@ function MonthlyChart({ data, loading }: { data: Stats["monthlyActivity"]; loadi
   const maxR = Math.max(...rows.map(d => d.revenue), 1);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="rounded-xl p-6"
+      style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border)", boxShadow: "var(--portal-shadow)" }}>
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">Monthly Activity</h3>
-          <p className="text-xs text-gray-400 mt-0.5">Orders & revenue · last 6 months</p>
+          <h3 className="text-sm font-semibold" style={{ color: "var(--portal-text)" }}>Monthly Activity</h3>
+          <p className="text-xs mt-0.5" style={{ color: "var(--portal-text-faint)" }}>Orders & revenue · last 6 months</p>
         </div>
-        <div className="flex gap-4 text-xs text-gray-400">
-          <span className="flex items-center gap-1.5"><span className="w-3 h-2 rounded-sm bg-amber-400 inline-block" />Orders</span>
-          <span className="flex items-center gap-1.5"><span className="w-3 h-2 rounded-sm bg-green-400 inline-block" />Revenue</span>
+        <div className="flex gap-4 text-xs" style={{ color: "var(--portal-text-faint)" }}>
+          <span className="flex items-center gap-1.5"><span className="w-3 h-2 rounded-sm inline-block" style={{ background: "var(--portal-accent)" }} />Orders</span>
+          <span className="flex items-center gap-1.5"><span className="w-3 h-2 rounded-sm inline-block" style={{ background: "var(--portal-positive)" }} />Revenue</span>
         </div>
       </div>
       {loading ? (
         <div className="flex items-end gap-3 h-36">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="flex-1 flex flex-col gap-1 items-center">
-              <div className="w-full bg-gray-100 rounded animate-pulse" style={{ height: `${30 + i * 12}%` }} />
+              <div className="w-full rounded animate-pulse" style={{ height: `${30 + i * 12}%`, background: "var(--portal-border)" }} />
             </div>
           ))}
         </div>
@@ -174,15 +191,17 @@ function MonthlyChart({ data, loading }: { data: Stats["monthlyActivity"]; loadi
           <div className="flex items-end gap-3 h-36 mb-3">
             {rows.map(d => (
               <div key={d.month} className="flex-1 flex gap-0.5 items-end">
-                <div className="flex-1 bg-amber-400 hover:bg-amber-500 rounded-t transition-colors"
-                  style={{ height: `${Math.max((d.orders / maxO) * 130, d.orders > 0 ? 4 : 2)}px` }} title={`${d.orders} orders`} />
-                <div className="flex-1 bg-green-400 hover:bg-green-500 rounded-t transition-colors"
-                  style={{ height: `${Math.max((d.revenue / maxR) * 130, d.revenue > 0 ? 4 : 2)}px` }} title={fmtKsh(d.revenue)} />
+                <div className="flex-1 rounded-t transition-colors"
+                  style={{ height: `${Math.max((d.orders / maxO) * 130, d.orders > 0 ? 4 : 2)}px`, background: "var(--portal-accent)" }}
+                  title={`${d.orders} orders`} />
+                <div className="flex-1 rounded-t transition-colors"
+                  style={{ height: `${Math.max((d.revenue / maxR) * 130, d.revenue > 0 ? 4 : 2)}px`, background: "var(--portal-positive)" }}
+                  title={fmtKsh(d.revenue)} />
               </div>
             ))}
           </div>
           <div className="flex gap-3">
-            {rows.map(d => <div key={d.month} className="flex-1 text-center"><span className="text-[10px] text-gray-400 font-medium">{d.month}</span></div>)}
+            {rows.map(d => <div key={d.month} className="flex-1 text-center"><span className="text-[10px] font-medium" style={{ color: "var(--portal-text-faint)" }}>{d.month}</span></div>)}
           </div>
         </>
       )}
@@ -193,31 +212,36 @@ function MonthlyChart({ data, loading }: { data: Stats["monthlyActivity"]; loadi
 // ─── Pipeline ─────────────────────────────────────────────────────────────────
 function Pipeline({ stats, loading }: { stats: Stats | null; loading: boolean }) {
   const stages = [
-    { label: "Draft",      val: stats?.draftOrders ?? 0,      color: "bg-gray-300" },
-    { label: "Pending",    val: stats?.pendingOrders ?? 0,    color: "bg-amber-400" },
-    { label: "Processing", val: stats?.processingOrders ?? 0, color: "bg-blue-400" },
-    { label: "Delivered",  val: stats?.deliveredOrders ?? 0,  color: "bg-green-500" },
+    { label: "Draft",      val: stats?.draftOrders ?? 0,      pct: 0 },
+    { label: "Pending",    val: stats?.pendingOrders ?? 0,    pct: 0 },
+    { label: "Processing", val: stats?.processingOrders ?? 0, pct: 0 },
+    { label: "Delivered",  val: stats?.deliveredOrders ?? 0,  pct: 0 },
   ];
   const total = Math.max(stages.reduce((a, s) => a + s.val, 0), 1);
+  const STAGE_OPACITY = ["0.25", "0.5", "0.75", "1"];
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <h3 className="text-sm font-semibold text-gray-900">Order Pipeline</h3>
-          <p className="text-xs text-gray-400 mt-0.5">Status breakdown</p>
-        </div>
+    <div className="rounded-xl p-6"
+      style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border)", boxShadow: "var(--portal-shadow)" }}>
+      <div className="mb-5">
+        <h3 className="text-sm font-semibold" style={{ color: "var(--portal-text)" }}>Order Pipeline</h3>
+        <p className="text-xs mt-0.5" style={{ color: "var(--portal-text-faint)" }}>Status breakdown</p>
       </div>
       <div className="space-y-4">
-        {stages.map(s => {
+        {stages.map((s, i) => {
           const pct = Math.round((s.val / total) * 100);
           return (
             <div key={s.label}>
               <div className="flex justify-between items-center mb-1.5">
-                <span className="text-sm text-gray-600 font-medium">{s.label}</span>
-                <span className="text-sm font-bold text-gray-900">{loading ? "—" : s.val}</span>
+                <span className="text-sm font-medium" style={{ color: "var(--portal-text-muted)" }}>{s.label}</span>
+                <span className="text-sm font-bold" style={{ color: "var(--portal-text)" }}>{loading ? "—" : s.val}</span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className={`h-full ${s.color} rounded-full transition-all duration-500`} style={{ width: loading ? "0%" : `${pct}%` }} />
+              <div className="h-2 rounded-full overflow-hidden" style={{ background: "var(--portal-border)" }}>
+                <div className="h-full rounded-full transition-all duration-500"
+                  style={{
+                    width: loading ? "0%" : `${pct}%`,
+                    background: `color-mix(in srgb, var(--portal-accent) ${Math.round(40 + i * 20)}%, transparent)`,
+                    opacity: STAGE_OPACITY[i],
+                  }} />
               </div>
             </div>
           );
@@ -229,49 +253,56 @@ function Pipeline({ stats, loading }: { stats: Stats | null; loading: boolean })
 
 function FeedTable({ items, type, loading }: { items: (RecentInvoice | RecentOrder)[]; type: "invoice" | "order"; loading: boolean }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+    <div className="rounded-xl overflow-hidden"
+      style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border)", boxShadow: "var(--portal-shadow)" }}>
+      <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--portal-border-soft)" }}>
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">{type === "invoice" ? "Recent Invoices" : "Recent Orders"}</h3>
-          <p className="text-xs text-gray-400 mt-0.5">Latest activity</p>
+          <h3 className="text-sm font-semibold" style={{ color: "var(--portal-text)" }}>{type === "invoice" ? "Recent Invoices" : "Recent Orders"}</h3>
+          <p className="text-xs mt-0.5" style={{ color: "var(--portal-text-faint)" }}>Latest activity</p>
         </div>
         <Link href={type === "invoice" ? "/corporate/invoices" : "/corporate/orders"}
-          className="text-xs text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1">
+          className="text-xs font-medium flex items-center gap-1" style={{ color: "var(--portal-accent)" }}>
           View all <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
       {loading ? (
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y" style={{ borderColor: "var(--portal-border-soft)" }}>
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="px-5 py-4 flex items-center gap-4">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg animate-pulse shrink-0" />
+              <div className="w-8 h-8 rounded-lg animate-pulse shrink-0" style={{ background: "var(--portal-border)" }} />
               <div className="flex-1 space-y-2"><Skeleton /><Skeleton w="1/2" h={3} /></div>
-              <div className="w-20 h-4 bg-gray-100 rounded animate-pulse" />
+              <div className="w-20 h-4 rounded animate-pulse" style={{ background: "var(--portal-border)" }} />
             </div>
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="flex flex-col items-center py-10 text-gray-400">
-          {type === "invoice" ? <FileText className="w-7 h-7 mb-2 opacity-30" /> : <Package className="w-7 h-7 mb-2 opacity-30" />}
-          <p className="text-sm">No {type === "invoice" ? "invoices" : "orders"} yet</p>
+        <div className="flex flex-col items-center py-10">
+          {type === "invoice" ? <FileText className="w-7 h-7 mb-2" style={{ color: "var(--portal-text-faint)", opacity: 0.4 }} /> : <Package className="w-7 h-7 mb-2" style={{ color: "var(--portal-text-faint)", opacity: 0.4 }} />}
+          <p className="text-sm" style={{ color: "var(--portal-text-muted)" }}>No {type === "invoice" ? "invoices" : "orders"} yet</p>
         </div>
       ) : (
-        <div className="divide-y divide-gray-50">
+        <div className="divide-y" style={{ borderColor: "var(--portal-border-soft)" }}>
           {items.map((item: any) => (
-            <div key={item.id} className="px-5 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${type === "invoice" ? "bg-amber-50 border border-amber-100" : "bg-blue-50 border border-blue-100"}`}>
-                {type === "invoice" ? <FileText className="w-4 h-4 text-amber-600" /> : <Package className="w-4 h-4 text-blue-600" />}
+            <div key={item.id} className="px-5 py-3 flex items-center gap-3 transition-colors"
+              style={{ cursor: "pointer" }}
+              onMouseEnter={e => (e.currentTarget.style.background = "var(--portal-accent-tint)")}
+              onMouseLeave={e => (e.currentTarget.style.background = "")}>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)" }}>
+                {type === "invoice"
+                  ? <FileText className="w-4 h-4" style={{ color: "var(--portal-accent)" }} />
+                  : <Package className="w-4 h-4" style={{ color: "var(--portal-accent)" }} />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
+                <p className="text-sm font-medium truncate" style={{ color: "var(--portal-text)" }}>
                   {type === "invoice" ? item.buyer_name : (item.company_name || item.sender_name)}
                 </p>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs" style={{ color: "var(--portal-text-faint)" }}>
                   {type === "invoice" ? item.invoice_number : `${item.recipient_count} recipients`} · {fmtDate(item.created_at)}
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold" style={{ color: "var(--portal-text)" }}>
                   {type === "invoice" ? `KES ${Number(item.total_amount).toLocaleString()}` : `KES ${Number(item.subtotal).toLocaleString()}`}
                 </p>
                 <Badge status={item.status} />
