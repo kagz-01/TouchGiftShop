@@ -17,7 +17,7 @@ const GiftPoolsTab    = dynamic(() => import("@/components/corporate/tabs/GiftPo
 const ClientsTab      = dynamic(() => import("@/components/corporate/tabs/ClientsTab"),      { loading: () => <TabLoader /> });
 const MilestonesTab   = dynamic(() => import("@/components/corporate/tabs/MilestonesTab"),   { loading: () => <TabLoader /> });
 const QuoteOpsPanel   = dynamic(() => import("@/components/corporate/QuoteOpsPanel"),        { loading: () => <TabLoader /> });
-const PortalAccessPanel = dynamic(() => import("@/components/corporate/PortalAccessPanel"),  { loading: () => <TabLoader /> });
+const PortalSettingsTab = dynamic(() => import("@/components/corporate/tabs/PortalSettingsTab"), { loading: () => <TabLoader /> });
 const InvoiceOpsPanel   = dynamic(() => import("@/components/corporate/InvoiceOpsPanel"),    { loading: () => <TabLoader /> });
 
 function TabLoader() {
@@ -558,7 +558,7 @@ export default function CorporateDashboard() {
           {activeTab === "clients"     && <ClientsTab />}
           {activeTab === "milestones"  && <MilestonesTab />}
           {(activeTab as string) === "calendar" && <CalendarTab />}
-          {activeTab === "portal"      && <div className="max-w-lg"><PortalAccessPanel /></div>}
+          {activeTab === "portal"      && <PortalSettingsTab />}
         </main>
       </div>
     </div>

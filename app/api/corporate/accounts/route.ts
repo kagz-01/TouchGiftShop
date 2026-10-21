@@ -92,3 +92,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  if (!(await requireAdmin())) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  try {
+    const body = await req.json();
+    const allowed = [
+      "company_name","company_email","company_phone","tax_id",
+      "industry","employee_count","default_payment_terms",
+    ] as const;
+    const updates: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    for (const k of allowed) {
+      if (body[k] !== undefined) updates[k] = body[k] ?? null;
+    }
+    // Update the first (or only) account for the admin — for multi-account,
+    // pass ?accountId= to scope the update
+    const { searchParams } = new URL(req.url);
+    const accountId = searchParams.get("accountId");
+    let q = supabaseAdmin.from("corporate_accounts").update(updates);
+    if (accountId) q = (q as any).eq("id", accountId);
+    const { data, error } = await (q as any).select().maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(data);
+  } catch {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}

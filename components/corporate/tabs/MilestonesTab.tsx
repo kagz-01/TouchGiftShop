@@ -5,23 +5,25 @@ import { Zap, Plus, Calendar, Gift, TrendingUp, AlertCircle, X, Loader2, CheckCi
 interface MilestoneRule {
   id: string; name: string; trigger_type: string;
   trigger_value: string | null; gift_type: string;
-  gift_value: number; is_active: boolean; created_at: string;
-  fire_count?: number;
+  gift_budget: number; is_active: boolean; created_at: string;
+  total_triggered?: number;
 }
 
 const TRIGGER_LABELS: Record<string, string> = {
-  birthday:     "🎂 Birthday",
-  workiversary: "🎊 Work Anniversary",
-  spend_threshold: "💰 Spend Threshold",
-  custom_date:  "📅 Custom Date",
-  new_client:   "🤝 New Client",
+  birthday:         "🎂 Birthday",
+  work_anniversary: "🎊 Work Anniversary",
+  promotion:        "🚀 Promotion",
+  new_hire:         "🤝 New Hire",
+  farewell:         "👋 Farewell",
+  holiday:          "🎉 Holiday",
+  custom:           "📅 Custom",
 };
 const GIFT_LABELS: Record<string, string> = {
-  voucher:   "Gift Voucher",
-  hamper:    "Gift Hamper",
-  flowers:   "Flowers",
-  product:   "Specific Product",
-  cash:      "Cash Contribution",
+  voucher:  "Gift Voucher",
+  hamper:   "Gift Hamper",
+  flowers:  "Flowers",
+  product:  "Specific Product",
+  cash:     "Cash Contribution",
 };
 
 function RuleCard({ rule, onToggle }: { rule: MilestoneRule; onToggle: (id: string, v: boolean) => void }) {
@@ -48,10 +50,10 @@ function RuleCard({ rule, onToggle }: { rule: MilestoneRule; onToggle: (id: stri
         <span className="flex items-center gap-1 text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-lg font-medium">
           <Gift className="w-3 h-3" /> {GIFT_LABELS[rule.gift_type] ?? rule.gift_type}
         </span>
-        <span className="text-xs text-gray-500 font-medium">KES {Number(rule.gift_value).toLocaleString()}</span>
-        {(rule.fire_count ?? 0) > 0 && (
+        <span className="text-xs text-gray-500 font-medium">KES {Number(rule.gift_budget).toLocaleString()}</span>
+        {(rule.total_triggered ?? 0) > 0 && (
           <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-            <CheckCircle className="w-3 h-3" /> Fired {rule.fire_count} time{rule.fire_count !== 1 ? "s" : ""}
+            <CheckCircle className="w-3 h-3" /> Fired {rule.total_triggered} time{rule.total_triggered !== 1 ? "s" : ""}
           </span>
         )}
       </div>
@@ -71,7 +73,7 @@ function CreateRuleModal({ onClose, onCreated }: { onClose: () => void; onCreate
     try {
       await fetch("/api/corporate/milestones", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, trigger_type: trigger, gift_type: giftType, gift_value: giftValue, is_active: true }),
+        body: JSON.stringify({ name, triggerType: trigger, giftBudget: giftValue, is_active: true }),
       });
       onCreated();
     } catch {}
