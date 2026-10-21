@@ -9,7 +9,9 @@ import {
   Calendar, Settings, ChevronRight, RefreshCw, ArrowUp, ArrowDown,
   Building2, Package, DollarSign, Target, Clock, CheckCircle,
   AlertCircle, Plus, Zap, CreditCard, Bell, ShoppingBag, Loader2,
+  Moon, Sun,
 } from "lucide-react";
+import { useTheme } from "@/components/ui/ThemeProvider";
 
 // Lazy-load heavy tabs so initial bundle stays small
 const ShopTab         = dynamic(() => import("@/components/corporate/tabs/ShopTab"),         { loading: () => <TabLoader /> });
@@ -464,9 +466,11 @@ export default function CorporateDashboard() {
   }
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans flex">
+    <div className="corporate-portal min-h-screen font-sans flex relative">
 
       {/* First-visit welcome overlay — mounts client-side only (ssr:false) */}
       <WelcomeOnboarding onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
@@ -478,57 +482,110 @@ export default function CorporateDashboard() {
           consistent icon+label pattern so it reads as a nav item, not
           an escape button.
       ───────────────────────────────────────────────────────────────────── */}
-      <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white border-r border-gray-200 min-h-screen sticky top-0 h-screen overflow-y-auto">
-
+      <aside
+        className="hidden lg:flex flex-col w-60 shrink-0 min-h-screen sticky top-0 h-screen overflow-y-auto"
+        style={{
+          background: "var(--portal-header-bg)",
+          backdropFilter: "blur(20px) saturate(160%)",
+          WebkitBackdropFilter: "blur(20px) saturate(160%)",
+          borderRight: "1px solid var(--portal-border)",
+        }}
+      >
         {/* ── Logo + brand ── */}
-        <div className="px-4 py-4 border-b border-gray-100 shrink-0">
+        <div className="px-4 py-4 shrink-0" style={{ borderBottom: "1px solid var(--portal-border-soft)" }}>
           <div className="flex items-center gap-3">
-            {/* Real logo */}
             <div className="relative w-9 h-9 shrink-0">
               <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="36px"
-                className="rounded-xl object-cover ring-1 ring-gray-100" priority />
+                className="rounded-xl object-cover" priority
+                style={{ boxShadow: "0 0 0 1px var(--portal-border)" }} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold text-gray-900 leading-tight truncate">TouchGift</p>
-              <p className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider mt-0.5">Corporate Portal</p>
+              <p className="text-sm font-bold leading-tight truncate" style={{ color: "var(--portal-text)" }}>TouchGift</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--portal-accent)" }}>Corporate Portal</p>
             </div>
           </div>
         </div>
 
         {/* ── Alert strip ── */}
         {alertCount > 0 && (
-          <div className="mx-3 mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
-            <Bell className="w-3.5 h-3.5 text-red-500 shrink-0" />
-            <span className="text-xs font-semibold text-red-600 truncate">{alertCount} action{alertCount > 1 ? "s" : ""} pending</span>
+          <div className="mx-3 mt-3 flex items-center gap-2 px-3 py-2 rounded-lg" style={{ background: "var(--portal-stop-tint)", border: "1px solid var(--portal-stop)" }}>
+            <Bell className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--portal-stop)" }} />
+            <span className="text-xs font-semibold truncate" style={{ color: "var(--portal-stop)" }}>{alertCount} action{alertCount > 1 ? "s" : ""} pending</span>
           </div>
         )}
 
         {/* ── Nav groups ── */}
         <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto" aria-label="Corporate portal navigation">
-          <div>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Workspace</p>
-            <div className="space-y-0.5">{workspaceTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
-          </div>
-          <div>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Operations</p>
-            <div className="space-y-0.5">{opsTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
-          </div>
-          <div>
-            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Settings</p>
-            <div className="space-y-0.5">{settingsTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
-          </div>
+          {[
+            { label: "Workspace", tabs: workspaceTabs },
+            { label: "Operations", tabs: opsTabs },
+            { label: "Settings", tabs: settingsTabs },
+          ].map(group => (
+            <div key={group.label}>
+              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "var(--portal-text-faint)" }}>{group.label}</p>
+              <div className="space-y-0.5">
+                {group.tabs.map(n => {
+                  const active = activeTab === n.key;
+                  const badge = n.key === "quotes" ? (stats?.pendingQuotes ?? 0) : n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
+                  return (
+                    <button key={n.key} onClick={() => setActiveTab(n.key)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
+                      style={active ? {
+                        background: "var(--portal-accent-tint)",
+                        color: "var(--portal-accent)",
+                        fontWeight: 600,
+                        border: "1px solid var(--portal-accent-tint)",
+                      } : {
+                        color: "var(--portal-text-muted)",
+                        border: "1px solid transparent",
+                      }}
+                    >
+                      <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
+                      <span className="flex-1 truncate">{n.label}</span>
+                      {badge > 0 && (
+                        <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0"
+                          style={{ background: "var(--portal-stop-tint)", color: "var(--portal-stop)" }}>
+                          {badge}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        {/* ── Back-to-store + divider ── */}
-        <div className="px-3 pb-4 pt-3 border-t border-gray-100 shrink-0 space-y-1">
+        {/* ── Bottom: theme toggle + refresh + back ── */}
+        <div className="px-3 pb-4 pt-3 shrink-0 space-y-1" style={{ borderTop: "1px solid var(--portal-border-soft)" }}>
+          {/* Dark / Light toggle */}
+          <button onClick={toggleTheme}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all"
+            style={{ color: "var(--portal-text-muted)" }}
+          >
+            {isDark
+              ? <Sun className="w-4 h-4 shrink-0" style={{ color: "var(--portal-warn)" }} />
+              : <Moon className="w-4 h-4 shrink-0" style={{ color: "var(--portal-accent)" }} />
+            }
+            <span>{isDark ? "Light mode" : "Dark mode"}</span>
+            <div className="ml-auto w-8 h-4.5 rounded-full flex items-center px-0.5 transition-colors"
+              style={{ background: isDark ? "var(--portal-accent)" : "var(--portal-border)", position: "relative", width: 32, height: 18 }}>
+              <div className="w-3.5 h-3.5 rounded-full bg-white transition-transform"
+                style={{ transform: isDark ? "translateX(14px)" : "translateX(0px)", width: 14, height: 14 }} />
+            </div>
+          </button>
           <button onClick={refresh} disabled={loading}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-40">
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all disabled:opacity-40"
+            style={{ color: "var(--portal-text-muted)" }}
+          >
             <RefreshCw className={`w-4 h-4 shrink-0 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh data</span>
           </button>
-          <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all group">
-            {/* Home icon */}
-            <svg className="w-4 h-4 shrink-0 text-gray-400 group-hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <Link href="/"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all group"
+            style={{ color: "var(--portal-text-muted)" }}
+          >
+            <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
             <span>Back to Main Store</span>
@@ -542,38 +599,47 @@ export default function CorporateDashboard() {
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
-        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shrink-0" role="banner">
+        <header
+          className="sticky top-0 z-40 shrink-0"
+          role="banner"
+          style={{
+            background: "var(--portal-header-bg)",
+            backdropFilter: "blur(20px) saturate(160%)",
+            WebkitBackdropFilter: "blur(20px) saturate(160%)",
+            borderBottom: "1px solid var(--portal-border)",
+          }}
+        >
           <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
 
             {/* Mobile: logo + hamburger */}
             <div className="flex items-center gap-2.5 lg:hidden">
               <button onClick={() => setMobileNavOpen(v => !v)} aria-label="Open navigation"
-                className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
-                <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+                style={{ border: "1px solid var(--portal-border)", background: "var(--portal-accent-tint)" }}>
+                <svg className="w-4 h-4" style={{ color: "var(--portal-text)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               </button>
               <div className="relative w-7 h-7">
                 <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="28px" className="rounded-lg object-cover" />
               </div>
-              <span className="text-sm font-bold text-gray-900">Corporate</span>
+              <span className="text-sm font-bold" style={{ color: "var(--portal-text)" }}>Corporate</span>
             </div>
 
             {/* Desktop: breadcrumb */}
             <nav aria-label="Breadcrumb" className="hidden lg:flex items-center gap-1.5 text-sm">
-              <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1">
+              <Link href="/" className="flex items-center gap-1 transition-colors" style={{ color: "var(--portal-text-faint)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                 </svg>
                 Home
               </Link>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-              <span className="text-gray-400">Corporate</span>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
-              <span className="font-semibold text-gray-800">{NAV.find(n => n.key === activeTab)?.label}</span>
+              <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--portal-border)" }} />
+              <span style={{ color: "var(--portal-text-muted)" }}>Corporate</span>
+              <ChevronRight className="w-3.5 h-3.5" style={{ color: "var(--portal-border)" }} />
+              <span className="font-semibold" style={{ color: "var(--portal-text)" }}>{NAV.find(n => n.key === activeTab)?.label}</span>
             </nav>
 
-            {/* Spacer */}
             <div className="flex-1" />
 
             {/* Right cluster */}
@@ -581,28 +647,45 @@ export default function CorporateDashboard() {
 
               {/* Alert badge */}
               {alertCount > 0 && (
-                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-red-50 border border-red-200 rounded-lg">
-                  <Bell className="w-3.5 h-3.5 text-red-500" />
-                  <span className="text-xs font-bold text-red-600">{alertCount}</span>
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg"
+                  style={{ background: "var(--portal-stop-tint)", border: "1px solid var(--portal-stop)" }}>
+                  <Bell className="w-3.5 h-3.5" style={{ color: "var(--portal-stop)" }} />
+                  <span className="text-xs font-bold" style={{ color: "var(--portal-stop)" }}>{alertCount}</span>
                 </div>
               )}
 
-              {/* Quick actions */}
+              {/* Shop */}
               <button onClick={() => setActiveTab("shop")}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:border-amber-300 text-xs font-semibold text-gray-700 rounded-lg transition-all">
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)", color: "var(--portal-accent)" }}>
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>Shop</span>
               </button>
 
+              {/* Build Hamper — primary CTA */}
               <button onClick={() => setActiveTab("hamper")}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm shadow-amber-200">
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+                style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}>
                 <Gift className="w-3.5 h-3.5" />
                 <span className="hidden sm:block">Build Hamper</span>
               </button>
 
-              {/* Back to store — desktop quick-escape */}
+              {/* Dark / Light mode toggle */}
+              <button onClick={toggleTheme}
+                aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                title={isDark ? "Light mode" : "Dark mode"}
+                className="flex items-center justify-center w-8 h-8 rounded-lg transition-all"
+                style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)" }}>
+                {isDark
+                  ? <Sun className="w-4 h-4" style={{ color: "var(--portal-warn)" }} />
+                  : <Moon className="w-4 h-4" style={{ color: "var(--portal-accent)" }} />
+                }
+              </button>
+
+              {/* Back to store */}
               <Link href="/"
-                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:border-gray-300 text-xs font-medium text-gray-500 hover:text-gray-800 rounded-lg transition-all">
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all"
+                style={{ border: "1px solid var(--portal-border)", color: "var(--portal-text-muted)" }}>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                 </svg>
