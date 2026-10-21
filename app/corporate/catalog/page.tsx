@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, Suspense } from "react";
-import { MERCH_CATEGORIES } from "@/lib/corporate-merch";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  Search, Building2, ArrowRight, Loader2, Sparkles,
-  X, CheckCircle, Send, Palette, Package, ChevronDown,
+  Search, Building2, Loader2, X, CheckCircle, Send,
+  ChevronDown, ChevronRight, Package, Star, Tag,
+  Palette, ArrowLeft, Filter, SlidersHorizontal,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
-import BackToHome from "@/components/ui/BackToHome";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface CatalogProduct {
@@ -22,83 +21,142 @@ interface CatalogProduct {
   image_url: string | null;
   in_stock: boolean;
   tags?: string[];
-  category?: string;
-  product_specs?: { spec_key: string; spec_value: string; icon: string | null }[];
+  sku?: string;
+  is_personalizable?: boolean;
 }
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const PAGE_SIZE = 24;
+// ─── Corporate category definitions ──────────────────────────────────────────
+const CATEGORIES = [
+  {
+    key: "all",
+    label: "All Corporate",
+    emoji: "🏢",
+    slug: "all",
+    moq: null,
+    desc: "All brandable corporate gifts",
+  },
+  {
+    key: "stationery-office",
+    label: "Stationery & Office",
+    emoji: "✏️",
+    slug: "stationery-office",
+    moq: 20,
+    desc: "Notebooks, pens, desk sets",
+  },
+  {
+    key: "awards-trophies",
+    label: "Awards & Trophies",
+    emoji: "🏆",
+    slug: "awards-trophies",
+    moq: 10,
+    desc: "Crystal awards, plaques, recognition gifts",
+  },
+  {
+    key: "gift-sets",
+    label: "Gift Sets & Hampers",
+    emoji: "🎁",
+    slug: "gift-sets",
+    moq: 10,
+    desc: "Curated sets for onboarding & milestones",
+  },
+  {
+    key: "drinkware",
+    label: "Drinkware",
+    emoji: "☕",
+    slug: "drinkware",
+    moq: 12,
+    desc: "Mugs, tumblers, flasks",
+  },
+  {
+    key: "bags",
+    label: "Bags & Totes",
+    emoji: "👜",
+    slug: "bags",
+    moq: 25,
+    desc: "Laptop bags, conference totes",
+  },
+  {
+    key: "accessories",
+    label: "Accessories",
+    emoji: "🔑",
+    slug: "accessories",
+    moq: 25,
+    desc: "Keyrings, lanyards, desk accessories",
+  },
+  {
+    key: "tech-gadgets",
+    label: "Tech & Gadgets",
+    emoji: "💻",
+    slug: "tech-gadgets",
+    moq: 10,
+    desc: "USB drives, wireless chargers, earphones",
+  },
+  {
+    key: "clocks",
+    label: "Clocks & Timepieces",
+    emoji: "🕐",
+    slug: "clocks",
+    moq: 5,
+    desc: "Desk clocks, executive timepieces",
+  },
+] as const;
+
+type CategoryKey = typeof CATEGORIES[number]["key"];
 
 const BULK_TIERS = [
   { min: 10,  max: 49,  label: "10–49 units",  pct: 10 },
   { min: 50,  max: 99,  label: "50–99 units",  pct: 15 },
   { min: 100, max: 499, label: "100–499 units", pct: 20 },
-  { min: 500, max: null, label: "500+ units",   pct: 25 },
+  { min: 500, max: null,label: "500+ units",    pct: 25 },
 ];
 
-/* Mirrors lib/corporate-merch.ts so the sidebar can't drift from the hero hub.
-   The old list used slugs (`workwear`, `caps`, `banners`, `umbrellas`,
-   `fabric`, `stationery`) that are absent from the TAXONOMY set in
-   lib/category-map.ts. getDbSlugs() returns [] for an unknown slug, which
-   callers read as "no filter" — so six of nine categories silently displayed
-   the entire shop under a heading like "Banners & Displays". */
-const CATEGORIES = [
-  { key: "all", label: "All Products", emoji: "🗂️", moq: null as number | null },
-  ...MERCH_CATEGORIES.map((c) => ({
-    key: c.slug,
-    label: c.label,
-    emoji: c.emoji,
-    moq: c.moq as number | null,
-  })),
-];
-
-function getBrandingMethods(name: string, tags?: string[]): string[] {
-  const t = [name, ...(tags ?? [])].join(" ").toLowerCase();
-  const methods: string[] = [];
-  if (t.match(/polo|cap|hat|overall|jacket|vest|apron|embroid/)) methods.push("🧵 Embroidery");
-  if (t.match(/t-shirt|tshirt|bag|tote|hoodie|fleece|blanket|screen/)) methods.push("🖨️ Screen Print");
-  if (t.match(/umbrella|mug|bottle|tumbler|thermos|sublim/)) methods.push("🌈 Sublimation");
-  if (t.match(/metal|flask|pen|usb|keychain|steel|laser|engrav/)) methods.push("⚡ Laser");
-  if (t.match(/notebook|journal|leather|planner|deboss/)) methods.push("🟤 Deboss");
-  if (t.match(/banner|roll.up|flag|display|tent|gazebo/)) methods.push("🎯 Full Print");
-  if (methods.length === 0) methods.push("🖨️ Screen Print");
-  return methods.slice(0, 2);
-}
-
-function getMOQ(name: string, tags?: string[], category?: string): number {
-  const t = [name, ...(tags ?? []), category ?? ""].join(" ").toLowerCase();
-  if (t.match(/banner|roll.up|flag|display|a-frame|lectern|tent|gazebo/)) return 1;
-  if (t.match(/jacket|parka|overall|coverall|workwear/)) return 10;
-  if (t.match(/umbrella/)) return 10;
-  if (t.match(/mug|tumbler|bottle|drinkware/)) return 12;
-  if (t.match(/blanket|towel|throw|picnic/)) return 15;
-  if (t.match(/notebook|journal|pen|planner/)) return 20;
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function getMOQ(name: string): number {
+  const t = name.toLowerCase();
+  if (t.match(/clock|watch|timepiece/))    return 5;
+  if (t.match(/award|trophy|plaque|crystal/)) return 10;
+  if (t.match(/mug|tumbler|bottle|flask/)) return 12;
+  if (t.match(/notebook|journal|planner/)) return 20;
   return 25;
 }
 
+function getBrandingMethods(name: string): string[] {
+  const t = name.toLowerCase();
+  const m: string[] = [];
+  if (t.match(/polo|cap|hat|jacket|vest|apron|embroid/)) m.push("Embroidery");
+  if (t.match(/bag|tote|hoodie|fleece|screen/))          m.push("Screen Print");
+  if (t.match(/mug|bottle|tumbler|thermos|sublim/))      m.push("Sublimation");
+  if (t.match(/metal|flask|pen|usb|key|steel|laser|engrav/)) m.push("Laser Engraving");
+  if (t.match(/notebook|journal|leather|planner/))       m.push("Debossing");
+  if (m.length === 0) m.push("Screen Print");
+  return m.slice(0, 2);
+}
+
+const PAGE_SIZE = 24;
+
 // ─── Quote Modal ──────────────────────────────────────────────────────────────
 function QuoteModal({ product, onClose }: { product: CatalogProduct; onClose: () => void }) {
-  const [qty, setQty] = useState(50);
+  const [qty, setQty]         = useState(50);
   const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
-  const [notes, setNotes] = useState("");
+  const [email, setEmail]     = useState("");
+  const [notes, setNotes]     = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const moq = getMOQ(product.name, product.tags, product.category);
-  const basePrice = product.sale_price && product.sale_price < product.price ? product.sale_price : product.price;
-  const tier = BULK_TIERS.find(t => qty >= t.min && (t.max === null || qty <= t.max));
-  const unitPrice = tier ? Math.round(basePrice * (1 - tier.pct / 100)) : basePrice;
-  const total = unitPrice * qty;
+  const moq      = getMOQ(product.name);
+  const base     = product.sale_price && product.sale_price < product.price ? product.sale_price : product.price;
+  const tier     = BULK_TIERS.find(t => qty >= t.min && (t.max === null || qty <= t.max));
+  const unit     = tier ? Math.round(base * (1 - tier.pct / 100)) : base;
+  const total    = unit * qty;
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     try {
       await fetch("/api/corporate/quote-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id, productName: product.name, qty, company, email, notes, unitPrice, total }),
+        body: JSON.stringify({ productId: product.id, productName: product.name, qty, company, email, notes, unitPrice: unit, total }),
       });
     } catch {}
     setSubmitting(false);
@@ -107,74 +165,78 @@ function QuoteModal({ product, onClose }: { product: CatalogProduct; onClose: ()
 
   return (
     <div className="fixed inset-0 z-[90] flex items-end md:items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <div className="relative w-full max-w-lg bg-[#0D0D14] border border-white/10 rounded-3xl shadow-2xl overflow-hidden" onClick={e => e.stopPropagation()}>
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200" onClick={e => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <div>
-            <h2 className="font-bold text-white text-lg">Get a Quote</h2>
-            <p className="text-white/50 text-xs mt-0.5 truncate max-w-[280px]">{product.name}</p>
+            <h2 className="font-bold text-gray-900 text-lg">Get a Quote</h2>
+            <p className="text-gray-500 text-sm mt-0.5 truncate max-w-xs">{product.name}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 text-white/50 hover:text-white transition-all">
+          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-500 transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {submitted ? (
           <div className="p-8 text-center space-y-4">
-            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle className="w-8 h-8 text-emerald-400" />
+            <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-7 h-7 text-green-600" />
             </div>
-            <h3 className="font-bold text-white text-lg">Quote Request Sent!</h3>
-            <p className="text-white/50 text-sm">We&apos;ll get back to you within 2 business hours.</p>
-            <button onClick={onClose} className="px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-bold rounded-xl hover:bg-emerald-500/20 transition-colors">
-              Close
+            <h3 className="font-bold text-gray-900 text-lg">Quote Request Sent!</h3>
+            <p className="text-gray-500 text-sm">We&apos;ll get back to you within 2 business hours with pricing and a digital proof.</p>
+            <button onClick={onClose} className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors">
+              Done
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
+          <form onSubmit={submit} className="p-6 space-y-4">
+            {/* Price calculator */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-white/50 uppercase tracking-wider">Live Price Calculator</span>
-                {tier && <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded-full border border-amber-500/20">{tier.pct}% OFF</span>}
+                <span className="text-xs font-bold text-amber-800 uppercase tracking-wider">Live Price Calculator</span>
+                {tier && <span className="text-xs font-bold px-2 py-0.5 bg-amber-500 text-white rounded-full">{tier.pct}% OFF</span>}
               </div>
               <div>
-                <div className="flex justify-between text-xs text-white/50 mb-2">
-                  <span>Quantity: <span className="font-bold text-white">{qty} units</span></span>
+                <div className="flex justify-between text-xs text-amber-700 mb-2">
+                  <span>Quantity: <strong>{qty} units</strong></span>
                   <span>MOQ: {moq}</span>
                 </div>
-                <input type="range" min={moq} max={500} step={moq} value={qty} onChange={e => setQty(Number(e.target.value))} className="w-full accent-amber-500" />
+                <input type="range" min={moq} max={500} step={moq} value={qty}
+                  onChange={e => setQty(Number(e.target.value))}
+                  className="w-full accent-amber-500" />
               </div>
-              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10">
-                <div className="text-center">
-                  <p className="text-[10px] text-white/40">Unit Price</p>
-                  <p className="font-bold text-white text-sm">{formatKsh(unitPrice)}</p>
-                </div>
-                <div className="text-center border-x border-white/10">
-                  <p className="text-[10px] text-white/40">Total Est.</p>
-                  <p className="font-bold text-amber-400 text-sm">{formatKsh(total)}</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-[10px] text-white/40">You Save</p>
-                  <p className="font-bold text-emerald-400 text-sm">{formatKsh((basePrice - unitPrice) * qty)}</p>
-                </div>
+              <div className="grid grid-cols-3 gap-2 pt-2 border-t border-amber-200">
+                {[
+                  { label: "Unit Price",  val: formatKsh(unit), color: "text-gray-900" },
+                  { label: "Total Est.",  val: formatKsh(total), color: "text-amber-700 font-bold" },
+                  { label: "You Save",    val: formatKsh((base - unit) * qty), color: "text-green-700" },
+                ].map(c => (
+                  <div key={c.label} className="text-center">
+                    <p className="text-[10px] text-amber-600 uppercase">{c.label}</p>
+                    <p className={`text-sm font-semibold ${c.color}`}>{c.val}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <input required value={company} onChange={e => setCompany(e.target.value)} placeholder="Company name *"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-all" />
-            <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Work email *"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-all" />
+            <input required value={company} onChange={e => setCompany(e.target.value)}
+              placeholder="Company name *"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
+            <input required type="email" value={email} onChange={e => setEmail(e.target.value)}
+              placeholder="Work email *"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
             <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3}
               placeholder="Special requirements (colours, sizes, delivery date, logo format…)"
-              className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-all resize-none" />
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-none" />
 
-            <div className="flex items-center gap-2 text-[11px] text-white/40">
-              <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <CheckCircle className="w-3.5 h-3.5 text-green-500 shrink-0" />
               Response in 2 hrs · Invoice / LPO accepted · Free digital proof
             </div>
 
             <button type="submit" disabled={submitting}
-              className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50">
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {submitting ? "Sending…" : `Request Quote — ${qty} Units`}
             </button>
@@ -187,256 +249,294 @@ function QuoteModal({ product, onClose }: { product: CatalogProduct; onClose: ()
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
 function ProductCard({ product, onQuote }: { product: CatalogProduct; onQuote: (p: CatalogProduct) => void }) {
-  const basePrice = product.sale_price && product.sale_price < product.price ? product.sale_price : product.price;
-  const bulkPrice = Math.round(basePrice * 0.85);
-  const moq = getMOQ(product.name, product.tags, product.category);
-  const methods = getBrandingMethods(product.name, product.tags);
+  const base     = product.sale_price && product.sale_price < product.price ? product.sale_price : product.price;
+  const bulkPrice = Math.round(base * 0.85);
+  const moq      = getMOQ(product.name);
+  const methods  = getBrandingMethods(product.name);
 
   return (
-    <div className="group flex flex-col bg-white/[0.03] rounded-2xl border border-white/8 overflow-hidden hover:border-amber-500/30 hover:bg-white/[0.06] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_-8px_rgba(245,158,11,0.12)]">
-      <Link href={`/product/${product.slug}`} className="relative aspect-square bg-white/5 overflow-hidden block">
+    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-200">
+      {/* Image */}
+      <Link href={`/product/${product.slug}`} className="block relative aspect-square bg-gray-50 overflow-hidden">
         {product.image_url ? (
-          <Image src={product.image_url} alt={product.name} fill sizes="(max-width: 768px) 50vw, 25vw"
+          <Image src={product.image_url} alt={product.name} fill sizes="(max-width:768px) 50vw, 25vw"
             className="object-cover group-hover:scale-105 transition-transform duration-500" />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-4xl opacity-20">🎁</div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Package className="w-12 h-12 text-gray-300" />
+          </div>
         )}
-        <div className="absolute top-2.5 left-2.5">
-          <span className="text-[10px] font-bold px-2 py-1 bg-black/70 backdrop-blur-sm text-amber-400 rounded-lg border border-amber-500/20">
-            MOQ: {moq}
-          </span>
+        {/* MOQ badge */}
+        <div className="absolute top-2 left-2 px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded">
+          MOQ: {moq}
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end pb-3 px-3">
-          <span className="w-full text-center text-[10px] font-bold py-2 bg-amber-500/90 text-black rounded-xl flex items-center justify-center gap-1.5">
-            <Palette className="w-3 h-3" /> Preview in Studio
-          </span>
-        </div>
+        {product.is_personalizable && (
+          <div className="absolute top-2 right-2 px-2 py-0.5 bg-white border border-gray-200 text-gray-700 text-[10px] font-semibold rounded shadow-sm">
+            Customisable
+          </div>
+        )}
       </Link>
 
-      <div className="p-3.5 flex flex-col flex-grow gap-2.5">
+      {/* Info */}
+      <div className="p-3">
         <Link href={`/product/${product.slug}`}>
-          <h3 className="text-xs font-semibold text-white/90 group-hover:text-amber-300 transition-colors line-clamp-2 leading-snug min-h-[2.5rem]">
+          <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-amber-700 transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex flex-wrap gap-1">
+        {/* Branding methods */}
+        <div className="flex flex-wrap gap-1 mt-1.5">
           {methods.map(m => (
-            <span key={m} className="text-[9px] font-medium px-1.5 py-0.5 bg-white/5 border border-white/10 text-white/40 rounded-md whitespace-nowrap">
+            <span key={m} className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
               {m}
             </span>
           ))}
         </div>
 
-        <div className="flex items-end justify-between pt-2 border-t border-white/8 mt-auto">
+        {/* Pricing */}
+        <div className="mt-2.5 flex items-end justify-between">
           <div>
-            <p className="text-[9px] text-white/30 uppercase tracking-wider">1 unit</p>
-            <p className="text-xs font-bold text-white/60">{formatKsh(basePrice)}</p>
+            <p className="text-[10px] text-gray-400 leading-none">From {moq} units</p>
+            <p className="text-sm font-bold text-gray-900">{formatKsh(base)}</p>
+            <p className="text-[10px] text-green-600 font-semibold">
+              50+ units: {formatKsh(bulkPrice)} / unit
+            </p>
           </div>
-          <div className="text-right">
-            <p className="text-[9px] text-amber-400 uppercase tracking-wider">50+ units</p>
-            <p className="text-sm font-bold text-amber-400">{formatKsh(bulkPrice)}</p>
-          </div>
+          <button onClick={() => onQuote(product)}
+            className="shrink-0 px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg transition-colors">
+            Get Quote
+          </button>
         </div>
-
-        <button onClick={() => onQuote(product)}
-          className="w-full py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 hover:border-amber-500/40 text-amber-400 text-[11px] font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all">
-          <Package className="w-3.5 h-3.5" /> Get Quote
-        </button>
       </div>
     </div>
   );
 }
 
-// ─── Inner (needs useSearchParams) ───────────────────────────────────────────
+// ─── Main catalog inner ───────────────────────────────────────────────────────
 function CatalogInner() {
+  const router       = useRouter();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
-  const [products, setProducts] = useState<CatalogProduct[]>([]);
-  const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get("category") ?? "all");
-  const [hasMore, setHasMore] = useState(false);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const initCat = (searchParams.get("category") ?? "all") as CategoryKey;
+  const [selectedCategory, setSelectedCategory] = useState<CategoryKey>(initCat);
+  const [search, setSearch]       = useState(searchParams.get("q") ?? "");
+  const [products, setProducts]   = useState<CatalogProduct[]>([]);
+  const [total, setTotal]         = useState(0);
+  const [page, setPage]           = useState(1);
+  const [hasMore, setHasMore]     = useState(false);
+  const [loading, setLoading]     = useState(true);
   const [quoteProduct, setQuoteProduct] = useState<CatalogProduct | null>(null);
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const fetchPage = useCallback(async (pageNum: number, append: boolean, overrideSearch?: string, overrideCat?: string) => {
+  const activeCat = CATEGORIES.find(c => c.key === selectedCategory) ?? CATEGORIES[0];
+
+  const fetchPage = useCallback(async (
+    pageNum: number, append: boolean,
+    overrideSearch?: string, overrideCat?: string
+  ) => {
     setLoading(true);
-    const params = new URLSearchParams();
-    const cat = overrideCat ?? selectedCategory;
-    const q = overrideSearch ?? search;
-    if (cat && cat !== "all") params.set("category", cat);
-    if (q) params.set("search", q);
-    params.set("page", String(pageNum));
-    params.set("limit", String(PAGE_SIZE));
+    const cat    = overrideCat ?? selectedCategory;
+    const q      = overrideSearch ?? search;
+    const params = new URLSearchParams({
+      category: cat,
+      page: String(pageNum),
+      limit: String(PAGE_SIZE),
+    });
+    if (q) params.set("q", q);
+
     try {
-      const res = await fetch(`/api/catalog?${params}`);
+      const res = await fetch(`/api/corporate/catalog?${params}`);
+      if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
-      setHasMore(data.hasMore ?? false);
+      setProducts(prev => append ? [...prev, ...data.products] : data.products);
+      setTotal(data.total);
+      setHasMore(data.hasMore);
       setPage(pageNum);
-      setProducts(prev => append ? [...prev, ...(data.products ?? [])] : (data.products ?? []));
-    } catch {
-      if (!append) setProducts([]);
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
+    setLoading(false);
   }, [selectedCategory, search]);
 
   useEffect(() => { fetchPage(1, false); }, [fetchPage]);
 
-  function handleSearchChange(val: string) {
+  function handleCategory(key: CategoryKey) {
+    setSelectedCategory(key);
+    router.replace(`/corporate/catalog?category=${key}`, { scroll: false });
+    fetchPage(1, false, search, key);
+  }
+
+  function handleSearch(val: string) {
     setSearch(val);
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => fetchPage(1, false, val), 400);
   }
 
-  function handleCategorySelect(key: string) {
-    setSelectedCategory(key);
-    const url = key !== "all" ? `/corporate/catalog?category=${key}${search ? `&search=${encodeURIComponent(search)}` : ""}` : "/corporate/catalog";
-    router.replace(url, { scroll: false });
-    fetchPage(1, false, search, key);
-  }
-
-  const activeCat = CATEGORIES.find(c => c.key === selectedCategory) ?? CATEGORIES[0];
-
   return (
-    <div className="min-h-screen bg-[#050610] text-white font-sans">
+    <div className="min-h-screen bg-gray-50">
+      {/* ── Top bar matching main platform ── */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 py-2 text-xs text-gray-400 border-b border-gray-100">
+            <Link href="/" className="hover:text-gray-600 transition-colors">Home</Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link href="/corporate" className="hover:text-gray-600 transition-colors">Corporate</Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-gray-800 font-medium">Branding Catalog</span>
+          </div>
 
-      {/* Header */}
-      <header className="relative pt-6 pb-12 border-b border-white/5 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.07)_0%,transparent_60%)] pointer-events-none" />
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }} />
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
-          <div className="mb-6"><BackToHome className="text-white/40 hover:text-white" /></div>
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-full px-4 py-1.5 mb-5">
-                <Building2 className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest">Corporate Branding Catalog</span>
+          {/* Main header row */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
+                <Building2 className="w-5 h-5 text-white" />
               </div>
-              <h1 className="font-display text-4xl md:text-5xl font-bold leading-tight">
-                Brand <span className="italic font-light bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">anything</span>
-                <br className="hidden md:block" /> with your logo.
-              </h1>
-              <p className="text-white/50 mt-3 text-sm max-w-lg leading-relaxed">
-                170+ brandable items. Preview your logo live before ordering. Bulk pricing from 10 units. Invoice &amp; LPO accepted.
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                    Corporate Branding Catalog
+                  </span>
+                </div>
+                <p className="text-sm font-bold text-gray-900 mt-0.5">
+                  Brand anything — from 10 units. Invoice & LPO accepted.
+                </p>
+              </div>
             </div>
-            <div className="flex-shrink-0 bg-white/[0.03] border border-white/10 rounded-2xl p-5 min-w-[280px]">
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest mb-4 flex items-center gap-2">
-                <Sparkles className="w-3 h-3 text-amber-400" /> Volume Discounts
-              </p>
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {BULK_TIERS.map(t => (
-                  <div key={t.label} className="bg-white/5 rounded-xl p-3 border border-white/5">
-                    <p className="text-amber-400 font-bold text-base leading-none">{t.pct}% OFF</p>
-                    <p className="text-white/40 text-[10px] mt-1">{t.label}</p>
-                  </div>
-                ))}
-              </div>
-              <Link href="/corporate/build" className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all">
-                Start Bulk Order <ArrowRight className="w-3.5 h-3.5" />
+
+            {/* Bulk discount badges */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {BULK_TIERS.map(t => (
+                <div key={t.min} className="text-center px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p className="text-[10px] font-bold text-amber-700">{t.pct}% OFF</p>
+                  <p className="text-[9px] text-amber-600">{t.label}</p>
+                </div>
+              ))}
+              <Link href="/corporate/build"
+                className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition-colors">
+                <Palette className="w-3.5 h-3.5" /> Start Bulk Order →
               </Link>
             </div>
+          </div>
+
+          {/* Category tabs — matching main catalog style */}
+          <div className="flex items-center gap-1 overflow-x-auto pb-3 hide-scrollbar">
+            {CATEGORIES.map(cat => (
+              <button key={cat.key} onClick={() => handleCategory(cat.key)}
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedCategory === cat.key
+                    ? "bg-amber-500 text-white shadow-sm"
+                    : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-700"
+                }`}>
+                <span>{cat.emoji}</span>
+                <span>{cat.label}</span>
+                {cat.moq && selectedCategory !== cat.key && (
+                  <span className="text-[9px] opacity-60">MOQ {cat.moq}</span>
+                )}
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-8 flex gap-8">
+      {/* ── Body ── */}
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-6 flex gap-6">
 
         {/* Sidebar */}
-        <aside className="hidden lg:flex flex-col w-52 flex-shrink-0 gap-1 sticky top-8 self-start max-h-[calc(100vh-5rem)] overflow-y-auto">
-          <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest px-3 mb-2">Categories</p>
+        <aside className="hidden xl:flex flex-col w-56 shrink-0 gap-1 sticky top-[148px] self-start max-h-[calc(100vh-160px)] overflow-y-auto">
+          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider px-2 mb-2">Categories</p>
           {CATEGORIES.map(cat => (
-            <button key={cat.key} onClick={() => handleCategorySelect(cat.key)}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${
+            <button key={cat.key} onClick={() => handleCategory(cat.key)}
+              className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all ${
                 selectedCategory === cat.key
-                  ? "bg-amber-500/10 border border-amber-500/20 text-amber-400"
-                  : "text-white/50 hover:text-white hover:bg-white/5"
+                  ? "bg-amber-50 border border-amber-200 text-amber-800"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}>
-              <span className="text-base w-5 text-center">{cat.emoji}</span>
-              <span className="flex-1 truncate text-xs">{cat.label}</span>
-              {cat.moq && <span className="text-[9px] text-white/20 font-bold shrink-0">MOQ {cat.moq}</span>}
+              <span className="text-base w-5 text-center shrink-0 mt-0.5">{cat.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold leading-tight">{cat.label}</p>
+                <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{cat.desc}</p>
+                {cat.moq && <p className="text-[9px] font-bold text-amber-600 mt-0.5">MOQ {cat.moq} units</p>}
+              </div>
             </button>
           ))}
-          <div className="mt-5 bg-gradient-to-br from-amber-950/60 to-amber-900/30 border border-amber-500/20 rounded-2xl p-4">
-            <p className="text-xs font-bold text-amber-400 mb-2">🎨 Live Studio</p>
-            <p className="text-[11px] text-white/50 mb-3 leading-relaxed">Preview your logo on any product in real time.</p>
-            <Link href="/corporate/build" className="block w-full py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/20 text-amber-400 text-[11px] font-bold rounded-xl text-center transition-colors">
+
+          {/* Live studio promo */}
+          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <p className="text-xs font-bold text-amber-800 mb-1">🎨 Branding Studio</p>
+            <p className="text-[11px] text-amber-700 mb-3 leading-relaxed">Preview your logo on any product in real time.</p>
+            <Link href="/corporate/build"
+              className="block w-full py-2 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg text-center transition-colors">
               Open Studio →
             </Link>
           </div>
         </aside>
 
-        {/* Main */}
+        {/* Main content */}
         <div className="flex-1 min-w-0">
-          {/* Filters */}
+          {/* Search + count bar */}
           <div className="flex flex-col sm:flex-row gap-3 mb-5">
-            <div className="lg:hidden relative">
-              <select value={selectedCategory} onChange={e => handleCategorySelect(e.target.value)}
-                className="w-full appearance-none pl-4 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500/50">
-                {CATEGORIES.map(c => <option key={c.key} value={c.key}>{c.emoji} {c.label}</option>)}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
-            </div>
             <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-              <input type="text" value={search} onChange={e => handleSearchChange(e.target.value)}
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input type="text" value={search} onChange={e => handleSearch(e.target.value)}
                 placeholder={`Search in ${activeCat.label}…`}
-                className="w-full pl-11 pr-10 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-white/30 focus:outline-none focus:border-amber-500/50 transition-all" />
+                className="w-full pl-10 pr-9 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent" />
               {search && (
-                <button onClick={() => handleSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white">
+                <button onClick={() => handleSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700">
                   <X className="w-4 h-4" />
                 </button>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-white/30 px-4 py-3 bg-white/5 border border-white/10 rounded-xl whitespace-nowrap">
-              {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span className="font-bold text-white">{products.length}</span>}
-              <span>items</span>
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 whitespace-nowrap">
+              {loading ? <Loader2 className="w-4 h-4 animate-spin text-amber-500" /> : <span className="font-bold text-gray-900">{total}</span>}
+              <span>products</span>
             </div>
           </div>
 
+          {/* Active category badge */}
           {selectedCategory !== "all" && (
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-xs font-bold px-3 py-1.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-full flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
                 {activeCat.emoji} {activeCat.label}
-                <button onClick={() => handleCategorySelect("all")}><X className="w-3 h-3 ml-1" /></button>
+                <button onClick={() => handleCategory("all")} className="ml-1 hover:text-amber-900">
+                  <X className="w-3.5 h-3.5" />
+                </button>
               </span>
-              {activeCat.moq && <span className="text-[11px] text-white/40">Minimum order: {activeCat.moq} units</span>}
+              {activeCat.moq && (
+                <span className="text-sm text-gray-500">Minimum order: {activeCat.moq} units</span>
+              )}
             </div>
           )}
 
-          {/* Grid */}
+          {/* Product grid */}
           {!loading && products.length === 0 ? (
-            <div className="flex flex-col items-center py-20 bg-white/[0.02] border border-white/8 rounded-2xl">
-              <span className="text-5xl mb-4">🔍</span>
-              <p className="font-bold text-white text-xl mb-2">No products found</p>
-              <p className="text-white/40 text-sm mb-6">Try a different category or search term.</p>
-              <button onClick={() => { handleCategorySelect("all"); handleSearchChange(""); }}
-                className="px-5 py-2.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-bold rounded-xl hover:bg-amber-500/20 transition-colors">
+            <div className="flex flex-col items-center py-20 bg-white border border-gray-200 rounded-xl">
+              <Package className="w-12 h-12 text-gray-300 mb-3" />
+              <p className="font-bold text-gray-700 text-lg mb-1">No products found</p>
+              <p className="text-gray-400 text-sm mb-5">Try a different category or search term.</p>
+              <button onClick={() => { handleCategory("all"); handleSearch(""); }}
+                className="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors">
                 Clear Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3.5">
-              {(loading && products.length === 0 ? Array.from({ length: 12 }) : products).map((product, i) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+              {(loading && products.length === 0
+                ? Array.from({ length: 12 })
+                : products
+              ).map((product, i) => {
                 if (!product || !(product as CatalogProduct).id) {
-                  return <div key={`sk-${i}`} className="bg-white/5 rounded-2xl animate-pulse aspect-[3/4] border border-white/5" />;
+                  return <div key={`sk-${i}`} className="bg-white border border-gray-200 rounded-xl animate-pulse aspect-[3/4]" />;
                 }
                 return <ProductCard key={(product as CatalogProduct).id} product={product as CatalogProduct} onQuote={setQuoteProduct} />;
               })}
             </div>
           )}
 
+          {/* Load more */}
           {hasMore && (
             <div className="text-center mt-10">
               <button onClick={() => fetchPage(page + 1, true)} disabled={loading}
-                className="px-8 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-bold rounded-xl flex items-center gap-2 mx-auto transition-all disabled:opacity-50">
+                className="px-8 py-3 bg-white border border-gray-200 hover:border-amber-300 hover:text-amber-700 text-gray-700 text-sm font-semibold rounded-lg flex items-center gap-2 mx-auto transition-all disabled:opacity-50 hover:shadow-sm">
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 Load More Products
               </button>
@@ -444,18 +544,19 @@ function CatalogInner() {
           )}
 
           {/* Bottom CTA */}
-          <div className="mt-14 bg-gradient-to-r from-amber-950/60 via-amber-900/30 to-amber-950/60 border border-amber-500/20 rounded-2xl p-7 flex flex-col md:flex-row items-center gap-6">
+          <div className="mt-14 bg-white border border-gray-200 rounded-xl p-7 flex flex-col md:flex-row items-center gap-6">
             <div className="flex-1 text-center md:text-left">
-              <h3 className="font-bold text-white text-xl mb-2">Can&apos;t find what you need?</h3>
-              <p className="text-white/50 text-sm">We source and brand custom items on request. Tell us what you need.</p>
+              <h3 className="font-bold text-gray-900 text-xl mb-2">Can&apos;t find what you need?</h3>
+              <p className="text-gray-500 text-sm">We source and brand custom items on request. Tell us what you need and we&apos;ll handle everything.</p>
             </div>
             <div className="flex gap-3 flex-wrap justify-center">
-              <Link href="/corporate/build" className="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold text-sm rounded-xl flex items-center gap-2 transition-all">
+              <Link href="/corporate/build"
+                className="px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-lg flex items-center gap-2 transition-colors">
                 <Palette className="w-4 h-4" /> Custom Request
               </Link>
               <a href="https://wa.me/254700000000?text=Hi!%20I%20need%20branded%20merchandise."
                 target="_blank" rel="noopener noreferrer"
-                className="px-5 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 font-bold text-sm rounded-xl flex items-center gap-2 transition-all">
+                className="px-5 py-3 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 font-bold text-sm rounded-lg flex items-center gap-2 transition-colors">
                 💬 WhatsApp Us
               </a>
             </div>
@@ -471,8 +572,8 @@ function CatalogInner() {
 export default function CorporateCatalogPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#050610] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-amber-500 animate-spin" />
       </div>
     }>
       <CatalogInner />
