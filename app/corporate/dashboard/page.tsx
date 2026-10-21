@@ -284,14 +284,14 @@ function OverviewTab({ stats, loading, onTab }: { stats: Stats | null; loading: 
       {/* KPI grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Corp Orders",     value: s ? String(s.totalCorpOrders)  : "—", sub: `${s?.monthCorpOrders ?? 0} this month`, icon: Package,    iconBg: "bg-amber-50 text-amber-600" },
-          { label: "Revenue",         value: s ? fmtKsh(s.totalRevenuePaid) : "—", sub: `${s?.unpaidInvoices ?? 0} unpaid`,       icon: DollarSign,  iconBg: "bg-green-50 text-green-600" },
-          { label: "Pending Quotes",  value: s ? String(s.pendingQuotes)    : "—", sub: `${s?.totalQuotes ?? 0} total`,           icon: Inbox,       iconBg: s?.pendingQuotes ? "bg-amber-50 text-amber-600" : "bg-gray-50 text-gray-400", alert: (s?.pendingQuotes ?? 0) > 0 },
-          { label: "Corp Accounts",   value: s ? String(s.totalAccounts)    : "—", sub: `${s?.totalClients ?? 0} contacts`,       icon: Building2,   iconBg: "bg-blue-50 text-blue-600" },
-          { label: "Outstanding",     value: s ? fmtKsh(s.totalRevenueUnpaid): "—",sub: `${s?.overdueInvoices ?? 0} overdue`,     icon: CreditCard,  iconBg: s?.overdueInvoices ? "bg-red-50 text-red-500" : "bg-gray-50 text-gray-400", alert: (s?.overdueInvoices ?? 0) > 0 },
-          { label: "Active Pools",    value: s ? String(s.activePools)      : "—", sub: `${s?.totalPools ?? 0} total`,            icon: Target,      iconBg: "bg-indigo-50 text-indigo-600" },
-          { label: "Milestones",      value: s ? String(s.activeMilestones) : "—", sub: "Gifting automations on",                  icon: Zap,         iconBg: "bg-yellow-50 text-yellow-600" },
-          { label: "Draft Invoices",  value: s ? String(s.draftInvoices)    : "—", sub: "Awaiting issue",                         icon: FileText,    iconBg: "bg-gray-50 text-gray-400" },
+          { label: "Corp Orders",    value: s ? String(s.totalCorpOrders)   : "—", sub: `${s?.monthCorpOrders ?? 0} this month`, icon: Package,    alert: false },
+          { label: "Revenue",        value: s ? fmtKsh(s.totalRevenuePaid)  : "—", sub: `${s?.unpaidInvoices ?? 0} unpaid`,       icon: DollarSign, alert: false },
+          { label: "Pending Quotes", value: s ? String(s.pendingQuotes)     : "—", sub: `${s?.totalQuotes ?? 0} total`,           icon: Inbox,      alert: (s?.pendingQuotes ?? 0) > 0 },
+          { label: "Corp Accounts",  value: s ? String(s.totalAccounts)    : "—", sub: `${s?.totalClients ?? 0} contacts`,       icon: Building2,  alert: false },
+          { label: "Outstanding",    value: s ? fmtKsh(s.totalRevenueUnpaid): "—",sub: `${s?.overdueInvoices ?? 0} overdue`,     icon: CreditCard, alert: (s?.overdueInvoices ?? 0) > 0 },
+          { label: "Active Pools",   value: s ? String(s.activePools)      : "—", sub: `${s?.totalPools ?? 0} total`,            icon: Target,     alert: false },
+          { label: "Milestones",     value: s ? String(s.activeMilestones) : "—", sub: "Gifting automations on",                  icon: Zap,        alert: false },
+          { label: "Draft Invoices", value: s ? String(s.draftInvoices)    : "—", sub: "Awaiting issue",                         icon: FileText,   alert: false },
         ].map(k => <KpiCard key={k.label} {...k} loading={loading} />)}
       </div>
 
@@ -307,20 +307,26 @@ function OverviewTab({ stats, loading, onTab }: { stats: Stats | null; loading: 
         <FeedTable items={stats?.recentOrders ?? []} type="order" loading={loading} />
       </div>
 
-      {/* Quick action tiles — navigate inside the corp shell */}
+      {/* Quick action tiles */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { tab: "shop"    as Tab, icon: ShoppingBag, label: "Shop",         sub: "Browse corp catalog",      color: "border-amber-200 bg-amber-50 text-amber-700" },
-          { tab: "hamper"  as Tab, icon: Gift,        label: "Build Hamper",  sub: "Step-by-step builder",     color: "border-green-200 bg-green-50 text-green-700" },
-          { tab: "pools"   as Tab, icon: Target,      label: "Gift Pools",    sub: `${stats?.activePools ?? "—"} active`, color: "border-indigo-200 bg-indigo-50 text-indigo-700" },
-          { tab: "milestones" as Tab, icon: Zap,      label: "Milestones",    sub: "Auto-gift rules",          color: "border-yellow-200 bg-yellow-50 text-yellow-700" },
+          { tab: "shop"       as Tab, icon: ShoppingBag, label: "Shop",        sub: "Browse corp catalog" },
+          { tab: "hamper"     as Tab, icon: Gift,        label: "Build Hamper", sub: "Step-by-step builder" },
+          { tab: "pools"      as Tab, icon: Target,      label: "Gift Pools",   sub: `${stats?.activePools ?? "—"} active` },
+          { tab: "milestones" as Tab, icon: Zap,         label: "Milestones",   sub: "Auto-gift rules" },
         ].map(t => (
           <button key={t.tab} onClick={() => onTab(t.tab)}
-            className={`group flex flex-col gap-2 p-4 rounded-lg border text-left ${t.color} hover:shadow-sm transition-all`}>
-            <t.icon className="w-5 h-5" />
+            className="group flex flex-col gap-2 p-4 rounded-xl text-left transition-all hover:-translate-y-0.5"
+            style={{
+              background: "var(--portal-surface)",
+              border: "1px solid var(--portal-border)",
+              boxShadow: "var(--portal-shadow)",
+              color: "var(--portal-text)",
+            }}>
+            <t.icon className="w-5 h-5" style={{ color: "var(--portal-accent)" }} />
             <div>
               <p className="text-sm font-semibold">{t.label}</p>
-              <p className="text-xs opacity-70 mt-0.5">{t.sub}</p>
+              <p className="text-xs mt-0.5" style={{ color: "var(--portal-text-muted)" }}>{t.sub}</p>
             </div>
           </button>
         ))}
@@ -338,17 +344,19 @@ function OrdersTab({ stats, loading }: { stats: Stats | null; loading: boolean }
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Total",      val: stats?.totalCorpOrders ?? 0,   icon: Package,       bg: "bg-gray-50 text-gray-500" },
-          { label: "Processing", val: stats?.processingOrders ?? 0,  icon: Clock,         bg: "bg-blue-50 text-blue-600" },
-          { label: "Delivered",  val: stats?.deliveredOrders ?? 0,   icon: CheckCircle,   bg: "bg-green-50 text-green-600" },
-          { label: "Draft",      val: stats?.draftOrders ?? 0,       icon: FileText,      bg: "bg-gray-50 text-gray-400" },
+          { label: "Total",      val: stats?.totalCorpOrders ?? 0,  icon: Package     },
+          { label: "Processing", val: stats?.processingOrders ?? 0, icon: Clock       },
+          { label: "Delivered",  val: stats?.deliveredOrders ?? 0,  icon: CheckCircle },
+          { label: "Draft",      val: stats?.draftOrders ?? 0,      icon: FileText    },
         ].map(k => (
-          <div key={k.label} className="bg-white border border-gray-200 rounded-lg p-5">
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-4 ${k.bg}`}>
-              <k.icon className="w-4 h-4" />
+          <div key={k.label} className="rounded-xl p-5"
+            style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border)", boxShadow: "var(--portal-shadow)" }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-4"
+              style={{ background: "var(--portal-accent-tint)" }}>
+              <k.icon className="w-4 h-4" style={{ color: "var(--portal-accent)" }} />
             </div>
-            <p className="text-2xl font-bold text-gray-900">{loading ? "—" : k.val}</p>
-            <p className="text-sm text-gray-500 mt-0.5">{k.label}</p>
+            <p className="text-2xl font-bold" style={{ color: "var(--portal-text)" }}>{loading ? "—" : k.val}</p>
+            <p className="text-sm mt-0.5" style={{ color: "var(--portal-text-muted)" }}>{k.label}</p>
           </div>
         ))}
       </div>
@@ -357,9 +365,15 @@ function OrdersTab({ stats, loading }: { stats: Stats | null; loading: boolean }
       <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
         {statuses.map(s => (
           <button key={s} onClick={() => setStatusFilter(s)}
-            className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
-              statusFilter === s ? "bg-amber-500 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300"
-            }`}>
+            className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize"
+            style={statusFilter === s ? {
+              background: "var(--portal-accent)",
+              color: "var(--portal-accent-text)",
+            } : {
+              background: "var(--portal-surface)",
+              border: "1px solid var(--portal-border)",
+              color: "var(--portal-text-muted)",
+            }}>
             {s === "all" ? "All" : STATUS_LABELS[s] ?? s}
           </button>
         ))}
@@ -367,7 +381,9 @@ function OrdersTab({ stats, loading }: { stats: Stats | null; loading: boolean }
 
       <FeedTable items={stats?.recentOrders ?? []} type="order" loading={loading} />
       <div className="text-center">
-        <Link href="/corporate/orders" className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white border border-gray-200 hover:border-amber-300 text-sm font-semibold text-gray-700 rounded-lg transition-all">
+        <Link href="/corporate/orders"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all"
+          style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border)", color: "var(--portal-text)" }}>
           <Package className="w-4 h-4" /> View All Orders
         </Link>
       </div>
@@ -381,17 +397,23 @@ function InvoicesTab({ stats, loading }: { stats: Stats | null; loading: boolean
     <div className="space-y-5">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: "Paid Revenue",  val: stats ? fmtKsh(stats.totalRevenuePaid)    : "—", icon: DollarSign,  border: "border-green-200", bg: "bg-green-50 text-green-600" },
-          { label: "Outstanding",   val: stats ? fmtKsh(stats.totalRevenueUnpaid)  : "—", icon: CreditCard,  border: "border-amber-200", bg: "bg-amber-50 text-amber-600" },
-          { label: "Overdue",       val: stats ? String(stats.overdueInvoices)     : "—", icon: AlertCircle, border: "border-red-200",   bg: "bg-red-50 text-red-500" },
-          { label: "Draft",         val: stats ? String(stats.draftInvoices)       : "—", icon: FileText,    border: "border-gray-200",  bg: "bg-gray-50 text-gray-400" },
+          { label: "Paid Revenue",  val: stats ? fmtKsh(stats.totalRevenuePaid)   : "—", icon: DollarSign,  alert: false },
+          { label: "Outstanding",   val: stats ? fmtKsh(stats.totalRevenueUnpaid) : "—", icon: CreditCard,  alert: true  },
+          { label: "Overdue",       val: stats ? String(stats.overdueInvoices)    : "—", icon: AlertCircle, alert: true  },
+          { label: "Draft",         val: stats ? String(stats.draftInvoices)      : "—", icon: FileText,    alert: false },
         ].map(k => (
-          <div key={k.label} className={`bg-white border ${k.border} rounded-lg p-5`}>
-            <div className={`w-9 h-9 rounded-lg flex items-center justify-center mb-4 ${k.bg}`}>
-              <k.icon className="w-4 h-4" />
+          <div key={k.label} className="rounded-xl p-5"
+            style={{
+              background: "var(--portal-surface)",
+              border: `1px solid ${k.alert ? "var(--portal-stop)" : "var(--portal-border)"}`,
+              boxShadow: "var(--portal-shadow)",
+            }}>
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center mb-4"
+              style={{ background: k.alert ? "var(--portal-stop-tint)" : "var(--portal-accent-tint)" }}>
+              <k.icon className="w-4 h-4" style={{ color: k.alert ? "var(--portal-stop)" : "var(--portal-accent)" }} />
             </div>
-            <p className="text-2xl font-bold text-gray-900">{loading ? "—" : k.val}</p>
-            <p className="text-sm text-gray-500 mt-0.5">{k.label}</p>
+            <p className="text-2xl font-bold" style={{ color: "var(--portal-text)" }}>{loading ? "—" : k.val}</p>
+            <p className="text-sm mt-0.5" style={{ color: "var(--portal-text-muted)" }}>{k.label}</p>
           </div>
         ))}
       </div>
@@ -404,14 +426,17 @@ function InvoicesTab({ stats, loading }: { stats: Stats | null; loading: boolean
 function CalendarTab() {
   return (
     <div className="flex flex-col items-center py-24 gap-3">
-      <div className="w-12 h-12 bg-gray-100 border border-gray-200 rounded-xl flex items-center justify-center">
-        <Calendar className="w-6 h-6 text-gray-400" />
+      <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+        style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)" }}>
+        <Calendar className="w-6 h-6" style={{ color: "var(--portal-accent)" }} />
       </div>
       <div className="text-center">
-        <h3 className="text-base font-semibold text-gray-800">Event Calendar</h3>
-        <p className="text-sm text-gray-400 mt-1 max-w-xs">Schedule bulk dispatches around key dates — end-of-year, national holidays, client birthdays.</p>
+        <h3 className="text-base font-semibold" style={{ color: "var(--portal-text)" }}>Event Calendar</h3>
+        <p className="text-sm mt-1 max-w-xs" style={{ color: "var(--portal-text-muted)" }}>Schedule bulk dispatches around key dates — end-of-year, national holidays, client birthdays.</p>
       </div>
-      <Link href="/corporate/calendar" className="flex items-center gap-1.5 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors">
+      <Link href="/corporate/calendar"
+        className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors"
+        style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}>
         <Plus className="w-4 h-4" /> Schedule Event
       </Link>
     </div>
@@ -449,15 +474,21 @@ export default function CorporateDashboard() {
       n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
     return (
       <button onClick={() => setActiveTab(n.key)}
-        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all group ${
-          active
-            ? "bg-amber-50 text-amber-700 font-semibold border border-amber-200"
-            : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-        }`}>
-        <n.icon className={`w-4 h-4 shrink-0 ${active ? "text-amber-600" : "text-gray-400 group-hover:text-gray-600"}`} />
+        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
+        style={active ? {
+          background: "var(--portal-accent-tint)",
+          color: "var(--portal-accent)",
+          fontWeight: 600,
+          border: "1px solid var(--portal-accent-tint)",
+        } : {
+          color: "var(--portal-text-muted)",
+          border: "1px solid transparent",
+        }}>
+        <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
         <span className="flex-1 truncate">{n.label}</span>
         {badge > 0 && (
-          <span className="w-5 h-5 bg-red-100 text-red-600 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0">
+          <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0"
+            style={{ background: "var(--portal-stop-tint)", color: "var(--portal-stop)" }}>
             {badge}
           </span>
         )}
