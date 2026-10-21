@@ -1,33 +1,15 @@
-import { createClient } from "@supabase/supabase-js";
-import Link from "next/link";
-import type { Metadata } from "next";
-import CorporateHero from "@/components/corporate/CorporateHero";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Corporate Gifting | TouchGift — Reward Your Team at Scale",
-  description:
-    "Cinematic, effortless bulk gifting for modern teams. Send 50 or 5,000 gifts instantly via Magic Links or SMS.",
-  openGraph: {
-    title: "TouchGift Corporate — Reward Your Team at Scale",
-    description:
-      "Forget spreadsheets. Send branded gifts to your entire team in minutes.",
-    url: "https://touchgiftshop.co.ke/corporate",
-  },
-};
-
-/* This page no longer fetches anything itself.
+/**
+ * HCI rationale: The corporate "homepage" was a marketing page for users who
+ * were already on the platform. Anyone clicking "Corporate" knows they want to
+ * manage gifting — not read about it. Direct entry into the dashboard
+ * eliminates one navigation hop (Fitts' Law + cognitive load reduction) and
+ * places them immediately inside their workspace.
  *
- * It used to query shop_products filtered on `vibe_tags contains ['Corporate']`.
- * That is a different table from `products` — the one the storefront and the
- * catalog actually read — and no import path anywhere writes that tag, so the
- * section fed by it ("Curated Team Packs") rendered an empty grid and duplicated
- * the branded-merchandise hub that sits below it. Both are gone.
- *
- * The range, the quote CTA and the portal links are all client-side now, so
- * this is a pure metadata + composition route. If the showcase later needs
- * server-rendered product data, fetch from `products` (not `shop_products`)
- * and key it to lib/corporate-merch.ts slugs.
+ * Progressive disclosure is preserved: the dashboard Overview tab gives full
+ * orientation before any action is required.
  */
-export default function CorporatePortalPage() {
-  return <CorporateHero />;
+export default function CorporateHomePage() {
+  redirect("/corporate/dashboard");
 }

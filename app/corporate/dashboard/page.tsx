@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import {
   LayoutDashboard, FileText, Inbox, Users, Gift, TrendingUp,
@@ -460,94 +461,223 @@ export default function CorporateDashboard() {
     );
   }
 
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
 
-      {/* ── Sidebar ── */}
-      <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-white border-r border-gray-200 min-h-screen sticky top-0 h-screen overflow-y-auto">
-        {/* Brand */}
-        <div className="px-4 py-5 border-b border-gray-100 shrink-0">
-          <Link href="/corporate" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
-              <Building2 className="w-4 h-4 text-white" />
+      {/* ─────────────────────────────────────────────────────────────────────
+          SIDEBAR — desktop only, sticky, full height
+          HCI: persistent navigation = always-visible orientation cue.
+          Real logo anchors the brand; back-to-store at bottom uses
+          consistent icon+label pattern so it reads as a nav item, not
+          an escape button.
+      ───────────────────────────────────────────────────────────────────── */}
+      <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white border-r border-gray-200 min-h-screen sticky top-0 h-screen overflow-y-auto">
+
+        {/* ── Logo + brand ── */}
+        <div className="px-4 py-4 border-b border-gray-100 shrink-0">
+          <div className="flex items-center gap-3">
+            {/* Real logo */}
+            <div className="relative w-9 h-9 shrink-0">
+              <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="36px"
+                className="rounded-xl object-cover ring-1 ring-gray-100" priority />
             </div>
-            <div>
-              <p className="text-sm font-bold text-gray-900 leading-none">Corporate</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">TouchGift B2B</p>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-gray-900 leading-tight truncate">TouchGift</p>
+              <p className="text-[10px] font-semibold text-amber-600 uppercase tracking-wider mt-0.5">Corporate Portal</p>
             </div>
-          </Link>
+          </div>
         </div>
 
-        {/* Nav groups */}
-        <nav className="flex-1 px-3 py-3 space-y-4">
+        {/* ── Alert strip ── */}
+        {alertCount > 0 && (
+          <div className="mx-3 mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
+            <Bell className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <span className="text-xs font-semibold text-red-600 truncate">{alertCount} action{alertCount > 1 ? "s" : ""} pending</span>
+          </div>
+        )}
+
+        {/* ── Nav groups ── */}
+        <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto" aria-label="Corporate portal navigation">
           <div>
-            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-2 mb-1.5">Workspace</p>
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Workspace</p>
             <div className="space-y-0.5">{workspaceTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-2 mb-1.5">Operations</p>
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Operations</p>
             <div className="space-y-0.5">{opsTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider px-2 mb-1.5">Settings</p>
+            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">Settings</p>
             <div className="space-y-0.5">{settingsTabs.map(n => <NavBtn key={n.key} n={n} />)}</div>
           </div>
         </nav>
 
-        {/* Bottom */}
-        <div className="px-3 py-3 border-t border-gray-100 shrink-0 space-y-0.5">
-          <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all">
-            <Building2 className="w-4 h-4" /> Main Store
+        {/* ── Back-to-store + divider ── */}
+        <div className="px-3 pb-4 pt-3 border-t border-gray-100 shrink-0 space-y-1">
+          <button onClick={refresh} disabled={loading}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-400 hover:text-gray-700 hover:bg-gray-50 transition-all disabled:opacity-40">
+            <RefreshCw className={`w-4 h-4 shrink-0 ${loading ? "animate-spin" : ""}`} />
+            <span>Refresh data</span>
+          </button>
+          <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all group">
+            {/* Home icon */}
+            <svg className="w-4 h-4 shrink-0 text-gray-400 group-hover:text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            <span>Back to Main Store</span>
           </Link>
         </div>
       </aside>
 
-      {/* ── Content ── */}
+      {/* ─────────────────────────────────────────────────────────────────────
+          CONTENT AREA
+      ───────────────────────────────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0">
 
-        {/* Top bar */}
-        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-5 py-3 flex items-center gap-4 shrink-0">
-          {/* Mobile scroll tabs */}
-          <div className="lg:hidden flex items-center gap-1 flex-1 overflow-x-auto hide-scrollbar">
+        {/* ── TOP BAR ─────────────────────────────────────────────────────── */}
+        <header className="sticky top-0 z-40 bg-white border-b border-gray-200 shrink-0" role="banner">
+          <div className="flex items-center gap-3 px-4 sm:px-6 h-14">
+
+            {/* Mobile: logo + hamburger */}
+            <div className="flex items-center gap-2.5 lg:hidden">
+              <button onClick={() => setMobileNavOpen(v => !v)} aria-label="Open navigation"
+                className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <div className="relative w-7 h-7">
+                <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="28px" className="rounded-lg object-cover" />
+              </div>
+              <span className="text-sm font-bold text-gray-900">Corporate</span>
+            </div>
+
+            {/* Desktop: breadcrumb */}
+            <nav aria-label="Breadcrumb" className="hidden lg:flex items-center gap-1.5 text-sm">
+              <Link href="/" className="text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+                Home
+              </Link>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+              <span className="text-gray-400">Corporate</span>
+              <ChevronRight className="w-3.5 h-3.5 text-gray-300" />
+              <span className="font-semibold text-gray-800">{NAV.find(n => n.key === activeTab)?.label}</span>
+            </nav>
+
+            {/* Spacer */}
+            <div className="flex-1" />
+
+            {/* Right cluster */}
+            <div className="flex items-center gap-2">
+
+              {/* Alert badge */}
+              {alertCount > 0 && (
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 bg-red-50 border border-red-200 rounded-lg">
+                  <Bell className="w-3.5 h-3.5 text-red-500" />
+                  <span className="text-xs font-bold text-red-600">{alertCount}</span>
+                </div>
+              )}
+
+              {/* Quick actions */}
+              <button onClick={() => setActiveTab("shop")}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:border-amber-300 text-xs font-semibold text-gray-700 rounded-lg transition-all">
+                <ShoppingBag className="w-3.5 h-3.5" />
+                <span>Shop</span>
+              </button>
+
+              <button onClick={() => setActiveTab("hamper")}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm shadow-amber-200">
+                <Gift className="w-3.5 h-3.5" />
+                <span className="hidden sm:block">Build Hamper</span>
+              </button>
+
+              {/* Back to store — desktop quick-escape */}
+              <Link href="/"
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 hover:border-gray-300 text-xs font-medium text-gray-500 hover:text-gray-800 rounded-lg transition-all">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+                Store
+              </Link>
+            </div>
+          </div>
+
+          {/* Mobile tab scroll strip */}
+          <div className="lg:hidden flex items-center gap-1 px-3 pb-2.5 overflow-x-auto hide-scrollbar">
             {NAV.map(n => (
-              <button key={n.key} onClick={() => setActiveTab(n.key)}
-                className={`shrink-0 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
-                  activeTab === n.key ? "bg-amber-50 text-amber-700 border border-amber-200" : "text-gray-400 hover:text-gray-700"
+              <button key={n.key} onClick={() => { setActiveTab(n.key); setMobileNavOpen(false); }}
+                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                  activeTab === n.key
+                    ? "bg-amber-500 text-white shadow-sm"
+                    : "bg-gray-100 text-gray-500 hover:text-gray-800 hover:bg-gray-200"
                 }`}>
                 {n.label}
               </button>
             ))}
           </div>
-
-          {/* Desktop breadcrumb */}
-          <div className="hidden lg:flex items-center gap-2 text-sm text-gray-400">
-            <span>Corporate</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-            <span className="font-semibold text-gray-800">{NAV.find(n => n.key === activeTab)?.label}</span>
-          </div>
-
-          <div className="ml-auto flex items-center gap-2 shrink-0">
-            {alertCount > 0 && (
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg">
-                <Bell className="w-3.5 h-3.5 text-red-500" />
-                <span className="text-xs font-semibold text-red-600">{alertCount} need attention</span>
-              </div>
-            )}
-            <button onClick={refresh} disabled={loading}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs text-gray-500 hover:text-gray-800 hover:border-gray-300 transition-all disabled:opacity-40">
-              <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
-              <span className="hidden sm:block">Refresh</span>
-            </button>
-            <button onClick={() => setActiveTab("hamper")}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-lg transition-colors">
-              <Gift className="w-3.5 h-3.5" />
-              <span className="hidden sm:block">Build Hamper</span>
-            </button>
-          </div>
         </header>
 
-        {/* Tab content */}
-        <main className="flex-1 p-5 lg:p-6 max-w-screen-xl w-full mx-auto">
+        {/* ── Mobile nav drawer ── */}
+        {mobileNavOpen && (
+          <div className="lg:hidden fixed inset-0 z-50 flex">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setMobileNavOpen(false)} />
+            <div className="relative w-64 bg-white h-full flex flex-col shadow-2xl">
+              <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="relative w-8 h-8">
+                    <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="32px" className="rounded-lg object-cover" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">TouchGift</p>
+                    <p className="text-[10px] text-amber-600 font-semibold uppercase tracking-wide">Corporate</p>
+                  </div>
+                </div>
+                <button onClick={() => setMobileNavOpen(false)} className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200">
+                  <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+                {[
+                  { label: "Workspace", tabs: workspaceTabs },
+                  { label: "Operations", tabs: opsTabs },
+                  { label: "Settings", tabs: settingsTabs },
+                ].map(g => (
+                  <div key={g.label}>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">{g.label}</p>
+                    <div className="space-y-0.5">
+                      {g.tabs.map(n => (
+                        <button key={n.key} onClick={() => { setActiveTab(n.key); setMobileNavOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all ${
+                            activeTab === n.key ? "bg-amber-50 text-amber-700 font-semibold border border-amber-200" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                          }`}>
+                          <n.icon className={`w-4 h-4 shrink-0 ${activeTab === n.key ? "text-amber-600" : "text-gray-400"}`} />
+                          {n.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </nav>
+              <div className="px-3 py-3 border-t border-gray-100">
+                <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all">
+                  <svg className="w-4 h-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                  </svg>
+                  Back to Main Store
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Tab content ── */}
+        <main className="flex-1 p-4 sm:p-6 max-w-screen-xl w-full mx-auto" id="corp-main-content">
           {activeTab === "overview"    && <OverviewTab stats={stats} loading={loading} onTab={setActiveTab} />}
           {activeTab === "shop"        && <ShopTab />}
           {activeTab === "hamper"      && <HamperBuilderTab />}
