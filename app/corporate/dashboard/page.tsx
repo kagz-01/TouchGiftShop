@@ -19,6 +19,7 @@ const HamperBuilderTab = dynamic(() => import("@/components/corporate/tabs/Hampe
 const GiftPoolsTab    = dynamic(() => import("@/components/corporate/tabs/GiftPoolsTab"),    { loading: () => <TabLoader /> });
 const ClientsTab      = dynamic(() => import("@/components/corporate/tabs/ClientsTab"),      { loading: () => <TabLoader /> });
 const MilestonesTab   = dynamic(() => import("@/components/corporate/tabs/MilestonesTab"),   { loading: () => <TabLoader /> });
+const GiftCardsTab    = dynamic(() => import("@/components/corporate/tabs/GiftCardsTab"),    { loading: () => <TabLoader /> });
 const QuoteOpsPanel   = dynamic(() => import("@/components/corporate/QuoteOpsPanel"),        { loading: () => <TabLoader /> });
 const PortalSettingsTab = dynamic(() => import("@/components/corporate/tabs/PortalSettingsTab"), { loading: () => <TabLoader /> });
 const InvoiceOpsPanel   = dynamic(() => import("@/components/corporate/InvoiceOpsPanel"),    { loading: () => <TabLoader /> });
@@ -61,6 +62,7 @@ const NAV = [
   { key: "overview",   label: "Overview",       icon: LayoutDashboard, group: "workspace" },
   { key: "shop",       label: "Shop",           icon: ShoppingBag,     group: "workspace" },
   { key: "hamper",     label: "Build Hamper",   icon: Gift,            group: "workspace" },
+  { key: "giftcards",  label: "Gift Cards",     icon: CreditCard,      group: "workspace" },
   { key: "pools",      label: "Gift Pools",     icon: Target,          group: "workspace" },
   { key: "orders",     label: "Orders",         icon: Package,         group: "ops" },
   { key: "invoices",   label: "Invoices",       icon: FileText,        group: "ops" },
@@ -108,26 +110,32 @@ function Skeleton({ h = 4, w = "full" }: { h?: number; w?: string }) {
 }
 
 // ─── KPI Card ─────────────────────────────────────────────────────────────────
-function KpiCard({ label, value, sub, icon: Icon, iconBg, loading, alert }: {
+function KpiCard({ label, value, sub, icon: Icon, loading, alert }: {
   label: string; value: string; sub?: string;
-  icon: React.ComponentType<{ className?: string }>; iconBg: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   loading?: boolean; alert?: boolean;
 }) {
   return (
-    <div className={`bg-white border rounded-lg p-5 hover:shadow-sm transition-shadow ${alert ? "border-red-200" : "border-gray-200"}`}>
+    <div className="rounded-xl p-5 hover:-translate-y-0.5 transition-all"
+      style={{
+        background: "var(--portal-surface)",
+        border: `1px solid ${alert ? "var(--portal-stop)" : "var(--portal-border)"}`,
+        boxShadow: "var(--portal-shadow)",
+      }}>
       <div className="flex items-start justify-between">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${iconBg}`}>
-          <Icon className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center"
+          style={{ background: alert ? "var(--portal-stop-tint)" : "var(--portal-accent-tint)" }}>
+          <Icon className="w-5 h-5" style={{ color: alert ? "var(--portal-stop)" : "var(--portal-accent)" }} />
         </div>
-        {alert && <span className="w-2 h-2 bg-red-500 rounded-full shrink-0" />}
+        {alert && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: "var(--portal-stop)" }} />}
       </div>
       <div className="mt-4">
         {loading
           ? <><Skeleton h={6} /><div className="mt-1"><Skeleton h={3} w="2/3" /></div></>
           : <>
-              <p className="text-2xl font-bold text-gray-900 tracking-tight">{value}</p>
-              <p className="text-sm text-gray-500 mt-0.5">{label}</p>
-              {sub && <p className="text-xs text-gray-400 mt-2 pt-2 border-t border-gray-100">{sub}</p>}
+              <p className="text-2xl font-bold tracking-tight" style={{ color: "var(--portal-text)" }}>{value}</p>
+              <p className="text-sm mt-0.5" style={{ color: "var(--portal-text-muted)" }}>{label}</p>
+              {sub && <p className="text-xs mt-2 pt-2" style={{ color: "var(--portal-text-faint)", borderTop: "1px solid var(--portal-border-soft)" }}>{sub}</p>}
             </>
         }
       </div>
@@ -772,10 +780,17 @@ export default function CorporateDashboard() {
                     <div className="space-y-0.5">
                       {g.tabs.map(n => (
                         <button key={n.key} onClick={() => { setActiveTab(n.key); setMobileNavOpen(false); }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all ${
-                            activeTab === n.key ? "bg-amber-50 text-amber-700 font-semibold border border-amber-200" : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                          }`}>
-                          <n.icon className={`w-4 h-4 shrink-0 ${activeTab === n.key ? "text-amber-600" : "text-gray-400"}`} />
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
+                          style={activeTab === n.key ? {
+                            background: "var(--portal-accent-tint)",
+                            color: "var(--portal-accent)",
+                            fontWeight: 600,
+                            border: "1px solid var(--portal-accent-tint)",
+                          } : {
+                            color: "var(--portal-text-muted)",
+                            border: "1px solid transparent",
+                          }}>
+                          <n.icon className="w-4 h-4 shrink-0" style={{ color: activeTab === n.key ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
                           {n.label}
                         </button>
                       ))}
@@ -808,6 +823,7 @@ export default function CorporateDashboard() {
           )}
           {activeTab === "shop"        && <ShopTab />}
           {activeTab === "hamper"      && <HamperBuilderTab />}
+          {activeTab === "giftcards"   && <GiftCardsTab />}
           {activeTab === "pools"       && <GiftPoolsTab />}
           {activeTab === "orders"      && <OrdersTab stats={stats} loading={loading} />}
           {activeTab === "invoices"    && <InvoicesTab stats={stats} loading={loading} />}
