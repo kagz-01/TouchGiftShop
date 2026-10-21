@@ -172,8 +172,58 @@ export default function ShopTab() {
 
   return (
     <div className="space-y-5">
+
+      {/* ── Discovery Banner (visible when no filter active) ── */}
+      {cat === "all" && !search && !loading && (
+        <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 border border-amber-200 rounded-2xl overflow-hidden">
+          <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-center gap-5">
+            {/* Left copy */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-2xl">🎁</span>
+                <h2 className="text-base font-bold text-gray-900">How corporate ordering works</h2>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3">
+                {[
+                  { num: "1", icon: "🛍️", text: "Browse & pick items below" },
+                  { num: "2", icon: "📋", text: "Request a quote — we confirm within 2 hrs" },
+                  { num: "3", icon: "🚚", text: "We brand, pack & deliver across Kenya" },
+                ].map(s => (
+                  <div key={s.num} className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shrink-0">{s.num}</div>
+                    <span className="text-xs text-gray-600">{s.icon} {s.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {/* Right CTA */}
+            <div className="flex flex-col gap-2 shrink-0">
+              <div className="text-xs text-gray-500 text-center">Minimum order: <strong className="text-gray-900">10 units</strong></div>
+              <div className="text-xs text-gray-400 text-center">Need help? <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">Chat on WhatsApp</a></div>
+            </div>
+          </div>
+          {/* Quick jump chips */}
+          <div className="px-6 pb-4 flex flex-wrap gap-2">
+            <span className="text-xs text-gray-400 font-semibold mr-1 self-center">Popular:</span>
+            {[
+              { emoji: "🏆", label: "Awards & Trophies", key: "awards-trophies" },
+              { emoji: "☕", label: "Branded Drinkware", key: "drinkware" },
+              { emoji: "🎁", label: "Gift Sets", key: "gift-sets" },
+              { emoji: "💻", label: "Tech & Gadgets", key: "tech-gadgets" },
+              { emoji: "✏️", label: "Stationery", key: "stationery-office" },
+            ].map(c => (
+              <button key={c.key} onClick={() => onCat(c.key as typeof cat)}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 hover:border-amber-400 hover:bg-amber-50 text-xs font-semibold text-amber-700 rounded-lg transition-all">
+                {c.emoji} {c.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Category sub-tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 hide-scrollbar">
+
         {SHOP_CATEGORIES.map(c => (
           <button key={c.key} onClick={() => onCat(c.key)}
             className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${

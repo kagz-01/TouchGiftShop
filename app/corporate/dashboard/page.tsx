@@ -20,6 +20,8 @@ const MilestonesTab   = dynamic(() => import("@/components/corporate/tabs/Milest
 const QuoteOpsPanel   = dynamic(() => import("@/components/corporate/QuoteOpsPanel"),        { loading: () => <TabLoader /> });
 const PortalSettingsTab = dynamic(() => import("@/components/corporate/tabs/PortalSettingsTab"), { loading: () => <TabLoader /> });
 const InvoiceOpsPanel   = dynamic(() => import("@/components/corporate/InvoiceOpsPanel"),    { loading: () => <TabLoader /> });
+const WelcomeOnboarding = dynamic(() => import("@/components/corporate/WelcomeOnboarding"), { ssr: false });
+const QuickStartBanner  = dynamic(() => import("@/components/corporate/QuickStartBanner"),  { ssr: false });
 
 function TabLoader() {
   return (
@@ -466,6 +468,9 @@ export default function CorporateDashboard() {
   return (
     <div className="min-h-screen bg-gray-50 font-sans flex">
 
+      {/* First-visit welcome overlay — mounts client-side only (ssr:false) */}
+      <WelcomeOnboarding onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
+
       {/* ─────────────────────────────────────────────────────────────────────
           SIDEBAR — desktop only, sticky, full height
           HCI: persistent navigation = always-visible orientation cue.
@@ -678,7 +683,15 @@ export default function CorporateDashboard() {
 
         {/* ── Tab content ── */}
         <main className="flex-1 p-4 sm:p-6 max-w-screen-xl w-full mx-auto" id="corp-main-content">
-          {activeTab === "overview"    && <OverviewTab stats={stats} loading={loading} onTab={setActiveTab} />}
+          {activeTab === "overview" && (
+            <>
+              {/* QuickStart shown when account has no orders yet */}
+              {!loading && (stats?.totalCorpOrders ?? 0) === 0 && (
+                <QuickStartBanner onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
+              )}
+              <OverviewTab stats={stats} loading={loading} onTab={setActiveTab} />
+            </>
+          )}
           {activeTab === "shop"        && <ShopTab />}
           {activeTab === "hamper"      && <HamperBuilderTab />}
           {activeTab === "pools"       && <GiftPoolsTab />}
