@@ -1517,7 +1517,13 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
      the hero untouched. Its own text tokens exist for the same reason:
      --corp-text inverts to near-black in light mode and would vanish. */
   --corp-hero-bg:     #0B1620;
-  --corp-hero-scrim:  linear-gradient(180deg, rgba(11,22,32,0.93) 0%, rgba(11,22,32,0.82) 55%, rgba(11,22,32,0.74) 100%);
+  /* Left-weighted, not a full blackout. The photo used to sit under a 0.93
+     vertical wash at 35% opacity, which hid it completely — a hero photo you
+     cannot see is a wasted hero photo. Copy lives on the left, so the left
+     edge stays dark enough to read against and the right edge opens up. */
+  --corp-hero-scrim:
+    linear-gradient(90deg, rgba(11,22,32,0.94) 0%, rgba(11,22,32,0.86) 38%, rgba(11,22,32,0.56) 68%, rgba(11,22,32,0.26) 100%),
+    linear-gradient(180deg, rgba(11,22,32,0.48) 0%, rgba(11,22,32,0.12) 42%, rgba(11,22,32,0.86) 100%);
   --corp-hero-text:   #FFFFFF;
   --corp-hero-muted:  rgba(255, 255, 255, 0.62);
   --corp-hero-border: rgba(255, 255, 255, 0.10);

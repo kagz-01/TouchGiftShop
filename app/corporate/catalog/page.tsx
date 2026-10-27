@@ -460,15 +460,22 @@ function CatalogInner() {
             </button>
           ))}
 
-          {/* Live studio promo */}
-          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <p className="text-xs font-bold text-amber-800 mb-1">🎨 Branding Studio</p>
-            <p className="text-[11px] text-amber-700 mb-3 leading-relaxed">Preview your logo on any product in real time.</p>
-            <Link href="/corporate/build"
-              className="block w-full py-2 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg text-center transition-colors">
-              Open Studio →
-            </Link>
-          </div>
+          {/* Live studio promo — the whole card is the link so there is no
+              dead card body that looks clickable but goes nowhere. */}
+          <Link
+            href="/corporate/build"
+            className="block mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 hover:border-amber-300/80 hover:bg-amber-100 transition-colors cursor-pointer"
+          >
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold text-amber-800 mb-1">🎨 Branding Studio</p>
+                <p className="text-[11px] text-amber-700 mb-0 leading-relaxed">
+                  Preview your logo on any product in real time.
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-amber-600 shrink-0" />
+            </div>
+          </Link>
         </aside>
 
         {/* Main content */}

@@ -6,7 +6,7 @@ import Image from "next/image";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Building2, Users, Sparkles, ArrowRight, ShieldCheck, Zap,
+  Building2, Users, ArrowRight, ShieldCheck, Zap,
   Gift, BarChart3, MessageSquare, X, ChevronRight, Check, Package, Palette, Clock,
   Globe, Award, TrendingUp, Layers, ShoppingBag, Star,
 } from "lucide-react";
@@ -94,14 +94,15 @@ export default function CorporateHero({
       </header>
 
       {/* ── Hero ──
-          `relative` + its own overflow-hidden scopes the backdrop to this
-          section only. It previously sat on the page root, which put the
-          photo behind every section below.
+          Same composition as the homepage's corporate mood: copy on the left,
+          the photograph actually visible on the right, sections stacking
+          below. `relative` + overflow-hidden scopes the backdrop to this
+          section only; the ground goes in first so nothing bleeds through,
+          then the photo, then the scrim — the photo last would bury it.
 
-          Stack order matters: opaque ground FIRST so nothing from the page
-          behind can bleed through, then the photo, then the scrim. Putting
-          the ground last (as an earlier attempt did) hid the photo entirely. */}
-      <section className="relative z-10 overflow-hidden">
+          The scrim used to be a near-opaque vertical wash over a 35%-opacity
+          image, which is why the photo disappeared entirely. */}
+      <section className="relative z-10 overflow-hidden flex items-center min-h-[560px] md:min-h-[calc(100vh-73px)]">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute inset-0" style={{ background: "var(--corp-hero-bg)" }} />
           <Image
@@ -110,48 +111,63 @@ export default function CorporateHero({
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center opacity-35"
+            className="object-cover object-center"
           />
           <div className="absolute inset-0" style={{ background: "var(--corp-hero-scrim)" }} />
+          {/* Narrow screens: the copy runs the full width, so the right edge
+              needs the same cover the left gradient gives the desktop one. */}
+          <div className="absolute inset-0 bg-[#0B1620]/55 md:hidden" />
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 pt-20 pb-28 text-center">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-24 pb-20 md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
+          className="max-w-2xl text-left"
         >
-          <div className="inline-flex items-center gap-2 border rounded-full px-4 py-1.5 mb-8" style={{ background: "var(--corp-hero-card)", borderColor: "var(--corp-hero-border)" }}>
-            <Sparkles className="w-4 h-4 text-[color:var(--corp-hero-accent)]" />
-            <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "var(--corp-hero-gold)" }}>B2B Gifting, Reinvented</span>
+          {/* Eyebrow — the rule-and-label form the homepage hero uses, not a
+              centred pill */}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="h-px w-10 bg-[color:var(--corp-hero-gold)]" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: "var(--corp-hero-gold)" }}>
+              B2B Gifting, Reinvented
+            </span>
           </div>
 
-          <h1 className="font-display text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6 max-w-4xl mx-auto text-[color:var(--corp-hero-text)]">
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-[color:var(--corp-hero-text)]">
             Reward your team<br />
             <span className="italic font-light text-[color:var(--corp-hero-accent)]">at scale.</span>
           </h1>
-          <p className="text-lg md:text-xl mb-10 leading-relaxed max-w-2xl mx-auto" style={{ color: "var(--corp-hero-muted)" }}>
+          <p className="text-base md:text-xl mb-8 leading-relaxed max-w-xl" style={{ color: "var(--corp-hero-muted)" }}>
             Curated gifts for clients, teams, and milestones — branded when it matters,
             delivered when it counts.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-start">
             <a
-              href="#packs"
+              href="/corporate/catalog"
               className="px-8 py-4 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-base rounded-2xl transition-all shadow-[0_0_40px_var(--corp-hero-glow)] hover:shadow-[0_0_60px_var(--corp-hero-glow)] flex items-center justify-center gap-2"
             >
               <Gift className="w-5 h-5" /> Browse Gift Packs
             </a>
             <Link
-              href="/corporate/portal"
-              className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2"
+              href="/corporate/dashboard"
+              className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
             >
               <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Client Portal
             </Link>
           </div>
+
+          {/* Trust line — same placement as the homepage corporate mood */}
+          <p className="mt-6 flex items-center gap-2 text-sm font-medium text-white/85">
+            <Check className="w-4 h-4 text-emerald-400" />
+            Professional gifts. On time. Every time.
+          </p>
         </motion.div>
 
-        {/* Stats row */}
+        {/* Stats row — under the copy, left-aligned, so the hero reads
+            top-to-bottom and the next section starts below it */}
         {/* Truthful alternatives to the old stat row. The previous one read
             "2,400+ Companies Served · 98% On-time · KES 50M+ · 4.9 stars" and
             nothing in the database could produce any of those numbers. Three
@@ -160,16 +176,16 @@ export default function CorporateHero({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-20 max-w-3xl mx-auto"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-12 md:mt-16 max-w-3xl"
         >
           {[
             { icon: Palette, title: "Design in the browser", note: "Logo, artwork and placement — before you order" },
             { icon: Package, title: "Quotes, not guesswork", note: "Structured request with a real quote desk behind it" },
             { icon: Clock, title: "Same-day in Nairobi", note: "Next-day nationwide" },
-          ].map((s, i) => (
+          ].map((s) => (
             <div
               key={s.title}
-              className="border rounded-2xl p-4 flex flex-col items-center gap-2 text-center transition-colors hover:border-[color:var(--corp-hero-accent)]/40"
+              className="border rounded-2xl p-4 flex flex-col gap-2 text-left transition-colors hover:border-[color:var(--corp-hero-accent)]/40 backdrop-blur-sm"
               style={{ background: "var(--corp-hero-card)", borderColor: "var(--corp-hero-border)" }}
             >
               <s.icon className="w-5 h-5" style={{ color: "var(--corp-hero-gold)" }} />
