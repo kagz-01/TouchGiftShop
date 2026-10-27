@@ -651,7 +651,7 @@ export default function WhatsAppBotPage() {
                       <p className="text-xs text-emerald-400 font-semibold">Connected</p>
                     </div>
                   </div>
-                  <span className="text-xs text-white/60">Phone: +254 142 677 898</span>
+                  <span className="text-xs text-white/60">Phone: +254 183 172 111</span>
                 </div>
                 <div className="flex items-center justify-between p-4 bg-black/40 rounded-xl border border-white/5">
                   <div className="flex items-center gap-3">

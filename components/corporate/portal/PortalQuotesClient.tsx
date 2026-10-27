@@ -283,7 +283,7 @@ export default function PortalQuotesClient({
                                 Not this time
                               </button>
                               <a
-                                href={`https://wa.me/254700000000?text=${encodeURIComponent(
+                                href={`https://wa.me/254183172111?text=${encodeURIComponent(
                                   `Hello TouchGift — about quote ${q.reference} for ${q.product_name}`
                                 )}`}
                                 target="_blank"

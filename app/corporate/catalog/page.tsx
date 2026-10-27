@@ -554,7 +554,7 @@ function CatalogInner() {
                 className="px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-lg flex items-center gap-2 transition-colors">
                 <Palette className="w-4 h-4" /> Custom Request
               </Link>
-              <a href="https://wa.me/254700000000?text=Hi!%20I%20need%20branded%20merchandise."
+              <a href="https://wa.me/254183172111?text=Hi!%20I%20need%20branded%20merchandise."
                 target="_blank" rel="noopener noreferrer"
                 className="px-5 py-3 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 font-bold text-sm rounded-lg flex items-center gap-2 transition-colors">
                 💬 WhatsApp Us

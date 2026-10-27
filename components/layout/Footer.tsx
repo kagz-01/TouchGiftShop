@@ -21,7 +21,7 @@ const QUICK_LINKS = [
 ];
 
 const SUPPORT_LINKS = [
-  { href: "https://wa.me/254142677898", label: "WhatsApp Us — we reply in minutes", external: true },
+  { href: "https://wa.me/254183172111", label: "WhatsApp Us — we reply in minutes", external: true },
   { href: "/login", label: "Sign In / Create Account" },
   { href: "mailto:info@touchgiftshop.co.ke", label: "Email Support" },
 ];
@@ -62,7 +62,7 @@ const SOCIALS = [
     ),
   },
   {
-    href: "https://wa.me/254142677898",
+    href: "https://wa.me/254183172111",
     label: "WhatsApp",
     icon: (
       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

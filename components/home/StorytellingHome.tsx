@@ -32,23 +32,13 @@ function useInView(threshold = 0.2) {
   return { ref, visible };
 }
 
-/* ─── Counter animation ─── */
+/* ─── Trust figures ───
+   Rendered at their final value on the server. The old count-up started at
+   zero, so the first paint (and anyone without JS) saw "0 gifts delivered"
+   and "0.8/5" — a wrong number that reads as a broken trust signal. A figure
+   may animate in, but it must never be untrue while it does. */
 function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const { ref, visible } = useInView(0.5);
-  useEffect(() => {
-    if (!visible) return;
-    let start = 0;
-    const duration = 2000;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      setCount(Math.floor(progress * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [visible, target]);
-  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+  return <span>{target.toLocaleString()}{suffix}</span>;
 }
 
 /* ─── Section wrapper with scroll reveal ─── */
@@ -887,7 +877,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
                 <Link href="/corporate" className="px-6 py-3 rounded-xl bg-brand text-white font-semibold text-sm hover:brightness-110 hover:shadow-lg transition-all">
                   Enter the corporate platform
                 </Link>
-                <a href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting."
+                <a href="https://wa.me/254183172111?text=Hi%20TouchGift!%20I'd%20like%20to%20talk%20about%20corporate%20gifting."
                   className="px-6 py-3 rounded-xl border-2 border-brand/20 text-theme-heading font-semibold text-sm hover:border-brand hover:text-brand transition-all">
                   Talk to us first
                 </a>
@@ -931,7 +921,7 @@ export function SocialProof() {
   ];
 
   const stats = [
-    { target: 10000, suffix: "+", label: "Gifts delivered", icon: "🎁" },
+    { target: 100, suffix: "+", label: "Gifts delivered", icon: "🎁" },
     { target: 99, suffix: "%", label: "On-time delivery", icon: "🚚" },
     { target: 500, suffix: "+", label: "Curated products", icon: "📦" },
     { target: 4, suffix: ".8/5", label: "Average rating", icon: "⭐" },

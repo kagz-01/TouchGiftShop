@@ -91,7 +91,7 @@ function buildEmailHtml(data: z.infer<typeof inquirySchema>, refCode: string): s
 
       <!-- CTA -->
       <div style="margin-top:32px;text-align:center">
-        <a href="https://wa.me/254142677898?text=Hi%21+I%27m+following+up+on+corporate+inquiry+${refCode}+from+${encodeURIComponent(data.companyName)}" 
+        <a href="https://wa.me/254183172111?text=Hi%21+I%27m+following+up+on+corporate+inquiry+${refCode}+from+${encodeURIComponent(data.companyName)}" 
            style="display:inline-block;background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;padding:14px 32px;border-radius:100px;text-decoration:none;font-weight:700;font-size:15px">
           💬 Reply via WhatsApp
         </a>
@@ -102,7 +102,7 @@ function buildEmailHtml(data: z.infer<typeof inquirySchema>, refCode: string): s
 
     <!-- Footer -->
     <div style="background:#14080d;padding:20px;text-align:center">
-      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin:0">TouchGift Shop · touchgiftshop.co.ke · +254 142 677 898</p>
+      <p style="color:rgba(255,255,255,0.5);font-size:12px;margin:0">TouchGift Shop · touchgiftshop.co.ke · +254 183 172 111</p>
     </div>
   </div>
 </body>
@@ -177,7 +177,7 @@ export async function POST(req: NextRequest) {
             <p>Your reference code is: <strong style="color:#9b1b5a">${refCode}</strong></p>
             <p>Our team will reach out within <strong>2 business hours</strong> to discuss curation, pricing, and scheduling.</p>
             <p>For urgent matters, WhatsApp us directly:<br>
-              <a href="https://wa.me/254142677898?text=Hi%21+Ref+${refCode}" style="color:#25D366;font-weight:700">+254 142 677 898</a>
+              <a href="https://wa.me/254183172111?text=Hi%21+Ref+${refCode}" style="color:#25D366;font-weight:700">+254 183 172 111</a>
             </p>
             <hr style="margin:24px 0;border:none;border-top:1px solid #e5e0d8">
             <p style="color:#999;font-size:12px">TouchGift Shop · touchgiftshop.co.ke</p>

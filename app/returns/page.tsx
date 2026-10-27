@@ -92,7 +92,7 @@ export default function ReturnsPage() {
                 <ol className="list-decimal list-inside space-y-3">
                   <li>
                     <strong className="text-brand-deep">Contact us within 24 hours</strong> of delivery (or attempted delivery)
-                    via WhatsApp at <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a> or
+                    via WhatsApp at <a href="https://wa.me/254183172111" className="text-brand hover:underline">+254 183 172 111</a> or
                     email <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a>
                   </li>
                   <li>
@@ -173,7 +173,7 @@ export default function ReturnsPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">11. Contact Us</h2>
               <p>For refund requests or questions:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a> (fastest)</li>
+                <li>WhatsApp: <a href="https://wa.me/254183172111" className="text-brand hover:underline">+254 183 172 111</a> (fastest)</li>
                 <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Response time: Within 24 hours</li>
               </ul>

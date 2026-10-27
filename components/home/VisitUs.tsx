@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { 
   MapPin, Phone, Mail, MessageCircle, Plus, Minus, 
-  Clock, Camera, ShieldCheck, Leaf, CalendarClock 
+  Clock, Camera, ShieldCheck, Leaf 
 } from "lucide-react";
+import CutoffCountdown from "@/components/ui/CutoffCountdown";
 import { SHOP_LOCATION } from "@/lib/delivery";
 
 const FAQS = [
@@ -66,8 +67,8 @@ export default function VisitUs() {
                   <div className="w-8 h-8 rounded-full bg-brand/10 dark:bg-brand/20 flex items-center justify-center shrink-0">
                     <Phone className="w-4 h-4 text-brand" />
                   </div>
-                  <a href="tel:+254142677898" className="text-sm font-medium text-theme-heading hover:text-brand transition-colors">
-                    +254 142 677 898
+                  <a href="tel:+254183172111" className="text-sm font-medium text-theme-heading hover:text-brand transition-colors">
+                    +254 183 172 111
                   </a>
                 </div>
                 <div className="flex items-center gap-3">
@@ -105,10 +106,7 @@ export default function VisitUs() {
 
             {/* Trust Badges */}
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 pt-8 border-t border-surface-border">
-              <div className="flex items-center gap-2 text-xs font-semibold text-theme-heading">
-                <CalendarClock className="w-4 h-4 text-brand" />
-                Order by 6 PM for Same-Day
-              </div>
+              <CutoffCountdown />
               <div className="flex items-center gap-2 text-xs font-semibold text-theme-heading">
                 <Camera className="w-4 h-4 text-brand" />
                 Photo-proof delivery
@@ -122,7 +120,7 @@ export default function VisitUs() {
             {/* CTA Buttons */}
             <div className="flex flex-wrap items-center gap-4 mt-auto">
               <a
-                href="https://wa.me/254142677898?text=Hi%20TouchGift!%20I%27d%20like%20to%20get%20in%20touch."
+                href="https://wa.me/254183172111?text=Hi%20TouchGift!%20I%27d%20like%20to%20get%20in%20touch."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#00A884] text-white rounded-xl text-sm font-bold hover:bg-[#008f6f] transition-all duration-300 shadow-sm hover:shadow-md w-full sm:w-auto"

@@ -304,7 +304,7 @@ export default function DeliveryPolicyPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">12. Contact Us</h2>
               <p>For delivery questions or issues:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a> (fastest)</li>
+                <li>WhatsApp: <a href="https://wa.me/254183172111" className="text-brand hover:underline">+254 183 172 111</a> (fastest)</li>
                 <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Live chat: Available on our website during business hours</li>
               </ul>

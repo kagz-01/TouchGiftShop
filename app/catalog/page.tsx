@@ -190,7 +190,7 @@ function CatalogPage() {
                       {!b.is_coming_soon && pct > 0 && <span className="text-xs text-gray-400 line-through">{formatKsh(b.regular_price)}</span>}
                     </div>
                     <a
-                      href={`https://wa.me/254142677898?text=${b.is_coming_soon ? notifyText : waText}`}
+                      href={`https://wa.me/254183172111?text=${b.is_coming_soon ? notifyText : waText}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`block mt-2 py-2 rounded-xl text-xs font-semibold text-center transition-colors ${

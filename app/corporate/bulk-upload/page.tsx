@@ -465,7 +465,7 @@ function DoneStep({ refCode, contactEmail, companyName }: { refCode: string; con
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
         <a
-          href={`https://wa.me/254142677898?text=Hi%21+I%27ve+submitted+a+corporate+inquiry+ref+${refCode}+for+${encodeURIComponent(companyName)}`}
+          href={`https://wa.me/254183172111?text=Hi%21+I%27ve+submitted+a+corporate+inquiry+ref+${refCode}+for+${encodeURIComponent(companyName)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#25D366] text-white font-bold rounded-2xl hover:bg-[#1EBE5A] hover:scale-105 transition-all shadow-[0_0_20px_rgba(37,211,102,0.2)]"

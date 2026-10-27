@@ -199,7 +199,7 @@ export default function ShopTab() {
             {/* Right CTA */}
             <div className="flex flex-col gap-2 shrink-0">
               <div className="text-xs text-gray-500 text-center">Minimum order: <strong className="text-gray-900">10 units</strong></div>
-              <div className="text-xs text-gray-400 text-center">Need help? <a href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">Chat on WhatsApp</a></div>
+              <div className="text-xs text-gray-400 text-center">Need help? <a href="https://wa.me/254183172111" target="_blank" rel="noopener noreferrer" className="text-green-600 font-semibold hover:underline">Chat on WhatsApp</a></div>
             </div>
           </div>
           {/* Quick jump chips */}

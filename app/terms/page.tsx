@@ -248,7 +248,7 @@ export default function TermsPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">17. Contact</h2>
               <p>For questions about these Terms & Conditions:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a></li>
+                <li>WhatsApp: <a href="https://wa.me/254183172111" className="text-brand hover:underline">+254 183 172 111</a></li>
                 <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Website: <a href="https://touchgift.co.ke" className="text-brand hover:underline">touchgift.co.ke</a></li>
               </ul>

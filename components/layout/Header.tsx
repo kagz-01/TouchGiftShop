@@ -156,14 +156,14 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
           <div className="flex items-center gap-1 flex-shrink-0">
             {/* Corporate CTA */}
             <Link
-              href="/corporate/dashboard"
+              href="/corporate"
               className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-brand dark:text-brand-light hover:bg-brand/8 dark:hover:bg-brand/20 transition-all duration-200 border border-brand/20 dark:border-brand/40 hover:border-brand/40 dark:hover:border-brand/60 hover:shadow-[0_0_0_3px_rgba(155,27,90,0.06)] dark:hover:shadow-[0_0_0_3px_rgba(196,41,122,0.15)]"
             >
               <Briefcase className="w-3.5 h-3.5" />
               <span>Corporate</span>
             </Link>
             <div className="w-px h-5 bg-surface-border mx-1 hidden xl:block" />
-            <Link href="https://wa.me/254700000000" target="_blank" rel="noopener noreferrer" className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 border border-green-200 dark:border-green-800">
+            <Link href="https://wa.me/254183172111" target="_blank" rel="noopener noreferrer" className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all duration-200 border border-green-200 dark:border-green-800">
               <MessageCircle className="w-4 h-4" />
               <span>Chat on WhatsApp</span>
             </Link>

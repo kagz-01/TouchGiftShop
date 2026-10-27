@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getUpcomingEvents, formatCountdown, type SeasonalEvent } from "@/lib/seasonal-events";
 import { X, ArrowRight, Sparkles } from "lucide-react";
+import CutoffCountdown from "@/components/ui/CutoffCountdown";
 
 export default function SeasonalPromptBar({
   announcements = [],
@@ -94,8 +95,10 @@ export default function SeasonalPromptBar({
           )}
         </div>
 
-        {/* Right: Dismiss — only meaningful on a seasonal slide */}
-        <div className="shrink-0 flex items-center justify-end w-5">
+        {/* Right: cutoff reminder + dismiss. The countdown is steady while the
+            message rotates, so the delivery promise never scrolls out of view. */}
+        <div className="shrink-0 flex items-center justify-end gap-2">
+          <CutoffCountdown variant="onBrand" className="hidden sm:inline-flex" />
           {event && (
             <button
               onClick={handleDismiss}

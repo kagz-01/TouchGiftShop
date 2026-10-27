@@ -74,6 +74,10 @@ body, header, nav, section, article, aside, footer,
   --muted-color:     #7A4A55;
   /* Frost Texture - subtle SVG noise */
   --noise-texture: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  /* Gold is text, not decoration: the shared #D4A853 only reaches ~2.2:1 on
+     this cream ground, so light mode gets its own darker bronze. */
+  --color-gold:      #7A5A00;
+  --color-gold-light:#9A7200;
 }
 
 /* DARK MODE — clean, sophisticated charcoal/slate palette */
@@ -127,6 +131,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #FDE8F2;
   --heading-color: #880E4F;
   --accent-color:  #C2185B;
+  --color-gold:      #9C1C3D;
+  --color-gold-light:#B02A4A;
 }
 [data-mood="romantic"] [data-theme="dark"],
 [data-mood="romantic"][data-theme="dark"] {
@@ -156,6 +162,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #E8F5E9;
   --heading-color: #004D40;
   --accent-color:  #00796B;
+  --color-gold:      #00695C;
+  --color-gold-light:#00796B;
 }
 [data-mood="apology"][data-theme="dark"] {
   --bg-base: #001412;
@@ -182,6 +190,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #FFF9C4;
   --heading-color: #E65100;
   --accent-color:  #F57F17;
+  --color-gold:      #7A5B00;
+  --color-gold-light:#9A7200;
 }
 [data-mood="celebratory"][data-theme="dark"] {
   --bg-base: #0E0900;
@@ -210,6 +220,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #EDF2F7;
   --heading-color: #0F2027;
   --accent-color:  #D4AF37;
+  --color-gold:      #7A5A00;
+  --color-gold-light:#9A7200;
 }
 [data-mood="corporate"][data-theme="dark"] {
   --bg-base: #0A0F1A; /* Deep Slate */
@@ -238,6 +250,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #E9ECEF;
   --heading-color: #0D1B2A;
   --accent-color:  #415A77;
+  --color-gold:      #3E4C59;
+  --color-gold-light:#5A6B7A;
 }
 [data-mood="corp_appreciation"][data-theme="dark"] {
   --bg-base: #0D1B2A;
@@ -266,6 +280,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #EBF0ED;
   --heading-color: #0F1F19;
   --accent-color:  #2D5A4C;
+  --color-gold:      #7A5A00;
+  --color-gold-light:#9A7200;
 }
 [data-mood="corp_milestone"][data-theme="dark"] {
   --bg-base: #0A1410;
@@ -294,6 +310,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #EAEFF5;
   --heading-color: #0E141E;
   --accent-color:  #2A3B52;
+  --color-gold:      #1B6B3A;
+  --color-gold-light:#268A4C;
 }
 [data-mood="corp_welcome"][data-theme="dark"] {
   --bg-base: #0B0E16;
@@ -321,6 +339,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #FDEEF5;
   --heading-color:  #6A0F3A;
   --accent-color:   #AD1457;
+  --color-gold:      #9C1C3D;
+  --color-gold-light:#B02A4A;
 }
 [data-mood="flowers"][data-theme="dark"] {
   --bg-base: #140008;
@@ -348,6 +368,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #F5EDD9;
   --heading-color:  #3E1A06;
   --accent-color:   #8B4513;
+  --color-gold:      #7A5A00;
+  --color-gold-light:#9A7200;
 }
 [data-mood="liquor"][data-theme="dark"] {
   --bg-base: #0E0702;
@@ -375,6 +397,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #F3E5F5;
   --heading-color:  #2A0059;
   --accent-color:   #7B1FA2;
+  --color-gold:      #6A1B9A;
+  --color-gold-light:#8E24AA;
 }
 [data-mood="perfumes"][data-theme="dark"] {
   --bg-base: #0C0014;
@@ -402,6 +426,8 @@ body, header, nav, section, article, aside, footer,
   --bg-section-alt: #F1F8E9;
   --heading-color:  #1B5E20;
   --accent-color:   #558B2F;
+  --color-gold:      #4A6B00;
+  --color-gold-light:#5E7A00;
 }
 [data-mood="hampers"][data-theme="dark"] {
   --bg-base: #080F04;

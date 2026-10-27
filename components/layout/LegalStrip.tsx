@@ -47,7 +47,7 @@ export default function LegalStrip({
             Delivery
           </Link>
           <a
-            href="https://wa.me/254142677898"
+            href="https://wa.me/254183172111"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]"

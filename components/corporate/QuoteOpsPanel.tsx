@@ -78,7 +78,7 @@ function StatusBadge({ status }: { status: QuoteStatus }) {
 
 /* Ops WhatsApp line. Overridable so it does not need a code change to point at
    a different desk. */
-const OPS_WHATSAPP = process.env.NEXT_PUBLIC_OPS_WHATSAPP ?? "254142677898";
+const OPS_WHATSAPP = process.env.NEXT_PUBLIC_OPS_WHATSAPP ?? "254183172111";
 
 function whatsappDeepLink(phone: string | null, company: string, product: string) {
   const number = (phone ?? "").replace(/[^\d]/g, "");

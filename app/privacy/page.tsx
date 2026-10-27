@@ -31,8 +31,8 @@ export default function PrivacyPolicyPage() {
                 We are committed to protecting your personal information and your right to privacy.
                 If you have any questions or concerns about this privacy policy or our practices,
                 please contact us at{" "}
-                <a href="https://wa.me/254142677898" className="text-brand hover:underline">
-                  +254 142 677 898
+                <a href="https://wa.me/254183172111" className="text-brand hover:underline">
+                  +254 183 172 111
                 </a>{" "}
                 or email{" "}
                 <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">
@@ -217,7 +217,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">12. Contact Us</h2>
               <p>If you have any questions about this privacy policy or our data practices, contact us:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li>WhatsApp: <a href="https://wa.me/254142677898" className="text-brand hover:underline">+254 142 677 898</a></li>
+                <li>WhatsApp: <a href="https://wa.me/254183172111" className="text-brand hover:underline">+254 183 172 111</a></li>
                 <li>Email: <a href="mailto:info@touchgiftshop.co.ke" className="text-brand hover:underline">info@touchgiftshop.co.ke</a></li>
                 <li>Website: <a href="https://touchgift.co.ke" className="text-brand hover:underline">touchgift.co.ke</a></li>
               </ul>
