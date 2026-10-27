@@ -128,26 +128,33 @@ export default function LiveCustomizer({
       selection: true,
     });
 
-    // Background image
-    fabric.Image.fromURL(
-      baseImage,
-      (img) => {
-        const scale = Math.min(
-          containerWidth / (img.width || 1),
-          containerHeight / (img.height || 1)
-        );
-        img.set({
-          originX: "center",
-          originY: "center",
-          left: containerWidth / 2,
-          top: containerHeight / 2,
-          scaleX: scale,
-          scaleY: scale,
-        });
-        initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
-      },
-      { crossOrigin: "anonymous" }
-    );
+    // Background image (may be missing for some products — the canvas stays
+    // usable either way: the safe zone goes in first so it is never blank).
+    if (baseImage) {
+      fabric.Image.fromURL(
+        baseImage,
+        (img) => {
+          if (!img) {
+            console.warn("[LiveCustomizer] product image failed to load:", baseImage);
+            return;
+          }
+          const scale = Math.min(
+            containerWidth / (img.width || 1),
+            containerHeight / (img.height || 1)
+          );
+          img.set({
+            originX: "center",
+            originY: "center",
+            left: containerWidth / 2,
+            top: containerHeight / 2,
+            scaleX: scale,
+            scaleY: scale,
+          });
+          initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
+        },
+        { crossOrigin: "anonymous" }
+      );
+    }
 
     // Safe zone — full bleed for large format, constrained for everything else
     const isFullBleed = FULL_BLEED_TYPES.has(materialType);
@@ -186,7 +193,8 @@ export default function LiveCustomizer({
     });
     initCanvas.add(label);
 
-    // Constrain objects to safe zone
+    setCanvas(initCanvas);
+
     initCanvas.on("object:moving", (e) => {
       const obj = e.target;
       if (!obj || obj.name === "safeZone" || obj.name === "safeZoneLabel") return;
