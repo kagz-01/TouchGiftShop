@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession, canSeeFinancials } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -22,7 +22,18 @@ const month = (v: string) =>
 export default async function PortalSpendPage() {
   const auth = await getCorporateSession();
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/spend");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Spend"
+          intro="Committed spend, discounts earned and quotes awaiting a decision."
+          locked
+          bodyTitle="Sign in to see spend"
+          body="This area is financial data for your company, so it opens only for a signed-in member of the account. Owner and member roles see figures; viewers see quotes and orders without spend."
+          next="/corporate/portal/spend"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession } from "@/lib/corporate-auth";
 
@@ -14,7 +14,19 @@ const ROLE_COPY: Record<string, string> = {
 export default async function PortalSettingsPage() {
   const auth = await getCorporateSession();
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/settings");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Settings"
+          intro="Your sign-in, company details and payment terms."
+          locked
+          bodyTitle="Sign in to see settings"
+          body="Company details, payment terms and the address you sign in with belong to the account, so this page opens for a signed-in member only."
+          primaryAction={{ href: "mailto:corporate@touchgift.co.ke?subject=Corporate%20account%20request", label: "Email your account manager" }}
+          next="/corporate/portal/settings"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (

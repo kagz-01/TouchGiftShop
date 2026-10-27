@@ -1,5 +1,8 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import PortalPrintButton from "@/components/corporate/portal/PortalPrintButton";
+import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalState from "@/components/corporate/portal/PortalState";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import { getCorporateSession } from "@/lib/corporate-auth";
 import { verifyAdmin } from "@/lib/admin-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -69,7 +72,44 @@ export default async function InvoiceDocumentPage({
   const isStaffPreview = !!staff?.ok;
 
   if (!auth.ok && !isStaffPreview && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/invoices");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Invoice"
+          intro="A tax invoice, printable or saveable as a PDF."
+          locked
+          bodyTitle="Sign in to open an invoice"
+          body="Invoices carry your company's billing details and figures, so a document only opens for a signed-in member — and only ever from your own account."
+          primaryAction={{ href: "mailto:corporate@touchgift.co.ke?subject=Copy%20of%20an%20invoice", label: "Ask us for a copy" }}
+          next="/corporate/portal/invoices"
+        />
+      </PortalShell>
+    );
+  }
+
+  /* Anything else that is not signed in — signed out without the branch above
+     is impossible, but a signed-in user with no membership or an unreachable
+     Supabase still must not fall through to the query below with a null
+     account scope, which PostgREST treats as a syntax error rather than
+     "match nothing". */
+  if (!auth.ok && !isStaffPreview) {
+    return (
+      <PortalShell companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalState
+          kind={auth.reason === "unavailable" ? "error" : "no-access"}
+          title={
+            auth.reason === "unavailable"
+              ? "We could not load your account"
+              : "No company account is linked to this sign-in"
+          }
+          body={
+            auth.reason === "unavailable"
+              ? "This is usually a brief connection problem. Try again in a moment."
+              : "Ask your account manager to invite the email address you signed in with."
+          }
+        />
+      </PortalShell>
+    );
   }
 
   /* A member only ever reaches their own account's invoices. Staff reach any,

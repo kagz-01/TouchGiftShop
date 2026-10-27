@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession, canSeeFinancials } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -47,7 +47,20 @@ const date = (v: string | null) =>
 export default async function PortalOrdersPage() {
   const auth = await getCorporateSession();
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/orders");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Orders"
+          intro="Bulk and hamper orders, from production through dispatch to delivery."
+          locked={false}
+          bodyTitle="Preview: your orders live here"
+          body="Each order shows its recipients, delivery status and photo proof as it moves. Guests can start one now; seeing your company's orders needs a sign-in."
+          primaryAction={{ href: "/corporate/bulk-upload", label: "Send a roster" }}
+          secondaryAction={{ href: "/corporate/build", label: "Build a hamper" }}
+          next="/corporate/portal/orders"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { ChevronLeft, Mail, ReceiptText } from "lucide-react";
 import PortalShell from "@/components/corporate/portal/PortalShell";
 import PortalState from "@/components/corporate/portal/PortalState";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalOrderTimeline from "@/components/corporate/portal/PortalOrderTimeline";
 import { getCorporateSession, canSeeFinancials } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -68,8 +69,22 @@ export default async function PortalOrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const auth = await getCorporateSession();
+  /* A guest deep-linking an order id gets the walkthrough, not a redirect that
+     drops them back at a sign-in form with the order id forgotten. */
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/orders");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Order"
+          intro="One order, from production to photo proof of delivery."
+          locked
+          bodyTitle="Sign in to open an order"
+          body="Order detail shows recipients, delivery status and the invoice behind it, so it opens for a signed-in member of the account. Guests can still start one from the roster or hamper builder."
+          primaryAction={{ href: "/corporate/bulk-upload", label: "Send a roster" }}
+          next="/corporate/portal/orders"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (

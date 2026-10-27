@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ArrowRight, FileText, Package, Sparkles } from "lucide-react";
 import PortalShell from "@/components/corporate/portal/PortalShell";
 import PortalState from "@/components/corporate/portal/PortalState";
+import PortalPreviewOverview from "@/components/corporate/portal/PortalPreviewOverview";
 import { getCorporateSession, canSeeFinancials } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
 import { statusLabel, statusColour } from "@/lib/portal-status";
@@ -47,8 +47,16 @@ function greeting() {
 export default async function PortalOverviewPage() {
   const auth = await getCorporateSession();
 
+  /* Signed out: the walkthrough. The portal used to bounce everyone to a
+     sign-in form, so a buyer could never see what they were asking their
+     account manager for. A guest sees the shell, the seven areas described,
+     and every link that works without an account. */
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewOverview pathname="/corporate/portal" />
+      </PortalShell>
+    );
   }
 
   if (!auth.ok && auth.reason === "unavailable") {

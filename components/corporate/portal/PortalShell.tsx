@@ -21,11 +21,20 @@ export default function PortalShell({
   companyName,
   contactName,
   contactEmail,
+  preview = false,
   children,
 }: {
   companyName: string;
   contactName: string | null;
   contactEmail: string;
+  /**
+   * Signed-out walkthrough mode. The shell is identical so a buyer can see
+   * exactly what they would get, but the header carries a sign-in button
+   * instead of a sign-out one and a banner says plainly that none of it is
+   * their data yet. Every page decides for itself what a guest may see; the
+   * shell never fetches anything.
+   */
+  preview?: boolean;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -109,21 +118,65 @@ export default function PortalShell({
 
           <div className="ml-auto flex items-center gap-1.5">
             <ThemeToggle />
-            <span className="hidden max-w-[16rem] truncate px-2 text-xs text-[color:var(--portal-text-faint)] sm:block">
-              {contactName ?? contactEmail}
-            </span>
-            <form action="/api/corporate/portal/sign-out" method="post">
-              <button
-                type="submit"
-                className="flex h-10 items-center gap-2 rounded-lg px-3 text-xs font-medium text-[color:var(--portal-text-muted)] transition-colors hover:bg-[color:var(--portal-surface-2)]"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Sign out</span>
-              </button>
-            </form>
+            {preview ? (
+              <>
+                <span
+                  className="hidden rounded-full border px-2.5 py-1 text-[11px] font-semibold sm:block"
+                  style={{ borderColor: "var(--portal-border)", color: "var(--portal-text-faint)" }}
+                >
+                  Preview
+                </span>
+                <Link
+                  href={`/corporate/portal/sign-in?next=${encodeURIComponent(pathname)}`}
+                  className="flex h-10 items-center gap-2 rounded-lg px-3.5 text-xs font-semibold transition-opacity hover:opacity-90"
+                  style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}
+                >
+                  Sign in
+                </Link>
+              </>
+            ) : (
+              <>
+                <span className="hidden max-w-[16rem] truncate px-2 text-xs text-[color:var(--portal-text-faint)] sm:block">
+                  {contactName ?? contactEmail}
+                </span>
+                <form action="/api/corporate/portal/sign-out" method="post">
+                  <button
+                    type="submit"
+                    className="flex h-10 items-center gap-2 rounded-lg px-3 text-xs font-medium text-[color:var(--portal-text-muted)] transition-colors hover:bg-[color:var(--portal-surface-2)]"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span className="hidden sm:inline">Sign out</span>
+                  </button>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </header>
+
+      {preview && (
+        <div
+          className="border-b"
+          style={{ background: "var(--portal-warn-tint)", borderColor: "var(--portal-border-soft)" }}
+        >
+          <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-1.5 px-5 py-2.5 text-xs sm:px-8">
+            <span className="font-semibold" style={{ color: "var(--portal-text)" }}>
+              Preview mode
+            </span>
+            <span style={{ color: "var(--portal-text-muted)" }}>
+              You are walking through the client portal. Nothing is personalised yet —
+              sign in to see your company&apos;s quotes, orders and invoices.
+            </span>
+            <Link
+              href={`/corporate/portal/sign-in?next=${encodeURIComponent(pathname)}`}
+              className="ml-auto shrink-0 font-semibold underline-offset-2 hover:underline"
+              style={{ color: "var(--portal-accent)" }}
+            >
+              Sign in
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className="mx-auto flex max-w-7xl gap-8 px-5 py-6 sm:px-8 lg:py-10">
         {/* ── Rail ── */}

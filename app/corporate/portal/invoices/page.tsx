@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -25,7 +25,19 @@ const date = (v: string | null) =>
 export default async function PortalInvoicesPage() {
   const auth = await getCorporateSession();
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/invoices");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="Invoices"
+          intro="Every invoice we have issued, printable as a PDF for your finance team."
+          locked={false}
+          bodyTitle="Preview: your invoices live here"
+          body="Invoices land here the moment they are issued, each with its number, due date and status. A guest cannot see any document — sign in to reach your company's."
+          primaryAction={{ href: "/corporate#packs", label: "Get a proforma instead" }}
+          next="/corporate/portal/invoices"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (

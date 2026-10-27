@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import PortalShell from "@/components/corporate/portal/PortalShell";
+import PortalPreviewGate from "@/components/corporate/portal/PortalPreviewGate";
 import PortalState from "@/components/corporate/portal/PortalState";
 import { getCorporateSession } from "@/lib/corporate-auth";
 import { createClient } from "@supabase/supabase-js";
@@ -28,7 +28,19 @@ type Recipient = {
 export default async function PortalPeoplePage() {
   const auth = await getCorporateSession();
   if (!auth.ok && auth.reason === "signed_out") {
-    redirect("/corporate/portal/sign-in?next=/corporate/portal/people");
+    return (
+      <PortalShell preview companyName="TouchGift" contactName={null} contactEmail="">
+        <PortalPreviewGate
+          title="People"
+          intro="Who can use this portal, and who you send gifts to."
+          locked
+          bodyTitle="Sign in to see people"
+          body="Members, roles and your saved recipient roster are account data, so they open only for a signed-in member. Access itself is invited by your TouchGift account manager."
+          primaryAction={{ href: "/corporate/bulk-upload", label: "Upload a roster" }}
+          next="/corporate/portal/people"
+        />
+      </PortalShell>
+    );
   }
   if (!auth.ok) {
     return (
