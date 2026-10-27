@@ -15,6 +15,7 @@ import { CAPABILITIES, CAPABILITY_STATE_LABEL } from "@/lib/corporate-capabiliti
 import CorporateSectionTabs from "@/components/corporate/CorporateSectionTabs";
 import CorporateRangeSection from "@/components/corporate/CorporateRangeSection";
 import CorporateProof from "@/components/corporate/CorporateProof";
+import PackCalculator from "@/components/corporate/PackCalculator";
 
 
 /* Category cards now come from lib/corporate-merch.ts, which mirrors
@@ -23,7 +24,13 @@ import CorporateProof from "@/components/corporate/CorporateProof";
    explicitly TouchLine territory per `coporate side.txt`. */
 
 
-export default function CorporateHero() {
+export default function CorporateHero({
+  vatRegistered = false,
+  vatRate = 0,
+}: {
+  vatRegistered?: boolean;
+  vatRate?: number;
+}) {
   return (
     /* Transparent on purpose: AmbientBackground is mounted in the root layout
        at z-[-1] and paints BEHIND this component. The opaque ground that used
@@ -62,9 +69,9 @@ export default function CorporateHero() {
           <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Packs", href: "#packs" },
-              { label: "Features", href: "#features" },
-              { label: "Milestones", href: "#milestones" },
-              { label: "Pricing", href: "#packs" },
+              { label: "How it works", href: "#how" },
+              { label: "Proof", href: "#proof" },
+              { label: "Catalog", href: "/corporate/catalog" },
             ].map(n => (
               <a key={n.label} href={n.href} className="text-sm font-semibold transition-colors text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-hero-text)]">
                 {n.label}
@@ -77,10 +84,10 @@ export default function CorporateHero() {
                 stay in sync. */}
             <ThemeToggle />
             <Link
-              href="/corporate/dashboard"
+              href="/corporate/portal"
               className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_var(--corp-hero-glow)] hover:shadow-[0_0_40px_var(--corp-hero-glow)] whitespace-nowrap"
             >
-              Ops Dashboard <ArrowRight className="w-4 h-4" />
+              Client Portal <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -136,10 +143,10 @@ export default function CorporateHero() {
               <Gift className="w-5 h-5" /> Browse Gift Packs
             </a>
             <Link
-              href="/corporate/dashboard"
+              href="/corporate/portal"
               className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2"
             >
-              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> View Dashboard
+              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Client Portal
             </Link>
           </div>
         </motion.div>
@@ -173,6 +180,9 @@ export default function CorporateHero() {
         </motion.div>
       </div>
       </section>
+
+      {/* ── Packs: tangible contents, published volume pricing, proforma ── */}
+      <PackCalculator vatRegistered={vatRegistered} vatRate={vatRate} />
 
       {/* ── Section tabs (scroll-spy + TouchLine exit) ── */}
       <CorporateSectionTabs />
