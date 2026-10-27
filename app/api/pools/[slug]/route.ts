@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { resolvePoolBalance, isSchemaMissing } from "@/lib/pool-ledger";
+import { poolMoneyTotals } from "@/lib/pool-money";
 
 export async function GET(
   _req: Request,
@@ -33,29 +35,42 @@ export async function GET(
     isCorporate = true;
   }
 
-  // Fetch contributions — respect privacy mode
-  const selectFields =
-    pool.privacy_mode === "anonymous"
-      ? "id, amount, is_verified, is_anonymous, is_ghost, created_at, message, poll_vote_index"
-      : "id, contributor_name, amount, is_verified, is_anonymous, is_ghost, message, created_at, poll_vote_index";
+  // Fetch contributions — respect privacy mode. refund_status travels with
+  // them so the audit tab can show which contributions came back.
+  const baseFields = isCorporate
+    ? "id, contributor_name, amount, is_verified, is_anonymous, message, created_at, refund_status"
+    : pool.privacy_mode === "anonymous"
+    ? "id, amount, is_verified, is_anonymous, is_ghost, created_at, message, poll_vote_index, refund_status"
+    : "id, contributor_name, amount, is_verified, is_anonymous, is_ghost, message, created_at, poll_vote_index, refund_status";
 
-  const { data: contributions } = await supabaseAdmin
-    .from("pool_contributions")
-    .select(selectFields)
-    .eq("pool_id", pool.id)
-    .order("created_at", { ascending: false });
+  const contributionQuery = (fields: string) =>
+    supabaseAdmin
+      .from(isCorporate ? "corporate_pool_contributions" : "pool_contributions")
+      .select(fields)
+      .eq("pool_id", pool.id)
+      .order("created_at", { ascending: false });
 
-  // Calculate live progress
-  const { data: balanceData } = await supabaseAdmin
-    .from("pool_contributions")
-    .select("amount")
-    .eq("pool_id", pool.id)
-    .eq("is_verified", true);
+  let { data: contributions, error: contribErr } = await contributionQuery(baseFields);
 
-  const liveBalance = (balanceData ?? []).reduce(
-    (sum, c) => sum + Number(c.amount),
-    0
-  );
+  /* refund_status arrives with the money-safety migration. Until it is
+     applied, drop it rather than returning an empty contributor list. */
+  if (contribErr && isSchemaMissing(contribErr)) {
+    const fallback = baseFields
+      .split(", ")
+      .filter((f) => f !== "refund_status")
+      .join(", ");
+    ({ data: contributions, error: contribErr } = await contributionQuery(fallback));
+  }
+  if (contribErr) {
+    console.error("[pools] contribution listing failed:", contribErr.message);
+  }
+
+  /* Balance from the ledger when it exists: posted credits minus posted
+     debits, so money that has been refunded is no longer shown as held.
+     Falls back to the verified sum when the migration has not run. */
+  const resolved = await resolvePoolBalance(pool.id, isCorporate ? "corporate" : "consumer");
+  const liveBalance = resolved.balance;
+  const money = poolMoneyTotals(resolved.entries);
 
   // Auto-close check: if target hit or deadline passed (consumer pools only)
   if (!isCorporate && pool.status === "active") {
@@ -88,5 +103,6 @@ export async function GET(
       100,
       Math.round((liveBalance / pool.target_amount) * 100)
     ),
+    money: { ...money, source: resolved.source },
   });
 }

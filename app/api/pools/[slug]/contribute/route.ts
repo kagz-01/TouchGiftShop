@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createPaymentOrder } from "@/lib/payment";
+import { settlePoolContribution } from "@/lib/pool-money";
 
 const ContributeSchema = z.object({
   contributorName: z.string().max(100).optional(),
@@ -120,79 +121,45 @@ export async function POST(
   }
 }
 
-// Called by PesaPal IPN webhook to verify & mark contribution paid
-export async function PATCH(
-  req: Request,
-  { params }: { params: { slug: string } }
-) {
+// Called after PesaPal redirects back (and by the IPN). Marks the contribution
+// paid — but only after settlePoolContribution has re-queried PesaPal for it.
+// This route is public, so the request body is not evidence: anyone could
+// PATCH is_verified=true against a contribution they never paid for, and the
+// old code did exactly that, then added the amount to the pool balance.
+export async function PATCH(req: Request) {
   const { contributionId, orderTrackingId } = await req.json();
   if (!contributionId) {
     return NextResponse.json({ error: "contributionId required" }, { status: 400 });
   }
 
-  const { data: contribution, error } = await supabaseAdmin
-    .from("pool_contributions")
-    .update({
-      is_verified: true,
-      payment_ref: orderTrackingId ?? null,
-    })
-    .eq("id", contributionId)
-    .select("pool_id, amount")
-    .single();
+  const result = await settlePoolContribution(contributionId, {
+    orderTrackingId: orderTrackingId ?? null,
+  });
 
-  if (error || !contribution) {
-    return NextResponse.json({ error: "Contribution not found" }, { status: 404 });
+  if (!result.ok) {
+    const status =
+      result.reason === "not_found"
+        ? 404
+        : result.reason === "psp_unreachable"
+        ? 502
+        : result.reason === "not_completed"
+        ? 409
+        : 400;
+    const message =
+      result.reason === "not_completed"
+        ? `Payment not completed (${result.detail ?? "unknown"}). The contribution has not been credited.`
+        : result.reason === "psp_unreachable"
+        ? "Could not confirm the payment with PesaPal. Nothing has been credited — try again shortly."
+        : "Contribution not found";
+    return NextResponse.json({ error: message }, { status });
   }
 
-  // Recalculate pool balance and check if target hit
-  const { data: allContribs } = await supabaseAdmin
-    .from("pool_contributions")
-    .select("amount")
-    .eq("pool_id", contribution.pool_id)
-    .eq("is_verified", true);
-
-  const newBalance = (allContribs ?? []).reduce((s, c) => s + Number(c.amount), 0);
-
-  const { data: pool } = await supabaseAdmin
-    .from("group_gifting_pools")
-    .select("target_amount, status, milestone_25_sent, milestone_50_sent, milestone_75_sent, milestone_100_sent, organiser_user_id, title")
-    .eq("id", contribution.pool_id)
-    .single();
-
-  const targetHit = pool && newBalance >= pool.target_amount && pool.status === "active";
-
-  const updates: Record<string, any> = { current_balance: newBalance };
-  
-  if (targetHit) {
-    updates.status = "completed";
-    updates.closed_at = new Date().toISOString();
-  }
-
-  // Milestone Notifications (Simulated)
-  if (pool && pool.target_amount > 0) {
-    const pct = newBalance / pool.target_amount;
-    if (pct >= 0.25 && !pool.milestone_25_sent) {
-      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🚀 Your pool "${pool.title}" just hit 25%! Keep sharing the link.`);
-      updates.milestone_25_sent = true;
-    }
-    if (pct >= 0.5 && !pool.milestone_50_sent) {
-      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🌟 Halfway there! Your pool "${pool.title}" just hit 50%.`);
-      updates.milestone_50_sent = true;
-    }
-    if (pct >= 0.75 && !pool.milestone_75_sent) {
-      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🔥 Almost there! Your pool "${pool.title}" just hit 75%.`);
-      updates.milestone_75_sent = true;
-    }
-    if (targetHit && !pool.milestone_100_sent) {
-      console.log(`[NOTIFICATION SIMULATION] SMS to Organiser: 🎉 AMAZING! Your pool "${pool.title}" has reached its target! Place the order now.`);
-      updates.milestone_100_sent = true;
-    }
-  }
-
-  await supabaseAdmin
-    .from("group_gifting_pools")
-    .update(updates)
-    .eq("id", contribution.pool_id);
-
-  return NextResponse.json({ success: true, newBalance, targetHit: !!targetHit });
+  return NextResponse.json({
+    success: true,
+    newBalance: result.balance,
+    targetHit: result.targetHit,
+    paidAmount: result.paidAmount,
+    alreadySettled: result.alreadySettled,
+    ...(result.mismatch ? { amountMismatch: true } : {}),
+  });
 }

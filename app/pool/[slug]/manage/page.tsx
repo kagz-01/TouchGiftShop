@@ -20,6 +20,7 @@ type Contribution = {
   is_ghost: boolean;
   message?: string;
   created_at: string;
+  refund_status?: string | null;
 };
 
 type Pool = {
@@ -107,6 +108,14 @@ export default function PoolManagePage() {
   const [extendDate, setExtendDate] = useState("");
   const [closeLoading, setCloseLoading] = useState(false);
   const [closeResult, setCloseResult] = useState<string | null>(null);
+  const [refundNote, setRefundNote] = useState<string | null>(null);
+  const [closeError, setCloseError] = useState<string | null>(null);
+  const [money, setMoney] = useState<{
+    contributed: number;
+    refunded: number;
+    refundedCount: number;
+    held: number;
+  } | null>(null);
   const [nudgeLoading, setNudgeLoading] = useState(false);
   const [nudgeSent, setNudgeSent] = useState(false);
 
@@ -118,6 +127,7 @@ export default function PoolManagePage() {
         const data = await res.json();
         setPool(data.pool);
         setContributions(data.contributions ?? []);
+        if (data.money) setMoney(data.money);
         const pct = data.progressPercent ?? 0;
         setUnlockedMilestones(MILESTONE_THRESHOLDS.filter((t) => pct >= t));
       } else {
@@ -145,17 +155,43 @@ export default function PoolManagePage() {
   const handleCloseAction = async () => {
     if (!closeAction || !pool) return;
     setCloseLoading(true);
+    setCloseError(null);
+    setRefundNote(null);
     try {
       const res = await fetch(`/api/pools/${slug}/close-action`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: closeAction, newDeadline: extendDate || undefined }),
       });
+      const data = await res.json().catch(() => null);
+
       if (res.ok) {
+        /* A refund is only as good as its per-contribution outcome: the API
+           reports how much actually went back, and a partial run must not be
+           shown as "all refunded". */
+        if (closeAction === "refund" && data) {
+          const failed = Number(data.failed ?? 0);
+          const manual = Number(data.manual ?? 0);
+          setRefundNote(
+            data.success
+              ? `KES ${Number(data.refundedAmount ?? 0).toLocaleString()} returned to ${data.refunded} contributor(s). Contributors are notified by PesaPal.`
+              : `${data.refunded} of ${data.contributions} refund(s) completed — KES ${Number(
+                  data.refundedAmount ?? 0
+                ).toLocaleString()}.${failed > 0 ? ` ${failed} failed at PesaPal.` : ""}${
+                  manual > 0 ? ` ${manual} need a manual reversal (no PesaPal record).` : ""
+                }`
+          );
+        }
         setCloseResult(closeAction);
         await load(true);
+      } else {
+        setCloseError(data?.error ?? "That action did not go through. Nothing has changed.");
       }
-    } catch { /* noop */ } finally { setCloseLoading(false); }
+    } catch {
+      setCloseError("Could not reach the server. Nothing has changed.");
+    } finally {
+      setCloseLoading(false);
+    }
   };
 
   const handleNudge = async () => {
@@ -433,6 +469,14 @@ export default function PoolManagePage() {
               </div>
             )}
 
+            {/* Refund failed / needs a human — say so instead of nothing */}
+            {closeError && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-3xl p-4 flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                <p className="text-sm text-white/80 leading-relaxed">{closeError}</p>
+              </div>
+            )}
+
             {/* Expired Pool — Choose Action */}
             {isExpired && !closeResult && (
               <div className="border border-amber-500/30 rounded-3xl overflow-hidden">
@@ -468,7 +512,7 @@ export default function PoolManagePage() {
                       bg: "bg-red-500/10 border-red-500/20",
                       activeBg: "bg-red-500/20 border-red-500/50",
                       title: "Refund All Contributors",
-                      desc: `Auto-refund KES ${totalRaised.toLocaleString()} to all ${contributions.length} contributors.`,
+                      desc: `Return KES ${totalRaised.toLocaleString()} to the ${contributions.filter(c => c.is_verified).length} verified contributors via PesaPal.`,
                     },
                   ] as const).map((opt) => (
                     <button
@@ -515,12 +559,24 @@ export default function PoolManagePage() {
 
             {/* After action confirmation */}
             {closeResult && (
-              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-3xl p-6 text-center">
-                <CheckCircle className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+              <div
+                className={`border rounded-3xl p-6 text-center ${
+                  closeResult === "refund" && refundNote && !refundNote.startsWith("KES")
+                    ? "bg-amber-500/10 border-amber-500/30"
+                    : "bg-emerald-500/10 border-emerald-500/30"
+                }`}
+              >
+                <CheckCircle
+                  className={`w-10 h-10 mx-auto mb-3 ${
+                    closeResult === "refund" && refundNote && !refundNote.startsWith("KES")
+                      ? "text-amber-400"
+                      : "text-emerald-400"
+                  }`}
+                />
                 <p className="font-bold text-white">
                   {closeResult === "extended" ? "Deadline Extended! Pool is live again." :
                    closeResult === "downgraded" ? "Done! Proceed to order a gift." :
-                   "Refunds initiated. Contributors will be notified."}
+                   refundNote ?? "Refunds processed."}
                 </p>
               </div>
             )}
@@ -529,7 +585,11 @@ export default function PoolManagePage() {
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-3xl p-6 text-center">
                 <RotateCcw className="w-10 h-10 text-blue-400 mx-auto mb-3" />
                 <p className="text-sm font-bold text-white">All contributions have been refunded.</p>
-                <p className="text-xs text-white/50 mt-1">KES {totalRaised.toLocaleString()} returned to {contributions.length} contributors.</p>
+                <p className="text-xs text-white/50 mt-1">
+                  {money && money.refunded > 0
+                    ? `KES ${money.refunded.toLocaleString()} returned to ${money.refundedCount} contributor(s).`
+                    : `Contributions were returned to ${contributions.filter(c => c.is_verified).length} contributor(s).`}
+                </p>
               </div>
             )}
           </>
@@ -697,6 +757,18 @@ export default function PoolManagePage() {
                 <span className="text-white/50">Pending verification</span>
                 <span className="font-bold text-amber-400">{contributions.filter(c => !c.is_verified).length}</span>
               </div>
+              {money && money.refunded > 0 && (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/50">Refunded back</span>
+                    <span className="font-bold text-blue-400">KES {money.refunded.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/50">Still held</span>
+                    <span className="font-bold text-white">KES {money.held.toLocaleString()}</span>
+                  </div>
+                </>
+              )}
               <div className="h-px bg-white/10" />
               <div className="flex justify-between text-sm">
                 <span className="text-white/50">Status</span>
@@ -732,6 +804,15 @@ export default function PoolManagePage() {
                       <p className={`text-[10px] font-semibold ${
                         c.is_verified ? "text-emerald-400" : "text-amber-400"
                       }`}>{c.is_verified ? "✓ Verified" : "⏳ Pending"}</p>
+                      {c.refund_status && (
+                        <p className={`text-[10px] font-semibold ${
+                          c.refund_status === "completed" ? "text-blue-400" :
+                          c.refund_status === "failed" ? "text-red-400" : "text-amber-400"
+                        }`}>
+                          {c.refund_status === "completed" ? "↩ Refunded" :
+                           c.refund_status === "failed" ? "⚠ Refund failed" : "Refund unavailable"}
+                        </p>
+                      )}
                     </div>
                   </div>
                 );

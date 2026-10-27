@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/lib/supabase";
 import { createServerSupabase } from "@/lib/supabase-server";
-import { refundPayment } from "@/lib/payment";
+import { refundPoolContributions } from "@/lib/pool-money";
 
 const CloseSchema = z.object({
   action: z.enum(["refund", "extend", "downgrade", "place_order"]),
@@ -43,20 +43,6 @@ export async function POST(
 
   switch (action) {
     case "refund": {
-      // Fetch all contributions with PesaPal tracking IDs
-      const { data: contributions } = await supabaseAdmin
-        .from("pool_contributions")
-        .select("id, amount, pesapal_tracking_id, contributor_name")
-        .eq("pool_id", pool.id)
-        .eq("is_verified", true)
-        .not("pesapal_tracking_id", "is", null);
-
-      // Mark pool as refunded
-      await supabaseAdmin
-        .from("group_gifting_pools")
-        .update({ status: "refunded", closed_at: new Date().toISOString() })
-        .eq("id", pool.id);
-        
       // Decrement trust score for cancelling
       const { data: metrics } = await supabaseAdmin.from("user_metrics").select("trust_score").eq("user_id", user.id).single();
       if (metrics) {
@@ -65,33 +51,48 @@ export async function POST(
         await supabaseAdmin.from("user_metrics").insert({ user_id: user.id, trust_score: 90 });
       }
 
-      // Process refunds via PesaPal
-      const refundResults: { id: string; success: boolean; message: string }[] = [];
-      for (const c of contributions ?? []) {
-        const result = await refundPayment(
-          c.pesapal_tracking_id!,
-          Number(c.amount),
-          user.email || user.id,
-          `Refund for pool: ${pool.title}`
-        );
-        refundResults.push({ id: c.id, ...result });
+      /* Refund every verified contribution through PesaPal, one ledger row
+         each. The pool is marked refunded only when the run is complete, so
+         "refunded" never means "we tried" — a partial run stays expired with
+         the failures attached for retry. Contributions are recorded through
+         refund_status now, not by overwriting payment_method (which still
+         holds how they paid). */
+      const run = await refundPoolContributions({
+        id: pool.id,
+        slug: pool.slug,
+        title: pool.title,
+        kind: "consumer",
+        initiatedBy: user.email || user.id,
+      });
 
-        // Update contribution status
+      if (run.complete) {
         await supabaseAdmin
-          .from("pool_contributions")
-          .update({ payment_method: result.success ? "refunded" : "refund_failed" })
-          .eq("id", c.id);
+          .from("group_gifting_pools")
+          .update({
+            status: "refunded",
+            under_target_action: "refund",
+            closed_at: new Date().toISOString(),
+            current_balance: Math.max(0, Number(pool.current_balance ?? 0) - run.refundedAmount),
+          })
+          .eq("id", pool.id);
       }
 
-      const succeeded = refundResults.filter(r => r.success).length;
-      const failed = refundResults.filter(r => !r.success).length;
+      const refundResults = run.failures.map((f) => ({
+        id: f.id,
+        success: false,
+        message: f.message,
+      }));
 
       return NextResponse.json({
-        success: true,
-        message: failed > 0
-          ? `${succeeded} of ${refundResults.length} refunds submitted. ${failed} failed — check contribution details.`
-          : `${succeeded} refunds submitted. Processing takes 3-5 business days.`,
+        success: run.complete,
+        message: run.complete
+          ? `${run.refunded} refunds submitted. Processing takes 3-5 business days.`
+          : `${run.refunded} of ${run.total} refunds submitted. ${run.failed} failed, ${run.manual} could not be reversed through PesaPal — check contribution details.`,
         refundResults,
+        refunded: run.refunded,
+        refundedAmount: run.refundedAmount,
+        failed: run.failed,
+        manual: run.manual,
       });
     }
 

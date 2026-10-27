@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getTransactionStatus } from "@/lib/payment";
-import { deliverGiftCard, sendPoolMilestoneAlert } from "@/lib/notifications";
+import { deliverGiftCard } from "@/lib/notifications";
+import { settlePoolContribution } from "@/lib/pool-money";
 import {
   REFERRAL_BONUS_POINTS,
   CONVERSION_MIN_ORDER_KSH,
@@ -39,7 +40,9 @@ export async function POST(req: Request) {
     if (merchantReference.startsWith("giftcard-")) {
       await handleGiftCardPayment(merchantReference, status.receiptNumber);
     } else if (merchantReference.startsWith("pool-")) {
-      await handlePoolPayment(merchantReference, status.receiptNumber);
+      // `status` was re-queried against PesaPal above, so it is evidence —
+      // pass it through rather than asking twice.
+      await handlePoolPayment(merchantReference, status);
     } else if (merchantReference.startsWith("corp-")) {
       await handleCorporateOrderPayment(merchantReference.replace("corp-", ""), status.receiptNumber);
     } else if (merchantReference.startsWith("multi-")) {
@@ -56,8 +59,8 @@ export async function POST(req: Request) {
     } else if (merchantReference.startsWith("pool-")) {
       await handlePoolFailure(merchantReference);
     } else if (merchantReference.startsWith("corp-")) {
-      await handleCorporateOrderPayment(merchantReference.replace("corp-", ""), status.receiptNumber);
-    } else if (merchantReference.startsWith("corp-")) {
+      // This branch was duplicated below, so handleCorporateOrderFailure was
+      // unreachable and a failed payment pushed the order into processing.
       await handleCorporateOrderFailure(merchantReference.replace("corp-", ""));
     } else if (merchantReference.startsWith("multi-")) {
       const orderIds = merchantReference.replace("multi-", "").split(",");
@@ -423,78 +426,23 @@ async function handleOrderFailure(orderId: string) {
 
 async function handlePoolPayment(
   reference: string,
-  receiptNumber: string | undefined
+  psp: { status: string; receiptNumber?: string; amount?: number }
 ) {
   const contributionId = reference.replace("pool-", "");
 
-  const { data: contribution } = await supabaseAdmin
-    .from("pool_contributions")
-    .update({
-      is_verified: true,
-      mpesa_receipt_number: receiptNumber ?? null,
-    })
-    .eq("id", contributionId)
-    .select("amount, pool_id")
-    .single();
+  /* Delegated to settlePoolContribution: it credits what PesaPal says was
+     received (not the amount on our form), posts exactly one ledger credit
+     (unique on contribution_id + entry_type, so a PesaPal retry cannot pay
+     the same contribution twice), recomputes the balance and fires the
+     milestone flags — set on the write, so an alert cannot re-send. */
+  const result = await settlePoolContribution(contributionId, {
+    trusted: { paidAmount: psp.amount ?? null, receiptNumber: psp.receiptNumber ?? null },
+  });
 
-  if (contribution) {
-    const { data: verifiedContribs } = await supabaseAdmin
-      .from("pool_contributions")
-      .select("amount")
-      .eq("pool_id", contribution.pool_id)
-      .eq("is_verified", true);
-
-    const recomputedBalance = (verifiedContribs ?? []).reduce(
-      (sum, c) => sum + Number(c.amount),
-      0
-    );
-
-    const { data: pool } = await supabaseAdmin
-      .from("group_gifting_pools")
-      .select("target_amount, current_balance, title, slug, organizer_id")
-      .eq("id", contribution.pool_id)
-      .single();
-
-    if (pool !== null) {
-      const target = Number(pool.target_amount);
-      const prevBalance = Number(pool.current_balance);
-      const updates: Record<string, unknown> = { current_balance: recomputedBalance };
-      
-      if (recomputedBalance >= target) {
-        updates.status = "completed";
-      }
-
-      await supabaseAdmin
-        .from("group_gifting_pools")
-        .update(updates)
-        .eq("id", contribution.pool_id);
-
-      // Check milestones
-      const oldPct = Math.floor((prevBalance / target) * 100);
-      const newPct = Math.floor((recomputedBalance / target) * 100);
-      const milestones = [25, 50, 75, 100];
-      const crossedMilestones = milestones.filter(m => oldPct < m && newPct >= m);
-
-      if (crossedMilestones.length > 0) {
-        const highestMilestone = Math.max(...crossedMilestones);
-        
-        // Fetch organizer info to send alert
-        const { data: organizer } = await supabaseAdmin
-          .from("users")
-          .select("email, phone")
-          .eq("id", pool.organizer_id)
-          .maybeSingle();
-
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-        await sendPoolMilestoneAlert({
-          poolTitle: pool.title,
-          milestonePct: highestMilestone,
-          organizerEmail: organizer?.email,
-          organizerPhone: organizer?.phone,
-          poolUrl: `${siteUrl}/pool/${pool.slug}`,
-        }).catch(console.error);
-      }
-    }
+  if (!result.ok) {
+    console.error(`[ipn] pool contribution ${contributionId} not settled:`, result.reason, result.detail ?? "");
+  } else if (result.mismatch) {
+    console.error(`[ipn] pool contribution ${contributionId} settled with an amount mismatch`);
   }
 }
 

@@ -27,6 +27,10 @@ const CreatePoolSchema = z.object({
   targetAmount: z.number().positive(),
   minContribution: z.number().min(1).default(50),
   overTargetBehaviour: z.enum(["wallet_credit", "gift_upgrade"]).default("wallet_credit"),
+  // What should happen if the deadline passes short of the target. "refund"
+  // is honoured by the close-pools cron, which returns the money without
+  // waiting for anyone to open the manage page — so it is opt-in only.
+  underTargetAction: z.enum(["extend", "downgrade", "refund"]).nullable().default(null),
   // Deadline
   expiresAt: z.string().datetime(),
   // Privacy
@@ -92,7 +96,7 @@ export async function POST(req: Request) {
       current_balance: 0,
       min_contribution: d.minContribution,
       over_target_behaviour: d.overTargetBehaviour,
-      under_target_action: null,
+      under_target_action: d.underTargetAction,
       expires_at: d.expiresAt,
       privacy_mode: d.privacyMode,
       surprise_mode: d.surpriseMode,
