@@ -134,7 +134,12 @@ export default function RootLayout({
             <Analytics />
             <SpeedInsights />
             <SubscriptionProvider>
-              <LayoutWrapper>{children}</LayoutWrapper>
+              <LayoutWrapper
+                kraPin={process.env.LEGAL_ENTITY_PIN ?? null}
+                regNo={process.env.LEGAL_ENTITY_COMPANY_NUMBER ?? null}
+              >
+                {children}
+              </LayoutWrapper>
             </SubscriptionProvider>
           </CartProvider>
           </MoodProvider>

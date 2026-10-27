@@ -22,7 +22,15 @@ export type SessionUser = {
   user_metadata?: Record<string, unknown>;
 } | null;
 
-export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
+export default function LayoutWrapper({
+  children,
+  kraPin,
+  regNo,
+}: {
+  children: React.ReactNode;
+  kraPin?: string | null;
+  regNo?: string | null;
+}) {
   const pathname = usePathname();
   const isAdmin = ADMIN_PREFIXES.some((p) => pathname.startsWith(p));
   const [user, setUser] = useState<SessionUser>(null);
@@ -78,7 +86,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           {!isAdmin && !isPortal && <WhatsAppFloat />}
           {!isAdmin && !isPortal && <GiftChatWidget />}
         </main>
-        {legalStrip && <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} regNo={process.env.LEGAL_ENTITY_COMPANY_NUMBER ?? null} />}
+        {legalStrip && <LegalStrip kraPin={kraPin ?? null} regNo={regNo ?? null} />}
       </>
     );
   }
@@ -97,7 +105,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       </main>
       <Footer />
       {!showsFullFooter(pathname) && (
-        <LegalStrip kraPin={process.env.LEGAL_ENTITY_PIN ?? null} regNo={process.env.LEGAL_ENTITY_COMPANY_NUMBER ?? null} />
+        <LegalStrip kraPin={kraPin ?? null} regNo={regNo ?? null} />
       )}
       <BottomNav />
       <WhatsAppFloat />
