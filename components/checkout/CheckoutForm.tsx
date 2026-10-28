@@ -17,11 +17,12 @@ import GiftWrapSelector, { WrapType, WRAP_OPTIONS } from "@/components/shared/Gi
 type Step = "form" | "redirecting" | "error";
 
 /* ── Payment method pill data ─────────────────────────────────────────────── */
-type PaymentMethodId = "mpesa" | "card" | "airtel";
+type PaymentMethodId = "mpesa" | "card" | "airtel" | "bank";
 const PAYMENT_METHODS: { id: PaymentMethodId; label: string; sublabel: string; bg: string; activeBg: string; badge: string }[] = [
-  { id: "mpesa",  label: "M-Pesa",      sublabel: "STK push to phone", bg: "border-gray-200 bg-white hover:border-green-300",   activeBg: "border-green-500 bg-green-50 ring-2 ring-green-400/30",  badge: "bg-[#00B300] text-white" },
-  { id: "card",   label: "Card",         sublabel: "Visa · Mastercard",  bg: "border-gray-200 bg-white hover:border-blue-300",    activeBg: "border-blue-500 bg-blue-50 ring-2 ring-blue-400/30",     badge: "bg-[#1A1F71] text-white" },
-  { id: "airtel", label: "Airtel Money", sublabel: "Mobile wallet",     bg: "border-gray-200 bg-white hover:border-red-300",     activeBg: "border-red-500 bg-red-50 ring-2 ring-red-400/30",       badge: "bg-[#E40000] text-white" },
+  { id: "mpesa",  label: "M-Pesa",       sublabel: "STK push to phone",       bg: "border-gray-200 bg-white hover:border-green-300",   activeBg: "border-green-500 bg-green-50 ring-2 ring-green-400/30",  badge: "bg-[#00B300] text-white" },
+  { id: "card",   label: "Debit / Credit", sublabel: "Visa · Mastercard · Amex", bg: "border-gray-200 bg-white hover:border-blue-300", activeBg: "border-blue-500 bg-blue-50 ring-2 ring-blue-400/30",     badge: "bg-[#1A1F71] text-white" },
+  { id: "airtel", label: "Airtel Money",  sublabel: "Airtel mobile wallet",    bg: "border-gray-200 bg-white hover:border-red-300",     activeBg: "border-red-500 bg-red-50 ring-2 ring-red-400/30",       badge: "bg-[#E40000] text-white" },
+  { id: "bank",   label: "Bank Transfer", sublabel: "Any Kenyan bank",          bg: "border-gray-200 bg-white hover:border-amber-300",   activeBg: "border-amber-500 bg-amber-50 ring-2 ring-amber-400/30",  badge: "bg-[#7C5C2E] text-white" },
 ];
 
 interface DeliveryZone {
@@ -412,6 +413,7 @@ export default function CheckoutForm({
             ? `TouchGift order (${cartItems.length} items)`
             : `TouchGift order #${orderIds[0].slice(0, 8)}`,
           phoneNumber: normalizedSender,
+          preferredChannel: selectedPaymentMethod,
         }),
       });
 
@@ -1121,7 +1123,7 @@ export default function CheckoutForm({
                 Instant Settlement
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {PAYMENT_METHODS.map((pm) => {
                 const isSelected = selectedPaymentMethod === pm.id;
                 return (
@@ -1143,6 +1145,10 @@ export default function CheckoutForm({
                 );
               })}
             </div>
+            {/* All-methods disclosure */}
+            <p className="text-[10px] text-brand-muted text-center leading-relaxed pt-1">
+              All methods processed by <strong className="text-brand-deep">Paystack</strong> via our corporate account &mdash; <strong className="text-brand-deep">Touch Line Ltd</strong>
+            </p>
           </div>
 
           {/* Pay button */}
@@ -1162,21 +1168,39 @@ export default function CheckoutForm({
           </button>
 
           {/* Corporate Transparency & Payment Disclosure */}
-          <div className="p-3 bg-gray-50 border border-black/5 rounded-2xl text-center space-y-1">
+          <div className="p-4 bg-gray-50 border border-black/5 rounded-2xl space-y-2.5">
             <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               Secured by Paystack
             </p>
-            <p className="text-[11px] text-brand-muted leading-relaxed">
-              Payments are processed securely via our corporate group account: <strong className="text-brand-deep">Touch Line Ltd</strong>.
+            {/* All accepted methods row */}
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              {[
+                { label: "M-Pesa", color: "bg-[#00B300]" },
+                { label: "Airtel Money", color: "bg-[#E40000]" },
+                { label: "Visa", color: "bg-[#1A1F71]" },
+                { label: "Mastercard", color: "bg-[#EB001B]" },
+                { label: "Amex", color: "bg-[#007BC1]" },
+                { label: "Bank Transfer", color: "bg-[#7C5C2E]" },
+              ].map(({ label, color }) => (
+                <span
+                  key={label}
+                  className={`${color} text-white text-[9px] font-bold px-2 py-0.5 rounded`}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+            <p className="text-[10px] text-brand-muted text-center leading-relaxed">
+              Payments processed via our corporate account: <strong className="text-brand-deep">Touch Line Ltd</strong>
             </p>
           </div>
 
-          {/* Payment methods */}
+          {/* Payment method icons */}
           <div className="flex items-center justify-center gap-5 text-xs text-brand-muted">
-            <div className="flex items-center gap-1.5"><CardIcon /><span>Card</span></div>
-            <div className="flex items-center gap-1.5"><MobileMoneyIcon /><span>M-Pesa</span></div>
-            <div className="flex items-center gap-1.5"><SecureIcon /><span>Secured</span></div>
+            <div className="flex items-center gap-1.5"><CardIcon /><span>All Cards</span></div>
+            <div className="flex items-center gap-1.5"><MobileMoneyIcon /><span>Mobile Money</span></div>
+            <div className="flex items-center gap-1.5"><SecureIcon /><span>Bank Transfer</span></div>
           </div>
         </div>
 

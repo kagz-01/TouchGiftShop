@@ -240,9 +240,28 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               </Link>
             </div>
 
-            <p className="text-[10px] text-center text-brand-muted">
-              🔒 Secure payment via Paystack · M-Pesa · Card · Airtel
-            </p>
+            {/* Accepted payment methods */}
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center justify-center gap-1.5">
+                {[
+                  { label: "M-Pesa", color: "bg-[#00B300]" },
+                  { label: "Airtel Money", color: "bg-[#E40000]" },
+                  { label: "Visa", color: "bg-[#1A1F71]" },
+                  { label: "Mastercard", color: "bg-[#EB001B]" },
+                  { label: "Bank Transfer", color: "bg-[#7C5C2E]" },
+                ].map(({ label, color }) => (
+                  <span
+                    key={label}
+                    className={`${color} text-white text-[9px] font-bold px-1.5 py-0.5 rounded`}
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+              <p className="text-[10px] text-center text-brand-muted">
+                🔒 Secured by Paystack · Touch Line Ltd
+              </p>
+            </div>
           </div>
         )}
       </div>

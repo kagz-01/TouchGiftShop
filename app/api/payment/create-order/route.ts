@@ -32,7 +32,7 @@ async function rememberTrackingId(merchantReference: string, trackingId: string)
 // POST /api/payment/create-order — creates a Paystack checkout session.
 // Called by the client after the order/contribution is saved to our DB.
 export async function POST(req: Request) {
-  const { amount, merchantReference, description, phoneNumber, email, callbackUrl, name } =
+  const { amount, merchantReference, description, phoneNumber, email, callbackUrl, name, preferredChannel } =
     await req.json();
 
   if (!amount || !merchantReference) {
@@ -56,6 +56,7 @@ export async function POST(req: Request) {
       phoneNumber,
       email,
       name,
+      preferredChannel,
     });
 
     await rememberTrackingId(merchantReference, result.orderTrackingId);

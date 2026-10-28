@@ -349,7 +349,7 @@ export default function CartPage() {
                 )}
 
                 <p className="text-[10px] text-center text-brand-muted mt-3 leading-relaxed">
-                  🔒 Secured by Paystack · M-Pesa · Card · Airtel Money
+                  🔒 Secured by Paystack · M-Pesa · Airtel · Visa/MC · Bank Transfer
                 </p>
               </div>
             </div>

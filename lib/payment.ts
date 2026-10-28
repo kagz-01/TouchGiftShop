@@ -61,6 +61,25 @@ function getPaystackSecretKey(): string {
   return key || "";
 }
 
+/**
+ * Maps our internal channel id to Paystack's channel array.
+ * When the caller specifies a preferred channel we pass it first so Paystack
+ * pre-selects it in the popup. All others remain available as fallbacks.
+ */
+function resolvePaystackChannels(
+  preferredChannel?: "mpesa" | "card" | "airtel" | "bank"
+): string[] {
+  // Full set of channels enabled on the Touch Line Ltd Paystack account
+  const ALL = ["card", "mobile_money", "bank", "ussd", "bank_transfer", "eft"];
+  const PREFERRED: Record<string, string[]> = {
+    mpesa:  ["mobile_money", "card", "bank", "ussd", "bank_transfer", "eft"],
+    airtel: ["mobile_money", "card", "bank", "ussd", "bank_transfer", "eft"],
+    card:   ["card", "mobile_money", "bank", "bank_transfer", "eft", "ussd"],
+    bank:   ["bank", "bank_transfer", "eft", "card", "mobile_money", "ussd"],
+  };
+  return preferredChannel ? (PREFERRED[preferredChannel] ?? ALL) : ALL;
+}
+
 export async function createPaymentOrder(params: {
   amount: number;
   merchantReference: string;
@@ -69,6 +88,7 @@ export async function createPaymentOrder(params: {
   phoneNumber?: string;
   email?: string;
   name?: string;
+  preferredChannel?: "mpesa" | "card" | "airtel" | "bank";
 }): Promise<{ orderTrackingId: string; redirectUrl: string; accessCode?: string }> {
   const secretKey = getPaystackSecretKey();
   if (!secretKey) {
@@ -85,7 +105,7 @@ export async function createPaymentOrder(params: {
     currency: "KES",
     reference: params.merchantReference,
     callback_url: params.callbackUrl,
-    channels: ["card", "mobile_money"],
+    channels: resolvePaystackChannels(params.preferredChannel),
     metadata: {
       custom_fields: [
         {
