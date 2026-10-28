@@ -8,6 +8,7 @@ import BottomNav from "@/components/layout/BottomNav";
 import LegalStrip from "@/components/layout/LegalStrip";
 import { showsFullFooter, isInternalCorporate, hasOwnChrome } from "@/lib/footer-paths";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
+import FloatingThemeToggle from "@/components/ui/FloatingThemeToggle";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
 import { createClient } from "@/lib/supabase-browser";
@@ -83,6 +84,7 @@ export default function LayoutWrapper({
       <>
         <main className="flex-1 relative z-0">
           {children}
+          {!isAdmin && <FloatingThemeToggle />}
           {!isAdmin && !isPortal && <WhatsAppFloat />}
           {!isAdmin && !isPortal && <GiftChatWidget />}
         </main>
@@ -108,6 +110,7 @@ export default function LayoutWrapper({
         <LegalStrip kraPin={kraPin ?? null} regNo={regNo ?? null} />
       )}
       <BottomNav />
+      <FloatingThemeToggle />
       <WhatsAppFloat />
       <GiftChatWidget />
       {/* Mood-aware presence toast — watches idle time and tab switching */}

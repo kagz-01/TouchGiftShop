@@ -1,118 +1,138 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import MobileShopDrawer from "@/components/layout/MobileShopDrawer";
 import BuildToolkitSheet from "@/components/layout/BuildToolkitSheet";
-import { Package, FlaskConical, Bell, User, Settings } from "lucide-react";
+import { useCart } from "@/lib/cart";
+import {
+  Home,
+  Package,
+  Briefcase,
+  FlaskConical,
+  ShoppingBag,
+  Bell,
+  User,
+} from "lucide-react";
 
-const TABS: Array<{
+type Tab = {
   href: string;
   label: string;
   icon: React.ReactNode;
-  highlight?: boolean;
   opensSheet?: "shop" | "build";
-}> = [
-  { href: "/", label: "Home", icon: <User className="w-5 h-5" /> },
+  isCart?: boolean;
+};
+
+const TABS: Tab[] = [
+  { href: "/", label: "Home", icon: <Home className="w-5 h-5" /> },
   { href: "shop", label: "Shop", icon: <Package className="w-5 h-5" />, opensSheet: "shop" },
+  { href: "/corporate", label: "Corp", icon: <Briefcase className="w-5 h-5" /> },
   { href: "build", label: "Build", icon: <FlaskConical className="w-5 h-5" />, opensSheet: "build" },
-  { href: "/reminders", label: "Reminders", icon: <Bell className="w-5 h-5" /> },
-  { href: "/account", label: "Account", icon: <Settings className="w-5 h-5" /> },
+  { href: "/cart", label: "Cart", icon: <ShoppingBag className="w-5 h-5" />, isCart: true },
+  { href: "/reminders", label: "Alerts", icon: <Bell className="w-5 h-5" /> },
+  { href: "/account", label: "You", icon: <User className="w-5 h-5" /> },
 ];
+
+const CHIP_BASE =
+  "flex-1 min-w-0 flex flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+const CHIP_IDLE =
+  "bg-gray-100/80 dark:bg-white/[0.06] text-brand-muted hover:text-brand hover:-translate-y-0.5";
+const CHIP_ACTIVE =
+  "bg-gradient-brand text-white shadow-ribbon -translate-y-0.5";
 
 export default function BottomNav() {
   const pathname = usePathname()!;
   const { theme } = useTheme();
-  const isDark = theme === "dark";
+  const { itemCount } = useCart();
   const [shopOpen, setShopOpen] = useState(false);
   const [buildOpen, setBuildOpen] = useState(false);
 
+  // The shop is a focused money surface: its tabs are replaced by the floating
+  // filter bar (ShopBottomBar) so products own the screen. Back button up top escapes.
+  if (pathname.startsWith("/shop")) return null;
+
   return (
-    <nav
-      className="fixed bottom-4 left-4 right-4 z-50 flex md:hidden"
-      aria-label="Primary"
-    >
+    <nav className="fixed bottom-3 inset-x-3 z-50 md:hidden" aria-label="Primary">
       <div
         className={cn(
-          "flex items-center justify-between px-3 py-1.5 transition-all duration-500",
-          isDark
-            ? "bg-[rgba(12,12,26,0.9)] border-white/10 shadow-[0_8px_32px_rgba(155,27,90,0.3)]"
-            : "bg-white/95 border-[rgba(155,27,90,0.1)] shadow-card"
+          "flex items-center gap-1 rounded-[26px] p-1.5 border backdrop-blur-xl transition-all duration-500",
+          theme === "dark"
+            ? "bg-[rgba(12,12,26,0.88)] border-white/10 shadow-[0_8px_32px_rgba(155,27,90,0.3)]"
+            : "bg-white/85 border-[rgba(155,27,90,0.1)] shadow-card"
         )}
       >
         {TABS.map((tab) => {
-          if (tab.opensSheet === "shop") {
+          const isActive =
+            !tab.opensSheet &&
+            (tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href));
+
+          const content = (
+            <>
+              <span className="relative w-5 h-5 shrink-0">
+                {tab.icon}
+                {tab.isCart && itemCount > 0 && (
+                  <span className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[8px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
+                    {itemCount > 9 ? "9+" : itemCount}
+                  </span>
+                )}
+              </span>
+              <span
+                className={cn(
+                  "text-[9px] leading-none whitespace-nowrap",
+                  isActive ? "font-bold" : "font-semibold"
+                )}
+              >
+                {tab.label}
+              </span>
+            </>
+          );
+
+          if (tab.opensSheet) {
             return (
               <button
                 key={tab.href}
-                onClick={() => setShopOpen(true)}
-                className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-full transition-colors text-brand-muted hover:text-brand hover:bg-brand/5"
-                aria-label="Browse shop categories"
+                type="button"
+                className={cn(CHIP_BASE, CHIP_IDLE)}
+                onClick={() =>
+                  tab.opensSheet === "shop" ? setShopOpen(true) : setBuildOpen(true)
+                }
+                aria-label={
+                  tab.opensSheet === "shop"
+                    ? "Browse shop categories"
+                    : "Build tools — hamper builder, pool gifting, customizer"
+                }
               >
-                {tab.icon}
-                <span className="text-[10px]">Shop</span>
+                {content}
               </button>
             );
           }
 
-          if (tab.opensSheet === "build") {
-            return (
-              <button
-                key={tab.href}
-                onClick={() => setBuildOpen(true)}
-                className="flex flex-col items-center gap-0.5 px-2 py-1 rounded-full transition-colors text-brand-muted hover:text-brand hover:bg-brand/5"
-                aria-label="Build tools — hamper builder, pool gifting, customizer"
-              >
-                {tab.icon}
-                <span className="text-[10px]">Build</span>
-              </button>
-            );
-          }
-
-          const active =
-            tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href as string);
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className={cn(
-                "flex flex-col items-center gap-0.5 px-2 py-1 rounded-full transition-all duration-300",
-                active
-                  ? "bg-gradient-brand text-white shadow-ribbon scale-105"
-                  : "text-brand-muted hover:text-brand hover:bg-brand/5",
-                tab.highlight && !active && "relative"
-              )}
+              className={cn(CHIP_BASE, isActive ? CHIP_ACTIVE : CHIP_IDLE)}
+              aria-current={isActive ? "page" : undefined}
+              aria-label={
+                tab.isCart && itemCount > 0
+                  ? `Shopping cart, ${itemCount} items`
+                  : tab.label
+              }
             >
-              {tab.highlight && !active && (
-                <span className="absolute -top-1 -right-0.5 w-1.5 h-1.5 bg-gold rounded-full animate-pulse-soft" />
-              )}
-              <span className="w-5 h-5 shrink-0">{tab.icon}</span>
-              <span className={cn("text-[10px]", active ? "font-semibold" : "")}>
-                {tab.label}
-              </span>
+              {content}
             </Link>
           );
         })}
-
-        {/* Compact theme toggle */}
-        <div className="flex flex-col items-center gap-0.5 px-2 py-1">
-          <div className="scale-[0.65] origin-center">
-            <ThemeToggle />
-          </div>
-          <span className="text-[10px] text-brand-muted">Theme</span>
-        </div>
-
-        {shopOpen && (
-          <MobileShopDrawer open={shopOpen} onClose={() => setShopOpen(false)} />
-        )}
-        {buildOpen && (
-          <BuildToolkitSheet open={buildOpen} onClose={() => setBuildOpen(false)} />
-        )}
       </div>
+      {shopOpen && (
+        <MobileShopDrawer open={shopOpen} onClose={() => setShopOpen(false)} />
+      )}
+      {buildOpen && (
+        <BuildToolkitSheet open={buildOpen} onClose={() => setBuildOpen(false)} />
+      )}
     </nav>
   );
 }
