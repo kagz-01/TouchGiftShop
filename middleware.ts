@@ -15,6 +15,9 @@ function getClientIp(request: NextRequest): string {
 }
 
 function isIpAllowed(ip: string): boolean {
+  // Always allow localhost / loopback in local environment
+  if (!ip || ip === "127.0.0.1" || ip === "::1" || ip === "localhost") return true;
+
   const allowedIps = process.env.ADMIN_ALLOWED_IPS;
   if (!allowedIps) return true;
 
