@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import ProductGrid from "@/components/home/ProductGrid";
 import ShopFilterBar from "@/components/home/ShopFilterBar";
+import { ShopRefineRail, ShopBottomBar } from "@/components/shop/ShopMobileFilters";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag } from "lucide-react";
 import type { Metadata } from "next";
@@ -34,7 +35,7 @@ export default async function ShopPage({
 
   return (
     <div className="min-h-screen section-theme-f">
-      {/* ── Sticky header ── */}
+      {/* ── Sticky header (+ mobile category rail) ── */}
       <div className="backdrop-blur-md border-b sticky top-0 z-30" style={{ background: 'var(--surface)', borderColor: 'var(--surface-border)' }}>
         <div className="page-container-capped py-3 flex items-center justify-between gap-4">
           <Link
@@ -65,20 +66,28 @@ export default async function ShopPage({
 
           <Link
             href="/gift-finder"
-            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-brand/8 text-brand rounded-xl text-xs font-bold hover:bg-brand hover:text-white transition-all"
+            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-brand/8 text-brand rounded-xl text-xs font-bold hover:bg-brand hover:text-white transition-all mr-11 md:mr-0"
           >
             <Sparkles className="w-3.5 h-3.5" />
             AI Match
           </Link>
         </div>
+
+        {/* Mobile: universal refine chips glued under the bar (categories moved
+            to the thumb zone — ShopBottomBar) */}
+        <div className="lg:hidden">
+          <Suspense fallback={null}>
+            <ShopRefineRail />
+          </Suspense>
+        </div>
       </div>
 
-      <div className="page-container-capped pt-8 pb-4">
+      <div className="page-container-capped pt-4 pb-4">
         {/* Hero heading */}
-        <div className="flex items-end justify-between flex-wrap gap-4 mb-6">
+        <div className="flex items-end justify-between flex-wrap gap-3 md:gap-4 mb-3">
           <div>
             <h1
-              className="font-display text-2xl md:text-3xl font-bold"
+              className="font-display text-xl md:text-3xl font-bold"
               style={{ color: "var(--text-primary)" }}
             >
               {params.q
@@ -87,16 +96,16 @@ export default async function ShopPage({
                 ? effectiveLabel.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
                 : "All Gifts"}
             </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
+            <p className="text-xs md:text-sm mt-1" style={{ color: "var(--text-muted)" }}>
               Browse our curated collection · Same-day Nairobi delivery
             </p>
           </div>
 
-          {/* Quick feature links */}
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Quick feature links — one scrollable row on mobile */}
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1 w-full lg:w-auto lg:flex-wrap lg:overflow-visible lg:pb-0" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
             <Link
               href="/gift-lab/build-hamper"
-              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm whitespace-nowrap shrink-0"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <ShoppingBag className="w-3.5 h-3.5" />
@@ -104,7 +113,7 @@ export default async function ShopPage({
             </Link>
             <Link
               href="/pool/create"
-              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm whitespace-nowrap shrink-0"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <Users className="w-3.5 h-3.5" />
@@ -112,7 +121,7 @@ export default async function ShopPage({
             </Link>
             <Link
               href="/surprise"
-              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 backdrop-blur-md border rounded-xl text-xs font-semibold transition-all shadow-sm whitespace-nowrap shrink-0"
               style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
             >
               <Zap className="w-3.5 h-3.5" />
@@ -121,8 +130,8 @@ export default async function ShopPage({
           </div>
         </div>
 
-        {/* ── Filter Bar ── */}
-        <div className="mt-6 sticky top-20 z-20">
+        {/* ── Filter Bar (desktop card) ── */}
+        <div className="mt-4 sticky top-20 z-20 hidden lg:block">
           <Suspense fallback={null}>
             <ShopFilterBar />
           </Suspense>
@@ -132,7 +141,7 @@ export default async function ShopPage({
       {/* ── Product grid ── */}
       <div className="page-container-capped pb-16">
         <Suspense fallback={<ProductGridSkeleton />}>
-          <ProductGrid searchParams={Promise.resolve(params)} />
+          <ProductGrid searchParams={Promise.resolve(params)} hideHeading />
         </Suspense>
       </div>
 
@@ -154,6 +163,11 @@ export default async function ShopPage({
           </Link>
         </div>
       </div>
+
+      {/* Mobile: floating filter bar — replaces the tab bar while shopping */}
+      <Suspense fallback={null}>
+        <ShopBottomBar />
+      </Suspense>
     </div>
   );
 }

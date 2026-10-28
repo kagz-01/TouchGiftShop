@@ -229,8 +229,11 @@ async function getProducts(params: ShopParams): Promise<{
 
 export default async function ProductGrid({
   searchParams,
+  hideHeading,
 }: {
   searchParams?: Promise<ShopParams>;
+  /** The shop page's h1 already names the category — skip the big grid h2. */
+  hideHeading?: boolean;
 }) {
   const params = searchParams ? await searchParams : {};
   const { products, hasMore, count } = await getProducts(params);
@@ -260,6 +263,7 @@ export default async function ProductGrid({
       search={params?.q}
       subcat={params?.subcat}
       heading={headingParts.join("")}
+      hideHeading={hideHeading}
       sort={params?.sort}
       newArrivals={params?.newArrivals}
       onSale={params?.onSale}

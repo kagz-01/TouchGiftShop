@@ -79,7 +79,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
         </div>
 
         {/* Content */}
-        <div className="p-4">
+        <div className="p-3 md:p-4">
           <h3 
             className="font-display font-semibold text-sm mb-1.5 line-clamp-2 transition-colors leading-snug min-h-[2.5rem]"
             style={{ color: "var(--text-primary)" }}
@@ -159,6 +159,7 @@ export default function ProductGridClient({
   search,
   subcat,
   heading,
+  hideHeading,
   sort,
   newArrivals,
   onSale,
@@ -178,6 +179,7 @@ export default function ProductGridClient({
   search?: string;
   subcat?: string;
   heading?: string;
+  hideHeading?: boolean;
   sort?: string;
   newArrivals?: string;
   onSale?: string;
@@ -293,18 +295,20 @@ export default function ProductGridClient({
   }
 
   return (
-    <section className="py-8">
+    <section className="py-4 md:py-5">
       <div className="page-container-capped">
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-brand-deep dark:text-white text-center mb-4 animate-fade-in-up">
-          {heading || "All Gifts"}
-          <span className="block text-sm font-normal text-brand-muted dark:text-white/60 mt-1">
+        <h2 className="font-display font-bold text-brand-deep dark:text-white text-center mb-3 md:mb-4 animate-fade-in-up">
+          {!hideHeading && (
+            <span className="hidden md:block text-2xl xl:text-3xl">{heading || "All Gifts"}</span>
+          )}
+          <span className="block text-xs md:text-sm font-normal text-brand-muted dark:text-white/60 mt-1">
             Showing {products.length} of {totalCount} gifts
           </span>
         </h2>
 
         {/* Drinks subcategory pills */}
         {category === "drinks" && (
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+          <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
               { name: "Wines", subcat: "wine", icon: "🍷" },
               { name: "Whiskies", subcat: "whisky", icon: "🥃" },
@@ -347,7 +351,7 @@ export default function ProductGridClient({
 
         {/* Perfumes subcategory pills */}
         {category === "perfumes" && (
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+          <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
               { name: "For Him", tag: "men", icon: "🎩" },
               { name: "For Her", tag: "women", icon: "👠" },
@@ -386,7 +390,7 @@ export default function ProductGridClient({
 
         {/* Corporate subcategory pills */}
         {category === "corporate" && (
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-6 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
+          <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
               { name: "Gift Sets & Hampers", subcat: "hamper", icon: "🎁" },
               { name: "Awards & Plaques", subcat: "award", icon: "🏆" },
@@ -463,7 +467,7 @@ export default function ProductGridClient({
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 md:gap-5">
             {products.map((product, index) => (
               <ProductCard key={product.id} product={product} index={index} categorySlug={category} />
             ))}
