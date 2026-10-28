@@ -49,7 +49,7 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li><strong>Account information:</strong> Name, phone number, and email when you create an account</li>
                 <li><strong>Order information:</strong> Sender name, sender phone, recipient name, recipient phone, delivery address/landmark, and gift notes</li>
-                <li><strong>Payment information:</strong> Phone number for M-Pesa transactions (processed by PesaPal — we do not store your M-Pesa PIN or card details)</li>
+                <li><strong>Payment information:</strong> Phone number for M-Pesa transactions (processed by Paystack — we do not store your M-Pesa PIN or card details)</li>
                 <li><strong>Wishlist data:</strong> Items you add to wishlists and any associated notes</li>
                 <li><strong>Pool contributions:</strong> Name and phone number when you contribute to a group gift pool</li>
                 <li><strong>Communications:</strong> Any messages you send us via WhatsApp, email, or our AI Gift Finder</li>
@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
 
               <h3 className="font-semibold text-brand-deep mt-4 mb-2">c) Information from Third Parties</h3>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>Payment confirmation:</strong> Transaction status and receipt numbers from PesaPal</li>
+                <li><strong>Payment confirmation:</strong> Transaction status and receipt numbers from Paystack</li>
                 <li><strong>Delivery data:</strong> GPS coordinates when a recipient drops their delivery pin</li>
               </ul>
             </section>
@@ -76,7 +76,7 @@ export default function PrivacyPolicyPage() {
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Process and fulfill your gift orders, including delivery to recipients</li>
                 <li>Send order confirmations, status updates, and delivery notifications</li>
-                <li>Process payments securely through PesaPal</li>
+                <li>Process payments securely through Paystack</li>
                 <li>Send pin drop links to recipients so they can set their delivery location</li>
                 <li>Send tracking links so recipients can follow their gift status</li>
                 <li>Provide AI-powered gift recommendations through our Gift Finder (T-Gifter)</li>
@@ -95,8 +95,8 @@ export default function PrivacyPolicyPage() {
 
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>
-                  <strong>Payment processing:</strong> We share transaction details with PesaPal to process your M-Pesa,
-                  card, or Airtel Money payments. PesaPal&apos;s own privacy policy governs their use of this data.
+                  <strong>Payment processing:</strong> We share transaction details with Paystack to process your M-Pesa,
+                  card, or mobile money payments. Paystack&apos;s own privacy policy governs their use of this data.
                 </li>
                 <li>
                   <strong>Delivery partners:</strong> We share the recipient&apos;s name, delivery landmark/pin location,
@@ -138,7 +138,7 @@ export default function PrivacyPolicyPage() {
               <p>We implement appropriate security measures to protect your personal information:</p>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>All data is encrypted in transit using TLS/SSL</li>
-                <li>Payment processing is handled entirely by PesaPal — we never store M-Pesa PINs, card numbers, or CVV codes</li>
+                <li>Payment processing is handled entirely by Paystack — we never store M-Pesa PINs, card numbers, or CVV codes</li>
                 <li>Database access is restricted to authorized personnel only</li>
                 <li>API keys and secrets are stored server-side and never exposed to the browser</li>
                 <li>Regular security reviews of our codebase and infrastructure</li>

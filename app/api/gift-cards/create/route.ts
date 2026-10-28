@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
 // Admin-only gift card creation (no payment required).
-// For customer purchases, use POST /api/gift-cards which integrates with PesaPal.
+// For customer purchases, use POST /api/gift-cards which integrates with Paystack.
 // This endpoint is for admin/manual gift card issuance.
 
 function generateGiftCardCode(): string {

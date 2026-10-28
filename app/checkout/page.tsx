@@ -51,7 +51,7 @@ export default async function CheckoutPage({
 
           <div className="flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span className="text-xs text-brand-muted font-medium">Secured by PesaPal</span>
+            <span className="text-xs text-brand-muted font-medium">Secured by Paystack</span>
           </div>
         </div>
       </div>

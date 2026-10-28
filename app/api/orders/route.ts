@@ -96,7 +96,7 @@ export async function GET() {
 }
 
 // POST /api/orders — creates the order record. Payment is handled separately
-// via /api/payment/create-order (PesaPal checkout redirect).
+// via /api/payment/create-order (Paystack checkout redirect).
 export async function POST(req: Request) {
   const parsed = OrderInput.safeParse(await req.json());
   if (!parsed.success) {

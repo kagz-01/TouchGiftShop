@@ -277,7 +277,7 @@ export default async function ProformaPage({
               confirmed against the delivery address.
             </li>
             <li>
-              Payment by PesaPal (M-Pesa or card) or bank transfer. LPOs accepted for
+              Payment by Paystack (M-Pesa or card) or bank transfer. LPOs accepted for
               approved corporate accounts. Payment terms are confirmed on the final quote.
             </li>
             <li>

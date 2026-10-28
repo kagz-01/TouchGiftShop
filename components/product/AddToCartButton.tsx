@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatKsh } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/types";
+import CartDrawer from "@/components/cart/CartDrawer";
 import { X, Minus, Plus, Sparkles, Zap, ShoppingCart, Check } from "lucide-react";
 
 export default function AddToCartButton({ product }: { product: Product }) {
@@ -13,6 +14,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
   const { addItem, itemCount } = useCart();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [personalization, setPersonalization] = useState("");
   const [customizationImageUrl, setCustomizationImageUrl] = useState<string | null>(null);
@@ -78,7 +80,9 @@ export default function AddToCartButton({ product }: { product: Product }) {
       setCustomizationImageUrl(null);
       setFulfillmentPayload(undefined);
       setStudioDesignSaved(false);
-    }, 1200);
+      // Open the mini cart drawer after adding
+      setCartDrawerOpen(true);
+    }, 900);
   }
 
   function handleBuyNow() {
@@ -119,6 +123,9 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
       {mounted && createPortal(
         <>
+          {/* Cart Drawer — opens after "Add to Bag" */}
+          <CartDrawer open={cartDrawerOpen} onClose={() => setCartDrawerOpen(false)} />
+
           {/* Backdrop */}
           {isOpen && (
             <div

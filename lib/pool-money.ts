@@ -3,14 +3,14 @@
  *
  * Two rules the previous code did not have:
  *
- *   1. Nothing is credited until PesaPal says the money arrived, and what is
- *      credited is what PesaPal says it received — not the number the payer
+ *   1. Nothing is credited until Paystack says the money arrived, and what is
+ *      credited is what Paystack says it received — not the number the payer
  *      typed into our form. A pool balance is money the business holds.
  *   2. Every movement is one ledger row, written through lib/pool-ledger, so a
- *      replayed IPN cannot credit twice and a retried refund cannot debit
+ *      replayed webhook cannot credit twice and a retried refund cannot debit
  *      twice.
  *
- * Refunds are real here: PesaPal's RefundRequest is called per contribution
+ * Refunds are real here: Paystack's refund API is called per contribution
  * using the tracking id stored at checkout, and the outcome is recorded on the
  * contribution and in the ledger — a refund that failed stays visible as
  * failed instead of being logged and forgotten.
@@ -34,7 +34,7 @@ const num = (v: unknown) => {
   return Number.isFinite(n) ? n : 0;
 };
 
-/** PesaPal amounts are two-decimal; a ksh of drift is a rounding artefact. */
+/** Paystack amounts are two-decimal; a ksh of drift is a rounding artefact. */
 const differs = (a: number, b: number) => Math.abs(a - b) > 0.5;
 
 type ContributionRow = {
@@ -91,7 +91,7 @@ export type SettleOptions = {
   orderTrackingId?: string | null;
   receiptNumber?: string | null;
   /**
-   * Pass only when the caller has already re-queried PesaPal for this payment
+   * Pass only when the caller has already re-queried the gateway for this payment
    * (the IPN does, before dispatching) so the status is not fetched twice.
    * Never pass this from a request body — that would let a client assert its
    * own payment.
@@ -159,7 +159,7 @@ export async function settlePoolContribution(
       paidAmount = num(status.amount) || requested;
       receipt = status.receiptNumber ?? opts.receiptNumber ?? null;
     } catch (e) {
-      // Do not credit on a failed status check: an unreachable PesaPal must
+      // Do not credit on a failed status check: an unreachable gateway must
       // not read as "paid", or the balance claims money we cannot see.
       return { ok: false, reason: "psp_unreachable", detail: (e as Error).message };
     }
@@ -171,7 +171,7 @@ export async function settlePoolContribution(
   const note = mismatch
     ? `amount mismatch: requested KES ${requested.toFixed(2)}, received KES ${paidAmount.toFixed(2)}`
     : trackingId
-    ? "verified with PesaPal"
+    ? "verified with Paystack"
     : "verified by caller";
 
   const update: Record<string, unknown> = {
@@ -229,7 +229,7 @@ export async function settlePoolContribution(
 
   if (mismatch) {
     console.error(
-      `[pool-money] contribution ${row.id}: requested ${requested} but PesaPal reports ${paidAmount}`
+      `[pool-money] contribution ${row.id}: requested ${requested} but Paystack reports ${paidAmount}`
     );
     void flagMismatchToOps({
       contributionId: row.id,
@@ -373,7 +373,7 @@ export type RefundRun = {
   refunded: number;
   refundedAmount: number;
   failed: number;
-  /** Money we hold that PesaPal cannot return automatically. */
+  /** Money we hold that the gateway cannot return automatically. */
   manual: number;
   failures: { id: string; name: string; message: string }[];
   /** True only when every contribution came back. */
@@ -422,8 +422,7 @@ async function markRefund(
  * Refund every verified contribution in a pool.
  *
  * Idempotent: contributions already marked refunded are counted, not refunded
- * again (PesaPal allows one refund per payment, so a second attempt would fail
- * anyway — and would burn the only attempt).
+ * again.
  */
 export async function refundPoolContributions(pool: {
   id: string;
@@ -495,7 +494,7 @@ export async function refundPoolContributions(pool: {
 
     const trackingId = c.pesapal_tracking_id ? String(c.pesapal_tracking_id) : null;
 
-    /* No tracking id means no PesaPal payment: a corporate contribution
+    /* No tracking id means no gateway payment: a corporate contribution
        recorded against an M-Pesa transfer, or a row from before checkout
        stored the id. Those cannot be reversed by API and must not be
        reported as refunded. */
@@ -503,7 +502,7 @@ export async function refundPoolContributions(pool: {
       run.manual += 1;
       await markRefund(table, id, {
         refund_status: "unsupported",
-        refund_message: "No PesaPal tracking id — reverse manually against the original transfer.",
+        refund_message: "No payment tracking id — reverse manually against the original transfer.",
       });
       continue;
     }

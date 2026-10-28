@@ -371,7 +371,7 @@ export default async function InvoiceDocumentPage({
         <section className="mt-8 border-t border-black/10 pt-4">
           <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Payment</p>
           <p className="mt-1.5 text-xs leading-relaxed text-black/70">
-            Settled through PesaPal (M-Pesa or card).
+            Settled through Paystack (M-Pesa or card).
             {inv.psp_reference ? ` Receipt reference ${inv.psp_reference}.` : ""}{" "}
             Quote {inv.invoice_number} on any payment or query.
           </p>

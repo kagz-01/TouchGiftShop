@@ -3,10 +3,8 @@ import { createPaymentOrder } from "@/lib/payment";
 import { supabaseAdmin } from "@/lib/supabase";
 
 /**
- * Stores the PesaPal tracking id against the order it pays for. PesaPal's
- * RefundRequest needs this id as its confirmation code, so without it an order
- * can never be refunded. Recorded here rather than only in the IPN, which can
- * be lost.
+ * Stores the payment tracking/reference id against the order it pays for.
+ * Recorded here rather than only in the webhook, which can be delayed.
  *
  * `multi-` references cover several orders against one payment, so the id is
  * written to all of them.
@@ -27,11 +25,11 @@ async function rememberTrackingId(merchantReference: string, trackingId: string)
       .in("id", ids);
   } catch (e) {
     // Never fail the checkout over bookkeeping — the payment itself is fine.
-    console.error("Failed to store pesapal_tracking_id:", e);
+    console.error("Failed to store payment tracking id:", e);
   }
 }
 
-// POST /api/payment/create-order — creates a PesaPal checkout session.
+// POST /api/payment/create-order — creates a Paystack checkout session.
 // Called by the client after the order/contribution is saved to our DB.
 export async function POST(req: Request) {
   const { amount, merchantReference, description, phoneNumber, email, callbackUrl, name } =
@@ -64,7 +62,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error("PesaPal create-order error:", err);
+    console.error("Paystack create-order error:", err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Payment init failed" },
       { status: 502 }

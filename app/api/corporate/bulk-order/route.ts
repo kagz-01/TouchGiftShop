@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
         recipient_count: quantity,
         subtotal: amount * quantity,
         total_amount: total,
-        payment_method: "pesapal",
+        payment_method: "paystack",
         delivery_method: deliveryMethod,
       })
       .select("id")
@@ -145,7 +145,7 @@ export async function POST(req: NextRequest) {
       void Promise.allSettled(blasts);
     }
 
-    /* 4. PesaPal. The reference is `corp-<id>` because that is what the IPN
+    /* 4. Paystack. The reference is `corp-<id>` because that is what the webhook
        handler routes on; it used to pass the bare uuid, which the handler read
        as a consumer `orders` id and matched nothing — so a paid bulk order was
        never confirmed. */

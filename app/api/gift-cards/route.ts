@@ -45,7 +45,7 @@ const PurchaseInput = z.object({
     .optional(),
 });
 
-// POST /api/gift-cards — purchase a gift card (creates pending card + PesaPal payment)
+// POST /api/gift-cards — purchase a gift card (creates pending card + Paystack payment)
 export async function POST(req: Request) {
   const parsed = PurchaseInput.safeParse(await req.json());
   if (!parsed.success) {

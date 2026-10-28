@@ -94,7 +94,7 @@ export default async function PortalInvoicesPage() {
           </p>
           {outstanding > 0 && (
             <p className="mt-1.5 text-xs text-[color:var(--portal-text-muted)]">
-              Settle through PesaPal and we are notified automatically — quote the invoice
+              Settle through Paystack and we are notified automatically — quote the invoice
               number in the description.
             </p>
           )}

@@ -237,7 +237,7 @@ export default async function PortalOrderDetailPage({
               </dl>
               {o.payment_method && (
                 <p className="mt-4 text-xs text-[color:var(--portal-text-faint)]">
-                  Settled through PesaPal
+                  Settled through Paystack
                 </p>
               )}
             </section>

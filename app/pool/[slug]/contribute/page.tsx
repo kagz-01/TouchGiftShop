@@ -111,7 +111,7 @@ export default function ContributePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Payment failed");
 
-      // Redirect to PesaPal or directly to thanks on success
+      // Redirect to Paystack or directly to thanks on success
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;
       } else {
@@ -448,7 +448,7 @@ export default function ContributePage() {
           </button>
 
           <p className="text-center text-xs text-white/30 px-4">
-            Payments are secured by PesaPal. Funds are held in escrow until the pool closes.
+            Payments are secured by Paystack. Funds are held in escrow until the pool closes.
           </p>
         </form>
       </div>

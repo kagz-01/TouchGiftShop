@@ -132,7 +132,7 @@ export default function WhiteLabelDashboard() {
                     { label: "Custom Domain", desc: "gifts.luxeevents.co.ke", done: true },
                     { label: "Brand Colors", desc: "Navy & Gold configuration", done: true },
                     { label: "Upload Logo", desc: "High-res PNG added", done: true },
-                    { label: "Payment Gateway", desc: "Connect your Stripe/Pesapal", done: false },
+                    { label: "Payment Gateway", desc: "Connect your Stripe/Paystack", done: false },
                   ].map((step, i) => (
                     <div key={i} className="flex gap-3">
                       <div className={`mt-0.5 ${step.done ? "text-emerald-400" : "text-white/20"}`}>

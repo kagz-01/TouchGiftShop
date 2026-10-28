@@ -7,7 +7,7 @@ import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { maxRedeemablePoints, pointsDiscountKsh, pointsToKsh, MIN_REDEEM_POINTS, POINTS_PER_KSH_REDEEM } from "@/lib/points";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
-import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound, Layers, Users } from "lucide-react";
+import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound, Layers, Users, CreditCard, Smartphone } from "lucide-react";
 import type { PackagingMode } from "@/components/checkout/PackagingDecision";
 import type { CartItem } from "@/lib/cart";
 import { createClient } from "@/lib/supabase-browser";
@@ -15,6 +15,14 @@ import { isGuest, setGuest } from "@/lib/guest";
 import GiftWrapSelector, { WrapType, WRAP_OPTIONS } from "@/components/shared/GiftWrapSelector";
 
 type Step = "form" | "redirecting" | "error";
+
+/* ── Payment method pill data ─────────────────────────────────────────────── */
+type PaymentMethodId = "mpesa" | "card" | "airtel";
+const PAYMENT_METHODS: { id: PaymentMethodId; label: string; sublabel: string; bg: string; activeBg: string; badge: string }[] = [
+  { id: "mpesa",  label: "M-Pesa",      sublabel: "STK push to phone", bg: "border-gray-200 bg-white hover:border-green-300",   activeBg: "border-green-500 bg-green-50 ring-2 ring-green-400/30",  badge: "bg-[#00B300] text-white" },
+  { id: "card",   label: "Card",         sublabel: "Visa · Mastercard",  bg: "border-gray-200 bg-white hover:border-blue-300",    activeBg: "border-blue-500 bg-blue-50 ring-2 ring-blue-400/30",     badge: "bg-[#1A1F71] text-white" },
+  { id: "airtel", label: "Airtel Money", sublabel: "Mobile wallet",     bg: "border-gray-200 bg-white hover:border-red-300",     activeBg: "border-red-500 bg-red-50 ring-2 ring-red-400/30",       badge: "bg-[#E40000] text-white" },
+];
 
 interface DeliveryZone {
   name: string;
@@ -69,6 +77,7 @@ export default function CheckoutForm({
   const [recipientName, setRecipientName] = useState("");
   const [senderPhoneError, setSenderPhoneError] = useState<string | null>(null);
   const [recipientPhoneError, setRecipientPhoneError] = useState<string | null>(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethodId>("mpesa");
 
   // Cart items
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -439,6 +448,42 @@ export default function CheckoutForm({
       }
 
       setRedirectUrl(paymentData.redirectUrl ?? null);
+
+      // Attempt in-page Paystack Popup first for a seamless on-site luxury experience
+      if (paymentData.accessCode && typeof window !== "undefined") {
+        try {
+          const loadPaystack = () => {
+            return new Promise<void>((resolve, reject) => {
+              if ((window as any).PaystackPop) {
+                resolve();
+                return;
+              }
+              const script = document.createElement("script");
+              script.src = "https://js.paystack.co/v1/inline.js";
+              script.async = true;
+              script.onload = () => resolve();
+              script.onerror = () => reject(new Error("Popup blocked"));
+              document.body.appendChild(script);
+            });
+          };
+
+          await loadPaystack();
+          const popup = new (window as any).PaystackPop();
+          popup.resumeTransaction(paymentData.accessCode, {
+            onSuccess: () => {
+              const ref = orderIds.length === 1 ? orderIds[0] : `multi-${orderIds.join(",")}`;
+              window.location.href = `/payment-success?ref=${encodeURIComponent(ref)}`;
+            },
+            onCancel: () => {
+              setStep("form");
+            },
+          });
+          return;
+        } catch (popupErr) {
+          console.warn("Paystack popup not available, redirecting to checkout:", popupErr);
+        }
+      }
+
       try { if (paymentData.redirectUrl) window.location.href = paymentData.redirectUrl; } catch { /* ignore */ }
     } catch (err: any) {
       setStep("error");
@@ -456,7 +501,7 @@ export default function CheckoutForm({
           </div>
           <h3 className="font-display text-xl font-bold text-brand-deep mb-2">Taking you to payment…</h3>
           <p className="text-sm text-brand-muted mb-6">
-            You&apos;ll complete your <span className="font-semibold text-brand-deep">{formatKsh(total)}</span> payment securely via PesaPal.
+            You&apos;ll complete your <span className="font-semibold text-brand-deep">{formatKsh(total)}</span> payment securely via Paystack.
           </p>
           {redirectUrl && (
             <div className="space-y-3 mt-4">
@@ -1068,6 +1113,38 @@ export default function CheckoutForm({
             ))}
           </div>
 
+          {/* Payment Method Selector */}
+          <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-brand-deep">Select Payment Method</p>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wide">
+                Instant Settlement
+              </span>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              {PAYMENT_METHODS.map((pm) => {
+                const isSelected = selectedPaymentMethod === pm.id;
+                return (
+                  <button
+                    key={pm.id}
+                    type="button"
+                    onClick={() => setSelectedPaymentMethod(pm.id)}
+                    className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-center transition-all ${
+                      isSelected ? pm.activeBg : pm.bg
+                    }`}
+                  >
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded mb-1 ${pm.badge}`}>
+                      {pm.label}
+                    </span>
+                    <span className="text-[10px] text-brand-muted leading-tight font-medium">
+                      {pm.sublabel}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Pay button */}
           <button
             id="checkout-pay-btn"
@@ -1083,6 +1160,17 @@ export default function CheckoutForm({
           >
             Pay {formatKsh(total)} →
           </button>
+
+          {/* Corporate Transparency & Payment Disclosure */}
+          <div className="p-3 bg-gray-50 border border-black/5 rounded-2xl text-center space-y-1">
+            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider flex items-center justify-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              Secured by Paystack
+            </p>
+            <p className="text-[11px] text-brand-muted leading-relaxed">
+              Payments are processed securely via our corporate group account: <strong className="text-brand-deep">Touch Line Ltd</strong>.
+            </p>
+          </div>
 
           {/* Payment methods */}
           <div className="flex items-center justify-center gap-5 text-xs text-brand-muted">

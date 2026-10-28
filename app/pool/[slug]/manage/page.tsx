@@ -174,11 +174,11 @@ export default function PoolManagePage() {
           const manual = Number(data.manual ?? 0);
           setRefundNote(
             data.success
-              ? `KES ${Number(data.refundedAmount ?? 0).toLocaleString()} returned to ${data.refunded} contributor(s). Contributors are notified by PesaPal.`
+              ? `KES ${Number(data.refundedAmount ?? 0).toLocaleString()} returned to ${data.refunded} contributor(s). Contributors are notified by Paystack.`
               : `${data.refunded} of ${data.contributions} refund(s) completed — KES ${Number(
                   data.refundedAmount ?? 0
-                ).toLocaleString()}.${failed > 0 ? ` ${failed} failed at PesaPal.` : ""}${
-                  manual > 0 ? ` ${manual} need a manual reversal (no PesaPal record).` : ""
+                ).toLocaleString()}.${failed > 0 ? ` ${failed} failed at Paystack.` : ""}${
+                  manual > 0 ? ` ${manual} need a manual reversal (no Paystack record).` : ""
                 }`
           );
         }
@@ -512,7 +512,7 @@ export default function PoolManagePage() {
                       bg: "bg-red-500/10 border-red-500/20",
                       activeBg: "bg-red-500/20 border-red-500/50",
                       title: "Refund All Contributors",
-                      desc: `Return KES ${totalRaised.toLocaleString()} to the ${contributions.filter(c => c.is_verified).length} verified contributors via PesaPal.`,
+                      desc: `Return KES ${totalRaised.toLocaleString()} to the ${contributions.filter(c => c.is_verified).length} verified contributors via Paystack.`,
                     },
                   ] as const).map((opt) => (
                     <button

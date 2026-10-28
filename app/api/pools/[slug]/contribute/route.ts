@@ -11,7 +11,7 @@ const ContributeSchema = z.object({
   message: z.string().max(300).optional(),
   isAnonymous: z.boolean().default(false),
   isGhost: z.boolean().default(false),
-  paymentMethod: z.enum(["pesapal", "mpesa", "card", "airtel"]).default("pesapal"),
+  paymentMethod: z.enum(["paystack", "pesapal", "mpesa", "card", "airtel"]).default("paystack"),
   pollVoteIndex: z.number().int().optional(),
   splitParentId: z.string().uuid().optional(),
 });
@@ -89,7 +89,7 @@ export async function POST(
     return NextResponse.json({ error: "Failed to record contribution" }, { status: 500 });
   }
 
-  // 3. Create PesaPal payment order
+  // 3. Create Paystack payment order
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://touchgiftshop.co.ke";
   try {
     const { orderTrackingId, redirectUrl } = await createPaymentOrder({
@@ -121,8 +121,8 @@ export async function POST(
   }
 }
 
-// Called after PesaPal redirects back (and by the IPN). Marks the contribution
-// paid — but only after settlePoolContribution has re-queried PesaPal for it.
+// Called after Paystack redirects back (and by the webhook). Marks the contribution
+// paid — but only after settlePoolContribution has re-queried Paystack for it.
 // This route is public, so the request body is not evidence: anyone could
 // PATCH is_verified=true against a contribution they never paid for, and the
 // old code did exactly that, then added the amount to the pool balance.
@@ -149,7 +149,7 @@ export async function PATCH(req: Request) {
       result.reason === "not_completed"
         ? `Payment not completed (${result.detail ?? "unknown"}). The contribution has not been credited.`
         : result.reason === "psp_unreachable"
-        ? "Could not confirm the payment with PesaPal. Nothing has been credited — try again shortly."
+        ? "Could not confirm the payment with Paystack. Nothing has been credited — try again shortly."
         : "Contribution not found";
     return NextResponse.json({ error: message }, { status });
   }

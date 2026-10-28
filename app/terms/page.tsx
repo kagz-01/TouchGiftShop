@@ -39,7 +39,7 @@ export default function TermsPage() {
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Purchase gifts from our curated catalog (flowers, hampers, personalized items, gift experiences)</li>
                 <li>Have gifts delivered to recipients in Nairobi (same-day) and nationwide (next-day)</li>
-                <li>Pay via M-Pesa, credit/debit card, or Airtel Money through our payment partner PesaPal</li>
+                <li>Pay via M-Pesa, credit/debit card, or Airtel Money through our payment partner Paystack</li>
                 <li>Create group gift pools (Pool a Gift) where multiple people contribute</li>
                 <li>Create and share wishlists</li>
                 <li>Use our AI Gift Finder (T-Gifter) for personalized gift recommendations</li>
@@ -72,18 +72,18 @@ export default function TermsPage() {
                 <li>All orders are subject to product availability</li>
                 <li>Prices are displayed in Kenya Shillings (KSh) and include VAT where applicable</li>
                 <li>Delivery fees are calculated by area and shown before checkout</li>
-                <li>Orders are confirmed only after successful payment via PesaPal</li>
+                <li>Orders are confirmed only after successful payment via Paystack</li>
                 <li>You will receive an order confirmation after payment is processed</li>
               </ul>
 
               <h3 className="font-semibold text-brand-deep mt-4 mb-2">Payment Methods</h3>
               <ul className="list-disc list-inside space-y-1 ml-4">
-                <li><strong>M-Pesa:</strong> Via PesaPal&apos;s hosted checkout (STK push to your phone)</li>
-                <li><strong>Credit/Debit Card:</strong> Visa and Mastercard via PesaPal</li>
-                <li><strong>Airtel Money:</strong> Via PesaPal&apos;s hosted checkout</li>
+                <li><strong>M-Pesa:</strong> Via Paystack&apos;s hosted checkout (STK push to your phone)</li>
+                <li><strong>Credit/Debit Card:</strong> Visa, Mastercard, and Verve via Paystack</li>
+                <li><strong>Mobile Money:</strong> Via Paystack&apos;s hosted checkout</li>
               </ul>
               <p className="mt-2">
-                All payment processing is handled by PesaPal. TouchGift does not store your
+                All payment processing is handled securely by Paystack. TouchGift does not store your
                 M-Pesa PIN, card number, or CVV. See our{" "}
                 <Link href="/privacy" className="text-brand hover:underline">Privacy Policy</Link>{" "}
                 for details.
@@ -140,7 +140,7 @@ export default function TermsPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">7. Pool a Gift (Group Gifting)</h2>
               <ul className="list-disc list-inside space-y-1 ml-4">
                 <li>Anyone can create a gift pool by setting a title, target amount, and expiry date</li>
-                <li>Contributions are individual — each contributor pays independently via PesaPal</li>
+                <li>Contributions are individual — each contributor pays independently via Paystack</li>
                 <li>Contributions are non-refundable once the pool reaches its target or expires</li>
                 <li>The pool organizer can dispatch early at partial funding</li>
                 <li>Expired pools with unreached targets: contributors may request a refund within 7 days</li>

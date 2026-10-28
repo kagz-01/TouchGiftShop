@@ -59,7 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
     const refused = await requireOrganiserOrOps(pool.organiser_user_id as string | null);
     if (refused) return refused;
 
-    /* Refund every verified contribution through PesaPal and record the
+    /* Refund every verified contribution through Paystack and record the
        outcome per contribution. The pool is only marked "refunded" when the
        run came back complete — a partial run leaves it expired with the
        failures attached, because "refunded" is a claim about money that went
@@ -108,8 +108,8 @@ export async function POST(req: NextRequest, { params }: { params: { slug: strin
         : {
             error:
               run.failed > 0
-                ? `${run.failed} refund(s) failed at PesaPal and are logged for retry.`
-                : `${run.manual} contribution(s) were not taken through PesaPal and need a manual reversal.`,
+                ? `${run.failed} refund(s) failed at Paystack and are logged for retry.`
+                : `${run.manual} contribution(s) were not taken through Paystack and need a manual reversal.`,
           }),
     });
   }

@@ -50,7 +50,7 @@ const REVERSIBLE_STATUSES = ["processing", "wrapped", "dispatched", "delivered"]
 
 /**
  * Reversal does two independent things: credits any gift card balance back,
- * and asks PesaPal to return the money. They can succeed separately, so spell
+ * and asks Paystack to return the money. They can succeed separately, so spell
  * out both rather than implying the customer has been made whole.
  */
 function describeReversal(data: {
@@ -65,9 +65,9 @@ function describeReversal(data: {
 
   const pay = data.payment;
   if (pay?.state === "completed") {
-    parts.push("PesaPal refund submitted");
+    parts.push("Paystack refund submitted");
   } else if (pay?.state === "failed") {
-    parts.push(`PesaPal refund FAILED — ${pay.message}. Reconcile manually.`);
+    parts.push(`Paystack refund FAILED — ${pay.message}. Reconcile manually.`);
   } else if (pay?.state === "not_supported") {
     parts.push(`Money not refunded — ${pay.message}`);
   } else if (pay?.state === "skipped") {

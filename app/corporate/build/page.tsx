@@ -795,7 +795,7 @@ Peter Odhiambo, 0755555555`}
                     });
                     const data = await res.json();
                     if (!res.ok) throw new Error(data.error || "Failed to place order");
-                    // Redirect to PesaPal checkout
+                    // Redirect to Paystack checkout
                     window.location.href = data.payment.redirectUrl;
                   } catch (err: unknown) {
                     setSubmitError(err instanceof Error ? err.message : "Something went wrong");

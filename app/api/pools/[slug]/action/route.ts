@@ -51,7 +51,7 @@ export async function POST(
         await supabaseAdmin.from("user_metrics").insert({ user_id: user.id, trust_score: 90 });
       }
 
-      /* Refund every verified contribution through PesaPal, one ledger row
+      /* Refund every verified contribution through Paystack, one ledger row
          each. The pool is marked refunded only when the run is complete, so
          "refunded" never means "we tried" — a partial run stays expired with
          the failures attached for retry. Contributions are recorded through
@@ -87,7 +87,7 @@ export async function POST(
         success: run.complete,
         message: run.complete
           ? `${run.refunded} refunds submitted. Processing takes 3-5 business days.`
-          : `${run.refunded} of ${run.total} refunds submitted. ${run.failed} failed, ${run.manual} could not be reversed through PesaPal — check contribution details.`,
+          : `${run.refunded} of ${run.total} refunds submitted. ${run.failed} failed, ${run.manual} could not be reversed through Paystack — check contribution details.`,
         refundResults,
         refunded: run.refunded,
         refundedAmount: run.refundedAmount,

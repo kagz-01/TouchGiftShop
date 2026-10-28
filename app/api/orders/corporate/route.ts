@@ -194,7 +194,7 @@ export async function POST(req: NextRequest) {
       console.warn("Recipient links failed (orders still created):", linkErr.message);
     }
 
-    /* 4. Payment. `pesapal_tracking_id` is the real column on `orders`;
+    /* 4. Payment. Tracking id is stored on `orders`;
           payment_merchant_ref lives on the parent. */
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
     /* The reference is what the IPN routes on, so it has to name the order it

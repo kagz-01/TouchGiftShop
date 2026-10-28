@@ -4,9 +4,9 @@ import React, { useEffect, useState } from "react";
 import { createClient as createSupabaseClient } from "@/lib/supabase-browser";
 
 type Props = {
-  // `trackingId` may be either the PesaPal `orderTrackingId` or our local
+  // `trackingId` may be either the Paystack reference or our local
   // merchant reference (order id). The poller will attempt to resolve the
-  // PesaPal tracking id by querying our `/api/orders/:id` endpoint first.
+  // Paystack tracking id by querying our `/api/orders/:id` endpoint first.
   trackingId: string;
   pollIntervalMs?: number;
   timeoutMs?: number;
@@ -27,7 +27,7 @@ export default function PaymentStatusPoller({
     let intervalId: ReturnType<typeof setInterval> | null = null;
     let supabaseChannel: any = null;
 
-    // Resolve a PesaPal orderTrackingId: try fetching our order record first.
+    // Resolve a Paystack tracking/reference id: try fetching our order record first.
     const resolveTracking = async (): Promise<string> => {
       try {
         const res = await fetch(`/api/orders/${encodeURIComponent(trackingId)}`, { cache: "no-store" });
@@ -125,17 +125,26 @@ export default function PaymentStatusPoller({
     };
   }, [trackingId, pollIntervalMs, timeoutMs]);
 
+  if (status === "completed" || status === "processing") {
+    return (
+      <div className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        Payment Verified & Active
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-4 text-sm text-center">
-      <p className="text-xs text-brand-muted mb-1">Payment status</p>
+    <div className="mt-3 text-xs text-center">
       {error ? (
-        <p className="text-red-600">{error}</p>
-      ) : status ? (
-        <p className={status === "completed" ? "text-green-600" : "text-yellow-600"}>
-          {status}
-        </p>
+        <p className="text-red-500 dark:text-red-400 font-medium">{error}</p>
+      ) : status === "pending" ? (
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-medium">
+          <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+          <span>Confirming settlement with Paystack…</span>
+        </div>
       ) : (
-        <p className="text-gray-500">Checking…</p>
+        <span className="text-gray-500 dark:text-white/60">Checking payment confirmation…</span>
       )}
     </div>
   );

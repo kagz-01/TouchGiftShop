@@ -1,70 +1,64 @@
 /**
- * PesaPal API 3.0 — Payment integration.
+ * Paystack Payment Integration for TouchGift Shop.
  *
- * Docs: https://developer.pesapal.com/how-to-integrate/e-commerce/api-30-json/authentication
+ * Transactions route through the verified Touch Line Ltd corporate account.
+ * Branding is maintained via:
+ *   1. Custom transaction metadata ("Payment For: TouchGiftShop Order")
+ *   2. Custom fields shown on Paystack checkout
+ *   3. Customer expectation disclaimers in the frontend UI
+ *
+ * Docs: https://paystack.com/docs/api/transaction
  *
  * Flow:
- *   1. createPaymentOrder() → returns PesaPal checkout URL
- *   2. Customer is redirected to PesaPal → chooses M-Pesa / card / bank
- *   3. PesaPal sends IPN to /api/payment/ipn when status changes
- *   4. Customer is redirected to /payment-success
- *   5. We query getTransactionStatus() to confirm
- *
- * Supports: M-Pesa, Visa/Mastercard, bank transfer.
- * Settlement: PesaPal settles to your registered bank account.
+ *   1. createPaymentOrder() → returns Paystack checkout authorization_url & reference
+ *   2. Customer completes payment on Paystack (Card or M-Pesa)
+ *   3. Paystack fires webhook to /api/payment/webhook (verified via HMAC-SHA512)
+ *   4. Customer returns to /payment-success?ref=...
+ *   5. getTransactionStatus() confirms status with Paystack /transaction/verify/:ref
  */
 
-const PESAPAL_BASE =
-  process.env.PESAPAL_ENV === "production"
-    ? "https://pay.pesapal.com/v3"
-    : "https://cybqa.pesapal.com/pesapalv3";
+const PAYSTACK_BASE = "https://api.paystack.co";
 
-/** Registered entity behind the storefront — TouchGift trades as Touchline Branding. */
-const LEGAL_ENTITY = (process.env.LEGAL_ENTITY_NAME || "TouchGift").split(/\s+/).slice(-1)[0];
-
-let cachedToken: { value: string; expiresAt: number } | null = null;
-
-async function getAccessToken(): Promise<string> {
-  if (cachedToken && cachedToken.expiresAt > Date.now()) {
-    return cachedToken.value;
-  }
-
-  const res = await fetch(`${PESAPAL_BASE}/api/Auth/RequestToken`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      consumer_key: process.env.PESAPAL_CONSUMER_KEY!,
-      consumer_secret: process.env.PESAPAL_CONSUMER_SECRET!,
-    }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`PesaPal auth failed: ${res.status} ${await res.text()}`);
-  }
-
-  const data = await res.json();
-  if (!data.token) {
-    throw new Error(`PesaPal auth rejected: ${JSON.stringify(data)}`);
-  }
-
-  // PesaPal tokens expire in 5 minutes; refresh 1 min early
-  cachedToken = {
-    value: data.token,
-    expiresAt: Date.now() + 4 * 60 * 1000,
-  };
-  return cachedToken.value;
-}
-
-/** Normalizes phone to 2547XXXXXXXX format. */
+/** Normalizes phone to 2547XXXXXXXX or 2541XXXXXXXX format. */
 export function normalizeKenyanPhone(phone: string): string {
   const digits = phone.replace(/\D/g, "");
-  if (digits.startsWith("254")) return digits;
-  if (digits.startsWith("0")) return `254${digits.slice(1)}`;
-  if (digits.startsWith("7") || digits.startsWith("1")) return `254${digits}`;
+  if (digits.startsWith("254") && (digits.length === 12)) return digits;
+  if (digits.startsWith("0") && (digits.length === 10)) return `254${digits.slice(1)}`;
+  if ((digits.startsWith("7") || digits.startsWith("1")) && (digits.length === 9)) return `254${digits}`;
+  // Fallback if already cleaned or unusual
+  if (digits.length >= 9) return digits.startsWith("254") ? digits : `254${digits}`;
   throw new Error(`Unrecognized phone number format: ${phone}`);
+}
+
+/**
+ * Paystack strictly requires a valid customer email on every transaction.
+ * For fast Kenyan e-commerce where buyers only enter an M-Pesa phone number,
+ * this generates a deterministic fallback email.
+ */
+export function getCustomerEmail(email?: string, phone?: string): string {
+  if (email && email.includes("@") && email.trim().length > 3) {
+    return email.trim().toLowerCase();
+  }
+
+  if (phone) {
+    try {
+      const normalized = normalizeKenyanPhone(phone);
+      return `guest+${normalized}@touchgiftshop.co.ke`;
+    } catch {
+      const clean = phone.replace(/\D/g, "");
+      if (clean) return `guest+${clean}@touchgiftshop.co.ke`;
+    }
+  }
+
+  return `guest+${Date.now()}@touchgiftshop.co.ke`;
+}
+
+function getPaystackSecretKey(): string {
+  const key = process.env.PAYSTACK_SECRET_KEY;
+  if (!key) {
+    console.warn("PAYSTACK_SECRET_KEY is missing. Payment calls will fail until configured.");
+  }
+  return key || "";
 }
 
 export async function createPaymentOrder(params: {
@@ -75,139 +69,174 @@ export async function createPaymentOrder(params: {
   phoneNumber?: string;
   email?: string;
   name?: string;
-}): Promise<{ orderTrackingId: string; redirectUrl: string }> {
-  const token = await getAccessToken();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
+}): Promise<{ orderTrackingId: string; redirectUrl: string; accessCode?: string }> {
+  const secretKey = getPaystackSecretKey();
+  if (!secretKey) {
+    throw new Error("Payment gateway configuration error: PAYSTACK_SECRET_KEY is not set.");
+  }
 
-  const res = await fetch(`${PESAPAL_BASE}/api/Transactions/SubmitOrderRequest`, {
+  const customerEmail = getCustomerEmail(params.email, params.phoneNumber);
+  // Paystack amounts are in subunit minor units (cents / KES * 100)
+  const amountMinorUnits = Math.round(params.amount * 100);
+
+  const payload = {
+    email: customerEmail,
+    amount: amountMinorUnits,
+    currency: "KES",
+    reference: params.merchantReference,
+    callback_url: params.callbackUrl,
+    channels: ["card", "mobile_money"],
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Payment For",
+          variable_name: "payment_for",
+          value: "TouchGiftShop Order",
+        },
+        {
+          display_name: "Storefront",
+          variable_name: "storefront",
+          value: "TouchGiftShop",
+        },
+        {
+          display_name: "Corporate Group",
+          variable_name: "corporate_group",
+          value: "Touch Line Ltd",
+        },
+      ],
+      storefront: "TouchGiftShop",
+      parent_company: "Touch Line Ltd",
+      merchant_reference: params.merchantReference,
+      phone: params.phoneNumber || "",
+      customer_name: params.name || "",
+      description: params.description || "TouchGiftShop Order",
+    },
+  };
+
+  const res = await fetch(`${PAYSTACK_BASE}/transaction/initialize`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: "application/json",
+      Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
+      Accept: "application/json",
     },
-    body: JSON.stringify({
-      id: params.merchantReference,
-      currency: "KES",
-      amount: params.amount,
-      description: params.description,
-      callback_url: params.callbackUrl,
-      notification_id: process.env.PESAPAL_IPN_ID || "",
-      billing_address: {
-        phone_number: params.phoneNumber || "",
-        email_address: params.email || "",
-        country_code: "KE",
-        first_name: params.name ? params.name.split(" ")[0] : "Customer",
-        // The registered entity, not the trading brand. This is the name that
-        // appears on the buyer's PesaPal statement and on their card issuer's
-        // descriptor — "TouchGift" there is a mismatch the buyer has to argue
-        // with their bank about.
-        last_name: params.name
-          ? params.name.split(" ").slice(1).join(" ") || LEGAL_ENTITY
-          : LEGAL_ENTITY,
-      },
-    }),
+    body: JSON.stringify(payload),
   });
 
   const data = await res.json();
 
-  if (!res.ok || !data.order_tracking_id) {
-    const errorDetails = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
-    const message = typeof data.message === 'object' ? JSON.stringify(data.message) : data.message;
-    throw new Error(
-      `PesaPal order failed: ${message || errorDetails || res.status} - Full response: ${JSON.stringify(data)}`
-    );
+  if (!res.ok || !data.status || !data.data?.authorization_url) {
+    const errorMsg = data.message || `Paystack initialization failed (status: ${res.status})`;
+    console.error("Paystack createPaymentOrder error:", data);
+    throw new Error(errorMsg);
   }
 
   return {
-    orderTrackingId: data.order_tracking_id,
-    redirectUrl: data.redirect_url,
+    orderTrackingId: data.data.reference || params.merchantReference,
+    redirectUrl: data.data.authorization_url,
+    accessCode: data.data.access_code as string | undefined,
   };
 }
 
 export async function getTransactionStatus(
-  orderTrackingId: string
+  reference: string
 ): Promise<{
   status: "pending" | "completed" | "failed";
   receiptNumber?: string;
   amount?: number;
 }> {
-  const token = await getAccessToken();
-
-  const res = await fetch(
-    `${PESAPAL_BASE}/api/Transactions/GetTransactionStatus?orderTrackingId=${orderTrackingId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        Accept: "application/json",
-      },
-    }
-  );
-
-  if (!res.ok) {
-    throw new Error(`PesaPal status query failed: ${res.status}`);
+  const secretKey = getPaystackSecretKey();
+  if (!secretKey) {
+    throw new Error("Payment gateway configuration error: PAYSTACK_SECRET_KEY is not set.");
   }
 
-  const data = await res.json();
-
-  // PesaPal status: "PENDING", "COMPLETED", "FAILED"
-  const statusMap: Record<string, "pending" | "completed" | "failed"> = {
-    PENDING: "pending",
-    COMPLETED: "completed",
-    FAILED: "failed",
-  };
-
-  return {
-    status: statusMap[data.status] ?? "pending",
-    receiptNumber: data.mpesa_receipt_number || data.transaction_id,
-    amount: data.amount,
-  };
-}
-
-/**
- * Requests a refund via PesaPal API 3.0.
- *
- * Limitations:
- * - Only one refund per payment allowed
- * - Only COMPLETED mobile payments can be refunded (full amount only)
- * - PesaPal must approve the refund before funds are returned
- *
- * @param confirmationCode - The PesaPal tracking ID (pesapal_tracking_id) from the original payment
- * @param amount - Amount to refund (must match original for mobile payments)
- * @param username - Identity of who initiated the refund (admin name)
- * @param remarks - Reason for the refund
- */
-export async function refundPayment(
-  confirmationCode: string,
-  amount: number,
-  username: string,
-  remarks: string
-): Promise<{ success: boolean; message: string }> {
-  const token = await getAccessToken();
-
-  const res = await fetch(`${PESAPAL_BASE}/api/Transactions/RefundRequest`, {
-    method: "POST",
+  const res = await fetch(`${PAYSTACK_BASE}/transaction/verify/${encodeURIComponent(reference)}`, {
+    method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${secretKey}`,
       Accept: "application/json",
-      "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      confirmation_code: confirmationCode,
-      amount,
-      username,
-      remarks,
-    }),
+    cache: "no-store",
   });
 
   const data = await res.json();
 
-  if (data.error === 200) {
-    return { success: true, message: data.message || "Refund submitted" };
+  if (!res.ok || !data.status) {
+    // If not found or pending
+    if (res.status === 404 || data.message?.toLowerCase().includes("not found")) {
+      return { status: "pending" };
+    }
+    throw new Error(`Paystack verification failed: ${data.message || res.status}`);
   }
 
+  const txData = data.data;
+  let status: "pending" | "completed" | "failed" = "pending";
+
+  if (txData.status === "success") {
+    status = "completed";
+  } else if (txData.status === "failed" || txData.status === "reversed" || txData.status === "abandoned") {
+    status = "failed";
+  } else {
+    status = "pending";
+  }
+
+  // Paystack amount is in subunit minor units (cents / KES * 100)
+  const amount = typeof txData.amount === "number" ? txData.amount / 100 : undefined;
+  const receiptNumber =
+    txData.receipt_number ||
+    txData.reference ||
+    (txData.id ? String(txData.id) : undefined);
+
   return {
-    success: false,
-    message: data.message || `Refund failed (error: ${data.error})`,
+    status,
+    receiptNumber,
+    amount,
   };
+}
+
+/**
+ * Initiates a refund via Paystack API.
+ */
+export async function refundPayment(
+  referenceOrId: string,
+  amount: number,
+  username: string,
+  remarks: string
+): Promise<{ success: boolean; message: string }> {
+  const secretKey = getPaystackSecretKey();
+  if (!secretKey) {
+    return { success: false, message: "PAYSTACK_SECRET_KEY is not set." };
+  }
+
+  try {
+    const res = await fetch(`${PAYSTACK_BASE}/refund`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${secretKey}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        transaction: referenceOrId,
+        amount: Math.round(amount * 100),
+        merchant_note: `${remarks} (initiated by ${username})`,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.status) {
+      return { success: true, message: data.message || "Refund submitted successfully" };
+    }
+
+    return {
+      success: false,
+      message: data.message || `Refund failed (status ${res.status})`,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || "Refund request error",
+    };
+  }
 }

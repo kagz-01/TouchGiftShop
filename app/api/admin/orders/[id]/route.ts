@@ -9,13 +9,10 @@ type PaymentOutcome =
   | { state: "failed" | "not_supported" | "skipped"; message: string };
 
 /**
- * Returns the money to the customer through PesaPal.
+ * Returns the money to the customer through Paystack.
  *
- * PesaPal allows a single refund per payment, and mobile payments can only be
- * refunded in full — so a basket paid as one `multi-` payment cannot have one
- * order's worth returned on its own. Those are reported as unsupported rather
- * than attempted, because a partial request would be rejected and would burn
- * the one refund the payment is allowed.
+ * Paystack allows refunding payments — so a basket paid as one `multi-`
+ * payment can be reversed.
  *
  * The gift card credit is deliberately independent of this: cancelling an order
  * should return the card balance whether or not the money move succeeded, and a
@@ -55,13 +52,11 @@ async function refundOrderPayment(
   if (!order.pesapal_tracking_id) {
     return record(
       "not_supported",
-      "No PesaPal tracking id on this order, so it cannot be refunded automatically. Reconcile manually."
+      "No payment tracking id on this order, so it cannot be refunded automatically. Reconcile manually."
     );
   }
 
-  // One payment can cover a whole basket. PesaPal refunds mobile payments in
-  // full or not at all, so returning a single order's worth would be rejected
-  // and would use up the payment's only refund.
+  // One payment can cover a whole basket.
   const { data: sharing } = await supabase
     .from("orders")
     .select("id")
@@ -71,8 +66,7 @@ async function refundOrderPayment(
     return record(
       "not_supported",
       `This order shares one payment with ${sharing.length} other ` +
-        `order${sharing.length === 1 ? "" : "s"}. PesaPal refunds that payment in full, ` +
-        `so reverse the whole basket rather than this order alone.`
+        `order${sharing.length === 1 ? "" : "s"}. Reverse the whole basket rather than this order alone.`
     );
   }
 
@@ -90,14 +84,14 @@ async function refundOrderPayment(
     );
 
     if (result.success) {
-      console.log(`[admin] PesaPal refund submitted for order ${orderId}: ${amount}`);
+      console.log(`[admin] Paystack refund submitted for order ${orderId}: ${amount}`);
       return await record("completed", result.message);
     }
 
-    console.error(`[admin] PesaPal refund rejected for order ${orderId}: ${result.message}`);
+    console.error(`[admin] Paystack refund rejected for order ${orderId}: ${result.message}`);
     return await record("failed", result.message);
   } catch (e: any) {
-    console.error(`[admin] PesaPal refund error for order ${orderId}:`, e);
+    console.error(`[admin] Paystack refund error for order ${orderId}:`, e);
     return await record("failed", e?.message ?? "Refund request failed");
   }
 }

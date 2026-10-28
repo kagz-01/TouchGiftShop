@@ -210,7 +210,7 @@ export default function VendorPackPage() {
               applicable.
             </li>
             <li>
-              Pay by PesaPal (M-Pesa or card) or bank transfer. LPOs are accepted for
+              Pay by Paystack (M-Pesa or card) or bank transfer. LPOs are accepted for
               approved corporate accounts; payment terms are confirmed on the quote.
             </li>
             <li>

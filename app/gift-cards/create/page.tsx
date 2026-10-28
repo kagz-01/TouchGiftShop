@@ -109,7 +109,7 @@ export default function GiftCardWizard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Payment failed");
 
-      // Redirect to PesaPal
+      // Redirect to Paystack
       if (data.redirectUrl) {
         window.location.href = data.redirectUrl;
       } else {

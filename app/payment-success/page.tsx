@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { supabaseAdmin } from "@/lib/supabase";
+import PaymentSuccessCard from "@/components/payment/PaymentSuccessCard";
 import PaymentSuccessPinDrop from "@/components/pin-drop/PaymentSuccessPinDrop";
-import BackToHome from "@/components/ui/BackToHome";
 import GuestClaimNudge from "@/components/auth/GuestClaimNudge";
 import dynamic from "next/dynamic";
 
@@ -10,91 +11,71 @@ const PaymentStatusPoller = dynamic(
 );
 
 async function getOrder(id: string) {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
-  const res = await fetch(`${base}/api/orders/${id}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  const { order } = await res.json();
-  return order;
+  try {
+    const cleanId = id.startsWith("multi-") ? id.replace("multi-", "").split(",")[0]?.trim() : id;
+    if (!cleanId) return null;
+
+    const { data } = await supabaseAdmin
+      .from("orders")
+      .select("id, status, total_amount, recipient_name, recipient_phone, recipient_pin_requested, mpesa_receipt_number, created_at")
+      .eq("id", cleanId)
+      .maybeSingle();
+
+    return data;
+  } catch (e) {
+    console.error("Error fetching order in payment-success:", e);
+    return null;
+  }
 }
 
 export default async function PaymentSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ ref?: string }>;
+  searchParams: Promise<{ ref?: string; reference?: string; trxref?: string }>;
 }) {
   const params = await searchParams;
-  const ref = params.ref;
+  // Paystack returns either 'ref', 'reference', or 'trxref'
+  const ref = params.ref || params.reference || params.trxref;
 
   // Gift card purchases use "giftcard-{cardId}" as the reference
   const isGiftCard = ref?.startsWith("giftcard-");
   // Pool contributions use "pool-{contributionId}" as the reference
   const isPool = ref?.startsWith("pool-");
 
-  // Check if this is a pin-drop order
+  let order = null;
   let isPinDrop = false;
-  let giftCardCode: string | null = null;
 
-  if (isGiftCard) {
-    // For gift cards, we don't have the code yet in the success page
-    // The card will be activated via IPN
-  } else if (ref && !isPool) {
-    const order = await getOrder(ref);
+  if (ref && !isGiftCard && !isPool) {
+    order = await getOrder(ref);
     isPinDrop = order?.recipient_pin_requested ?? false;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="text-6xl mb-4">{isGiftCard ? "🎁" : "🎉"}</div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">
-        {isGiftCard ? "Gift card purchased!" : "Payment received!"}
-      </h1>
-      <p className="text-gray-500 mb-2 max-w-sm">
-        {isGiftCard
-          ? "Your gift card has been created. The recipient will receive the code shortly."
-          : isPool
-            ? "Thank you for your contribution! The pool balance has been updated."
-            : "Thank you for your order. We'll start preparing your gift right away."}
-      </p>
-      {ref && (
-        <p className="text-xs text-gray-400 mb-6">
-          Reference: {ref}
-        </p>
-      )}
-      
-      <div className="flex gap-3">
-        {isGiftCard ? (
-          <Link
-            href="/gift-cards"
-            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-          >
-            View Gift Cards
-          </Link>
-        ) : isPool ? (
-          <Link
-            href="/gift-lab"
-            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-          >
-            View Gift Lab
-          </Link>
-        ) : (
-          <Link
-            href={ref ? `/orders/${ref}` : "/orders"}
-            className="px-6 py-3 bg-brand text-white rounded-lg font-medium hover:bg-brand-dark transition-colors"
-          >
-            View Order
-          </Link>
-        )}
-        <BackToHome label="Back to Home" />
-      </div>
+    <div className="min-h-[80vh] flex flex-col justify-center items-center py-10 relative z-10">
+      <PaymentSuccessCard
+        orderId={ref}
+        isGiftCard={isGiftCard}
+        isPool={isPool}
+        initialOrder={order}
+      />
 
-      {/* Guest nudge — claim the order by creating an account */}
-      {!isGiftCard && !isPool && <GuestClaimNudge />}
-
+      {/* Recipient pin drop modal if requested */}
       {!isGiftCard && isPinDrop && ref && (
-        <PaymentSuccessPinDrop orderId={ref} />
+        <div className="w-full max-w-xl mx-auto px-4 mt-2">
+          <PaymentSuccessPinDrop orderId={ref} />
+        </div>
       )}
+
+      {/* Guest member conversion / claim nudge */}
+      {!isGiftCard && !isPool && (
+        <div className="w-full max-w-xl mx-auto px-4 mt-2">
+          <GuestClaimNudge />
+        </div>
+      )}
+
+      {/* Realtime verification feedback badge if still confirming */}
       {!isGiftCard && ref && (
-        <div className="w-full max-w-md mt-6">
+        <div className="w-full max-w-xl mx-auto px-4 mt-2">
           <PaymentStatusPoller trackingId={ref} />
         </div>
       )}

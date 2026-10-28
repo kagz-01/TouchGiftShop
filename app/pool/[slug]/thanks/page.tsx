@@ -97,7 +97,7 @@ export default function ThanksPage() {
           {/* Confirmation */}
           <div className="mt-5 flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl px-4 py-3">
             <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <p className="text-xs text-emerald-300 text-left">Payment confirmed by PesaPal. Your name will appear on the pool shortly.</p>
+            <p className="text-xs text-emerald-300 text-left">Payment confirmed by Paystack. Your name will appear on the pool shortly.</p>
           </div>
         </div>
 
