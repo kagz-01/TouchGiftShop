@@ -44,7 +44,7 @@ const VISION_LINES = [
   { slug: "perfumes",       label: "Luxury Fragrances",     description: "Authentic designer scents.",         icon: <Sparkles className="w-4 h-4" /> },
 ];
 
-const MEGA_MENU_DATA: MegaMenuCategory[] = [
+export const MEGA_MENU_DATA: MegaMenuCategory[] = [
   {
     id: "find-gift",
     label: "Find a Gift",
