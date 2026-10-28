@@ -22,7 +22,7 @@ export async function GET(
   const { data: order, error } = await supabase
     .from("orders")
     .select(
-      "id, status, rider_lat, rider_lng, rider_updated_at, delivery_lat, delivery_lng, delivery_landmark, delivery_time_window, recipient_name, track_token, rider_token"
+      "id, status, rider_lat, rider_lng, rider_updated_at, delivery_lat, delivery_lng, delivery_landmark, delivery_time_window, recipient_name, recipient_phone, sender_name, is_anonymous, dont_call_recipient, gift_note, track_token, rider_token, quantity, products(name, image_url)"
     )
     .eq("id", params.orderId)
     .single();
@@ -32,7 +32,9 @@ export async function GET(
   }
 
   // Verify token matches either track_token or rider_token
-  if (order.track_token !== token && order.rider_token !== token) {
+  const isRider = order.rider_token === token;
+  const isCustomer = order.track_token === token;
+  if (!isRider && !isCustomer) {
     return NextResponse.json({ error: "Invalid link" }, { status: 404 });
   }
 
@@ -54,12 +56,24 @@ export async function GET(
         }
       : null;
 
+  // Products typing helper
+  const productData = order.products as { name?: string; image_url?: string } | null;
+
   return NextResponse.json({
     orderId: order.id,
     status: order.status,
     recipientName: order.recipient_name,
+    recipientPhone: order.recipient_phone,
+    senderName: order.is_anonymous ? null : order.sender_name,
+    isAnonymous: Boolean(order.is_anonymous),
+    dontCallRecipient: Boolean(order.dont_call_recipient),
+    giftNote: order.gift_note,
     timeWindow: order.delivery_time_window,
+    packageName: productData?.name || "TouchGift Luxury Parcel",
+    packageQuantity: order.quantity || 1,
+    packageImage: productData?.image_url || null,
     riderLocation,
     deliveryPin,
+    isRiderView: isRider,
   });
 }

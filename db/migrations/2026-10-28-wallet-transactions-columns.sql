@@ -19,3 +19,4 @@ ALTER TABLE wallet_transactions
   ADD COLUMN IF NOT EXISTS reference_id TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_wallet_transactions_wallet_id ON wallet_transactions(wallet_id);
+

@@ -8,6 +8,7 @@ import {
   ArrowLeft, Package, Truck, CheckCircle, Clock,
   MapPin, Phone, User, Gift, Copy, CheckCircle2,
   Share2, AlertCircle, Send, RotateCcw, XCircle, Undo2,
+  Navigation, ExternalLink
 } from "lucide-react";
 
 const STATUSES = [
@@ -94,6 +95,7 @@ interface Order {
   delivery_landmark: string | null;
   delivery_time_window: string | null;
   rider_token: string | null;
+  track_token?: string | null;
   pre_dispatch_photo_url: string | null;
   products: { name: string; image_url: string | null } | null;
 }
@@ -371,9 +373,21 @@ export default function AdminOrderDetailPage() {
 
                 {riderUrl || order.rider_token ? (
                   <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 p-3 rounded-xl">
-                      <CheckCircle className="w-4 h-4" />
-                      <span className="font-medium">Rider assigned</span>
+                    <div className="flex items-center justify-between gap-2 text-sm text-green-700 bg-green-50 p-3 rounded-xl">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4" />
+                        <span className="font-medium">Rider assigned</span>
+                      </div>
+                      <a
+                        href={`/track/${order.id}/live?token=${order.rider_token || order.track_token}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Live Map</span>
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </a>
                     </div>
                     {riderUrl && (
                       <div className="flex gap-2">

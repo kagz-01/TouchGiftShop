@@ -46,8 +46,9 @@ export default function OrderFulfillmentStatus({
   );
   const whatsappUrl = `https://wa.me/${shopPhone}?text=${whatsappCoordinationMsg}`;
 
-  // Live tracking URL if dispatched and trackToken exists
-  const liveTrackingUrl = trackToken ? `/track/${orderId}/live?token=${trackToken}` : null;
+  // Live tracking URL if dispatched and trackToken or riderToken exists
+  const effectiveToken = trackToken || riderToken;
+  const liveTrackingUrl = effectiveToken ? `/track/${orderId}/live?token=${effectiveToken}` : null;
 
   return (
     <div className="space-y-4">

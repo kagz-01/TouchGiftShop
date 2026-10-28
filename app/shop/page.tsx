@@ -4,7 +4,7 @@ import ProductGrid from "@/components/home/ProductGrid";
 import ShopFilterBar from "@/components/home/ShopFilterBar";
 import { ShopRefineRail, ShopBottomBar } from "@/components/shop/ShopMobileFilters";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
-import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag } from "lucide-react";
+import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag, ChevronRight, X, Layers } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,25 +13,172 @@ export const metadata: Metadata = {
     "Browse 700+ curated gifts. Filter by occasion, budget, or let our AI find the perfect match. Same-day delivery across Nairobi.",
 };
 
-
+const SUB_META: Record<string, { title: string; subtitle: string; parent: string }> = {
+  birthday: {
+    title: "Birthdays",
+    subtitle: "Make their milestone count with curated gift sets, designer scents, and luxury treats.",
+    parent: "Occasions",
+  },
+  anniversary: {
+    title: "Anniversaries",
+    subtitle: "Celebrate years of shared love and memories with romantic, timeless luxury keepsakes.",
+    parent: "Occasions",
+  },
+  wedding: {
+    title: "Weddings",
+    subtitle: "Exquisite celebratory hampers and elegant homeware for the newly-weds.",
+    parent: "Occasions",
+  },
+  valentines: {
+    title: "Valentine's Day",
+    subtitle: "Curated romantic selections, artisanal chocolates, and luxury gifts for your special someone.",
+    parent: "Occasions",
+  },
+  "mothers-day": {
+    title: "Mother's Day",
+    subtitle: "Spoil the remarkable mothers with pampering wellness sets and floral elegance.",
+    parent: "Occasions",
+  },
+  "fathers-day": {
+    title: "Father's Day",
+    subtitle: "Executive essentials, fine leather, and premium spirits tailored for him.",
+    parent: "Occasions",
+  },
+  "end-of-year": {
+    title: "End of Year & Holidays",
+    subtitle: "Thoughtful holiday appreciation hampers for valued clients and dedicated teams.",
+    parent: "Occasions",
+  },
+  workiversary: {
+    title: "Workiversaries",
+    subtitle: "Celebrate employee loyalty and career milestones with distinction.",
+    parent: "Occasions",
+  },
+  onboarding: {
+    title: "Client & Staff Onboarding",
+    subtitle: "Start new relationships with premium welcome kits and branded executive gifts.",
+    parent: "Occasions",
+  },
+  "gift-sets": {
+    title: "Gift Sets & Hampers",
+    subtitle: "Signature handcrafted boxes packed with gourmet treats and memorable surprises.",
+    parent: "Categories",
+  },
+  perfumes: {
+    title: "Luxury Fragrances",
+    subtitle: "Authentic designer scents for him & her, elegantly boxed for same-day delivery.",
+    parent: "Categories",
+  },
+  flowers: {
+    title: "Fresh Flowers",
+    subtitle: "Hand-tied bouquets sourced daily and delivered fresh across Nairobi.",
+    parent: "Categories",
+  },
+  drinks: {
+    title: "Wine & Spirits",
+    subtitle: "Celebratory champagne, vintage wines, and premium whiskeys for every toast.",
+    parent: "Categories",
+  },
+  "fruits-edibles": {
+    title: "Fruit Hampers & Edibles",
+    subtitle: "Vibrant gourmet fruits, artisanal chocolates, and wholesome indulgence.",
+    parent: "Categories",
+  },
+  apparel: {
+    title: "Wearables & Apparel",
+    subtitle: "Branded jackets, executive polo shirts, and custom merch.",
+    parent: "Categories",
+  },
+  drinkware: {
+    title: "Drinkware",
+    subtitle: "Double-walled thermal flasks, custom travel mugs, and artisan tumblers.",
+    parent: "Categories",
+  },
+  "stationery-office": {
+    title: "Stationery & Executive",
+    subtitle: "Fine journals, engraved pens, and bespoke desk organizers.",
+    parent: "Categories",
+  },
+  "awards-trophies": {
+    title: "Awards & Trophies",
+    subtitle: "Crystal trophies and personalized plaques celebrating excellence.",
+    parent: "Categories",
+  },
+  premium: {
+    title: "The Platinum Edit",
+    subtitle: "Our most exclusive luxury creations for moments that demand perfection.",
+    parent: "Collections",
+  },
+  corporate: {
+    title: "Corporate Essentials",
+    subtitle: "Professional branded gift sets and bulk merchandise for enterprise partners.",
+    parent: "Collections",
+  },
+  sustainable: {
+    title: "Eco-Friendly & Sustainable",
+    subtitle: "Consciously crafted gifts using organic, renewable, and biodegradable materials.",
+    parent: "Collections",
+  },
+};
 
 export default async function ShopPage({
   searchParams,
 }: {
   searchParams: Promise<{
     category?: string;
+    occasion?: string;
     audience?: string;
     holiday?: string;
     cultural?: string;
     community?: string;
     budget?: string;
+    tag?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    personalizable?: string;
     q?: string;
     delivery?: string;
   }>;
 }) {
   const params = await searchParams;
-  const effectiveLabel =
-    params.category || params.audience || params.holiday || params.cultural || params.community;
+  const filterKey =
+    params.category ||
+    params.occasion ||
+    params.tag ||
+    params.audience ||
+    params.holiday ||
+    params.cultural ||
+    params.community;
+
+  const meta = filterKey ? SUB_META[filterKey] : null;
+  const parentCategory = meta?.parent || (params.occasion ? "Occasions" : params.tag ? "Collections" : "Categories");
+
+  let displayTitle = meta?.title;
+  if (!displayTitle) {
+    if (params.q) {
+      displayTitle = `Results for “${params.q}”`;
+    } else if (params.budget) {
+      displayTitle = `Budget: ${params.budget}`;
+    } else if (params.minPrice || params.maxPrice) {
+      displayTitle = `Price KSh ${params.minPrice ?? "0"} - ${params.maxPrice ?? "10,000+"}`;
+    } else if (params.personalizable) {
+      displayTitle = "Personalized Gifts";
+    } else if (filterKey) {
+      displayTitle = filterKey.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+    } else {
+      displayTitle = "All Gifts";
+    }
+  }
+
+  const displaySubtitle =
+    meta?.subtitle ||
+    (params.q
+      ? "Showing all matching gifts from our Nairobi catalog."
+      : "Browse our curated collection · Same-day Nairobi delivery");
+
+  const hasActiveFilter = Boolean(
+    filterKey || params.q || params.budget || params.minPrice || params.maxPrice || params.personalizable
+  );
 
   return (
     <div className="min-h-screen section-theme-f">
@@ -82,22 +229,49 @@ export default async function ShopPage({
         </div>
       </div>
 
-      <div className="page-container-capped pt-4 pb-4">
+      <div className="page-container-capped pt-5 pb-4">
+        {/* Dedicated Category Breadcrumbs & Back Navigation */}
+        {hasActiveFilter && (
+          <div className="mb-4 space-y-2">
+            <nav className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "var(--text-muted)" }}>
+              <Link href="/" className="hover:text-brand transition-colors">Home</Link>
+              <ChevronRight className="w-3 h-3 opacity-40" />
+              <Link href="/shop" className="hover:text-brand transition-colors">{parentCategory}</Link>
+              <ChevronRight className="w-3 h-3 opacity-40" />
+              <span className="font-bold" style={{ color: "var(--text-primary)" }}>{displayTitle}</span>
+            </nav>
+
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <Link
+                href="/shop"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand/10 hover:bg-brand/15 text-brand rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>← Back to All Gifts</span>
+              </Link>
+              <Link
+                href="/shop"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors"
+                style={{ background: 'var(--card-bg)', borderColor: 'var(--surface-border)', color: 'var(--text-muted)' }}
+              >
+                <span>Filter: {displayTitle}</span>
+                <X className="w-3 h-3 hover:text-brand" />
+              </Link>
+            </div>
+          </div>
+        )}
+
         {/* Hero heading */}
         <div className="flex items-end justify-between flex-wrap gap-3 md:gap-4 mb-3">
           <div>
             <h1
-              className="font-display text-xl md:text-3xl font-bold"
+              className="font-display text-xl md:text-3xl font-bold tracking-tight"
               style={{ color: "var(--text-primary)" }}
             >
-              {params.q
-                ? `Results for “${params.q}”`
-                : effectiveLabel
-                ? effectiveLabel.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
-                : "All Gifts"}
+              {displayTitle}
             </h1>
-            <p className="text-xs md:text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-              Browse our curated collection · Same-day Nairobi delivery
+            <p className="text-xs md:text-sm mt-1 max-w-2xl leading-relaxed" style={{ color: "var(--text-muted)" }}>
+              {displaySubtitle}
             </p>
           </div>
 
