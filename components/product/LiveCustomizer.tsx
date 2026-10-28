@@ -116,112 +116,140 @@ export default function LiveCustomizer({
 
   // Initialize Fabric Canvas
   useEffect(() => {
-    if (!canvasRef.current || !containerRef.current) return;
+    let canvasInstance: fabric.Canvas | null = null;
+    let resizeHandler: (() => void) | null = null;
 
-    const containerWidth = containerRef.current.clientWidth;
-    const containerHeight = containerRef.current.clientHeight;
+    const init = async () => {
+      if (!canvasRef.current || !containerRef.current) return;
 
-    const initCanvas = new fabric.Canvas(canvasRef.current, {
-      width: containerWidth,
-      height: containerHeight,
-      preserveObjectStacking: true,
-      selection: true,
-    });
+      const containerWidth = containerRef.current.clientWidth;
+      const containerHeight = containerRef.current.clientHeight;
 
-    // Background image (may be missing for some products — the canvas stays
-    // usable either way: the safe zone goes in first so it is never blank).
-    if (baseImage) {
-      fabric.Image.fromURL(
-        baseImage,
-        (img) => {
-          if (!img) {
-            console.warn("[LiveCustomizer] product image failed to load:", baseImage);
-            return;
+      const initCanvas = new fabric.Canvas(canvasRef.current, {
+        width: containerWidth,
+        height: containerHeight,
+        preserveObjectStacking: true,
+        selection: true,
+      });
+      canvasInstance = initCanvas;
+
+      // Background image (may be missing for some products — the canvas stays
+      // usable either way: the safe zone goes in first so it is never blank).
+      //
+      // Images live on Supabase storage (cross-origin). Drawing a cross-origin
+      // image taints the canvas and canvas.toDataURL() throws on save, so we
+      // fetch as a blob and present it through a same-origin blob: URL before
+      // handing it to fabric.
+      if (baseImage) {
+        try {
+          const res = await fetch(baseImage);
+          if (res.ok) {
+            const blob = await res.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            fabric.Image.fromURL(
+              objectUrl,
+              (img) => {
+                URL.revokeObjectURL(objectUrl);
+                if (!img) {
+                  console.warn("[LiveCustomizer] product image failed to load:", baseImage);
+                  return;
+                }
+                const scale = Math.min(
+                  containerWidth / (img.width || 1),
+                  containerHeight / (img.height || 1)
+                );
+                img.set({
+                  originX: "center",
+                  originY: "center",
+                  left: containerWidth / 2,
+                  top: containerHeight / 2,
+                  scaleX: scale,
+                  scaleY: scale,
+                });
+                initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
+              },
+              { crossOrigin: "anonymous" }
+            );
+          } else {
+            console.warn("[LiveCustomizer] product image fetch failed:", baseImage, res.status);
           }
-          const scale = Math.min(
-            containerWidth / (img.width || 1),
-            containerHeight / (img.height || 1)
-          );
-          img.set({
-            originX: "center",
-            originY: "center",
-            left: containerWidth / 2,
-            top: containerHeight / 2,
-            scaleX: scale,
-            scaleY: scale,
-          });
-          initCanvas.setBackgroundImage(img, initCanvas.renderAll.bind(initCanvas));
-        },
-        { crossOrigin: "anonymous" }
-      );
-    }
+        } catch (e) {
+          console.warn("[LiveCustomizer] product image load threw:", (e as Error).message);
+        }
+      }
 
-    // Safe zone — full bleed for large format, constrained for everything else
-    const isFullBleed = FULL_BLEED_TYPES.has(materialType);
-    const szW = isFullBleed ? containerWidth * 0.96 : Math.min(containerWidth * 0.55, 320);
-    const szH = isFullBleed ? containerHeight * 0.96 : Math.min(containerHeight * 0.55, 320);
-    const safeZoneLabel = isFullBleed ? "✦ Full Design Area" : "✦ Print / Engrave Area";
-    const sz = new fabric.Rect({
-      left: containerWidth / 2,
-      top: containerHeight / 2,
-      originX: "center",
-      originY: "center",
-      width: szW,
-      height: szH,
-      fill: isFullBleed ? "transparent" : "rgba(155,27,90,0.04)",
-      stroke: "#9B1B5A",
-      strokeWidth: isFullBleed ? 1 : 2,
-      strokeDashArray: isFullBleed ? [3, 3] : [6, 4],
-      selectable: false,
-      evented: false,
-      name: "safeZone",
-    });
-    initCanvas.add(sz);
-    setSafeZone(sz);
+      // Safe zone — full bleed for large format, constrained for everything else
+      const isFullBleed = FULL_BLEED_TYPES.has(materialType);
+      const szW = isFullBleed ? containerWidth * 0.96 : Math.min(containerWidth * 0.55, 320);
+      const szH = isFullBleed ? containerHeight * 0.96 : Math.min(containerHeight * 0.55, 320);
+      const safeZoneLabel = isFullBleed ? "✦ Full Design Area" : "✦ Print / Engrave Area";
+      const sz = new fabric.Rect({
+        left: containerWidth / 2,
+        top: containerHeight / 2,
+        originX: "center",
+        originY: "center",
+        width: szW,
+        height: szH,
+        fill: isFullBleed ? "transparent" : "rgba(155,27,90,0.04)",
+        stroke: "#9B1B5A",
+        strokeWidth: isFullBleed ? 1 : 2,
+        strokeDashArray: isFullBleed ? [3, 3] : [6, 4],
+        selectable: false,
+        evented: false,
+        name: "safeZone",
+      });
+      initCanvas.add(sz);
+      setSafeZone(sz);
 
-    // Safe zone label
-    const label = new fabric.Text(safeZoneLabel, {
-      left: containerWidth / 2 - szW / 2 + 4,
-      top: containerHeight / 2 - szH / 2 - 18,
-      fontSize: 11,
-      fill: "#9B1B5A",
-      fontFamily: "Inter, sans-serif",
-      selectable: false,
-      evented: false,
-      name: "safeZoneLabel",
-      opacity: 0.7,
-    });
-    initCanvas.add(label);
+      // Safe zone label
+      const label = new fabric.Text(safeZoneLabel, {
+        left: containerWidth / 2 - szW / 2 + 4,
+        top: containerHeight / 2 - szH / 2 - 18,
+        fontSize: 11,
+        fill: "#9B1B5A",
+        fontFamily: "Inter, sans-serif",
+        selectable: false,
+        evented: false,
+        name: "safeZoneLabel",
+        opacity: 0.7,
+      });
+      initCanvas.add(label);
 
-    setCanvas(initCanvas);
+      setCanvas(initCanvas);
 
-    initCanvas.on("object:moving", (e) => {
-      const obj = e.target;
-      if (!obj || obj.name === "safeZone" || obj.name === "safeZoneLabel") return;
-      obj.setCoords();
-      const ob = obj.getBoundingRect();
-      const sb = sz.getBoundingRect();
-      if (ob.left < sb.left) obj.left! += sb.left - ob.left;
-      if (ob.top < sb.top) obj.top! += sb.top - ob.top;
-      obj.setCoords();
-      const ub = obj.getBoundingRect();
-      if (ub.left + ub.width > sb.left + sb.width) obj.left! -= (ub.left + ub.width) - (sb.left + sb.width);
-      if (ub.top + ub.height > sb.top + sb.height) obj.top! -= (ub.top + ub.height) - (sb.top + sb.height);
-    });
+      initCanvas.on("object:moving", (e) => {
+        const obj = e.target;
+        if (!obj || obj.name === "safeZone" || obj.name === "safeZoneLabel") return;
+        obj.setCoords();
+        const ob = obj.getBoundingRect();
+        const sb = sz.getBoundingRect();
+        if (ob.left < sb.left) obj.left! += sb.left - ob.left;
+        if (ob.top < sb.top) obj.top! += sb.top - ob.top;
+        obj.setCoords();
+        const ub = obj.getBoundingRect();
+        if (ub.left + ub.width > sb.left + sb.width) obj.left! -= (ub.left + ub.width) - (sb.left + sb.width);
+        if (ub.top + ub.height > sb.top + sb.height) obj.top! -= (ub.top + ub.height) - (sb.top + sb.height);
+      });
 
-    initCanvas.on("selection:created", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
-    initCanvas.on("selection:updated", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
-    initCanvas.on("selection:cleared", () => { setSelectedObject(null); setActiveTab("add"); });
+      initCanvas.on("selection:created", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
+      initCanvas.on("selection:updated", (e) => { setSelectedObject(e.selected?.[0] || null); setActiveTab("props"); });
+      initCanvas.on("selection:cleared", () => { setSelectedObject(null); setActiveTab("add"); });
 
-    setCanvas(initCanvas);
-
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      initCanvas.setDimensions({ width: containerRef.current.clientWidth, height: containerRef.current.clientHeight });
-      initCanvas.renderAll();
+      const handleResize = () => {
+        if (!containerRef.current) return;
+        initCanvas.setDimensions({ width: containerRef.current.clientWidth, height: containerRef.current.clientHeight });
+        initCanvas.renderAll();
+      };
+      resizeHandler = handleResize;
+      window.addEventListener("resize", handleResize);
     };
-    window.addEventListener("resize", handleResize);
-    return () => { window.removeEventListener("resize", handleResize); initCanvas.dispose(); };
+
+    init();
+
+    return () => {
+      if (resizeHandler) window.removeEventListener("resize", resizeHandler);
+      if (canvasInstance) canvasInstance.dispose();
+    };
   }, [baseImage]);
 
   // Keyboard delete
