@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
+import { getOnSaleProductIds, getRatedProductIds } from "@/lib/product-filters";
 import type { Product } from "@/lib/types";
 import { optimizeProductImagesList } from "@/lib/image-url";
 import ProductGridClient from "./ProductGridClient";
@@ -135,6 +136,24 @@ async function getProducts(params: ShopParams): Promise<{
   query = query.eq("in_stock", true);
   query = query.eq("status", "published");
 
+  // ── Id-based pre-filters — MUST run before range(): a JS filter after the
+  //    window shows "0 of N" while stock exists. Resolved as id sets because
+  //    PostgREST can't compare two columns (sale_price < price).
+  if (params.onSale === "1") {
+    const saleIds = await getOnSaleProductIds();
+    if (saleIds.length === 0) return { products: [], hasMore: false, count: 0 };
+    query = query.in("id", saleIds);
+  }
+
+  if (params.minRating) {
+    const minR = parseFloat(params.minRating);
+    if (!isNaN(minR) && minR > 0) {
+      const ratedIds = await getRatedProductIds(minR);
+      if (ratedIds.length === 0) return { products: [], hasMore: false, count: 0 };
+      query = query.in("id", ratedIds);
+    }
+  }
+
   // Sort
   if (params.sort) {
     switch (params.sort) {
@@ -169,42 +188,7 @@ async function getProducts(params: ShopParams): Promise<{
 
   if (error || !data) return { products: [], hasMore: false, count: 0 };
 
-  let allProducts = data as unknown as (Product & { sale_price?: number | null })[];
-
-  // Post-filter: on sale
-  if (params.onSale === "1") {
-    allProducts = allProducts.filter(
-      (p) => p.sale_price != null && Number(p.sale_price) < Number(p.price)
-    );
-  }
-
-  // Post-filter: min rating
-  if (params.minRating) {
-    const minR = parseFloat(params.minRating);
-    if (!isNaN(minR) && minR > 0) {
-      const { data: ratingData } = await supabaseAdmin
-        .from("reviews")
-        .select("product_id, rating")
-        .eq("status", "approved");
-
-      if (ratingData && ratingData.length > 0) {
-        const ratingMap = new Map<string, { sum: number; count: number }>();
-        for (const r of ratingData as any[]) {
-          const existing = ratingMap.get(r.product_id) || { sum: 0, count: 0 };
-          existing.sum += Number(r.rating);
-          existing.count += 1;
-          ratingMap.set(r.product_id, existing);
-        }
-        const qualifyingIds = new Set<string>();
-        for (const [pid, { sum, count }] of ratingMap) {
-          if (sum / count >= minR) qualifyingIds.add(pid);
-        }
-        allProducts = allProducts.filter((p) => qualifyingIds.has(p.id));
-      } else {
-        allProducts = [];
-      }
-    }
-  }
+  const allProducts = data as unknown as (Product & { sale_price?: number | null })[];
 
   // Collect available filter values from the full result set (before slice)
   const colorSet = new Set<string>();

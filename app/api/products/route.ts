@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
+import { getOnSaleProductIds, getRatedProductIds } from "@/lib/product-filters";
 import { optimizeProductImagesList } from "@/lib/image-url";
 
 // GET /api/products
@@ -127,12 +128,27 @@ export async function GET(req: Request) {
     query = query.gte("created_at", cutoff);
   }
 
-  // ── On sale filter ──
+  // ── On sale filter — id set resolved first, applied BEFORE range() ──
+  //    (the old `sale_price < 0` placeholder matched nothing, so Load More on
+  //    a sale filter always returned an empty page.)
   if (onSale === "1") {
-    query = query.not("sale_price", "is", null);
-    query = query.lt("sale_price", 0); // placeholder — will use RPC or post-filter
-    // Actually: Supabase doesn't support sale_price < price directly.
-    // We'll filter in post-processing below.
+    const saleIds = await getOnSaleProductIds();
+    if (saleIds.length === 0) {
+      return NextResponse.json({ products: [], hasMore: false, count: 0 });
+    }
+    query = query.in("id", saleIds);
+  }
+
+  // ── Rating filter — same id-set pattern, before range() ──
+  if (minRating) {
+    const minR = parseFloat(minRating);
+    if (!isNaN(minR) && minR > 0) {
+      const ratedIds = await getRatedProductIds(minR);
+      if (ratedIds.length === 0) {
+        return NextResponse.json({ products: [], hasMore: false, count: 0 });
+      }
+      query = query.in("id", ratedIds);
+    }
   }
 
   // ── Personalizable filter ──
@@ -193,46 +209,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  let allProducts = (data ?? []) as any[];
-
-  // ── Post-filters that Supabase can't do natively ──
-
-  // On sale: sale_price must exist and be less than price
-  if (onSale === "1") {
-    allProducts = allProducts.filter(
-      (p: any) => p.sale_price != null && Number(p.sale_price) < Number(p.price)
-    );
-  }
-
-  // ── Rating filter: query reviews table separately ──
-  if (minRating) {
-    const minR = parseFloat(minRating);
-    if (!isNaN(minR) && minR > 0) {
-      // Get product IDs with avg rating >= minR
-      const { data: ratingData } = await supabaseAdmin
-        .from("reviews")
-        .select("product_id, rating")
-        .eq("status", "approved");
-
-      if (ratingData && ratingData.length > 0) {
-        // Calculate avg rating per product
-        const ratingMap = new Map<string, { sum: number; count: number }>();
-        for (const r of ratingData as any[]) {
-          const existing = ratingMap.get(r.product_id) || { sum: 0, count: 0 };
-          existing.sum += Number(r.rating);
-          existing.count += 1;
-          ratingMap.set(r.product_id, existing);
-        }
-        const qualifyingIds = new Set<string>();
-        for (const [pid, { sum, count }] of ratingMap) {
-          if (sum / count >= minR) qualifyingIds.add(pid);
-        }
-        allProducts = allProducts.filter((p: any) => qualifyingIds.has(p.id));
-      } else {
-        allProducts = [];
-      }
-    }
-  }
+  const allProducts = (data ?? []) as any[];
 
   const hasMore = allProducts.length > limit;
   const products = hasMore ? allProducts.slice(0, limit) : allProducts;
