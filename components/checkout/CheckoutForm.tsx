@@ -13,6 +13,7 @@ import type { CartItem } from "@/lib/cart";
 import { createClient } from "@/lib/supabase-browser";
 import { isGuest, setGuest } from "@/lib/guest";
 import GiftWrapSelector, { WrapType, WRAP_OPTIONS } from "@/components/shared/GiftWrapSelector";
+import { validatePhone } from "@/lib/phone";
 
 type Step = "form" | "redirecting" | "error";
 
@@ -311,15 +312,8 @@ export default function CheckoutForm({
   }
 
   function isPhoneValid(v: string) {
-    const t = v.trim();
-    if (!t) return false;
-    if (t.startsWith("+")) { const d = t.replace(/\D/g, ""); return d.length >= 8 && d.length <= 15; }
-    const d = t.replace(/\D/g, "");
-    return (
-      (d.startsWith("254") && d.length === 12) ||
-      (d.startsWith("07") && d.length === 10) ||
-      (d.length === 9 && (d.startsWith("7") || d.startsWith("1")))
-    );
+    if (!v || !v.trim()) return false;
+    return validatePhone(v.trim()).isValid;
   }
 
   useEffect(() => { setSenderPhoneError(senderPhone ? (isPhoneValid(senderPhone) ? null : "Invalid number") : null); }, [senderPhone]);

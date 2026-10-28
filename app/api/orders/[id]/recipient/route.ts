@@ -12,21 +12,33 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { recipientPhone, purpose } = await req.json();
-
-  if (!recipientPhone) {
-    return NextResponse.json({ error: "recipientPhone required" }, { status: 400 });
+  let body: any = {};
+  try {
+    body = await req.json();
+  } catch {
+    body = {};
   }
+  const { recipientPhone, purpose } = body;
 
   const { data: order, error } = await supabase
     .from("orders")
     .select("id, recipient_phone, recipient_name")
     .eq("id", params.id)
-    .eq("recipient_phone", recipientPhone)
     .single();
 
   if (error || !order) {
-    return NextResponse.json({ error: "Order not found for this phone number" }, { status: 404 });
+    return NextResponse.json({ error: "Order not found" }, { status: 404 });
+  }
+
+  // If sender updated or corrected recipient phone, save it on the order
+  if (recipientPhone && typeof recipientPhone === "string" && recipientPhone.trim()) {
+    const cleanPhone = recipientPhone.trim();
+    if (cleanPhone !== order.recipient_phone) {
+      await supabase
+        .from("orders")
+        .update({ recipient_phone: cleanPhone })
+        .eq("id", params.id);
+    }
   }
 
   const token = crypto.randomBytes(32).toString("hex");
