@@ -1038,11 +1038,11 @@ export default function CheckoutForm({
                 </div>
                 {walletApply > 0 && total > 0 && (
                   <p className="text-[11px] text-brand-muted">
-                    Remaining <span className="font-bold text-brand-deep">{formatKsh(total)}</span> paid via M-Pesa
+                    Remaining <span className="font-bold text-brand-deep">{formatKsh(total)}</span> paid via {selectedPaymentMethod === 'card' ? 'Card' : selectedPaymentMethod === 'airtel' ? 'Airtel Money' : selectedPaymentMethod === 'bank' ? 'Bank Transfer' : 'M-Pesa'}
                   </p>
                 )}
                 {walletApply > 0 && total === 0 && (
-                  <p className="text-[11px] text-emerald-600 font-semibold">✓ Fully covered by wallet — no M-Pesa needed!</p>
+                  <p className="text-[11px] text-emerald-600 font-semibold">✓ Fully covered by wallet — no additional payment needed!</p>
                 )}
               </div>
             )}

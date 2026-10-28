@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Wallet, ArrowUpRight, ArrowDownLeft, Gift, RefreshCw, Phone, CheckCircle2, ShoppingBag, Sparkles } from "lucide-react";
+import { Wallet, ArrowUpRight, ArrowDownLeft, Gift, RefreshCw, Phone, CheckCircle2, ShoppingBag, Sparkles, PlusCircle, AlertCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
+import confetti from "canvas-confetti";
 
 type WalletData = {
   id: string;
@@ -37,6 +38,12 @@ export default function WalletPage() {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // Redeem Gift Card state
+  const [redeemCode, setRedeemCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const [redeemSuccess, setRedeemSuccess] = useState<string | null>(null);
+  const [redeemError, setRedeemError] = useState("");
 
   const fetchWallet = useCallback(async (ph: string) => {
     setLoading(true);
@@ -93,6 +100,49 @@ export default function WalletPage() {
       setError(err.message);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleRedeemGiftCard = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setRedeemError("");
+    setRedeemSuccess(null);
+
+    const clean = redeemCode.trim().toUpperCase();
+    if (!clean) {
+      setRedeemError("Please enter a gift card code (e.g. TG-XXXX-XXXX)");
+      return;
+    }
+
+    setRedeeming(true);
+    try {
+      const res = await fetch("/api/wallet/claim", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: clean, phone }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to redeem gift card");
+      }
+
+      setRedeemSuccess(`KES ${Number(data.claimedAmount).toLocaleString()} added to your wallet!`);
+      setRedeemCode("");
+
+      try {
+        confetti({
+          particleCount: 75,
+          spread: 60,
+          origin: { y: 0.65 },
+          colors: ["#10b981", "#d4a853", "#9b1b5a", "#ffffff"],
+        });
+      } catch { /* noop */ }
+
+      await fetchWallet(phone);
+    } catch (err: any) {
+      setRedeemError(err.message || "Failed to redeem gift card");
+    } finally {
+      setRedeeming(false);
     }
   };
 
@@ -235,6 +285,62 @@ export default function WalletPage() {
                 <p className="text-white/30 text-xs mt-1">Open a gift card link to create your wallet automatically.</p>
               </div>
             )}
+
+            {/* Redeem Gift Card Card */}
+            <div className="bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-sm">
+              <div className="flex items-center gap-2.5 mb-3">
+                <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                  <Gift className="w-4 h-4 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white">Have a Gift Card?</h3>
+                  <p className="text-[11px] text-white/50">Redeem any TG voucher directly into your wallet</p>
+                </div>
+              </div>
+
+              <form onSubmit={handleRedeemGiftCard} className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. TG-XXXX-XXXX"
+                    value={redeemCode}
+                    onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
+                    className="flex-1 bg-black/40 border border-white/10 focus:border-amber-400 focus:outline-none rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold tracking-wider placeholder:text-white/30 text-white transition-colors"
+                  />
+                  <button
+                    type="submit"
+                    disabled={redeeming || !redeemCode.trim()}
+                    className="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 disabled:opacity-40 text-black font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 shadow-sm shrink-0"
+                  >
+                    {redeeming ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Redeeming…</span>
+                      </>
+                    ) : (
+                      <>
+                        <PlusCircle className="w-3.5 h-3.5" />
+                        <span>Claim</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {redeemError && (
+                  <div className="flex items-center gap-2 p-2.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-300">
+                    <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                    <span>{redeemError}</span>
+                  </div>
+                )}
+
+                {redeemSuccess && (
+                  <div className="flex items-center gap-2 p-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                    <span>{redeemSuccess}</span>
+                  </div>
+                )}
+              </form>
+            </div>
 
             {/* Quick Actions */}
             <div className="grid grid-cols-2 gap-3">
