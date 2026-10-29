@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Gift } from "lucide-react";
+import { Gift, Pause, Play } from "lucide-react";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
@@ -30,6 +30,7 @@ export default function FeaturedRow({
 }: FeaturedRowProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   // IntersectionObserver for reveal
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function FeaturedRow({
     <section
       ref={sectionRef}
       className={cn("p-6 md:p-8 shape-premium-card border border-surface-border shadow-sm mb-6 transition-colors", tintClass)}
+      aria-label={title}
     >
       {/* Header — slides in from left */}
       <div
@@ -81,10 +83,21 @@ export default function FeaturedRow({
           )}
         </div>
         <div className="flex items-center gap-2">
+          {marqueeDirection && (
+            <button
+              type="button"
+              onClick={() => setIsPaused((prev) => !prev)}
+              aria-label={isPaused ? `Play ${title} carousel` : `Pause ${title} carousel`}
+              className="p-2 rounded-full border border-surface-border bg-white dark:bg-white/[0.06] text-theme-body hover:text-brand transition-colors shadow-sm"
+              title={isPaused ? "Play" : "Pause"}
+            >
+              {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+            </button>
+          )}
           {viewAllHref && (
             <Link
               href={viewAllHref}
-              className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white px-4 py-2 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
+              className="text-xs font-semibold text-brand hover:text-gold transition-colors bg-white dark:bg-white/[0.06] px-4 py-2 shape-premium-button border border-surface-border shadow-sm hover:shadow-md"
             >
               {viewAllLabel} →
             </Link>
@@ -95,8 +108,7 @@ export default function FeaturedRow({
       {/* Product strip — marquee.
           One w-max track holding two copies of the cards. The -50% keyframe
           therefore lands exactly on the copy boundary, so the seam is always
-          between two cards. The old version used two sibling min-w-full tracks,
-          which drifted out of register and drew cards on top of each other. */}
+          between two cards. */}
       <div
         className="relative overflow-x-hidden group w-[calc(100%+3rem)] md:w-[calc(100%+4rem)] -ml-6 md:-ml-8 px-6 md:px-8 [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]"
       >
@@ -105,8 +117,9 @@ export default function FeaturedRow({
             "flex gap-4 md:gap-5 pb-4",
             marqueeDirection
               ? cn(
-                  "w-max whitespace-nowrap group-hover:[animation-play-state:paused]",
-                  marqueeDirection === "right" ? "animate-marquee-reverse" : "animate-marquee"
+                  "w-max whitespace-nowrap group-hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]",
+                  marqueeDirection === "right" ? "animate-marquee-reverse" : "animate-marquee",
+                  isPaused && "[animation-play-state:paused]"
                 )
               : "w-full overflow-x-auto scrollbar-hide"
           )}
@@ -115,7 +128,7 @@ export default function FeaturedRow({
             <Link
               key={`${product.id}-${i}`}
               href={`/product/${product.id}`}
-              className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 card-theme rounded-[1.5rem] hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px]"
+              className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 card-theme rounded-[1.5rem] hover:-translate-y-1 shrink-0 w-[300px] md:w-[380px] focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
               style={!marqueeDirection ? {
                 transitionDelay: `${80 + i * 60}ms`,
                 transitionProperty: "opacity, transform",

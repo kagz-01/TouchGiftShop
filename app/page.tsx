@@ -12,6 +12,7 @@ import FeaturedRow from "@/components/home/FeaturedRow";
 import VerticalProductColumns from "@/components/home/VerticalProductColumns";
 import CategoryRail from "@/components/home/CategoryRail";
 import SuperpowersStrip from "@/components/home/SuperpowersStrip";
+import PoolGiftShowcase from "@/components/home/PoolGiftShowcase";
 import VisitUs from "@/components/home/VisitUs";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -163,22 +164,29 @@ type CategoryTile = {
   count: number;
   heroImage: string | null;
   heroName: string;
+  badge?: string;
+  is18Plus?: boolean;
 };
 
-/** The homepage shows perfumes and gift sets but nothing else, leaving ~266
- *  in-stock SKUs across seven categories invisible. This powers a scrolling
- *  rail of category tiles. The hero image is each category's highest-priced
- *  product so the rail reads as the premium end of the range. */
+/**
+ * Rebalanced category showcase:
+ * Instead of flooding the rail with 12 distinct alcohol SKU sub-tiles,
+ * this highlights TouchGift's primary luxury gifting catalog (hampers, fragrances,
+ * executive accessories, tech) and cleanly groups adult beverages under a single
+ * "Fine Wines & Spirits (18+)" showcase, plus an "Alcohol-Free & Syrups" option.
+ */
 async function getCategoryTiles(): Promise<CategoryTile[]> {
   const wanted = [
-    "drinks",
-    "drinkware",
-    "awards-trophies",
+    "gift-sets",
+    "perfumes",
     "stationery-office",
+    "drinkware",
     "accessories",
+    "awards-trophies",
     "bags",
-    "clocks",
     "tech-gadgets",
+    "clocks",
+    "drinks",
   ];
 
   const supabase = createClient(
@@ -211,64 +219,74 @@ async function getCategoryTiles(): Promise<CategoryTile[]> {
     }
   }
 
+  const categoryMeta: Record<string, { displayName: string; badge?: string }> = {
+    "gift-sets": { displayName: "Gift Sets & Hampers", badge: "Curated" },
+    "perfumes": { displayName: "Designer Fragrances", badge: "Authentic" },
+    "stationery-office": { displayName: "Stationery & Office", badge: "Corporate" },
+    "drinkware": { displayName: "Drinkware & Tumblers" },
+    "accessories": { displayName: "Luxury Accessories" },
+    "awards-trophies": { displayName: "Awards & Trophies" },
+    "bags": { displayName: "Bags & Leather" },
+    "tech-gadgets": { displayName: "Smart Tech & Gadgets" },
+    "clocks": { displayName: "Clocks & Timepieces" },
+  };
+
   // ── General category tiles ──────────────────────────────────────────
   const generalTiles = wanted
-    .filter((slug) => slug !== "drinks") // drinks gets split into sub-tiles below
+    .filter((slug) => slug !== "drinks")
     .map((slug) => {
       const entry = byslug.get(slug);
       if (!entry?.rows.length) return null;
       const hero = entry.rows.reduce((best, r) =>
         r.price > best.price ? r : best
       );
+      const meta = categoryMeta[slug];
       return {
         slug,
-        name: entry.name,
+        name: meta?.displayName ?? entry.name,
         count: entry.rows.length,
         heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
         heroName: hero.name,
+        badge: meta?.badge,
         href: `/shop?category=${slug}`,
       };
     })
-    .filter(Boolean) as (CategoryTile & { href: string })[];
+    .filter(Boolean) as (CategoryTile & { href: string; badge?: string; is18Plus?: boolean })[];
 
-  // ── Liquor subcategory tiles (grouped by SKU prefix) ───────────────
+  // ── Drinks: Rebalanced into Fine Wines & Spirits (18+) and Non-Alcoholic ──
   const drinkRows = (byslug.get("drinks")?.rows ?? []) as Row[];
+  const nalRows = drinkRows.filter((r) => (r.sku ?? "").toUpperCase().startsWith("NAL"));
+  const alcoholRows = drinkRows.filter((r) => !(r.sku ?? "").toUpperCase().startsWith("NAL"));
 
-  const liquorGroups: { prefix: string[]; name: string; icon: string }[] = [
-    { prefix: ["WIN", "WRD", "WWH", "WRO"], name: "Wines",             icon: "🍷" },
-    { prefix: ["WHS"],                       name: "Whiskies",          icon: "🥃" },
-    { prefix: ["VOD"],                       name: "Vodka",             icon: "🍸" },
-    { prefix: ["GIN"],                       name: "Gin",               icon: "🍃" },
-    { prefix: ["RUM"],                       name: "Rum",               icon: "🌊" },
-    { prefix: ["SPK"],                       name: "Champagne & Sparkling", icon: "🍾" },
-    { prefix: ["BRD", "COG"],               name: "Brandy & Cognac",   icon: "🥂" },
-    { prefix: ["TEQ"],                       name: "Tequila",           icon: "🌵" },
-    { prefix: ["LIQ"],                       name: "Liqueurs",          icon: "🍬" },
-    { prefix: ["CDR"],                       name: "Ciders",            icon: "🍏" },
-    { prefix: ["SPR"],                       name: "Spirits",           icon: "🔥" },
-    { prefix: ["NAL"],                       name: "Non-Alcoholic",     icon: "🧃" },
-  ];
+  const drinkTiles: (CategoryTile & { href: string; badge?: string; is18Plus?: boolean })[] = [];
 
-  const liquorTiles = liquorGroups
-    .map(({ prefix, name }) => {
-      const rows = drinkRows.filter((r) => {
-        const skuPrefix = (r.sku ?? "").split("-")[0].toUpperCase();
-        return prefix.includes(skuPrefix);
-      });
-      if (!rows.length) return null;
-      const hero = rows.reduce((best, r) => (r.price > best.price ? r : best));
-      return {
-        slug: `drinks-${prefix[0].toLowerCase()}`,
-        name,
-        count: rows.length,
-        heroImage: optimizeImageUrl(hero.image_url, 560) ?? null,
-        heroName: hero.name,
-        href: `/shop?category=drinks&subcat=${encodeURIComponent(name)}`,
-      };
-    })
-    .filter(Boolean) as (CategoryTile & { href: string })[];
+  if (alcoholRows.length > 0) {
+    const heroAlcohol = alcoholRows.reduce((best, r) => (r.price > best.price ? r : best));
+    drinkTiles.push({
+      slug: "drinks",
+      name: "Fine Wines & Spirits",
+      count: alcoholRows.length,
+      heroImage: optimizeImageUrl(heroAlcohol.image_url, 560) ?? null,
+      heroName: heroAlcohol.name,
+      is18Plus: true,
+      href: "/shop?category=drinks",
+    });
+  }
 
-  return [...liquorTiles, ...generalTiles];
+  if (nalRows.length > 0) {
+    const heroNal = nalRows.reduce((best, r) => (r.price > best.price ? r : best));
+    drinkTiles.push({
+      slug: "drinks-nal",
+      name: "Non-Alcoholic & Syrups",
+      count: nalRows.length,
+      heroImage: optimizeImageUrl(heroNal.image_url, 560) ?? null,
+      heroName: heroNal.name,
+      badge: "Alcohol-Free",
+      href: "/shop?category=drinks&subcat=Non-Alcoholic",
+    });
+  }
+
+  return [...generalTiles, ...drinkTiles];
 }
 
 
@@ -415,6 +433,11 @@ export default async function HomePage() {
           CHAPTER 1.5: TouchGift Superpowers (USPs)
           ═══════════════════════════════════════════ */}
       <SuperpowersStrip />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 2.5: Pool a Gift (Interactive Collaborative Gifting)
+          ═══════════════════════════════════════════ */}
+      <PoolGiftShowcase />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 3B: Discovery — Horizontal Rows

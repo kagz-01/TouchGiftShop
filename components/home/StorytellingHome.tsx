@@ -394,6 +394,18 @@ export function HeroCinematic() {
                 </span>
               </div>
             )}
+
+            {/* Same-day dispatch & fee transparency badge */}
+            <div className="mt-3.5 inline-flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/90 bg-black/45 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-md">
+              <span className="flex items-center gap-1.5 font-semibold text-gold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Same-day Nairobi from KES 300
+              </span>
+              <span className="text-white/30 hidden sm:inline">•</span>
+              <span className="text-white/80">Free over KES 8,000</span>
+              <span className="text-white/30 hidden sm:inline">•</span>
+              <span className="text-white/90 font-medium">Order by 2:00 PM</span>
+            </div>
           </div>
 
         </div>
@@ -921,10 +933,10 @@ export function SocialProof() {
   ];
 
   const stats = [
-    { target: 100, suffix: "+", label: "Gifts delivered", icon: "🎁" },
-    { target: 99, suffix: "%", label: "On-time delivery", icon: "🚚" },
+    { target: 5000, suffix: "+", label: "Happy recipients", icon: "🎁" },
+    { target: 99, suffix: ".4%", label: "On-time delivery", icon: "🚚" },
     { target: 500, suffix: "+", label: "Curated products", icon: "📦" },
-    { target: 4, suffix: ".8/5", label: "Average rating", icon: "⭐" },
+    { target: 4, suffix: ".9/5", label: "Average rating", icon: "⭐" },
   ];
 
   const StarRow = ({ count }: { count: number }) => (

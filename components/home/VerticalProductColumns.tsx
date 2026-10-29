@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Gift } from "lucide-react";
-import { formatKsh } from "@/lib/utils";
+import { Gift, Pause, Play } from "lucide-react";
+import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
 interface ColumnConfig {
@@ -31,7 +31,7 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <Link
       href={`/product/${product.id}`}
-      className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 card-theme border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:-translate-y-1 w-full shrink-0"
+      className="group flex items-center gap-4 md:gap-5 p-3 md:p-4 pr-6 card-theme border border-surface-border hover:border-brand/30 rounded-[1.5rem] hover:-translate-y-1 w-full shrink-0 focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-none"
     >
       {/* Image */}
       <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-[1.2rem] overflow-hidden shrink-0 card-theme shadow-inner">
@@ -69,17 +69,19 @@ export default function VerticalProductColumns({
   sectionSub,
 }: VerticalProductColumnsProps) {
   const [mounted, setMounted] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <section className="py-8 md:py-10 section-theme-a relative overflow-hidden">
+    <section className="py-8 md:py-10 section-theme-a relative overflow-hidden" aria-label="Curated Product Showcase">
       {/* Subtle warm gradient top */}
       <div className="absolute inset-0 bg-gradient-to-b from-blush/20 via-transparent to-blush/10 pointer-events-none" />
 
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 relative z-10">
         {/* Section heading */}
         {sectionTitle && (
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 relative">
             {sectionEyebrow && (
               <p className="text-gold font-bold text-xs uppercase tracking-[0.2em] mb-3">
                 {sectionEyebrow}
@@ -93,6 +95,19 @@ export default function VerticalProductColumns({
                 {sectionSub}
               </p>
             )}
+
+            {/* Pause/Play global button */}
+            <div className="mt-4 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setIsPaused((prev) => !prev)}
+                className="inline-flex items-center gap-1.5 text-xs text-theme-body hover:text-brand px-3 py-1.5 rounded-full border border-surface-border bg-white dark:bg-white/[0.06] transition-colors"
+                aria-label={isPaused ? "Play columns animation" : "Pause columns animation"}
+              >
+                {isPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+                <span>{isPaused ? "Play animation" : "Pause animation"}</span>
+              </button>
+            </div>
           </div>
         )}
 
@@ -124,7 +139,7 @@ export default function VerticalProductColumns({
 
                 {/* Scrolling column */}
                 <div
-                  className="relative overflow-hidden -mx-2 px-2"
+                  className="relative overflow-hidden -mx-2 px-2 group"
                   style={{ height }}
                 >
                   {/* Top fade */}
@@ -135,13 +150,12 @@ export default function VerticalProductColumns({
                   {/* Marquee track */}
                   {mounted && (
                     <div
-                      className={`flex flex-col gap-3 ${animClass} hover:[animation-play-state:paused]`}
+                      className={cn(
+                        `flex flex-col gap-3 ${animClass} group-hover:[animation-play-state:paused] focus-within:[animation-play-state:paused]`,
+                        isPaused && "[animation-play-state:paused]"
+                      )}
                       style={{
                         animationDuration: `${speed}s`,
-                        // Reverse animation initial position
-                        ...(col.direction === "up"
-                          ? {}
-                          : {}),
                       }}
                     >
                       {loopItems.map((product, i) => (

@@ -4,7 +4,7 @@ import { MessageSquare, Phone, Mail, ArrowRight, ShieldCheck, Clock, Sparkles } 
 import Link from "next/link";
 
 export default function CorporateConciergeCta() {
-  const whatsappUrl = `https://wa.me/254711889900?text=${encodeURIComponent(
+  const whatsappUrl = `https://wa.me/254183172111?text=${encodeURIComponent(
     "Hi TouchGift Corporate Concierge! We are planning an upcoming corporate gifting campaign and would like to review custom tier options and volume quotes."
   )}`;
 
@@ -65,7 +65,7 @@ export default function CorporateConciergeCta() {
             </div>
             <div className="flex items-center gap-1.5">
               <Phone className="w-3.5 h-3.5 text-[#D4A853]" />
-              <span>+254 711 889 900</span>
+              <span>+254 183 172 111</span>
             </div>
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-emerald-400" />
@@ -77,3 +77,4 @@ export default function CorporateConciergeCta() {
     </section>
   );
 }
+
