@@ -11,15 +11,17 @@ import {
   Menu,
   ShoppingBag,
   Bell,
-  Sparkles,
-  Users,
-  Zap,
+  Map,
+  Package,
+  Heart,
 } from "lucide-react";
 
 /* ── Mobile site header — slim soft-edged pill, md:hidden ────────────────────
    Left: logo + dropdown button (cart badge). Right: profile "T" + theme.
-   /shop hides it — that page owns its top (Back + Ask AI row). Absorbs the
-   old standalone FloatingThemeToggle on the main branch. */
+   The dropdown is account/utility only (Cart, Alerts, Track, Orders, Wishlist)
+   — build tools live in the Gift Lab (Build) sheet. /shop hides this bar —
+   that page owns its top (Back + Ask AI row). Absorbs the old standalone
+   FloatingThemeToggle on the main branch. */
 
 function MenuRow({
   href,
@@ -147,7 +149,8 @@ export default function MobileTopBar() {
         </div>
       </div>
 
-      {/* Dropdown */}
+      {/* Dropdown — pure account/utility; every build tool lives in the
+          Gift Lab (Build) sheet so nothing is duplicated here. */}
       {menuOpen && (
         <div
           role="menu"
@@ -173,21 +176,21 @@ export default function MobileTopBar() {
           />
           <div className="my-1 h-px" style={{ background: "var(--surface-border)" }} />
           <MenuRow
-            href="/gift-finder"
-            icon={<Sparkles className="w-4 h-4" />}
-            label="Gift Finder"
+            href="/track"
+            icon={<Map className="w-4 h-4" />}
+            label="Track a Gift"
             onNavigate={() => setMenuOpen(false)}
           />
           <MenuRow
-            href="/pool/create"
-            icon={<Users className="w-4 h-4" />}
-            label="Pool a Gift"
+            href="/orders"
+            icon={<Package className="w-4 h-4" />}
+            label="Your Orders"
             onNavigate={() => setMenuOpen(false)}
           />
           <MenuRow
-            href="/surprise"
-            icon={<Zap className="w-4 h-4" />}
-            label="Send Anonymously"
+            href="/wishlist"
+            icon={<Heart className="w-4 h-4" />}
+            label="Wishlist"
             onNavigate={() => setMenuOpen(false)}
           />
         </div>

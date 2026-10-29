@@ -2,48 +2,81 @@
 
 import Link from "next/link";
 import { createPortal } from "react-dom";
-import { X, Gift, Users, Palette, Target, Store, ArrowRight } from "lucide-react";
+import {
+  X, Gift, Users, Store, Target, CreditCard, PenLine, ArrowRight,
+} from "lucide-react";
 
 type BuildTool = {
   href: string;
   label: string;
   description: string;
   icon: React.ReactNode;
-  intent: "mix-and-match" | "group" | "customize" | "quiz" | "bulk";
 };
 
-/** Intentional build tools — each tab on the bottom nav is a hub, not a dead
-   link. The Build sheet surfaces every "superpower" so mobile users discover
-   pool gifting, hamper building, customization and bulk ordering in one tap,
-   instead of hunting through a hamburger menu they can't see. */
-const TOOLS: BuildTool[] = [
+type BuildGroup = {
+  title: string;
+  tools: BuildTool[];
+};
+
+/** The definitive mobile Gift Lab toolkit — every way to CREATE a gift lives
+   here (build, personalize, pool, bulk, gift card, quiz), so the top-left
+   utility menu never has to duplicate a build tool. */
+const TOOL_GROUPS: BuildGroup[] = [
   {
-    href: "/gift-lab/build-hamper",
-    label: "Build a Hamper",
-    description: "Mix and match products into a custom gift box.",
-    icon: <Gift className="w-5 h-5" />,
-    intent: "mix-and-match",
+    title: "Make it personal",
+    tools: [
+      {
+        href: "/gift-lab/build-hamper",
+        label: "Build a Hamper",
+        description: "Mix and match products into a custom gift box.",
+        icon: <Gift className="w-5 h-5" />,
+      },
+      {
+        href: "/shop?personalizable=1",
+        label: "Personalize a Product",
+        description: "Engraved, monogrammed, or printed with their name.",
+        icon: <PenLine className="w-5 h-5" />,
+      },
+    ],
   },
   {
-    href: "/pool/create",
-    label: "Pool a Gift",
-    description: "Chip in with friends or colleagues for one bigger gift.",
-    icon: <Users className="w-5 h-5" />,
-    intent: "group",
+    title: "Give together",
+    tools: [
+      {
+        href: "/pool/create",
+        label: "Pool a Gift",
+        description: "Chip in with friends or colleagues for one bigger gift.",
+        icon: <Users className="w-5 h-5" />,
+      },
+      {
+        href: "/corporate/catalog",
+        label: "Bulk & Corporate",
+        description: "Branded merch, invoices and LPOs for teams.",
+        icon: <Store className="w-5 h-5" />,
+      },
+    ],
   },
   {
-    href: "/gift-quiz",
-    label: "Gift Match Quiz",
-    description: "Answer four quick questions — we curate the picks.",
-    icon: <Target className="w-5 h-5" />,
-    intent: "quiz",
+    title: "Let them choose",
+    tools: [
+      {
+        href: "/gift-cards",
+        label: "Digital Gift Card",
+        description: "Stored-value card, straight to their inbox.",
+        icon: <CreditCard className="w-5 h-5" />,
+      },
+    ],
   },
   {
-    href: "/corporate/catalog",
-    label: "Bulk & Corporate",
-    description: "Branded merch, invoices and LPOs for teams.",
-    icon: <Store className="w-5 h-5" />,
-    intent: "bulk",
+    title: "Not sure yet?",
+    tools: [
+      {
+        href: "/gift-quiz",
+        label: "Gift Match Quiz",
+        description: "Answer four quick questions — we curate the picks.",
+        icon: <Target className="w-5 h-5" />,
+      },
+    ],
   },
 ];
 
@@ -77,37 +110,37 @@ export default function BuildToolkitSheet({
           </button>
         </div>
 
-        <div className="px-5 py-3">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-white/40 mb-4">
-            Build tools
-          </p>
-
-          <div className="space-y-2">
-            {TOOLS.map((tool) => (
-              <Link
-                key={tool.href}
-                href={tool.href}
-                onClick={onClose}
-                className="flex items-center gap-4 px-4 py-3.5 rounded-2xl border border-gray-100 dark:border-white/8 bg-white dark:bg-[#16162a] hover:bg-gray-50 dark:hover:bg-white/6 transition-colors"
-              >
-                <span className="flex-shrink-0 w-10 h-10 rounded-xl bg-brand/10 dark:bg-brand/20 flex items-center justify-center text-brand dark:text-brand-light">
-                  {tool.icon}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {tool.label}
-                  </span>
-                  <p className="text-[10px] text-gray-600 dark:text-white/40 mt-0.5 leading-snug">
-                    {tool.description}
-                  </p>
-                </div>
-                <span className="text-[10px] text-xs font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-gray-100 dark:bg-white/8 text-gray-500 dark:text-white/50">
-                  {tool.intent}
-                </span>
-                <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
-              </Link>
-            ))}
-          </div>
+        <div className="px-5 py-3 overflow-y-auto pb-8">
+          {TOOL_GROUPS.map((group) => (
+            <section key={group.title} className="mb-4 last:mb-0">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-white/40 mb-2 px-1">
+                {group.title}
+              </p>
+              <div className="space-y-2">
+                {group.tools.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    href={tool.href}
+                    onClick={onClose}
+                    className="flex items-center gap-4 px-4 py-3.5 rounded-2xl border border-gray-100 dark:border-white/8 bg-white dark:bg-[#16162a] hover:bg-gray-50 dark:hover:bg-white/6 transition-colors"
+                  >
+                    <span className="flex-shrink-0 w-10 h-10 rounded-xl bg-brand/10 dark:bg-brand/20 flex items-center justify-center text-brand dark:text-brand-light">
+                      {tool.icon}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        {tool.label}
+                      </span>
+                      <p className="text-[10px] text-gray-600 dark:text-white/40 mt-0.5 leading-snug">
+                        {tool.description}
+                      </p>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-400 shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </>,
