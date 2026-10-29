@@ -4,7 +4,6 @@ import Link from "next/link";
 import { createPortal } from "react-dom";
 import { X, ChevronRight, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "@/components/ui/ThemeToggle";
 import { MEGA_MENU_DATA } from "@/components/layout/MegaMenu";
 
 export default function MobileShopDrawer({
@@ -87,16 +86,13 @@ export default function MobileShopDrawer({
       <div className="fixed left-0 right-0 bottom-0 z-[70] flex flex-col max-h-[92vh] bg-white dark:bg-[#12121a] border-t border-gray-100 dark:border-white/8 shadow-[0_-24px_48px_rgba(0,0,0,0.18)]">
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
           <h2 className="font-display font-bold text-lg">Shop</h2>
-          <div className="flex items-center gap-1">
-            <ThemeToggle />
-            <button
-              onClick={onClose}
-              className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-              aria-label="Close shop menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+            aria-label="Close shop menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto pb-8">

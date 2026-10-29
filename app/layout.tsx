@@ -124,7 +124,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${inter.variable} ${playfair.variable}`}>
-      <body className="min-h-screen flex flex-col font-sans overflow-x-hidden" style={{ background: "var(--bg-base)", color: "var(--text-primary)", transition: "background 0.4s ease, color 0.4s ease" }}>
+      {/* overflow-x-clip, not overflow-x-hidden: hidden turns <body> into a
+          scroll container and silently breaks position:sticky descendants
+          (the mobile top bar scrolled away on every page). clip keeps the
+          horizontal-overflow guard without creating a scrollport. */}
+      <body className="min-h-screen flex flex-col font-sans overflow-x-clip" style={{ background: "var(--bg-base)", color: "var(--text-primary)", transition: "background 0.4s ease, color 0.4s ease" }}>
         <ThemeProvider>
           <MoodProvider>
           <CartProvider>
