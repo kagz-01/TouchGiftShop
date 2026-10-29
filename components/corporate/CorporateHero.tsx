@@ -42,7 +42,7 @@ export default function CorporateHero({
        corporate looked flat while every other page animated. The palette
        still comes through — AmbientBackground renders the corporate
        steel-navy + gold variant on /corporate. */
-    <div className="corporate-shell relative min-h-screen text-[var(--corp-hero-text)] selection:bg-[color:var(--corp-hero-accent)]/30 font-sans">
+    <div className="corporate-shell relative min-h-screen bg-[color:var(--corp-bg)] text-[color:var(--corp-text)] selection:bg-brand/20 font-sans">
 
       {/* Fixed ambient glow */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -66,8 +66,8 @@ export default function CorporateHero({
               className="w-10 h-10 rounded-full object-cover ring-2" style={{ "--tw-ring-color": "var(--corp-border-str)" } as React.CSSProperties}
             />
             <div>
-              <p className="font-display font-bold text-base leading-tight">TouchGift</p>
-              <p className="text-[10px] text-[color:var(--corp-hero-accent)] font-semibold uppercase tracking-wider">Corporate</p>
+              <p className="font-display font-bold text-base leading-tight text-[color:var(--corp-text)]">TouchGift</p>
+              <p className="text-[10px] text-brand font-semibold uppercase tracking-wider">Corporate</p>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-8">
@@ -78,7 +78,7 @@ export default function CorporateHero({
               { label: "Catalog", href: "/corporate/catalog" },
               { label: "FAQ", href: "#faq" },
             ].map(n => (
-              <a key={n.label} href={n.href} className="text-sm font-semibold transition-colors text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-hero-text)]">
+              <a key={n.label} href={n.href} className="text-sm font-semibold transition-colors text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-text)]">
                 {n.label}
               </a>
             ))}
@@ -90,7 +90,7 @@ export default function CorporateHero({
             <ThemeToggle />
             <Link
               href="/corporate/dashboard"
-              className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_var(--corp-hero-glow)] hover:shadow-[0_0_40px_var(--corp-hero-glow)] whitespace-nowrap"
+              className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-xl transition-all shadow-md whitespace-nowrap"
             >
               Corporate Dashboard <ArrowRight className="w-4 h-4" />
             </Link>
@@ -107,7 +107,7 @@ export default function CorporateHero({
 
           The scrim used to be a near-opaque vertical wash over a 35%-opacity
           image, which is why the photo disappeared entirely. */}
-      <section className="relative z-10 overflow-hidden flex items-center min-h-[560px] md:min-h-[calc(100vh-73px)]">
+      <section className="relative z-10 overflow-hidden flex items-center min-h-[560px] md:min-h-[calc(100vh-73px)] text-white">
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute inset-0" style={{ background: "var(--corp-hero-bg)" }} />
           <Image
@@ -258,7 +258,7 @@ export default function CorporateHero({
       {/* anchor retained: #features was linked from elsewhere in the app */}
       <span id="features" className="sr-only" aria-hidden="true" />
         <div className="text-center mb-12">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">How it actually works</h2>
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-3 text-[color:var(--corp-text)]">How it actually works</h2>
           <p className="text-[color:var(--corp-text-muted)] text-sm max-w-lg mx-auto">
             Five questions buyers ask, answered plainly — including the two we&apos;re still building.
           </p>
@@ -323,9 +323,9 @@ export default function CorporateHero({
               <Palette className="w-4 h-4 text-amber-400" />
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">New · Live Branding Studio</span>
             </div>
-            <h2 className="font-display text-3xl md:text-4xl font-bold">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-[color:var(--corp-text)]">
               Brand{" "}
-              <span className="italic font-light text-amber-400">anything</span>{" "}
+              <span className="italic font-light text-brand">anything</span>{" "}
               with your logo.
             </h2>
             <p className="text-[color:var(--corp-text-muted)] mt-3 text-sm max-w-xl leading-relaxed">
@@ -400,19 +400,19 @@ export default function CorporateHero({
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="relative overflow-hidden bg-gradient-to-r from-amber-950/60 via-amber-900/40 to-amber-950/60 border border-amber-500/20 rounded-3xl p-8 flex flex-col md:flex-row md:items-center gap-6"
+          className="relative overflow-hidden bg-gradient-to-r from-[#1E140C] via-[#2A1B0E] to-[#1E140C] border border-amber-500/30 rounded-3xl p-8 flex flex-col md:flex-row md:items-center gap-6 text-white shadow-lg"
         >
           {/* Glow */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.12)_0%,transparent_70%)] pointer-events-none" />
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-3">
               <Star className="w-4 h-4 text-amber-400" />
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Live Customization Studio</span>
             </div>
-            <h3 className="font-display text-xl md:text-2xl font-bold text-[color:var(--corp-text)]">
+            <h3 className="font-display text-xl md:text-2xl font-bold text-white">
               See your logo on the product <span className="italic text-amber-400">before</span> you order.
             </h3>
-            <p className="text-[color:var(--corp-text-muted)] text-sm mt-2 leading-relaxed">
+            <p className="text-white/80 text-sm mt-2 leading-relaxed">
               Choose embroidery, screen print, DTG, sublimation or laser engrave. Position your artwork. Add names for each team member. Export a proof — all in real time.
             </p>
           </div>
@@ -425,7 +425,7 @@ export default function CorporateHero({
             </a>
             <a
               href="/corporate/build"
-              className="px-6 py-3 bg-[color:var(--corp-surface)] hover:bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] text-[color:var(--corp-text)] font-bold text-sm rounded-xl flex items-center gap-2 transition-all"
+              className="px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-sm rounded-xl flex items-center gap-2 transition-all backdrop-blur-sm"
             >
               <Palette className="w-4 h-4 text-amber-400" /> Open Studio
             </a>

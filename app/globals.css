@@ -1543,9 +1543,9 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
   --corp-text:        #0F2027;
   --corp-text-muted:  #4A5F6B;
   --corp-text-faint:  #7B8E99;
-  --corp-accent:      #1D4E6B;
-  --corp-accent-soft: #2C5364;
-  --corp-accent-text: #0F2027;   /* text placed ON the accent fill */
+  --corp-accent:      #9B1B5A;
+  --corp-accent-soft: #7D1548;
+  --corp-accent-text: #FFFFFF;   /* crisp white text ON the brand accent fill */
   --corp-gold:        #9A7B18;
   --corp-scrim:       rgba(244, 247, 250, 0.86);
   --corp-header-bg:   rgba(244, 247, 250, 0.92);
@@ -1563,9 +1563,9 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
   --corp-text:        #FFFFFF;
   --corp-text-muted:  rgba(255, 255, 255, 0.62);
   --corp-text-faint:  rgba(255, 255, 255, 0.40);
-  --corp-accent:      #3B82F6;
-  --corp-accent-soft: #2C5364;
-  --corp-accent-text: #04121C;
+  --corp-accent:      #C4297A;
+  --corp-accent-soft: #9B1B5A;
+  --corp-accent-text: #FFFFFF;
   --corp-gold:        #D4AF37;
   --corp-scrim:       rgba(11, 22, 32, 0.86);
   --corp-header-bg:   rgba(11, 22, 32, 0.82);

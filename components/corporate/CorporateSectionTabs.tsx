@@ -95,8 +95,8 @@ export default function CorporateSectionTabs() {
       <div ref={sentinelRef} aria-hidden="true" className="h-px" />
       <nav
         aria-label="Corporate sections"
-        className={`sticky top-0 z-30 transition-shadow duration-300 ${
-          stuck ? "shadow-[0_6px_24px_rgba(0,0,0,0.25)]" : ""
+        className={`sticky top-[73px] z-30 border-b border-[color:var(--corp-border)] transition-shadow duration-300 ${
+          stuck ? "shadow-[0_6px_24px_rgba(0,0,0,0.1)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.4)]" : ""
         }`}
         style={{ background: "var(--corp-header-bg)", backdropFilter: "blur(20px)" }}
       >
@@ -118,14 +118,9 @@ export default function CorporateSectionTabs() {
                       aria-current={isActive ? "true" : undefined}
                       className={`shrink-0 whitespace-nowrap px-3 py-1.5 text-xs font-bold rounded-lg transition-colors ${
                         isActive
-                          ? "text-[color:var(--corp-accent-soft)]"
-                          : "text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-text)]"
+                          ? "text-brand bg-brand/10 border border-brand/20 dark:text-brand-light dark:bg-brand/20"
+                          : "text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-text)] hover:bg-black/5 dark:hover:bg-white/5"
                       }`}
-                      style={
-                        isActive
-                          ? { background: "color-mix(in srgb, var(--corp-accent) 14%, transparent)" }
-                          : undefined
-                      }
                     >
                       {s.label}
                     </button>
