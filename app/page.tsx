@@ -371,14 +371,14 @@ export default async function HomePage() {
 
       {/* ═══════════════════════════════════════════
           CHAPTER 1: The Emotional Hook
+          Mood-based entry + Same-day dispatch & fee transparency
           ═══════════════════════════════════════════ */}
       <HeroCinematic />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 1.25: Discovery, immediately
-          Answers the hero's "pick a mood" prompt with
-          buyable stock instead of more narrative.
-          Trending ↓  |  Last Minute ↑  |  Drinkware ↓
+          CHAPTER 2: Immediate Discovery
+          Answers the hero prompt with live stock ready to send
+          Trending ↓  |  Last Minute Under 5K ↑  |  Designer Scents ↓
           ═══════════════════════════════════════════ */}
       <VerticalProductColumns
         sectionEyebrow="You picked a mood"
@@ -411,39 +411,35 @@ export default async function HomePage() {
       />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 2: Corporate — second door for B2B buyers,
-          immediately after the product showcase.
+          CHAPTER 3: The Gifting Dilemma
+          Emotional resonance: "Care shouldn't feel like work"
           ═══════════════════════════════════════════ */}
-      <SolutionSection shots={corporateShots} />
-
-      {/* The gifting dilemma — emotional hook for consumer buyers */}
       <ProblemSection />
 
-      {/* Category breadth */}
-      {/* Category breadth. Placed between the dilemma and what-we-do: name the
-          problem, give them something real to look at, then explain why they can
-          trust us to deliver it. Surfaces the ~259 SKUs in categories the rest of
-          the page never shows, instead of adding a fourth product marquee. */}
+      {/* ═══════════════════════════════════════════
+          CHAPTER 4: TouchGift Superpowers (USPs)
+          The solution: Pool, Hamper, Secret Santa, Anonymous, Corporate
+          ═══════════════════════════════════════════ */}
+      <SuperpowersStrip />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 5: Collaborative Gifting Spotlight
+          Signature moat: Pool a Gift interactive budget calculator & wax seal preview
+          ═══════════════════════════════════════════ */}
+      <PoolGiftShowcase />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 6: Shelf Breadth (Curated Categories)
+          Rebalanced catalog: Hampers, Scents, Office, Accessories, 18+ Spirits
+          ═══════════════════════════════════════════ */}
       <CategoryRail
         tiles={categoryTiles}
         totalCount={categoryTiles.reduce((n, t) => n + t.count, 0)}
       />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 1.5: TouchGift Superpowers (USPs)
-          ═══════════════════════════════════════════ */}
-      <SuperpowersStrip />
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 2.5: Pool a Gift (Interactive Collaborative Gifting)
-          ═══════════════════════════════════════════ */}
-      <PoolGiftShowcase />
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 3B: Discovery — Horizontal Rows
+          CHAPTER 7: Curated Collections (Deep Product Showcase)
           Hampers ←  |  Perfumes →
-          Perfumes floor at KSh 6,075, so the old "Under KSh 2,000" row
-          could never carry them; the keyring edit went to /shop only.
           ═══════════════════════════════════════════ */}
       <div className="w-full px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 space-y-0">
         <FeaturedRow
@@ -470,14 +466,21 @@ export default async function HomePage() {
         />
       </div>
 
-      {/* Vertical Marquee block — FULL BLEED (removed max-w) */}
+      {/* ═══════════════════════════════════════════
+          CHAPTER 8: Corporate Gifting Bridge (The B2B "Second Door")
+          "Your brand, in their hands" — placed thoughtfully after establishing consumer trust
+          ═══════════════════════════════════════════ */}
+      <SolutionSection shots={corporateShots} />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 9: Guided Discovery & Catalog Scale
+          AI Gift Finder + Smart Reorder + Browse All
+          ═══════════════════════════════════════════ */}
       <div className="w-full mx-auto flex flex-col sm:flex-row gap-3 px-0">
         <div className="flex-1"><SmartReorderBanner /></div>
       </div>
 
-      {/* ═══════════════════════════════════════════
-          INTERSTITIAL — AI Gift Finder CTA break
-          ═══════════════════════════════════════════ */}
+      {/* Interstitial — AI Gift Finder 30-Second Quiz */}
       <ScrollReveal className="w-full py-4 md:py-6" delay={0}>
         <a
           href="/gift-finder"
@@ -525,15 +528,15 @@ export default async function HomePage() {
       </ScrollReveal>
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 2: Trust — Social Proof
+          CHAPTER 10: Trust & Social Proof
+          Real moments, 5,000+ recipients, 4.9/5 rating
           ═══════════════════════════════════════════ */}
       <SocialProof />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 6: Final Conversion
+          CHAPTER 11: Physical Presence & Local Concierge
+          Park Towers Westlands store, interactive map, WhatsApp
           ═══════════════════════════════════════════ */}
-
-      {/* Visit us — shop location map */}
       <VisitUs />
     </div>
   );
