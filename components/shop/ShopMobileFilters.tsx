@@ -1,14 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 import { categoryIcon } from "@/components/shop/CategoryIcons";
 import { useShopCategories } from "@/components/shop/useShopCategories";
 import { getSubFilters, groupSubFilters } from "@/components/shop/subfilter-registry";
-import { useCart } from "@/lib/cart";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import {
   SORT_OPTIONS,
@@ -19,7 +17,6 @@ import {
 import {
   ArrowUpDown,
   Banknote,
-  ShoppingBag,
   SlidersHorizontal,
   Star,
   Percent,
@@ -426,15 +423,15 @@ export function ShopRefineRail() {
   );
 }
 
-/* ── Bottom bar — primary categories in the thumb zone + pinned cart ─────────
+/* ── Bottom bar — primary categories in the thumb zone ──────────────────────
    Categories with registry entries (see subfilter-registry.ts) drop down a
    chooser on tap — "All Fragrances" / "For Him" / … — and the category
-   applies only when an option is picked. Sub-less categories filter directly. */
+   applies only when an option is picked. Sub-less categories filter directly.
+   Cart moved up to the sticky shop header (ShopHeaderActions). */
 
 export function ShopBottomBar() {
   const { searchParams, pushParams } = useShopParamNav();
   const categories = useShopCategories();
-  const { itemCount } = useCart();
   const { theme } = useTheme();
   const rowRef = useRef<HTMLDivElement>(null);
   const [pickerSlug, setPickerSlug] = useState<string | null>(null);
@@ -501,19 +498,6 @@ export function ShopBottomBar() {
             );
           })}
         </div>
-
-        <Link
-          href="/cart"
-          aria-label={`Shopping cart${itemCount > 0 ? `, ${itemCount} items` : ""}`}
-          className="shrink-0 relative flex items-center justify-center w-10 h-10 rounded-2xl bg-gradient-brand text-white shadow-ribbon transition-transform active:scale-95"
-        >
-          <ShoppingBag className="w-4 h-4" />
-          {itemCount > 0 && (
-            <span className="absolute -top-1 -right-1 min-w-4 h-4 px-0.5 bg-coral text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/70 dark:ring-[#12121a]">
-              {itemCount > 9 ? "9+" : itemCount}
-            </span>
-          )}
-        </Link>
       </div>
 
       {/* ── Category chooser — dropped down by chips that have registry entries ── */}

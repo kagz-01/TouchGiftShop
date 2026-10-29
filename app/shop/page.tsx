@@ -3,6 +3,7 @@ import Link from "next/link";
 import ProductGrid from "@/components/home/ProductGrid";
 import ShopFilterBar from "@/components/home/ShopFilterBar";
 import { ShopRefineRail, ShopBottomBar } from "@/components/shop/ShopMobileFilters";
+import ShopHeaderActions from "@/components/shop/ShopHeaderActions";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
 import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag, ChevronRight, X, Layers } from "lucide-react";
 import type { Metadata } from "next";
@@ -182,7 +183,8 @@ export default async function ShopPage({
 
   return (
     <div className="min-h-screen section-theme-f">
-      {/* ── Sticky header (+ mobile category rail) ── */}
+      {/* ── Sticky header: back / Ask AI / AI Match + mobile cart & menu
+          (+ mobile category rail below) ── */}
       <div className="backdrop-blur-md border-b sticky top-0 z-30" style={{ background: 'var(--surface)', borderColor: 'var(--surface-border)' }}>
         <div className="page-container-capped py-3 flex items-center justify-between gap-4">
           <Link
@@ -211,13 +213,17 @@ export default async function ShopPage({
             </div>
           </div>
 
-          <Link
-            href="/gift-finder"
-            className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 bg-brand/8 text-brand rounded-xl text-xs font-bold hover:bg-brand hover:text-white transition-all mr-11 md:mr-0"
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            AI Match
-          </Link>
+          {/* Mobile: cart + utility menu (this page hides the site top bar) */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link
+              href="/gift-finder"
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-brand/8 text-brand rounded-xl text-xs font-bold hover:bg-brand hover:text-white transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              AI Match
+            </Link>
+            <ShopHeaderActions />
+          </div>
         </div>
 
         {/* Mobile: universal refine chips glued under the bar (categories moved

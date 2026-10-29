@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import { MenuRow } from "@/components/layout/MenuRow";
 import {
   Menu,
   ShoppingBag,
@@ -22,37 +23,6 @@ import {
    — build tools live in the Gift Lab (Build) sheet. /shop hides this bar —
    that page owns its top (Back + Ask AI row). Absorbs the old standalone
    FloatingThemeToggle on the main branch. */
-
-function MenuRow({
-  href,
-  icon,
-  label,
-  badge,
-  onNavigate,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  label: string;
-  badge?: number;
-  onNavigate: () => void;
-}) {
-  return (
-    <Link
-      role="menuitem"
-      href={href}
-      onClick={onNavigate}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors"
-    >
-      <span className="text-brand shrink-0">{icon}</span>
-      <span className="flex-1">{label}</span>
-      {!!badge && badge > 0 && (
-        <span className="min-w-4 h-4 px-1 bg-coral text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
-          {badge > 9 ? "9+" : badge}
-        </span>
-      )}
-    </Link>
-  );
-}
 
 export default function MobileTopBar() {
   const pathname = usePathname()!;
