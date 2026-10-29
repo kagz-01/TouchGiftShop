@@ -8,6 +8,8 @@ import { categoryIcon } from "@/components/shop/CategoryIcons";
 import { useShopCategories } from "@/components/shop/useShopCategories";
 import { getSubFilters, groupSubFilters } from "@/components/shop/subfilter-registry";
 import { useTheme } from "@/components/ui/ThemeProvider";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   SORT_OPTIONS,
   BUDGET_PRESETS,
@@ -62,31 +64,87 @@ function Sheet({
   title: string;
   children: React.ReactNode;
 }) {
+  const reduced = useReducedMotion();
+  const fadeVariants = reduced
+    ? { hidden: {}, show: {} }
+    : { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.2 } } };
+  const panelVariants = reduced
+    ? { hidden: {}, show: {} }
+    : {
+        hidden: { y: 20, opacity: 0 },
+        show: { y: 0, opacity: 1, transition: { type: "spring" as const, stiffness: 340, damping: 30 } },
+      };
+  const listVariants = reduced
+    ? { hidden: {}, show: {} }
+    : { hidden: {}, show: { transition: { staggerChildren: 0.04 } } };
+
+  // Dismiss the sheet on Escape, matching the mobile top bar's menu.
+  useEffect(() => {
+    if (!open || reduced) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open, onClose, reduced]);
+
   if (!open) return null;
+
+  const overlay = (
+    <motion.div
+      style={{ pointerEvents: open ? "auto" : "none" }}
+      className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm"
+      onClick={onClose}
+      aria-hidden="true"
+      initial="hidden"
+      animate="show"
+      exit="hidden"
+      variants={fadeVariants}
+    />
+  );
+
+  const panel = (
+    <motion.div
+      role="dialog"
+      aria-label={title}
+      className="fixed left-0 right-0 bottom-0 z-[70] max-h-[78vh] flex flex-col bg-white dark:bg-[#12121a] border-t border-gray-100 dark:border-white/8 rounded-t-3xl shadow-[0_-24px_48px_rgba(0,0,0,0.18)]"
+      initial={reduced ? "show" : "hidden"}
+      animate="show"
+      exit="hidden"
+      variants={panelVariants}
+    >
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
+        <h2 className="font-display font-bold text-lg">{title}</h2>
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="overflow-y-auto px-5 py-4 pb-8">
+        <motion.div
+          className="space-y-1"
+          initial={reduced ? "show" : "hidden"}
+          animate="show"
+          exit="hidden"
+          variants={listVariants}
+        >
+          {children}
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+
   return createPortal(
     <>
-      <div
-        className="fixed inset-0 z-[70] bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div
-        role="dialog"
-        aria-label={title}
-        className="fixed left-0 right-0 bottom-0 z-[70] max-h-[78vh] flex flex-col bg-white dark:bg-[#12121a] border-t border-gray-100 dark:border-white/8 rounded-t-3xl shadow-[0_-24px_48px_rgba(0,0,0,0.18)]"
-      >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-white/8">
-          <h2 className="font-display font-bold text-lg">{title}</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            className="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="overflow-y-auto px-5 py-4 pb-8">{children}</div>
-      </div>
+      {reduced ? (open ? overlay : null) : (
+        <AnimatePresence>{open && overlay}</AnimatePresence>
+      )}
+      {reduced ? (open ? panel : null) : (
+        <AnimatePresence>{open && panel}</AnimatePresence>
+      )}
     </>,
     document.body
   );
@@ -102,18 +160,20 @@ function SheetOption({
   onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
+      role="menuitem"
       onClick={onClick}
+      whileTap={{ scale: 0.97 }}
       className={cn(
         "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors",
         active
-          ? "bg-brand/10 text-brand"
+          ? "bg-gradient-brand text-white shadow-ribbon"
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
       )}
     >
       {label}
       {active && <Check className="w-4 h-4" />}
-    </button>
+    </motion.button>
   );
 }
 
@@ -131,7 +191,7 @@ function BarChip({
     <button
       {...props}
       className={cn(
-        "shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
+        "shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-200 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
         active
           ? "bg-gradient-brand text-white shadow-ribbon"
           : "bg-gray-100/80 dark:bg-white/[0.06] text-brand-muted hover:text-brand hover:bg-brand/5",
@@ -444,6 +504,9 @@ export function ShopBottomBar() {
   const pickerGroups = groupSubFilters(getSubFilters(pickerSlug));
   // Options only highlight when the sheet is for the category already applied.
   const subsMatchCategory = pickerSlug !== null && activeCategory === pickerSlug;
+  // "All X" is the natural selection when this category's sheet is open
+  // and no category (or this one) is currently applied.
+  const allSelected = !activeSubValue && (subsMatchCategory || !activeCategory);
 
   // Keep the active category chip in view — the row scrolls as stock grows.
   useEffect(() => {
@@ -493,7 +556,14 @@ export function ShopBottomBar() {
                   {categoryIcon(cat.slug)}
                 </span>
                 <span className="max-w-[110px] truncate">{cat.name}</span>
-                {hasDropdown && <ChevronDown className="w-3 h-3 -mr-1 opacity-70" />}
+                {hasDropdown && (
+                  <ChevronDown
+                    className={cn(
+                      "w-3 h-3 -mr-1 opacity-70 transition-transform duration-300 ease-out",
+                      pickerSlug === cat.slug && "rotate-180"
+                    )}
+                  />
+                )}
               </BarChip>
             );
           })}
@@ -506,16 +576,14 @@ export function ShopBottomBar() {
         onClose={() => setPickerSlug(null)}
         title={pickerTab?.name ?? "Category"}
       >
-        <div className="space-y-1">
-          <SheetOption
-            active={subsMatchCategory && !activeSubValue}
-            label={pickerTab?.slug ? `All ${pickerTab.name}` : "All Gifts"}
-            onClick={() => {
-              if (pickerSlug) chooseCategory(pickerSlug);
-              setPickerSlug(null);
-            }}
-          />
-        </div>
+        <SheetOption
+          active={allSelected}
+          label={pickerTab?.slug ? `All ${pickerTab.name}` : "All Gifts"}
+          onClick={() => {
+            if (pickerSlug) chooseCategory(pickerSlug);
+            setPickerSlug(null);
+          }}
+        />
         {pickerGroups.map((group, gi) => (
           <div key={group.name ?? `g${gi}`} className="mt-3">
             {group.name && (

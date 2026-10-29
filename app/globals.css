@@ -1589,51 +1589,55 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
      · light is the default; dark is a considered inversion, not an afterthought
    ══════════════════════════════════════════════════════════════════════════ */
 .corporate-portal {
-  --portal-bg:          #FBFAF8;
-  --portal-bg-alt:      #F4F1ED;
+  --portal-bg:          #FAF7F5;
+  --portal-bg-alt:      #F4EFEB;
   --portal-surface:     #FFFFFF;
-  --portal-surface-2:   #F7F5F2;
-  --portal-border:      rgba(26, 20, 16, 0.10);
-  --portal-border-soft: rgba(26, 20, 16, 0.06);
-  --portal-text:        #1A1410;
-  --portal-text-muted:  #5C534B;
-  --portal-text-faint:  #8A817A;
-  --portal-accent:      #1D4E6B;
-  --portal-accent-hover:#16394F;
-  --portal-accent-tint: rgba(29, 78, 107, 0.08);
+  --portal-surface-2:   #F7F3EE;
+  --portal-border:      rgba(155, 27, 90, 0.12);
+  --portal-border-soft: rgba(155, 27, 90, 0.06);
+  --portal-text:        #1A1416;
+  --portal-text-muted:  #5C5356;
+  --portal-text-faint:  #8A8084;
+  --portal-accent:      #9B1B5A;
+  --portal-accent-hover:#7D1548;
+  --portal-accent-tint: rgba(155, 27, 90, 0.08);
   --portal-accent-text: #FFFFFF;
-  --portal-positive:    #2F6B4F;
-  --portal-positive-tint: rgba(47, 107, 79, 0.10);
-  --portal-warn:        #8A6A1F;
-  --portal-warn-tint:   rgba(138, 106, 31, 0.10);
-  --portal-stop:        #8C3A3A;
-  --portal-stop-tint:   rgba(140, 58, 58, 0.10);
-  --portal-shadow:      0 1px 2px rgba(26, 20, 16, 0.04), 0 8px 28px rgba(26, 20, 16, 0.05);
-  --portal-header-bg:   rgba(251, 250, 248, 0.88);
+  --portal-gold:        #D4A853;
+  --portal-gold-tint:   rgba(212, 168, 83, 0.12);
+  --portal-positive:    #10B981;
+  --portal-positive-tint: rgba(16, 185, 129, 0.10);
+  --portal-warn:        #F59E0B;
+  --portal-warn-tint:   rgba(245, 158, 11, 0.10);
+  --portal-stop:        #E11D48;
+  --portal-stop-tint:   rgba(225, 29, 72, 0.10);
+  --portal-shadow:      0 1px 2px rgba(26, 20, 22, 0.04), 0 8px 28px rgba(26, 20, 22, 0.06);
+  --portal-header-bg:   rgba(250, 247, 245, 0.88);
 }
 
 [data-theme="dark"] .corporate-portal {
-  --portal-bg:          #12100E;
-  --portal-bg-alt:      #0C0B0A;
-  --portal-surface:     #1A1816;
-  --portal-surface-2:   #221F1C;
-  --portal-border:      rgba(255, 255, 255, 0.10);
-  --portal-border-soft: rgba(255, 255, 255, 0.06);
-  --portal-text:        #F5F1EC;
-  --portal-text-muted:  rgba(245, 241, 236, 0.66);
-  --portal-text-faint:  rgba(245, 241, 236, 0.42);
-  --portal-accent:      #7FB2D4;
-  --portal-accent-hover:#9CC6E2;
-  --portal-accent-tint: rgba(127, 178, 212, 0.12);
-  --portal-accent-text: #0C0B0A;
-  --portal-positive:    #7FC0A0;
-  --portal-positive-tint: rgba(127, 192, 160, 0.12);
-  --portal-warn:        #D9B96A;
-  --portal-warn-tint:   rgba(217, 185, 106, 0.12);
-  --portal-stop:        #E08B8B;
-  --portal-stop-tint:   rgba(224, 139, 139, 0.12);
-  --portal-shadow:      0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 28px rgba(0, 0, 0, 0.35);
-  --portal-header-bg:   rgba(18, 16, 14, 0.86);
+  --portal-bg:          #0C0C1A;
+  --portal-bg-alt:      #080812;
+  --portal-surface:     #161626;
+  --portal-surface-2:   #1E1E34;
+  --portal-border:      rgba(255, 255, 255, 0.09);
+  --portal-border-soft: rgba(255, 255, 255, 0.05);
+  --portal-text:        #F8F7FA;
+  --portal-text-muted:  rgba(248, 247, 250, 0.70);
+  --portal-text-faint:  rgba(248, 247, 250, 0.44);
+  --portal-accent:      #E0528D;
+  --portal-accent-hover:#F06C9B;
+  --portal-accent-tint: rgba(224, 82, 141, 0.15);
+  --portal-accent-text: #FFFFFF;
+  --portal-gold:        #E5BE6B;
+  --portal-gold-tint:   rgba(229, 190, 107, 0.15);
+  --portal-positive:    #34D399;
+  --portal-positive-tint: rgba(52, 211, 153, 0.15);
+  --portal-warn:        #FBBF24;
+  --portal-warn-tint:   rgba(251, 191, 36, 0.15);
+  --portal-stop:        #FB7185;
+  --portal-stop-tint:   rgba(251, 113, 133, 0.15);
+  --portal-shadow:      0 1px 3px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.45);
+  --portal-header-bg:   rgba(12, 12, 26, 0.88);
 }
 
 /* Portal cards. One card, one border, no gradient. */

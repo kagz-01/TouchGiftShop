@@ -12,6 +12,7 @@ import {
   Moon, Sun,
 } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
+import ControlRoomOverview from "@/components/corporate/dashboard/ControlRoomOverview";
 
 // Lazy-load heavy tabs so initial bundle stays small
 const ShopTab         = dynamic(() => import("@/components/corporate/tabs/ShopTab"),         { loading: () => <TabLoader /> });
@@ -485,17 +486,24 @@ function CalendarTab() {
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function CorporateDashboard() {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
-  const [stats, setStats]         = useState<Stats | null>(null);
+  const [stats, setStats]         = useState<any | null>(null);
   const [loading, setLoading]     = useState(true);
+  const [preset, setPreset]       = useState("safaricom");
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (selectedPreset?: string) => {
     setLoading(true);
     try {
-      const r = await fetch("/api/corporate/stats");
+      const p = selectedPreset ?? preset;
+      const r = await fetch(`/api/corporate/stats?preset=${p}`);
       if (r.ok) setStats(await r.json());
     } catch {}
     setLoading(false);
-  }, []);
+  }, [preset]);
+
+  const handleSelectPreset = (p: string) => {
+    setPreset(p);
+    refresh(p);
+  };
 
   useEffect(() => { refresh(); }, [refresh]);
 
@@ -644,7 +652,7 @@ export default function CorporateDashboard() {
                 style={{ transform: isDark ? "translateX(14px)" : "translateX(0px)", width: 14, height: 14 }} />
             </div>
           </button>
-          <button onClick={refresh} disabled={loading}
+          <button onClick={() => refresh()} disabled={loading}
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all disabled:opacity-40"
             style={{ color: "var(--portal-text-muted)" }}
           >
@@ -849,7 +857,31 @@ export default function CorporateDashboard() {
               {!loading && (stats?.totalCorpOrders ?? 0) === 0 && (
                 <QuickStartBanner onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
               )}
-              <OverviewTab stats={stats} loading={loading} onTab={setActiveTab} />
+              <ControlRoomOverview
+                stats={stats}
+                loading={loading}
+                onNavigateTab={setActiveTab}
+                onSelectPreset={handleSelectPreset}
+              />
+              {/* Historical Trend & Pipeline Velocity */}
+              <div className="mt-8 pt-6 border-t" style={{ borderColor: "var(--portal-border-soft)" }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-sm font-bold" style={{ color: "var(--portal-text)" }}>
+                      Historical Trend & Pipeline Velocity
+                    </h3>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--portal-text-muted)" }}>
+                      6-month corporate dispatches vs revenue collection
+                    </p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <MonthlyChart data={stats?.monthlyActivity ?? []} loading={loading} />
+                  </div>
+                  <Pipeline stats={stats} loading={loading} />
+                </div>
+              </div>
             </>
           )}
           {activeTab === "shop"        && <ShopTab />}
