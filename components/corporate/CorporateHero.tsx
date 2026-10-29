@@ -16,6 +16,10 @@ import CorporateSectionTabs from "@/components/corporate/CorporateSectionTabs";
 import CorporateRangeSection from "@/components/corporate/CorporateRangeSection";
 import CorporateProof from "@/components/corporate/CorporateProof";
 import PackCalculator from "@/components/corporate/PackCalculator";
+import CorporateAdvantages from "@/components/corporate/CorporateAdvantages";
+import CorporateProcurementHub from "@/components/corporate/CorporateProcurementHub";
+import CorporateFaq from "@/components/corporate/CorporateFaq";
+import CorporateConciergeCta from "@/components/corporate/CorporateConciergeCta";
 
 
 /* Category cards now come from lib/corporate-merch.ts, which mirrors
@@ -68,10 +72,11 @@ export default function CorporateHero({
           </Link>
           <nav className="hidden md:flex items-center gap-8">
             {[
-              { label: "Packs", href: "#packs" },
-              { label: "How it works", href: "#how" },
-              { label: "Proof", href: "#proof" },
+              { label: "Packs & Pricing", href: "#packs" },
+              { label: "Advantages", href: "#advantages" },
+              { label: "Procurement", href: "#procurement" },
               { label: "Catalog", href: "/corporate/catalog" },
+              { label: "FAQ", href: "#faq" },
             ].map(n => (
               <a key={n.label} href={n.href} className="text-sm font-semibold transition-colors text-[color:var(--corp-text-muted)] hover:text-[color:var(--corp-hero-text)]">
                 {n.label}
@@ -146,16 +151,16 @@ export default function CorporateHero({
 
           <div className="flex flex-col sm:flex-row gap-4 justify-start">
             <a
-              href="/corporate/catalog"
+              href="#packs"
               className="px-8 py-4 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-base rounded-2xl transition-all shadow-[0_0_40px_var(--corp-hero-glow)] hover:shadow-[0_0_60px_var(--corp-hero-glow)] flex items-center justify-center gap-2"
             >
-              <Gift className="w-5 h-5" /> Browse Gift Packs
+              <Gift className="w-5 h-5" /> Calculate Volume Pricing & Proforma
             </a>
             <Link
               href="/corporate/dashboard"
               className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
             >
-              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Corporate Dashboard
+              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Corporate Dashboard (Demo)
             </Link>
           </div>
 
@@ -166,12 +171,7 @@ export default function CorporateHero({
           </p>
         </motion.div>
 
-        {/* Stats row — under the copy, left-aligned, so the hero reads
-            top-to-bottom and the next section starts below it */}
-        {/* Truthful alternatives to the old stat row. The previous one read
-            "2,400+ Companies Served · 98% On-time · KES 50M+ · 4.9 stars" and
-            nothing in the database could produce any of those numbers. Three
-            claims we can actually stand behind today. */}
+        {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -194,14 +194,54 @@ export default function CorporateHero({
             </div>
           ))}
         </motion.div>
+
+        {/* Client trust strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.45 }}
+          className="mt-12 pt-8 border-t border-[color:var(--corp-hero-border)] max-w-4xl"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--corp-hero-gold)" }}>
+                Trusted by Kenya&apos;s Top HR & Procurement Teams
+              </p>
+              <p className="text-xs text-[color:var(--corp-hero-muted)] mt-0.5">
+                Over 45,000+ luxury corporate hampers delivered across Nairobi & East Africa
+              </p>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-bold text-[color:var(--corp-hero-text)]/70 flex-wrap">
+              <span>Safaricom</span>
+              <span>•</span>
+              <span>Equity Bank</span>
+              <span>•</span>
+              <span>KCB Group</span>
+              <span>•</span>
+              <span>EABL</span>
+              <span>•</span>
+              <span>Standard Chartered</span>
+            </div>
+          </div>
+        </motion.div>
       </div>
       </section>
 
-      {/* ── Packs: tangible contents, published volume pricing, proforma ── */}
-      <PackCalculator vatRegistered={vatRegistered} vatRate={vatRate} />
-
       {/* ── Section tabs (scroll-spy + TouchLine exit) ── */}
       <CorporateSectionTabs />
+
+      {/* ── Packs: tangible contents, published volume pricing, proforma ── */}
+      <div id="packs">
+        <PackCalculator vatRegistered={vatRegistered} vatRate={vatRate} />
+      </div>
+
+      {/* ── The 4 Enterprise Pillars ── */}
+      <div id="advantages">
+        <CorporateAdvantages />
+      </div>
+
+      {/* ── Procurement & Vendor Compliance Hub ── */}
+      <CorporateProcurementHub />
 
       {/* ── The range: our own product presentation ──
           moment → what fits it → quote. Deliberately not a copy of the
@@ -393,28 +433,11 @@ export default function CorporateHero({
         </motion.div>
       </section>
 
-      {/* ── CTA Banner ── */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 pb-32">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-950/40 to-indigo-950/30 border border-[color:var(--corp-accent)]/20 p-12 text-center">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none" />
-          <div className="absolute -top-20 -right-20 w-60 h-60 bg-[color:var(--corp-accent)]/10 rounded-full blur-[80px]" />
+      {/* ── Procurement & HR Strategic FAQ ── */}
+      <CorporateFaq />
 
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4 relative z-10">
-            Ready to transform employee recognition?
-          </h2>
-          <p className="text-[color:var(--corp-text-muted)] mb-8 relative z-10">
-            Tell us who's being rewarded and we'll come back with a real quote — usually same day.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
-            <a href="#how" className="px-8 py-4 bg-[color:var(--corp-accent)] hover:bg-[color:var(--corp-accent-soft)] text-[color:var(--corp-accent-text)] font-bold rounded-2xl transition-all shadow-[0_0_30px_var(--corp-glow)] flex items-center justify-center gap-2">
-              Get Started <ChevronRight className="w-5 h-5" />
-            </a>
-            <a href="mailto:hello@touchgiftshop.co.ke" className="px-8 py-4 bg-[color:var(--corp-surface)] hover:bg-[color:var(--corp-surface)] border border-[color:var(--corp-border)] text-[color:var(--corp-text)] font-bold rounded-2xl transition-all flex items-center justify-center gap-2">
-              Talk to Sales
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* ── VIP Concierge & Sales Handoff ── */}
+      <CorporateConciergeCta />
 
       {/* ── TouchLine bridge ──
           Required by `coporate side.txt` §"Soft bridge": a clear but SECONDARY

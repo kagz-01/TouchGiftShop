@@ -21,9 +21,13 @@ import { ArrowUpRight } from "lucide-react";
  *  #range (CorporateRangeSection) — deliberately a different job from this bar,
  *  which just tracks where you are on the page. */
 const SECTION_IDS = [
-  { id: "range", label: "The range" },
-  { id: "how", label: "How it works" },
-  { id: "proof", label: "Where we are" },
+  { id: "packs", label: "Packs & Pricing" },
+  { id: "advantages", label: "Why TouchGift" },
+  { id: "procurement", label: "Procurement Hub" },
+  { id: "range", label: "Curated Range" },
+  { id: "how", label: "How It Works" },
+  { id: "merch", label: "Brand Studio" },
+  { id: "faq", label: "FAQ" },
 ] as const;
 
 export default function CorporateSectionTabs() {
