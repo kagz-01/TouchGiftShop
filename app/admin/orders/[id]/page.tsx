@@ -13,7 +13,7 @@ import {
 
 const STATUSES = [
   { value: "processing", label: "Processing", icon: <Package className="w-4 h-4" />, color: "bg-blue-500" },
-  { value: "wrapped", label: "Wrapped & Ready", icon: <Gift className="w-4 h-4" />, color: "bg-purple-500" },
+  { value: "wrapped", label: "Wrapped & Ready", icon: <Gift className="w-4 h-4" />, color: "bg-rose-500" },
   { value: "dispatched", label: "Dispatched", icon: <Truck className="w-4 h-4" />, color: "bg-orange-500" },
   { value: "delivered", label: "Delivered", icon: <CheckCircle className="w-4 h-4" />, color: "bg-green-500" },
   { value: "failed", label: "Failed", icon: <AlertCircle className="w-4 h-4" />, color: "bg-red-500" },

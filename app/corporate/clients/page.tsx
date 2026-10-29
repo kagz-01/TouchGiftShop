@@ -278,7 +278,7 @@ export default function ClientAppreciationNetwork() {
                   </Link>
                   <Link
                     href="/corporate/pool/create"
-                    className="flex items-center gap-3 p-3 bg-teal-500/10 hover:bg-violet-100 dark:hover:bg-teal-500/20 shape-premium-card transition-colors text-sm font-medium text-violet-600"
+                    className="flex items-center gap-3 p-3 bg-teal-500/10 hover:bg-teal-500/20 dark:hover:bg-teal-500/20 shape-premium-card transition-colors text-sm font-medium text-brand-deep"
                   >
                     <Users className="w-4 h-4" /> Create Pool
                   </Link>

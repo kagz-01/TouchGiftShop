@@ -38,7 +38,7 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "TouchGift — Kenya's Premium Gift Delivery | Same-Day Nairobi",
   description:
-    "Order curated gifts, hampers & perfumes online. Same-day delivery in Nairobi, next-day across Kenya. Free gift wrapping, corporate gifting & group orders. Trusted by 5,000+ happy customers.",
+    "Order curated gifts, hampers & perfumes online. Same-day delivery in Nairobi, next-day across Kenya. Free gift wrapping, corporate gifting & group orders. Trusted by 5,000+ happy recipients.",
   openGraph: {
     title: "TouchGift — Kenya's Premium Gift Delivery",
     description:
@@ -514,8 +514,8 @@ export default async function HomePage() {
           <div className="flex items-center justify-center gap-3">
             <ShoppingBag className="w-6 h-6 text-brand group-hover:scale-110 transition-transform duration-300" />
             <div>
-              <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">Browse All 200+ Gifts</p>
-              <p className="text-xs text-brand-muted dark:text-white/60">Across 30+ curated categories — something for everyone</p>
+              <p className="font-display text-lg font-bold group-hover:text-brand transition-colors">Browse All 1,600+ Gifts</p>
+              <p className="text-xs text-brand-muted dark:text-white/60">Across 10 curated categories — something for everyone</p>
             </div>
             <svg className="w-5 h-5 text-brand-muted dark:text-white/60 group-hover:text-brand group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

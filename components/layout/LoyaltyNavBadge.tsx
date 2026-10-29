@@ -41,7 +41,7 @@ export default function LoyaltyNavBadge({ user }: { user: any }) {
       case "bronze": return "text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800/50 dark:text-amber-400";
       case "silver": return "text-slate-700 bg-slate-50 border-slate-200 dark:bg-slate-800/50 dark:border-slate-700/50 dark:text-slate-300";
       case "gold": return "text-yellow-700 bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800/50 dark:text-yellow-400";
-      case "platinum": return "text-purple-700 bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800/50 dark:text-purple-400";
+      case "platinum": return "text-amber-700 bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800/50 dark:text-amber-400";
       default: return "text-brand bg-brand/5 border-brand/20";
     }
   };

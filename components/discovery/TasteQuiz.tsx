@@ -120,14 +120,14 @@ export default function TasteQuiz({ recipientName, onComplete, onCancel }: Taste
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Mama Wanjiku"
-            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-purple-500 focus:outline-none"
+            className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-brand focus:outline-none"
           />
         </div>
 
         <button
           onClick={handleNext}
           disabled={!name.trim()}
-          className="mt-4 w-full rounded-xl bg-purple-600 px-4 py-3 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
+          className="mt-4 w-full rounded-xl bg-brand px-4 py-3 text-sm font-semibold text-white hover:bg-brand-deep disabled:opacity-50"
         >
           Start Quiz →
         </button>
@@ -150,7 +150,7 @@ export default function TasteQuiz({ recipientName, onComplete, onCancel }: Taste
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
           <div
-            className="h-full rounded-full bg-purple-500 transition-all"
+            className="h-full rounded-full bg-brand transition-all"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -171,14 +171,14 @@ export default function TasteQuiz({ recipientName, onComplete, onCancel }: Taste
               onClick={() => handleToggle(step, option.value, currentQuestion.type)}
               className={`flex items-center gap-2 rounded-xl border px-3 py-3 text-left text-sm transition-all ${
                 isSelected
-                  ? "border-purple-500 bg-purple-50 text-purple-700"
+                  ? "border-brand bg-rose-50 text-brand"
                   : "border-gray-200 hover:border-gray-300 text-gray-700"
               }`}
             >
               <span className="text-lg">{option.icon}</span>
               <span className="font-medium">{option.label}</span>
               {isSelected && (
-                <span className="ml-auto text-purple-500">✓</span>
+                <span className="ml-auto text-brand">✓</span>
               )}
             </button>
           );
@@ -196,7 +196,7 @@ export default function TasteQuiz({ recipientName, onComplete, onCancel }: Taste
         <button
           onClick={handleNext}
           disabled={currentQuestion.type === "single" && selectedValues.length === 0}
-          className="flex-1 rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-purple-700 disabled:opacity-50"
+          className="flex-1 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-deep disabled:opacity-50"
         >
           {step === "avoid" ? "Save Profile" : "Next →"}
         </button>

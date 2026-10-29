@@ -80,7 +80,7 @@ export default function MyStuffPage() {
               </Link>
               <Link
                 href="/gift-cards"
-                className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition-colors"
+                className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-brand/20 hover:bg-rose-50 transition-colors"
               >
                 <span className="text-2xl">💳</span>
                 <span className="text-xs font-medium text-gray-700">Gift Cards</span>

@@ -22,7 +22,7 @@ const FALLBACK_TEMPLATES: HamperTemplate[] = [
     name: "New Hire Welcome Kit",
     description: "Make new hires feel valued from day one with a curated onboarding experience.",
     icon: <Hand className="w-6 h-6" />,
-    gradient: "from-violet-500 to-purple-500",
+    gradient: "from-brand to-[#C22367]",
     priceRange: "KSh 2,500 – 5,000",
     itemCount: 5,
     items: [
@@ -121,7 +121,7 @@ const FALLBACK_TEMPLATES: HamperTemplate[] = [
 
 // DB category -> visual style for dynamically-loaded templates
 const CATEGORY_STYLES: Record<string, { icon: React.ReactNode; gradient: string }> = {
-  welcome: { icon: <Hand className="w-6 h-6" />, gradient: "from-violet-500 to-purple-500" },
+  welcome: { icon: <Hand className="w-6 h-6" />, gradient: "from-brand to-[#C22367]" },
   client: { icon: <HeartHandshake className="w-6 h-6" />, gradient: "from-gold to-gold-light" },
   recognition: { icon: <Star className="w-6 h-6" />, gradient: "from-amber-500 to-yellow-400" },
   holiday: { icon: <TreePine className="w-6 h-6" />, gradient: "from-emerald-500 to-teal-500" },

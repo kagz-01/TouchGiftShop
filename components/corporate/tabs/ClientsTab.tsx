@@ -15,7 +15,7 @@ interface Client {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  platinum: "bg-violet-50 border-violet-200 text-violet-700",
+  platinum: "bg-amber-50 border-amber-200 text-amber-700",
   gold:     "bg-yellow-50 border-yellow-200 text-yellow-700",
   silver:   "bg-gray-100 border-gray-200 text-gray-500",
 };

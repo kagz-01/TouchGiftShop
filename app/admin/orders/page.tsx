@@ -11,7 +11,7 @@ import {
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   pending_payment: { label: "Pending", color: "bg-yellow-100 text-yellow-700" },
   processing: { label: "Processing", color: "bg-blue-100 text-blue-700" },
-  wrapped: { label: "Ready", color: "bg-purple-100 text-purple-700" },
+  wrapped: { label: "Ready", color: "bg-rose-100 text-rose-700" },
   dispatched: { label: "Dispatched", color: "bg-orange-100 text-orange-700" },
   delivered: { label: "Delivered", color: "bg-green-100 text-green-700" },
   failed: { label: "Failed", color: "bg-red-100 text-red-700" },
@@ -198,7 +198,7 @@ export default function AdminOrdersPage() {
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
                             {order.recipient_pin_requested && !order.delivery_lat && (
-                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-purple-100 text-purple-600">
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-rose-100 text-rose-600">
                                 <MapPin className="w-2.5 h-2.5" /> Pin pending
                               </span>
                             )}

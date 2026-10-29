@@ -516,7 +516,7 @@ export default function AdminProductsPage() {
                       </span>
                     ))}
                     {product.color_variants?.length > 0 && (
-                      <span className="text-[10px] bg-purple-50 text-purple-600 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">
                         {product.color_variants.length} colors
                       </span>
                     )}

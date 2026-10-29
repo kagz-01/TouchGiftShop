@@ -984,7 +984,7 @@ export function SocialProof() {
                   <p className="font-display text-xl lg:text-2xl font-semibold text-theme-heading mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-theme-body/60 mt-1">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-theme-body/70 mt-1">
                     {stat.label}
                   </p>
                 </div>

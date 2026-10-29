@@ -123,7 +123,7 @@ export default function BrandStudio({
   };
 
   const brandColors = [
-    { name: "Brand Purple", value: "#9B1B5A" },
+    { name: "Brand Burgundy", value: "#9B1B5A" },
     { name: "Gold", value: "#D4A853" },
     { name: "Coral", value: "#FF6B6B" },
     { name: "Emerald", value: "#10B981" },

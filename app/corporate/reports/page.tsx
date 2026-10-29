@@ -35,7 +35,7 @@ type ReportData = {
 const STATUS_COLORS: Record<string, string> = {
   pending_payment: "bg-amber-500",
   processing: "bg-blue-500",
-  wrapped: "bg-violet-500",
+  wrapped: "bg-brand",
   dispatched: "bg-orange-500",
   delivered: "bg-emerald-500",
   cancelled: "bg-red-500",
@@ -117,7 +117,7 @@ export default function CorporateReports() {
                 <select
                   value={range}
                   onChange={(e) => setRange(e.target.value as typeof range)}
-                  className="appearance-none bg-white/5 border border-white/10 rounded-xl pl-4 pr-8 py-2 text-sm text-white focus:outline-none focus:border-violet-400 cursor-pointer"
+                  className="appearance-none bg-white/5 border border-white/10 rounded-xl pl-4 pr-8 py-2 text-sm text-white focus:outline-none focus:border-gold cursor-pointer"
                 >
                   <option value="quarter">Last 90 Days</option>
                   <option value="year">This Year</option>
@@ -128,14 +128,14 @@ export default function CorporateReports() {
               <button
                 onClick={fetchReport}
                 disabled={loading}
-                className="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-violet-400/30 transition-colors"
+                className="p-2 bg-white/5 border border-white/10 rounded-xl hover:border-gold/30 transition-colors"
               >
                 <RefreshCw className={`w-4 h-4 text-white/60 ${loading ? "animate-spin" : ""}`} />
               </button>
               <button
                 onClick={handleExportCSV}
                 disabled={!data}
-                className="px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-[0_0_15px_rgba(139,92,246,0.3)] disabled:opacity-50"
+                className="px-4 py-2 bg-brand hover:bg-brand-deep text-white rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors shadow-[0_0_15px_rgba(155,27,90,0.3)] disabled:opacity-50"
               >
                 <Download className="w-4 h-4" /> Export CSV
               </button>
@@ -146,7 +146,7 @@ export default function CorporateReports() {
           {data && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { label: "Total Orders", value: data.summary.totalOrders.toLocaleString(), icon: <Package className="w-5 h-5" />, color: "text-violet-400", glow: "rgba(139,92,246,0.2)" },
+                { label: "Total Orders", value: data.summary.totalOrders.toLocaleString(), icon: <Package className="w-5 h-5" />, color: "text-gold", glow: "rgba(155,27,90,0.2)" },
                 { label: "Total Spend", value: `KSh ${(data.summary.totalSpend / 1000).toFixed(1)}K`, icon: <CircleDollarSign className="w-5 h-5" />, color: "text-amber-400", glow: "rgba(251,191,36,0.2)" },
                 { label: "Delivered Gifts", value: data.summary.deliveredOrders.toLocaleString(), icon: <Gift className="w-5 h-5" />, color: "text-emerald-400", glow: "rgba(52,211,153,0.2)" },
                 { label: "Delivery Rate", value: `${data.summary.deliveryRate}%`, icon: <TrendingUp className="w-5 h-5" />, color: "text-fuchsia-400", glow: "rgba(232,121,249,0.2)" },
@@ -182,7 +182,7 @@ export default function CorporateReports() {
                 onClick={() => setActiveTab(tab.id as typeof activeTab)}
                 className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-all border-b-2 -mb-px ${
                   activeTab === tab.id
-                    ? "border-violet-400 text-violet-400"
+                    ? "border-gold text-gold"
                     : "border-transparent text-white/40 hover:text-white/70"
                 }`}
               >
@@ -196,7 +196,7 @@ export default function CorporateReports() {
       <div className="page-container-capped py-8">
         {loading && (
           <div className="flex items-center justify-center py-24">
-            <div className="w-10 h-10 border-2 border-violet-400/30 border-t-violet-400 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-2 border-gold/30 border-t-gold rounded-full animate-spin" />
           </div>
         )}
 
@@ -217,7 +217,7 @@ export default function CorporateReports() {
                       return (
                         <div key={i} className="flex-1 flex flex-col items-center gap-1 group">
                           <div
-                            className="w-full rounded-t-lg bg-gradient-to-t from-violet-600 to-fuchsia-400 transition-all duration-700 relative cursor-pointer"
+                            className="w-full rounded-t-lg bg-gradient-to-t from-brand-deep to-fuchsia-400 transition-all duration-700 relative cursor-pointer"
                             style={{ height: `${Math.max(pct, 2)}%` }}
                           >
                             <div className="absolute -top-7 left-1/2 -translate-x-1/2 hidden group-hover:flex bg-black/80 text-white text-[10px] font-semibold px-2 py-1 rounded-lg whitespace-nowrap border border-white/10">
@@ -256,7 +256,7 @@ export default function CorporateReports() {
                       {[
                         { label: "Total Pools", value: data.poolStats.total, color: "text-fuchsia-400" },
                         { label: "Active", value: data.poolStats.active, color: "text-emerald-400" },
-                        { label: "Completed", value: data.poolStats.completed, color: "text-violet-400" },
+                        { label: "Completed", value: data.poolStats.completed, color: "text-gold" },
                         { label: "Total Raised", value: `KSh ${data.poolStats.totalRaised.toLocaleString()}`, color: "text-amber-400" },
                         { label: "Avg. Contributors", value: data.poolStats.avgContributors, color: "text-pink-400" },
                       ].map((row) => (
@@ -277,7 +277,7 @@ export default function CorporateReports() {
                             <p className="text-xs font-semibold text-white truncate">{rule.name}</p>
                             <p className="text-[10px] text-white/40">{rule.triggered} gifts sent</p>
                           </div>
-                          <span className="text-sm font-bold text-violet-400 ml-3">KSh {rule.totalCost.toLocaleString()}</span>
+                          <span className="text-sm font-bold text-gold ml-3">KSh {rule.totalCost.toLocaleString()}</span>
                         </div>
                       ))}
                       {data.milestoneROI.length === 0 && (
@@ -313,13 +313,13 @@ export default function CorporateReports() {
                             <span className="text-sm font-semibold text-white">{dept.dept}</span>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm font-bold text-violet-400">KSh {dept.spend.toLocaleString()}</p>
+                            <p className="text-sm font-bold text-gold">KSh {dept.spend.toLocaleString()}</p>
                             <p className="text-[10px] text-white/40">{dept.count} orders</p>
                           </div>
                         </div>
                         <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-violet-600 to-fuchsia-400 rounded-full transition-all duration-700"
+                            className="h-full bg-gradient-to-r from-brand-deep to-fuchsia-400 rounded-full transition-all duration-700"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -367,7 +367,7 @@ export default function CorporateReports() {
                           <p className="text-xs text-white/40">{r.count} gift{r.count !== 1 ? "s" : ""} received</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-sm font-bold text-violet-400">KSh {r.spend.toLocaleString()}</p>
+                          <p className="text-sm font-bold text-gold">KSh {r.spend.toLocaleString()}</p>
                           <p className="text-[10px] text-white/40">total value</p>
                         </div>
                       </div>
@@ -382,7 +382,7 @@ export default function CorporateReports() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-bold text-white">Milestone Rule Performance</h2>
-                  <Link href="/corporate/milestones" className="text-xs text-violet-400 hover:text-violet-300 transition-colors">
+                  <Link href="/corporate/milestones" className="text-xs text-gold hover:text-gold-light transition-colors">
                     Manage Rules →
                   </Link>
                 </div>
@@ -392,7 +392,7 @@ export default function CorporateReports() {
                     <p className="text-sm text-white/40 mb-4">No milestone rules configured yet.</p>
                     <Link
                       href="/corporate/milestones/add"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-500 text-white rounded-xl text-sm font-semibold hover:bg-violet-600 transition-colors"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand text-white rounded-xl text-sm font-semibold hover:bg-brand-deep transition-colors"
                     >
                       <Zap className="w-4 h-4" /> Create First Rule
                     </Link>
@@ -401,7 +401,7 @@ export default function CorporateReports() {
                 <div className="space-y-3">
                   {data.milestoneROI.map((rule) => (
                     <div key={rule.name} className={`bg-white/5 backdrop-blur-md rounded-2xl p-5 border ${
-                      rule.active ? "border-violet-400/20" : "border-white/5 opacity-60"
+                      rule.active ? "border-gold/20" : "border-white/5 opacity-60"
                     }`}>
                       <div className="flex items-start justify-between mb-4">
                         <div>
@@ -419,7 +419,7 @@ export default function CorporateReports() {
                       </div>
                       <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-xl border border-white/5">
-                          <p className="text-base sm:text-lg font-bold text-violet-400 truncate">{rule.triggered}</p>
+                          <p className="text-base sm:text-lg font-bold text-gold truncate">{rule.triggered}</p>
                           <p className="text-[10px] text-white/40 truncate">Gifts Sent</p>
                         </div>
                         <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-xl border border-white/5">
@@ -450,7 +450,7 @@ export default function CorporateReports() {
                   {[
                     { label: "Total Pools", value: data.poolStats.total, color: "text-white" },
                     { label: "Active", value: data.poolStats.active, color: "text-emerald-400" },
-                    { label: "Completed", value: data.poolStats.completed, color: "text-violet-400" },
+                    { label: "Completed", value: data.poolStats.completed, color: "text-gold" },
                     { label: "Total Raised", value: `KSh ${(data.poolStats.totalRaised / 1000).toFixed(1)}K`, color: "text-fuchsia-400" },
                     { label: "Avg Contributors", value: data.poolStats.avgContributors, color: "text-pink-400" },
                   ].map((stat) => (

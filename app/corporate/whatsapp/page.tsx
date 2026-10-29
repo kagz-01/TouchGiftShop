@@ -202,7 +202,7 @@ export default function WhatsAppBotPage() {
     },
     {
       name: "Events",
-      color: "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400",
+      color: "bg-rose-50 text-brand dark:bg-gold/10 dark:text-gold",
       items: [
         { key: "{occasion}", desc: "Type of occasion (Birthday, etc.)" },
         { key: "{event_name}", desc: "Full event name" },
@@ -425,8 +425,8 @@ export default function WhatsAppBotPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
               { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-5 h-5" />, color: "text-emerald-400" },
-              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-violet-400" },
-              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-gold" },
+              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-gold" },
               { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-5 h-5" />, color: "text-amber-400" },
             ].map((stat) => (
               <div key={stat.label} className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">

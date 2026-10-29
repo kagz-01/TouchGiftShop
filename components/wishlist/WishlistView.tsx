@@ -37,7 +37,7 @@ const OCCASION_CONFIG: Record<string, { emoji: string; color: string; bg: string
   wedding:     { emoji: "💒", color: "text-rose-600",   bg: "from-rose-50 to-pink-50" },
   baby:        { emoji: "👶", color: "text-sky-600",    bg: "from-sky-50 to-blue-50" },
   anniversary: { emoji: "💕", color: "text-red-500",    bg: "from-red-50 to-pink-50" },
-  graduation:  { emoji: "🎓", color: "text-violet-600", bg: "from-violet-50 to-purple-50" },
+  graduation:  { emoji: "🎓", color: "text-brand",       bg: "from-rose-50 to-pink-50" },
   christmas:   { emoji: "🎄", color: "text-emerald-600",bg: "from-emerald-50 to-green-50" },
   "just because": { emoji: "💝", color: "text-pink-500", bg: "from-pink-50 to-rose-50" },
   other:       { emoji: "🎁", color: "text-amber-600",  bg: "from-amber-50 to-yellow-50" },

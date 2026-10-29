@@ -21,7 +21,7 @@ interface Stats {
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   pending_payment: { label: "Pending Payment", color: "text-yellow-600 bg-yellow-50", icon: <Clock className="w-4 h-4" /> },
   processing: { label: "Processing", color: "text-blue-600 bg-blue-50", icon: <Package className="w-4 h-4" /> },
-  wrapped: { label: "Wrapped & Ready", color: "text-purple-600 bg-purple-50", icon: <Package className="w-4 h-4" /> },
+  wrapped: { label: "Wrapped & Ready", color: "text-rose-600 bg-rose-50", icon: <Package className="w-4 h-4" /> },
   dispatched: { label: "Dispatched", color: "text-orange-600 bg-orange-50", icon: <Truck className="w-4 h-4" /> },
   delivered: { label: "Delivered", color: "text-green-600 bg-green-50", icon: <CheckCircle className="w-4 h-4" /> },
   failed: { label: "Failed", color: "text-red-600 bg-red-50", icon: <AlertCircle className="w-4 h-4" /> },
@@ -152,7 +152,7 @@ export default function AdminDashboardPage() {
               <StatCard
                 label="Pending Pin-Drops"
                 value={stats.pendingPinDrops}
-                icon={<MapPin className="w-5 h-5 text-purple-500" />}
+                icon={<MapPin className="w-5 h-5 text-brand" />}
                 link="/admin/orders"
                 alert={stats.pendingPinDrops > 0}
               />
@@ -207,7 +207,7 @@ export default function AdminDashboardPage() {
               </Link>
               <Link
                 href="/admin/orders?status=wrapped"
-                className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200 hover:border-purple-300 transition-colors"
+                className="flex items-center justify-between p-4 bg-white rounded-2xl border border-gray-200 hover:border-brand/30 transition-colors"
               >
                 <span className="text-sm font-medium text-gray-700">Ready to Dispatch</span>
                 <ArrowRight className="w-4 h-4 text-gray-400" />

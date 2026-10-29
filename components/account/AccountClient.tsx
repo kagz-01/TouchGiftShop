@@ -30,7 +30,7 @@ const NAV_ITEMS = [
 const STATUS_COLORS: Record<string, string> = {
   pending_payment: "[data-theme=light]:bg-yellow-100 [data-theme=dark]:bg-yellow-900 [data-theme=light]:text-yellow-700 [data-theme=dark]:text-yellow-300",
   processing: "[data-theme=light]:bg-blue-100 [data-theme=dark]:bg-blue-900 [data-theme=light]:text-blue-700 [data-theme=dark]:text-blue-300",
-  wrapped: "[data-theme=light]:bg-purple-100 [data-theme=dark]:bg-purple-900 [data-theme=light]:text-purple-700 [data-theme=dark]:text-purple-300",
+  wrapped: "[data-theme=light]:bg-rose-100 [data-theme=dark]:bg-rose-900 [data-theme=light]:text-rose-700 [data-theme=dark]:text-rose-300",
   dispatched: "[data-theme=light]:bg-orange-100 [data-theme=dark]:bg-orange-900 [data-theme=light]:text-orange-700 [data-theme=dark]:text-orange-300",
   delivered: "[data-theme=light]:bg-green-100 [data-theme=dark]:bg-green-900 [data-theme=light]:text-green-700 [data-theme=dark]:text-green-300",
   failed: "[data-theme=light]:bg-red-100 [data-theme=dark]:bg-red-900 [data-theme=light]:text-red-700 [data-theme=dark]:text-red-300",

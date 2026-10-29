@@ -59,7 +59,7 @@ export default function SmartReorderBanner() {
   }
 
   return (
-    <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-purple-50 p-4">
+    <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 to-rose-50 p-4">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <p className="text-xs font-medium uppercase tracking-wide text-blue-500">

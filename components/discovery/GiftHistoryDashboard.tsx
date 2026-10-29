@@ -44,7 +44,7 @@ const RELATION_EMOJI: Record<string, string> = {
 
 const OCCASION_COLORS: Record<string, string> = {
   birthday: "bg-pink-100 text-pink-700",
-  wedding: "bg-purple-100 text-purple-700",
+  wedding: "bg-rose-100 text-rose-700",
   anniversary: "bg-red-100 text-red-700",
   christmas: "bg-green-100 text-green-700",
   valentines: "bg-rose-100 text-rose-700",

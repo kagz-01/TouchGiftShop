@@ -22,13 +22,13 @@ type CalendarEvent = {
 
 const TYPE_CONFIG = {
   birthday: { icon: <Cake className="w-4 h-4" />, color: "text-pink-400", bg: "bg-pink-500/10" },
-  anniversary: { icon: <Trophy className="w-4 h-4" />, color: "text-violet-400", bg: "bg-violet-500/10" },
+  anniversary: { icon: <Trophy className="w-4 h-4" />, color: "text-gold", bg: "bg-brand/10" },
   holiday: { icon: <PartyPopper className="w-4 h-4" />, color: "text-emerald-400", bg: "bg-emerald-500/10" },
-  custom: { icon: <Gift className="w-4 h-4" />, color: "text-violet-400", bg: "bg-violet-500/10" },
+  custom: { icon: <Gift className="w-4 h-4" />, color: "text-gold", bg: "bg-brand/10" },
 };
 
 const STATUS_CONFIG = {
-  scheduled: { label: "Scheduled", color: "bg-violet-500/20 text-violet-400" },
+  scheduled: { label: "Scheduled", color: "bg-brand/20 text-gold" },
   sent: { label: "Sent", color: "bg-blue-500/20 text-blue-400" },
   delivered: { label: "Delivered", color: "bg-emerald-500/20 text-emerald-400" },
   pending_pool: { label: "Pool Active", color: "bg-fuchsia-500/20 text-fuchsia-400" },
@@ -114,19 +114,19 @@ export default function CorporateCalendar() {
         <div className="page-container-capped py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display italic text-2xl font-bold text-violet-400">Gifting Calendar</h1>
+              <h1 className="font-display italic text-2xl font-bold text-gold">Gifting Calendar</h1>
               <p className="text-white/60 text-sm">Never miss an occasion. Schedule and automate corporate gifts.</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setView(view === "calendar" ? "list" : "calendar")}
-                className="px-4 py-2 shape-premium-card text-sm font-medium border border-white/10 text-white/50 hover:border-violet-400/30 hover:text-white transition-all"
+                className="px-4 py-2 shape-premium-card text-sm font-medium border border-white/10 text-white/50 hover:border-gold/30 hover:text-white transition-all"
               >
                 {view === "calendar" ? "List View" : "Calendar View"}
               </button>
               <Link
                 href="/corporate/calendar/add"
-                className="px-4 py-2 bg-violet-500 text-white shape-premium-card font-semibold text-sm hover:bg-violet-600 transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                className="px-4 py-2 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-deep transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(155,27,90,0.3)]"
               >
                 <Plus className="w-4 h-4" /> Add Event
               </Link>
@@ -136,7 +136,7 @@ export default function CorporateCalendar() {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
-              { label: "This Month", value: events.filter((e) => { const d = new Date(e.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; }).length, icon: <Calendar className="w-5 h-5" />, color: "text-violet-400" },
+              { label: "This Month", value: events.filter((e) => { const d = new Date(e.date); return d.getMonth() === currentMonth && d.getFullYear() === currentYear; }).length, icon: <Calendar className="w-5 h-5" />, color: "text-gold" },
               { label: "Upcoming", value: upcomingEvents.length, icon: <Clock className="w-5 h-5" />, color: "text-pink-400" },
               { label: "Auto-Order", value: events.filter((e) => e.autoOrder).length, icon: <Gift className="w-5 h-5" />, color: "text-emerald-400" },
               { label: "Total Budget", value: `KSh ${totalBudget.toLocaleString()}`, icon: <Bell className="w-5 h-5" />, color: "text-fuchsia-400" },
@@ -202,10 +202,10 @@ export default function CorporateCalendar() {
                         key={day}
                         onClick={() => setSelectedDate(dateStr)}
                         className={`p-2 min-h-[80px] border-b border-r border-white/5 cursor-pointer transition-all hover:bg-white/5 ${
-                          isSelected ? "bg-violet-500/10 shadow-[inset_0_0_10px_rgba(139,92,246,0.1)]" : ""
+                          isSelected ? "bg-brand/10 shadow-[inset_0_0_10px_rgba(155,27,90,0.1)]" : ""
                         }`}
                       >
-                        <div className={`text-sm font-semibold mb-1 ${isToday ? "w-6 h-6 bg-violet-500 text-white shape-premium-button flex items-center justify-center shadow-[0_0_10px_rgba(139,92,246,0.5)]" : "text-white/80"}`}>
+                        <div className={`text-sm font-semibold mb-1 ${isToday ? "w-6 h-6 bg-brand text-white shape-premium-button flex items-center justify-center shadow-[0_0_10px_rgba(155,27,90,0.5)]" : "text-white/80"}`}>
                           {day}
                         </div>
                         <div className="space-y-1">
@@ -240,7 +240,7 @@ export default function CorporateCalendar() {
                     return (
                       <div
                         key={event.id}
-                        className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg flex items-center justify-between hover:border-violet-400/50 transition-all"
+                        className="bg-white/5 backdrop-blur-md shape-premium-card p-4 border border-white/10 shadow-lg flex items-center justify-between hover:border-gold/50 transition-all"
                       >
                         <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 shape-premium-card flex items-center justify-center ${typeCfg.bg} ${typeCfg.color}`}>
@@ -319,7 +319,7 @@ export default function CorporateCalendar() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-xs font-semibold text-violet-400">KSh {event.giftBudget.toLocaleString()}</p>
+                        <p className="text-xs font-semibold text-gold">KSh {event.giftBudget.toLocaleString()}</p>
                       </div>
                     </div>
                   );
@@ -333,7 +333,7 @@ export default function CorporateCalendar() {
               <div className="space-y-2">
                 <Link
                   href="/corporate/calendar/add"
-                  className="flex items-center gap-3 p-3 bg-violet-400/10 hover:bg-violet-400/20 border border-transparent hover:border-violet-400/30 shape-premium-card transition-colors text-sm font-medium text-violet-400"
+                  className="flex items-center gap-3 p-3 bg-gold/10 hover:bg-gold/20 border border-transparent hover:border-gold/30 shape-premium-card transition-colors text-sm font-medium text-gold"
                 >
                   <Plus className="w-4 h-4" /> Add Event
                 </Link>
