@@ -213,7 +213,7 @@ export const MEGA_MENU_DATA: MegaMenuCategory[] = [
       title: "The Executive Suite",
       description: "Account managers, bulk pricing, and white-labelled gifting for enterprises.",
       href: "/corporate",
-      buttonText: "Corporate Portal",
+      buttonText: "Corporate Dashboard",
     },
   },
   {

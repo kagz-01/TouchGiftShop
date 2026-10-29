@@ -87,7 +87,7 @@ export default function CorporateHero({
               href="/corporate/dashboard"
               className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_var(--corp-hero-glow)] hover:shadow-[0_0_40px_var(--corp-hero-glow)] whitespace-nowrap"
             >
-              Client Portal <ArrowRight className="w-4 h-4" />
+              Corporate Dashboard <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -155,7 +155,7 @@ export default function CorporateHero({
               href="/corporate/dashboard"
               className="px-8 py-4 bg-[color:var(--corp-hero-card)] hover:bg-[color:var(--corp-hero-accent)]/20 border border-[color:var(--corp-hero-border)] hover:border-[color:var(--corp-hero-accent)]/30 text-[color:var(--corp-hero-text)] font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2 backdrop-blur-sm"
             >
-              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Client Portal
+              <BarChart3 className="w-5 h-5 text-[color:var(--corp-hero-accent)]" /> Corporate Dashboard
             </Link>
           </div>
 

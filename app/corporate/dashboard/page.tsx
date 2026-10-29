@@ -579,7 +579,7 @@ export default function CorporateDashboard() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold leading-tight truncate" style={{ color: "var(--portal-text)" }}>TouchGift</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--portal-accent)" }}>Corporate Portal</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--portal-accent)" }}>Corporate Dashboard</p>
             </div>
           </div>
         </div>

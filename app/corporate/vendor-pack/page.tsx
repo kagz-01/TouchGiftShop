@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PortalPrintButton from "@/components/corporate/portal/PortalPrintButton";
+import PortalPrintButton from "@/components/corporate/PortalPrintButton";
 import { sellerReadiness } from "@/lib/invoicing";
 
 export const metadata: Metadata = {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import PortalPrintButton from "@/components/corporate/portal/PortalPrintButton";
+import PortalPrintButton from "@/components/corporate/PortalPrintButton";
 import ProformaAutoPrint from "@/components/corporate/ProformaAutoPrint";
 import { getPack, calculatePack, clampQty } from "@/lib/corporate-packs";
 import { sellerConfig } from "@/lib/invoicing";
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  * invoice, and it is explicit that it is not a tax invoice.
  *
  * Print-first, A4, no corporate chrome. The browser's print dialog is the PDF
- * generator — the same convention as app/corporate/portal/invoices/[number].
+ * generator.
  */
 
 const money = (n: number) =>
