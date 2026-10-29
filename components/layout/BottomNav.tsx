@@ -7,15 +7,11 @@ import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import MobileShopDrawer from "@/components/layout/MobileShopDrawer";
 import BuildToolkitSheet from "@/components/layout/BuildToolkitSheet";
-import { useCart } from "@/lib/cart";
 import {
   Home,
   Package,
   Briefcase,
   FlaskConical,
-  ShoppingBag,
-  Bell,
-  User,
 } from "lucide-react";
 
 type Tab = {
@@ -23,7 +19,6 @@ type Tab = {
   label: string;
   icon: React.ReactNode;
   opensSheet?: "shop" | "build";
-  isCart?: boolean;
 };
 
 const TABS: Tab[] = [
@@ -31,9 +26,6 @@ const TABS: Tab[] = [
   { href: "shop", label: "Shop", icon: <Package className="w-5 h-5" />, opensSheet: "shop" },
   { href: "/corporate", label: "Corp", icon: <Briefcase className="w-5 h-5" /> },
   { href: "build", label: "Build", icon: <FlaskConical className="w-5 h-5" />, opensSheet: "build" },
-  { href: "/cart", label: "Cart", icon: <ShoppingBag className="w-5 h-5" />, isCart: true },
-  { href: "/reminders", label: "Alerts", icon: <Bell className="w-5 h-5" /> },
-  { href: "/account", label: "You", icon: <User className="w-5 h-5" /> },
 ];
 
 const CHIP_BASE =
@@ -46,7 +38,6 @@ const CHIP_ACTIVE =
 export default function BottomNav() {
   const pathname = usePathname()!;
   const { theme } = useTheme();
-  const { itemCount } = useCart();
   const [shopOpen, setShopOpen] = useState(false);
   const [buildOpen, setBuildOpen] = useState(false);
 
@@ -58,7 +49,7 @@ export default function BottomNav() {
     <nav className="fixed bottom-3 inset-x-3 z-50 md:hidden" aria-label="Primary">
       <div
         className={cn(
-          "flex items-center gap-1 rounded-[26px] p-1.5 border backdrop-blur-xl transition-all duration-500",
+          "flex items-center gap-1.5 rounded-[26px] p-1.5 border backdrop-blur-xl transition-all duration-500",
           theme === "dark"
             ? "bg-[rgba(12,12,26,0.88)] border-white/10 shadow-[0_8px_32px_rgba(155,27,90,0.3)]"
             : "bg-white/85 border-[rgba(155,27,90,0.1)] shadow-card"
@@ -71,17 +62,10 @@ export default function BottomNav() {
 
           const content = (
             <>
-              <span className="relative w-5 h-5 shrink-0">
-                {tab.icon}
-                {tab.isCart && itemCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[8px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
-                    {itemCount > 9 ? "9+" : itemCount}
-                  </span>
-                )}
-              </span>
+              <span className="w-5 h-5 shrink-0">{tab.icon}</span>
               <span
                 className={cn(
-                  "text-[9px] leading-none whitespace-nowrap",
+                  "text-[10px] leading-none whitespace-nowrap",
                   isActive ? "font-bold" : "font-semibold"
                 )}
               >
@@ -116,11 +100,7 @@ export default function BottomNav() {
               href={tab.href}
               className={cn(CHIP_BASE, isActive ? CHIP_ACTIVE : CHIP_IDLE)}
               aria-current={isActive ? "page" : undefined}
-              aria-label={
-                tab.isCart && itemCount > 0
-                  ? `Shopping cart, ${itemCount} items`
-                  : tab.label
-              }
+              aria-label={tab.label}
             >
               {content}
             </Link>

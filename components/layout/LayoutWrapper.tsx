@@ -9,6 +9,7 @@ import LegalStrip from "@/components/layout/LegalStrip";
 import { showsFullFooter, isInternalCorporate, hasOwnChrome } from "@/lib/footer-paths";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import FloatingThemeToggle from "@/components/ui/FloatingThemeToggle";
+import MobileTopBar from "@/components/layout/MobileTopBar";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
 import { createClient } from "@/lib/supabase-browser";
@@ -97,6 +98,10 @@ export default function LayoutWrapper({
     <>
       <Header user={user} guest={guest} />
       <main className="flex-1 pb-20 md:pb-0 relative z-0">
+        {/* Slim mobile header (logo · menu · profile T · theme) — in-flow so it
+            never overlaps heroes; hides itself on /shop. md+ keeps the full
+            Header above, so this is md:hidden. */}
+        <MobileTopBar />
         {/* Fixed header spacer — pushes page content below the header on all pages except the
             homepage hero, which manages its own top padding internally.
             Height comes from --header-h, published by Header's ResizeObserver.
@@ -110,7 +115,6 @@ export default function LayoutWrapper({
         <LegalStrip kraPin={kraPin ?? null} regNo={regNo ?? null} />
       )}
       <BottomNav />
-      <FloatingThemeToggle />
       <WhatsAppFloat />
       <GiftChatWidget />
       {/* Mood-aware presence toast — watches idle time and tab switching */}
