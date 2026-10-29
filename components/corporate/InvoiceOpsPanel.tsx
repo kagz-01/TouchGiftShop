@@ -574,7 +574,7 @@ export default function InvoiceOpsPanel() {
               )}
 
               <a
-                href={`/corporate/portal/invoices/${invoice.invoice_slug}`}
+                href={`/corporate/dashboard`}
                 target="_blank"
                 rel="noreferrer"
                 className="block text-center py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white text-xs font-bold rounded-lg transition-all"

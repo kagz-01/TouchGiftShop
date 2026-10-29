@@ -495,7 +495,7 @@ export async function GET(req: Request) {
         severity: "high" as const,
         count: overdueInvoices.length,
         actionLabel: "View Invoices",
-        actionHref: "/corporate/portal/invoices"
+        actionHref: "/corporate/dashboard"
       });
     }
     if ((pendingQuotes ?? 0) > 0) {
@@ -507,7 +507,7 @@ export async function GET(req: Request) {
         severity: "medium" as const,
         count: pendingQuotes ?? 0,
         actionLabel: "Check Status",
-        actionHref: "/corporate/portal/quotes"
+        actionHref: "/corporate/dashboard"
       });
     }
 

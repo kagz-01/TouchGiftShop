@@ -84,7 +84,7 @@ export default function CorporateHero({
                 stay in sync. */}
             <ThemeToggle />
             <Link
-              href="/corporate/portal"
+              href="/corporate/dashboard"
               className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-[color:var(--corp-hero-accent)] hover:bg-[color:var(--corp-hero-accent-hover)] text-[color:var(--corp-hero-accent-text)] font-bold text-sm rounded-xl transition-all shadow-[0_0_20px_var(--corp-hero-glow)] hover:shadow-[0_0_40px_var(--corp-hero-glow)] whitespace-nowrap"
             >
               Client Portal <ArrowRight className="w-4 h-4" />

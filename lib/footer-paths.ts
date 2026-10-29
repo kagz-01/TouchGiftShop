@@ -39,13 +39,13 @@ const INTERNAL_CORPORATE = [
   "/corporate/marketplace",
   "/corporate/whatsapp",
   "/corporate/whitelabel",
-  "/corporate/portal",
+  "/corporate/dashboard",
   "/corporate/pool",
 ];
 
 export const isInternalCorporate = (pathname: string) =>
   INTERNAL_CORPORATE.some((p) => pathname.startsWith(p));
 
-/** The client portal and a shared gift pool carry their own chrome. */
+/** The corporate dashboard and a shared gift pool carry their own chrome. */
 export const hasOwnChrome = (pathname: string) =>
-  pathname.startsWith("/corporate/portal") || pathname.startsWith("/corporate/pool");
+  pathname.startsWith("/corporate/dashboard") || pathname.startsWith("/corporate/pool");

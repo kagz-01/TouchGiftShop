@@ -20,8 +20,6 @@ import type { Product } from "@/lib/types";
 import { optimizeProductImagesList, optimizeImageUrl } from "@/lib/image-url";
 import { formatKsh } from "@/lib/utils";
 import AuthErrorRedirect from "@/components/auth/AuthErrorRedirect";
-import CorporateApparelShowcase from "@/components/home/CorporateApparelShowcase";
-import RecipientMagicLinkExplainer from "@/components/home/RecipientMagicLinkExplainer";
 
 /**
  * The homepage is prerendered — without this it is frozen at build time and
@@ -395,18 +393,19 @@ export default async function HomePage() {
       />
 
       {/* ═══════════════════════════════════════════
-          CHAPTER 2: Corporate Apparel & Branded Merchandise
-          High-impact showcase for executive polos, hoodies, drinkware & onboarding kits
+          CHAPTER 2: Corporate — second door for B2B buyers,
+          immediately after the product showcase.
           ═══════════════════════════════════════════ */}
-      <CorporateApparelShowcase />
-
-      {/* Corporate story & solutions */}
       <SolutionSection shots={corporateShots} />
 
       {/* The gifting dilemma — emotional hook for consumer buyers */}
       <ProblemSection />
 
       {/* Category breadth */}
+      {/* Category breadth. Placed between the dilemma and what-we-do: name the
+          problem, give them something real to look at, then explain why they can
+          trust us to deliver it. Surfaces the ~259 SKUs in categories the rest of
+          the page never shows, instead of adding a fourth product marquee. */}
       <CategoryRail
         tiles={categoryTiles}
         totalCount={categoryTiles.reduce((n, t) => n + t.count, 0)}
@@ -416,12 +415,6 @@ export default async function HomePage() {
           CHAPTER 1.5: TouchGift Superpowers (USPs)
           ═══════════════════════════════════════════ */}
       <SuperpowersStrip />
-
-      {/* ═══════════════════════════════════════════
-          CHAPTER 1.75: Recipient WhatsApp Magic Link Explainer
-          Zero address friction for consumer & enterprise senders
-          ═══════════════════════════════════════════ */}
-      <RecipientMagicLinkExplainer />
 
       {/* ═══════════════════════════════════════════
           CHAPTER 3B: Discovery — Horizontal Rows

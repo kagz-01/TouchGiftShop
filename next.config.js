@@ -41,6 +41,28 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // ── Retired /corporate/portal/** → /corporate/dashboard ──────────────
+      // The old client-facing portal shell is replaced by the new 4-widget
+      // control room at /corporate/dashboard. All old deep-links redirect
+      // permanently so bookmarks, emails and search engine crawlers follow.
+      { source: "/corporate/portal",              destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/sign-in",      destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/quotes",       destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/quotes/:path*",destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/orders",       destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/orders/:path*",destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/invoices",     destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/invoices/:path*",destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/spend",        destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/people",       destination: "/corporate/dashboard", permanent: true },
+      { source: "/corporate/portal/settings",     destination: "/corporate/dashboard", permanent: true },
+      // Catch-all safety net for any unlisted portal sub-paths
+      { source: "/corporate/portal/:path*",       destination: "/corporate/dashboard", permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {

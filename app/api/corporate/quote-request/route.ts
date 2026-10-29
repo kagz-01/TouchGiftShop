@@ -295,7 +295,7 @@ export async function POST(req: NextRequest) {
         qty: data.qty,
         total: data.total,
         reference,
-        portalUrl: `${site}/corporate/portal`,
+        portalUrl: `${site}/corporate/dashboard`,
       }).catch((e) => console.error("[quote-request] client email failed:", e));
     }
 
