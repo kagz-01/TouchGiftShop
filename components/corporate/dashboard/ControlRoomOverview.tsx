@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import WidgetActionCenter from "./WidgetActionCenter";
 import WidgetBulkDispatch from "./WidgetBulkDispatch";
 import WidgetMilestoneEngine from "./WidgetMilestoneEngine";
@@ -8,6 +8,7 @@ import WidgetFinanceHub from "./WidgetFinanceHub";
 import QuickActionBar from "./QuickActionBar";
 import { Package, DollarSign, Calendar, ShieldCheck, ChevronRight, Sparkles, Building2, CreditCard } from "lucide-react";
 import Link from "next/link";
+import DemoVideoOverlay from "./DemoVideoOverlay";
 
 interface ControlRoomOverviewProps {
   stats: any;
@@ -33,8 +34,18 @@ export default function ControlRoomOverview({
   const isDemo = Boolean(stats?.isDemo);
   const accountTier = stats?.accountTier || "Enterprise Client";
 
+  const [showDemo, setShowDemo] = useState(true);
+  useEffect(() => {
+    if (!stats?.isDemo) setShowDemo(false);
+  }, [stats]);
+
   return (
     <div className="space-y-6">
+      {/* Demo video overlay */}
+      {showDemo && stats?.isDemo && (
+        <DemoVideoOverlay onClose={() => setShowDemo(false)} />
+      )}
+
       {/* ── Welcome & Enterprise Tier Bar ── */}
       <div
         className="rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4"

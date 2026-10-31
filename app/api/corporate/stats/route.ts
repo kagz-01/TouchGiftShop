@@ -5,6 +5,20 @@ import { createClient } from "@supabase/supabase-js";
 
 export const dynamic = "force-dynamic";
 
+// Helper: combine demo preset with live stats when demo mode is requested
+function getDemoStats(presetKey: string) {
+  const preset = DEMO_PRESETS[presetKey] ?? DEMO_PRESETS["safaricom"];
+  // Mark as demo and expose the preset name for UI
+  return { ...preset, isDemo: true, demoPreset: presetKey };
+}
+
+/**
+ * GET /api/corporate/stats
+ * Returns corporate dashboard stats. When the query param `demo=true` (or `demo=<preset>`)
+ * is present, it returns pre‑populated demo data instead of live DB values.
+ * The UI checks `stats.isDemo` to know it is in demo mode.
+ */
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -431,19 +445,10 @@ export async function GET(req: Request) {
   const isAdmin = await requireAdmin();
   const corpAuth = await getCorporateSession();
 
-  // If unauthenticated or explicit demo request, return the interactive Kenya Enterprise preset
-  if (forceDemo || (!isAdmin && !corpAuth.ok)) {
-    const presetData = DEMO_PRESETS[requestedPreset] || DEMO_PRESETS.safaricom;
-    return NextResponse.json({
-      isDemo: true,
-      demoPreset: requestedPreset,
-      availablePresets: [
-        { id: "safaricom", name: "Safaricom PLC", industry: "Telecom & Fintech" },
-        { id: "equity", name: "Equity Group Holdings", industry: "Banking & Finance" },
-        { id: "kcb", name: "KCB Bank Kenya", industry: "Commercial Banking" },
-      ],
-      ...presetData
-    });
+  // Return demo data only when the explicit `demo` query flag is present.
+  if (forceDemo) {
+    const presetData = getDemoStats(requestedPreset);
+    return NextResponse.json(presetData);
   }
 
   // If corporate client session exists (scoped to company)
