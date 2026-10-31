@@ -12,7 +12,7 @@ import {
   Moon, Sun,
 } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
-import ControlRoomOverview from "@/components/corporate/dashboard/ControlRoomOverview";
+import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
 
 // Lazy-load heavy tabs so initial bundle stays small
 const ShopTab         = dynamic(() => import("@/components/corporate/tabs/ShopTab"),         { loading: () => <TabLoader /> });

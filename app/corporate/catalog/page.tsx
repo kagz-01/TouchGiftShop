@@ -10,6 +10,7 @@ import {
   Palette, ArrowLeft, Filter, SlidersHorizontal,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
+import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface CatalogProduct {
@@ -374,69 +375,7 @@ function CatalogInner() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ── Top bar matching main platform ── */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 py-2 text-xs text-gray-400 border-b border-gray-100">
-            <Link href="/" className="hover:text-gray-600 transition-colors">Home</Link>
-            <ChevronRight className="w-3 h-3" />
-            <Link href="/corporate" className="hover:text-gray-600 transition-colors">Corporate</Link>
-            <ChevronRight className="w-3 h-3" />
-            <span className="text-gray-800 font-medium">Branding Catalog</span>
-          </div>
-
-          {/* Main header row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-3">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center shrink-0">
-                <Building2 className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider">
-                    Corporate Branding Catalog
-                  </span>
-                </div>
-                <p className="text-sm font-bold text-gray-900 mt-0.5">
-                  Brand anything — from 10 units. Invoice & LPO accepted.
-                </p>
-              </div>
-            </div>
-
-            {/* Bulk discount badges */}
-            <div className="flex items-center gap-2 flex-wrap">
-              {BULK_TIERS.map(t => (
-                <div key={t.min} className="text-center px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p className="text-[10px] font-bold text-amber-700">{t.pct}% OFF</p>
-                  <p className="text-[9px] text-amber-600">{t.label}</p>
-                </div>
-              ))}
-              <Link href="/corporate/build"
-                className="flex items-center gap-1.5 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg transition-colors">
-                <Palette className="w-3.5 h-3.5" /> Start Bulk Order →
-              </Link>
-            </div>
-          </div>
-
-          {/* Category tabs — matching main catalog style */}
-          <div className="flex items-center gap-1 overflow-x-auto pb-3 hide-scrollbar">
-            {CATEGORIES.map(cat => (
-              <button key={cat.key} onClick={() => handleCategory(cat.key)}
-                className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-                  selectedCategory === cat.key
-                    ? "bg-amber-500 text-white shadow-sm"
-                    : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-700"
-                }`}>
-                <span>{cat.emoji}</span>
-                <span>{cat.label}</span>
-                {cat.moq && selectedCategory !== cat.key && (
-                  <span className="text-[9px] opacity-60">MOQ {cat.moq}</span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </header>
+      <CorporateHeader activeTabLabel="Catalog" />
 
       {/* ── Body ── */}
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-10 py-6 flex gap-6">
