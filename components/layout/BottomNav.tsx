@@ -46,7 +46,7 @@ export default function BottomNav() {
   if (pathname.startsWith("/shop")) return null;
 
   return (
-    <nav className="fixed bottom-3 inset-x-3 z-50 md:hidden" aria-label="Primary">
+    <nav className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] inset-x-3 z-50 md:hidden" aria-label="Primary">
       <div
         className={cn(
           "flex items-center gap-1.5 rounded-[26px] p-1.5 border backdrop-blur-xl transition-all duration-500",

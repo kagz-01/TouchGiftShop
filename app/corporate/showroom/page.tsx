@@ -4,10 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  RotateCcw, Maximize2, Gift, ChevronLeft, ChevronRight,
-  Star, Heart, ShoppingCart, Play, RefreshCw, Eye
+  RotateCcw, Gift, ChevronLeft, ChevronRight,
+  Star, ShoppingBag, Play, RefreshCw, Eye, MessageSquare,
+  Sparkles, CheckCircle2, ShieldCheck, ArrowRight,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
+import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
 
 type Product = {
   id: string;
@@ -33,9 +35,12 @@ export default function VirtualShowroom() {
   const rotateRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    fetch("/api/products?limit=12")
-      .then(r => r.json())
-      .then(d => { setProducts(d.products || []); setLoading(false); })
+    fetch("/api/products?limit=16")
+      .then((r) => r.json())
+      .then((d) => {
+        setProducts(d.products || []);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, []);
 
@@ -54,131 +59,218 @@ export default function VirtualShowroom() {
   };
 
   useEffect(() => {
-    return () => { if (rotateRef.current) clearInterval(rotateRef.current); };
+    return () => {
+      if (rotateRef.current) clearInterval(rotateRef.current);
+    };
   }, []);
 
   const nextProduct = () => {
+    if (products.length === 0) return;
     setSelectedIdx((selectedIdx + 1) % products.length);
     setViewAngle(0);
   };
 
   const prevProduct = () => {
+    if (products.length === 0) return;
     setSelectedIdx((selectedIdx - 1 + products.length) % products.length);
     setViewAngle(0);
   };
 
+  const whatsAppProofUrl = product
+    ? `https://wa.me/254183172111?text=${encodeURIComponent(
+        `Hi TouchGift! I'm in the Corporate Showroom reviewing "${product.name}". Could your design team generate a free digital proof with our corporate logo?`
+      )}`
+    : "https://wa.me/254183172111";
+
   return (
-    <div className="min-h-screen bg-[#14080D] text-white">
-      {/* Header */}
-      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
-        <div className="page-container-capped py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="font-display italic text-2xl font-bold">Virtual Showroom</h1>
-              <p className="text-white/60 text-sm">Explore our corporate gift collection in an interactive 3D experience.</p>
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0B1620] text-gray-900 dark:text-zinc-100 font-sans pb-36">
+      <CorporateHeader activeTabLabel="Showroom" />
+
+      {/* Top Banner */}
+      <div className="bg-gradient-to-r from-brand/5 via-amber-500/5 to-transparent border-b border-gray-200 dark:border-white/10 py-4 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded-full bg-brand text-white font-bold text-[10px] uppercase tracking-wider">
+                Digital Proof Studio
+              </span>
+              <h1 className="font-display font-bold text-base text-gray-900 dark:text-white">
+                360° Corporate Showroom
+              </h1>
             </div>
-            <Link
-              href="/corporate/build"
-              className="px-5 py-3 bg-brand text-white shape-premium-card font-semibold text-sm hover:bg-brand-dark transition-colors flex items-center gap-2"
-            >
-              <ShoppingCart className="w-4 h-4" /> Build Your Order
-            </Link>
+            <p className="text-gray-600 dark:text-zinc-400 mt-0.5">
+              Inspect build quality, materials, and request instant digital logo proofs before placing bulk orders.
+            </p>
           </div>
+
+          <Link
+            href="/corporate/build"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand hover:bg-brand-deep text-white font-bold text-xs shadow-sm transition-all shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Build Custom Hamper Pack
+          </Link>
         </div>
       </div>
 
-      <div className="page-container-capped py-6">
+      <main className="max-w-6xl mx-auto px-4 py-6">
         {loading ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <div className="bg-white/80 shape-premium-card border border-white/10 aspect-square animate-pulse flex items-center justify-center">
+              <div className="bg-white dark:bg-zinc-850 rounded-3xl border border-gray-200 dark:border-zinc-700 aspect-square animate-pulse flex items-center justify-center">
                 <RefreshCw className="w-8 h-8 text-brand animate-spin" />
               </div>
             </div>
             <div className="space-y-4">
-              <div className="bg-white/80 shape-premium-card h-64 animate-pulse" />
-              <div className="bg-white/80 shape-premium-card h-32 animate-pulse" />
+              <div className="bg-white dark:bg-zinc-850 rounded-3xl border border-gray-200 dark:border-zinc-700 h-64 animate-pulse" />
+              <div className="bg-white dark:bg-zinc-850 rounded-3xl border border-gray-200 dark:border-zinc-700 h-32 animate-pulse" />
             </div>
           </div>
         ) : products.length === 0 ? (
-          <div className="text-center py-20">
-            <Gift className="w-12 h-12 text-brand/30 mx-auto mb-4" />
-            <p className="text-white/60">No products available yet.</p>
-            <Link href="/corporate/catalog" className="text-brand text-sm font-semibold mt-2 inline-block hover:underline">
-              Browse Catalog →
+          <div className="text-center py-20 bg-white dark:bg-[#121B26] rounded-3xl border border-gray-200 dark:border-white/10 p-8">
+            <Gift className="w-12 h-12 text-brand mx-auto mb-4" />
+            <h3 className="font-bold text-lg text-gray-900 dark:text-white">No products found</h3>
+            <p className="text-gray-500 text-sm mt-1">Visit our corporate catalog to explore 500+ brandables.</p>
+            <Link
+              href="/corporate/catalog"
+              className="mt-4 inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-brand text-white font-bold text-xs shadow-sm"
+            >
+              Browse Full Catalog <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* 3D Viewer */}
-            <div className="lg:col-span-2">
-              <div className="bg-white/5 backdrop-blur-md shape-premium-card border border-white/10 shadow-sm overflow-hidden">
-                {/* Viewer controls */}
-                <div className="flex items-center justify-between p-4 border-b border-surface-border">
+            {/* 360 Interactive Viewer */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="bg-white dark:bg-[#121B26] rounded-3xl border border-gray-200 dark:border-white/10 shadow-sm overflow-hidden flex flex-col">
+                {/* Viewer Navigation Toolbar */}
+                <div className="flex items-center justify-between p-3.5 border-b border-gray-100 dark:border-white/10">
                   <div className="flex items-center gap-2">
-                    <button onClick={prevProduct} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
-                      <ChevronLeft className="w-5 h-5 text-white/60" />
+                    <button
+                      type="button"
+                      onClick={prevProduct}
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-zinc-200 transition-colors"
+                      aria-label="Previous product"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
                     </button>
-                    <span className="text-sm font-semibold text-white">{product.name}</span>
-                    <button onClick={nextProduct} className="p-2 hover:bg-white/10 shape-premium-card transition-colors">
-                      <ChevronRight className="w-5 h-5 text-white/60" />
+                    <span className="text-xs font-bold text-gray-900 dark:text-white truncate max-w-[200px]">
+                      {product.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={nextProduct}
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-zinc-200 transition-colors"
+                      aria-label="Next product"
+                    >
+                      <ChevronRight className="w-5 h-5" />
                     </button>
                   </div>
+
                   <div className="flex items-center gap-2">
-                    <button onClick={() => setViewAngle((prev) => (prev - 30 + 360) % 360)} className="p-2 hover:bg-white/10 shape-premium-card transition-colors" title="Rotate left">
-                      <RotateCcw className="w-4 h-4 text-white/60" />
+                    <button
+                      type="button"
+                      onClick={() => setViewAngle((prev) => (prev - 30 + 360) % 360)}
+                      className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-700 dark:text-zinc-200 transition-colors"
+                      title="Rotate counter-clockwise"
+                    >
+                      <RotateCcw className="w-4 h-4" />
                     </button>
-                    <button onClick={toggleRotate} className={`p-2 shape-premium-card transition-colors ${isRotating ? "bg-brand text-white" : "hover:bg-white/10"}`} title={isRotating ? "Stop" : "Auto-rotate"}>
-                      <Play className="w-4 h-4" />
+                    <button
+                      type="button"
+                      onClick={toggleRotate}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                        isRotating
+                          ? "bg-brand text-white shadow-sm"
+                          : "bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-zinc-200 hover:bg-gray-200 dark:hover:bg-white/10"
+                      }`}
+                    >
+                      <Play className={`w-3.5 h-3.5 ${isRotating ? "animate-pulse" : ""}`} />
+                      <span>{isRotating ? "Pause 360°" : "Auto-Rotate"}</span>
                     </button>
                   </div>
                 </div>
 
-                {/* 3D product view */}
-                <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center overflow-hidden">
-                  <div className="relative transition-transform duration-100" style={{ transform: `perspective(800px) rotateY(${viewAngle}deg)` }}>
+                {/* 360 Product Canvas */}
+                <div className="relative aspect-square sm:aspect-[4/3] bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 flex items-center justify-center overflow-hidden p-6 select-none">
+                  <div
+                    className="relative transition-transform duration-100 ease-out flex items-center justify-center"
+                    style={{ transform: `perspective(800px) rotateY(${viewAngle}deg)` }}
+                  >
                     {product.image_url ? (
-                      <div className="w-64 h-64 relative rounded-3xl overflow-hidden shadow-2xl">
-                        <Image src={product.image_url} alt={product.name} fill className="object-cover" sizes="256px" />
+                      <div className="w-56 h-56 sm:w-72 sm:h-72 relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-black/10">
+                        <Image
+                          src={product.image_url}
+                          alt={product.name}
+                          fill
+                          priority
+                          className="object-cover"
+                          sizes="(max-width: 640px) 224px, 288px"
+                        />
                       </div>
                     ) : (
-                      <div className="w-64 h-64 bg-gradient-to-br from-brand to-brand-light rounded-3xl shadow-2xl flex items-center justify-center">
-                        <Gift className="w-20 h-20 text-white" />
+                      <div className="w-56 h-56 sm:w-72 sm:h-72 bg-gradient-to-br from-brand to-brand-light rounded-3xl shadow-2xl flex items-center justify-center text-white">
+                        <Gift className="w-20 h-20" />
                       </div>
                     )}
                   </div>
 
-                  <div className="absolute bottom-4 left-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card px-3 py-1.5 text-xs font-mono text-white/60">
-                    {viewAngle}°
+                  {/* Angle Display Badge */}
+                  <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md px-3 py-1 rounded-xl text-[11px] font-mono text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-white/10 shadow-xs">
+                    Angle: {viewAngle}°
                   </div>
 
-                  <div className="absolute bottom-4 right-4 flex gap-2">
-                    {[0, 90, 180, 270].map((angle) => (
-                      <button key={angle} onClick={() => setViewAngle(angle)} className="p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shape-premium-card text-xs text-white/60 hover:bg-white dark:hover:bg-gray-800 transition-colors">
-                        {angle === 0 ? "Front" : angle === 90 ? "Side" : angle === 180 ? "Back" : "Other"}
+                  {/* Preset Rotation Angles */}
+                  <div className="absolute bottom-4 right-4 flex gap-1.5">
+                    {[
+                      { angle: 0, label: "Front" },
+                      { angle: 90, label: "Side" },
+                      { angle: 180, label: "Back" },
+                    ].map((p) => (
+                      <button
+                        key={p.angle}
+                        type="button"
+                        onClick={() => setViewAngle(p.angle)}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
+                          viewAngle === p.angle
+                            ? "bg-brand text-white shadow-xs"
+                            : "bg-white/90 dark:bg-zinc-800/90 text-gray-700 dark:text-zinc-300 hover:bg-white"
+                        }`}
+                      >
+                        {p.label}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
 
-              {/* Product thumbnails */}
-              <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
+              {/* Product Gallery Rail */}
+              <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-2">
                 {products.map((p, i) => (
                   <button
                     key={p.id}
-                    onClick={() => { setSelectedIdx(i); setViewAngle(0); }}
-                    className={`flex-shrink-0 w-20 h-20 shape-premium-card border-2 transition-all overflow-hidden ${
-                      selectedIdx === i ? "border-brand shadow-ribbon" : "border-surface-border hover:border-brand/30"
+                    type="button"
+                    onClick={() => {
+                      setSelectedIdx(i);
+                      setViewAngle(0);
+                    }}
+                    className={`shrink-0 w-18 h-18 sm:w-20 sm:h-20 rounded-2xl border-2 transition-all overflow-hidden relative ${
+                      selectedIdx === i
+                        ? "border-brand shadow-md scale-105"
+                        : "border-gray-200 dark:border-white/10 hover:border-brand/40 bg-white dark:bg-zinc-800"
                     }`}
                   >
                     {p.image_url ? (
-                      <div className="relative w-full h-full">
-                        <Image src={p.image_url} alt={p.name} fill className="object-cover" sizes="80px" />
-                      </div>
+                      <Image
+                        src={p.image_url}
+                        alt={p.name}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                      />
                     ) : (
-                      <div className="w-full h-full bg-brand/10 flex items-center justify-center">
-                        <Gift className="w-6 h-6 text-teal-400" />
+                      <div className="w-full h-full flex items-center justify-center text-brand">
+                        <Gift className="w-6 h-6" />
                       </div>
                     )}
                   </button>
@@ -186,97 +278,97 @@ export default function VirtualShowroom() {
               </div>
             </div>
 
-            {/* Product details */}
+            {/* Product Specifications & Proof Conversion Card */}
             {product && (
               <div className="space-y-4">
-                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-6 border border-white/10 shadow-lg">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="bg-white dark:bg-[#121B26] rounded-3xl border border-gray-200 dark:border-white/10 p-5 shadow-sm space-y-4">
+                  <div>
                     {product.category && (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold shape-premium-button bg-brand/10 text-teal-400">
+                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
                         {product.category}
                       </span>
                     )}
-                    {product.rating && (
-                      <div className="flex items-center gap-1 text-amber-400">
-                        <Star className="w-3 h-3 fill-current" />
-                        <span className="text-xs font-semibold">{product.rating}</span>
-                        {product.review_count && <span className="text-[10px] text-white/60">({product.review_count})</span>}
-                      </div>
-                    )}
+                    <h2 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white mt-1 leading-snug">
+                      {product.name}
+                    </h2>
+                    <p className="text-2xl font-display font-bold text-brand dark:text-brand-light mt-2">
+                      {formatKsh(product.sale_price || product.price)}
+                    </p>
                   </div>
 
-                  <h2 className="font-display italic text-xl font-bold text-white mb-2">{product.name}</h2>
-                  {product.description && <p className="text-sm text-white/60 mb-4">{product.description}</p>}
-
-                  <div className="text-2xl font-bold text-brand mb-4">
-                    {formatKsh(product.sale_price || product.price)}
-                    {product.sale_price && product.sale_price < product.price && (
-                      <span className="text-sm text-white/60 line-through ml-2">{formatKsh(product.price)}</span>
-                    )}
-                  </div>
-
-                  {product.product_specs && product.product_specs.length > 0 && (
-                    <div className="space-y-2 mb-6">
-                      {product.product_specs.slice(0, 5).map((spec) => (
-                        <div key={spec.spec_key} className="flex items-center gap-2 text-sm text-theme-body">
-                          <div className="w-5 h-5 bg-success/10 shape-premium-button flex items-center justify-center">
-                            <span className="text-emerald-400 text-xs">{spec.icon || "✓"}</span>
-                          </div>
-                          <span className="text-xs text-white/60">{spec.spec_key}:</span>
-                          <span className="text-xs font-medium">{spec.spec_value}</span>
-                        </div>
-                      ))}
-                    </div>
+                  {product.description && (
+                    <p className="text-xs text-gray-600 dark:text-zinc-300 leading-relaxed border-t border-gray-100 dark:border-white/10 pt-3">
+                      {product.description}
+                    </p>
                   )}
 
-                  <div className="flex gap-3">
+                  {/* Highlights */}
+                  <div className="space-y-2 border-t border-gray-100 dark:border-white/10 pt-3 text-xs text-gray-600 dark:text-zinc-300">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span>Laser Engraving & Screen Print Available</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-sky-500 shrink-0" />
+                      <span>MOQ: 10 units for corporate wholesale rates</span>
+                    </div>
+                  </div>
+
+                  {/* Primary B2B Conversion Actions */}
+                  <div className="pt-2 flex flex-col gap-2">
+                    <a
+                      href={whatsAppProofUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all min-h-[44px]"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      Request Free Digital Proof on WhatsApp
+                    </a>
+
                     <Link
                       href={`/product/${product.slug}`}
-                      className="flex-1 py-3 bg-brand text-white shape-premium-card font-semibold text-sm text-center hover:bg-brand-dark transition-colors flex items-center justify-center gap-2"
+                      className="w-full py-2.5 px-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-zinc-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
                     >
-                      <Eye className="w-4 h-4" /> View Product
-                    </Link>
-                    <Link href="/corporate/build" className="p-3 bg-gold/10 shape-premium-card hover:bg-gold/20 transition-colors">
-                      <ShoppingCart className="w-5 h-5 text-amber-400" />
+                      <Eye className="w-4 h-4" />
+                      View Full Product & Buy Sample
                     </Link>
                   </div>
                 </div>
 
-                {/* Bulk pricing */}
-                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
-                  <h3 className="text-sm font-semibold text-white mb-3">Bulk Pricing</h3>
-                  <div className="space-y-2">
+                {/* Wholesale Volume Price Tiers */}
+                <div className="bg-white dark:bg-[#121B26] rounded-3xl border border-gray-200 dark:border-white/10 p-5 shadow-sm">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
+                    Bulk Volume Tier Pricing
+                  </h3>
+                  <div className="space-y-1.5">
                     {[
-                      { qty: "1-9", multiplier: 1 },
-                      { qty: "10-24", multiplier: 0.9 },
-                      { qty: "25-49", multiplier: 0.85 },
-                      { qty: "50+", multiplier: 0.8 },
+                      { qty: "10–24 units", rate: 0.9, label: "10% off" },
+                      { qty: "25–49 units", rate: 0.85, label: "15% off" },
+                      { qty: "50+ units", rate: 0.8, label: "20% wholesale off" },
                     ].map((tier) => (
-                      <div key={tier.qty} className="flex items-center justify-between py-2 border-b border-surface-border last:border-0">
-                        <span className="text-xs text-white/60">{tier.qty} units</span>
-                        <span className="text-sm font-semibold text-white">{formatKsh(Math.round(product.price * tier.multiplier))}</span>
+                      <div
+                        key={tier.qty}
+                        className="flex items-center justify-between py-1.5 border-b border-gray-100 dark:border-white/5 last:border-0 text-xs"
+                      >
+                        <span className="text-gray-600 dark:text-zinc-300">{tier.qty}</span>
+                        <div className="text-right">
+                          <span className="font-bold text-gray-900 dark:text-white">
+                            {formatKsh(Math.round(product.price * tier.rate))}
+                          </span>
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 ml-1.5 font-semibold">
+                            ({tier.label})
+                          </span>
+                        </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-
-                {/* Share */}
-                <div className="bg-white/5 backdrop-blur-md shape-premium-card p-5 border border-white/10 shadow-lg">
-                  <h3 className="text-sm font-semibold text-white mb-3">Share this product</h3>
-                  <div className="flex gap-2">
-                    <a href={`https://wa.me/?text=Check out ${product.name} on TouchGift - ${formatKsh(product.price)}`} target="_blank" rel="noopener noreferrer" className="flex-1 py-2 bg-emerald-500 text-white shape-premium-button text-xs font-semibold hover:bg-emerald-600 transition-colors text-center">
-                      WhatsApp
-                    </a>
-                    <button onClick={() => navigator.clipboard?.writeText(`${window.location.origin}/product/${product.slug}`)} className="flex-1 py-2 bg-white/5 text-white/60 shape-premium-button text-xs font-semibold hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
-                      Copy Link
-                    </button>
                   </div>
                 </div>
               </div>
             )}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

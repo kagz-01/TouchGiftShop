@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/lib/cart";
@@ -41,13 +42,15 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  return (
+  if (typeof window === "undefined") return null;
+
+  return createPortal(
     <>
       {/* Backdrop */}
       <div
         aria-hidden="true"
         onClick={onClose}
-        className={`fixed inset-0 z-[80] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[999] bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
       />
@@ -58,7 +61,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
         role="dialog"
         aria-label="Cart"
         aria-modal="true"
-        className={`fixed top-0 right-0 bottom-0 z-[90] w-full max-w-[420px] flex flex-col bg-[#FEFAF6] shadow-2xl transform transition-transform duration-300 ease-out ${
+        className={`fixed top-0 right-0 bottom-0 z-[1000] w-full max-w-[420px] flex flex-col bg-[#FEFAF6] shadow-2xl transform transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -265,7 +268,8 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           </div>
         )}
       </div>
-    </>
+    </>,
+    document.body
   );
 }
 

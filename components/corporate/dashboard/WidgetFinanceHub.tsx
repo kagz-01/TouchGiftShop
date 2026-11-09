@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { ReceiptText, FileText, CheckCircle2, Clock, AlertCircle, Download, Copy, Check, CreditCard, Landmark, ArrowUpRight, X, Printer, ShieldCheck } from "lucide-react";
 
 export interface InvoiceItem {
@@ -223,8 +224,8 @@ export default function WidgetFinanceHub({ invoices: initialInvoices, companyNam
       </div>
 
       {/* Invoice Details & Settlement Modal */}
-      {activeInvoiceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      {activeInvoiceModal && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
           <div
             className="w-full max-w-lg rounded-2xl p-6 shadow-2xl relative"
             style={{
@@ -355,7 +356,8 @@ export default function WidgetFinanceHub({ invoices: initialInvoices, companyNam
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

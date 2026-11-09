@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+import CorporateMobileDrawer from "@/components/corporate/dashboard/CorporateMobileDrawer";
 
 /**
  * CorporateHeader – a sticky, scroll‑aware header for the corporate dashboard.
@@ -27,6 +29,7 @@ export default function CorporateHeader({
   onMobileNavToggle?: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
 
   // Sticky‑scroll effect – same as global Header
@@ -78,7 +81,7 @@ export default function CorporateHeader({
         </Link>
           {/* Mobile hamburger */}
           <button
-            onClick={onMobileNavToggle}
+            onClick={onMobileNavToggle ?? (() => setDrawerOpen(true))}
             className="lg:hidden w-11 h-11 flex items-center justify-center rounded-xl text-var(--corp-text-muted) hover:bg-var(--corp-surface-2) transition-colors"
             aria-label="Open mobile navigation"
           >
@@ -127,10 +130,15 @@ export default function CorporateHeader({
               ))}
             </div>
           )}
-          {/* Back to main store pill */}
+          {/* Embedded theme toggle */}
+          <div className="shrink-0">
+            <ThemeToggle />
+          </div>
+
+          {/* Back to main store pill — desktop only (mobile uses dedicated CorporateBottomNav tab) */}
           <Link
             href="/"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-brand/10 text-brand dark:text-brand-light hover:bg-brand/20 transition-colors shrink-0 min-h-[36px]"
+            className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-brand/10 text-brand dark:text-brand-light hover:bg-brand/20 transition-colors shrink-0 min-h-[36px]"
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
@@ -139,6 +147,9 @@ export default function CorporateHeader({
           </Link>
         </div>
       </div>
+
+      {/* Corporate Mobile Drawer */}
+      <CorporateMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </header>
   );
 }

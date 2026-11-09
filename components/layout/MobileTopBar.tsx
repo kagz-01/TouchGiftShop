@@ -15,6 +15,8 @@ import {
   Map,
   Package,
   Heart,
+  Building2,
+  ArrowRight,
 } from "lucide-react";
 
 /* ── Mobile site header — slim soft-edged pill, md:hidden ────────────────────
@@ -164,6 +166,24 @@ export default function MobileTopBar() {
             label="Wishlist"
             onNavigate={() => setMenuOpen(false)}
           />
+          <div className="my-1.5 h-px" style={{ background: "var(--surface-border)" }} />
+          <Link
+            href="/corporate"
+            onClick={() => setMenuOpen(false)}
+            className="flex items-center gap-2.5 p-2 rounded-xl bg-brand/10 text-brand dark:text-brand-light hover:bg-brand/15 transition-colors group"
+          >
+            <div className="w-7 h-7 rounded-lg bg-brand text-white flex items-center justify-center shrink-0">
+              <Building2 className="w-4 h-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold leading-tight flex items-center gap-1.5">
+                Corporate Portal
+                <span className="text-[8px] bg-brand text-white px-1.5 py-0.2 rounded font-bold uppercase">B2B</span>
+              </p>
+              <p className="text-[10px] text-gray-500 dark:text-zinc-400 truncate">Bulk packs & branded merch</p>
+            </div>
+            <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+          </Link>
         </div>
       )}
     </div>

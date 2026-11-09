@@ -85,9 +85,8 @@ export default function LayoutWrapper({
 
     return (
       <>
-        <main className="flex-1 relative z-0 pb-20 md:pb-0">
+        <main className="flex-1 relative pb-20 md:pb-0">
           {children}
-          {!isAdmin && <FloatingThemeToggle />}
           {!isAdmin && !isPortal && <WhatsAppFloat />}
           {!isAdmin && !isPortal && <GiftChatWidget />}
         </main>
@@ -101,7 +100,7 @@ export default function LayoutWrapper({
   return (
     <>
       <Header user={user} guest={guest} />
-      <main className="flex-1 pb-20 md:pb-0 relative z-0">
+      <main className="flex-1 pb-20 md:pb-0 relative">
         {/* Slim mobile header (logo · menu · profile T · theme) — in-flow so it
             never overlaps heroes; hides itself on /shop. md+ keeps the full
             Header above, so this is md:hidden. */}

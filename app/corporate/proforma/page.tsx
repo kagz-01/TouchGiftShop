@@ -88,20 +88,27 @@ export default async function ProformaPage({
 
       <ProformaAutoPrint enabled={autoPrint} />
 
-      <div className="no-print mx-auto mb-6 flex max-w-[210mm] items-center justify-between gap-4 px-4">
+      <div className="no-print mx-auto mb-6 flex max-w-[210mm] items-center justify-between gap-4 px-4 flex-wrap">
         <Link
-          href="/corporate#packs"
-          className="text-sm text-black/55 hover:text-black"
+          href="/corporate"
+          className="text-sm text-black/60 hover:text-black font-semibold"
         >
-          ← Back to packs
+          ← Back to Corporate
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-black/45">
-            Indicative — not a tax invoice
-          </span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <a
+            href={`https://wa.me/254183172111?text=${encodeURIComponent(
+              `Hi TouchGift! Here is our Proforma Quote (${reference}) for ${company || "our organization"} (${qty} units, ${money(total)}). Please review our order.`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-xl px-3.5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 transition-colors shadow-sm"
+          >
+            <span>Send to Quote Desk</span>
+          </a>
           <PortalPrintButton
-            className="rounded-xl px-4 py-2 text-sm font-semibold"
-            style={{ background: "#1D4E6B", color: "#FFFFFF" }}
+            className="rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold shadow-sm"
+            style={{ background: "#9B1B5A", color: "#FFFFFF" }}
           />
         </div>
       </div>

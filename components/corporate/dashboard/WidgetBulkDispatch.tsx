@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Upload, FileSpreadsheet, CheckCircle, AlertTriangle, Send, Sparkles, Download, Phone, MapPin, Eye, X, Check, RefreshCw } from "lucide-react";
 import { validatePhone, normalizePhone, getWhatsAppPhone } from "@/lib/phone";
 
@@ -428,8 +429,8 @@ export default function WidgetBulkDispatch({ batches: initialBatches, companyNam
       )}
 
       {/* Recipient Experience Preview Modal (HCI Showcase) */}
-      {previewRecipient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+      {previewRecipient && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
           <div
             className="w-full max-w-sm rounded-3xl p-5 shadow-2xl relative border"
             style={{
@@ -507,7 +508,8 @@ export default function WidgetBulkDispatch({ batches: initialBatches, companyNam
               TouchGift riders deliver directly without requiring address entry from your HR desk.
             </p>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

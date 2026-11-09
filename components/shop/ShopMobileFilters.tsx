@@ -165,7 +165,7 @@ function SheetOption({
       onClick={onClick}
       whileTap={{ scale: 0.97 }}
       className={cn(
-        "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors",
+        "w-full flex items-center justify-between px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold transition-colors",
         active
           ? "bg-gradient-brand text-white shadow-ribbon"
           : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5"
@@ -216,7 +216,7 @@ function BarChip({
       variants={variants}
       {...props}
       className={cn(
-        "shrink-0 flex items-center gap-1 px-3 py-2 rounded-full text-[11px] font-bold whitespace-nowrap transition-all duration-200 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
+        "shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 min-h-[44px] rounded-full text-xs font-bold whitespace-nowrap transition-all duration-200 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
         active
           ? "bg-gradient-brand text-white shadow-[0_0_14px_rgba(155,27,90,0.4)]"
           : "bg-gray-100/80 dark:bg-white/[0.06] text-brand-muted hover:text-brand hover:bg-brand/5 hover:-translate-y-0.5",
@@ -548,7 +548,7 @@ export function ShopBottomBar() {
   }
 
   return (
-    <div className="lg:hidden fixed bottom-3 inset-x-3 z-40">
+    <div className="lg:hidden fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] inset-x-3 z-40">
       <div
         className={cn(
           "flex items-center gap-1.5 rounded-[26px] p-1.5 border backdrop-blur-xl transition-all duration-500",

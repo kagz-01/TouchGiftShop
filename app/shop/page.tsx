@@ -189,8 +189,9 @@ export default async function ShopPage({
         <div className="page-container-capped py-3 flex items-center justify-between gap-4">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm transition-colors flex-shrink-0"
+            className="flex items-center gap-2 text-sm transition-colors flex-shrink-0 min-h-[44px] min-w-[44px] p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5"
             style={{ color: "var(--text-muted)" }}
+            aria-label="Back to home"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Home</span>

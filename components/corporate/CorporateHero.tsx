@@ -8,8 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2, Users, ArrowRight, ShieldCheck, Zap,
   Gift, BarChart3, MessageSquare, X, ChevronRight, Check, Package, Palette, Clock,
-  Globe, Award, TrendingUp, Layers, ShoppingBag, Star,
+  Globe, Award, TrendingUp, Layers, ShoppingBag, Star, Menu,
 } from "lucide-react";
+import CorporateMobileDrawer from "@/components/corporate/dashboard/CorporateMobileDrawer";
 import { MERCH_CATEGORIES, TOUCHLINE_BRIDGE } from "@/lib/corporate-merch";
 import { CAPABILITIES, CAPABILITY_STATE_LABEL } from "@/lib/corporate-capabilities";
 import CorporateSectionTabs from "@/components/corporate/CorporateSectionTabs";
@@ -35,6 +36,8 @@ export default function CorporateHero({
   vatRegistered?: boolean;
   vatRate?: number;
 }) {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
     /* Transparent on purpose: AmbientBackground is mounted in the root layout
        at z-[-1] and paints BEHIND this component. The opaque ground that used
@@ -52,24 +55,37 @@ export default function CorporateHero({
 
       {/* ── Header ── */}
       <header className="sticky top-0 z-40 border-b" style={{ background: "var(--corp-header-bg)", backdropFilter: "blur(20px)", borderColor: "var(--corp-hero-border)" }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            {/* The real TouchGift mark, not a generic Building2 glyph — the
-                corporate page is still the same brand as the storefront and
-                should be recognisable as such at a glance. */}
-            <Image
-              src="/logo/logo.webp"
-              alt="TouchGift"
-              width={40}
-              height={40}
-              priority
-              className="w-10 h-10 rounded-full object-cover ring-2" style={{ "--tw-ring-color": "var(--corp-border-str)" } as React.CSSProperties}
-            />
-            <div>
-              <p className="font-display font-bold text-base leading-tight text-[color:var(--corp-text)]">TouchGift</p>
-              <p className="text-[10px] text-brand font-semibold uppercase tracking-wider">Corporate</p>
-            </div>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Mobile hamburger menu */}
+            <button
+              type="button"
+              onClick={() => setDrawerOpen(true)}
+              className="md:hidden w-11 h-11 flex items-center justify-center rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[color:var(--corp-text)] hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              aria-label="Open corporate menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <Link href="/corporate" className="flex items-center gap-2.5">
+              {/* The real TouchGift mark, not a generic Building2 glyph — the
+                  corporate page is still the same brand as the storefront and
+                  should be recognisable as such at a glance. */}
+              <Image
+                src="/logo/logo.webp"
+                alt="TouchGift"
+                width={40}
+                height={40}
+                priority
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover ring-2" style={{ "--tw-ring-color": "var(--corp-border-str)" } as React.CSSProperties}
+              />
+              <div>
+                <p className="font-display font-bold text-sm sm:text-base leading-tight text-[color:var(--corp-text)]">TouchGift</p>
+                <p className="text-[9px] sm:text-[10px] text-brand font-semibold uppercase tracking-wider">Corporate</p>
+              </div>
+            </Link>
+          </div>
+
           <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Packs & Pricing", href: "#packs" },
@@ -84,19 +100,20 @@ export default function CorporateHero({
             ))}
           </nav>
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* /corporate renders no Header, so the platform toggle was simply
-                absent here. Same component the storefront uses, so the two
-                stay in sync. */}
+            {/* Platform theme toggle */}
             <ThemeToggle />
             <Link
               href="/corporate/dashboard"
-              className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-brand hover:bg-brand-deep text-white font-bold text-sm rounded-xl transition-all shadow-md whitespace-nowrap"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-brand hover:bg-brand-deep text-white font-bold text-xs sm:text-sm rounded-xl transition-all shadow-md whitespace-nowrap"
             >
-              Corporate Dashboard <ArrowRight className="w-4 h-4" />
+              <span className="hidden sm:inline">Corporate </span>Dashboard <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </Link>
           </div>
         </div>
       </header>
+
+      {/* Corporate Mobile Drawer */}
+      <CorporateMobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       {/* ── Hero ──
           Same composition as the homepage's corporate mood: copy on the left,
