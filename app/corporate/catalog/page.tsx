@@ -12,8 +12,9 @@ import {
 import { formatKsh } from "@/lib/utils";
 import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
 
+
 // ─── Types ────────────────────────────────────────────────────────────────────
-interface CatalogProduct {
+export interface CatalogProduct {
   id: string;
   name: string;
   slug: string;
@@ -249,71 +250,7 @@ function QuoteModal({ product, onClose }: { product: CatalogProduct; onClose: ()
 }
 
 // ─── Product Card ─────────────────────────────────────────────────────────────
-function ProductCard({ product, onQuote }: { product: CatalogProduct; onQuote: (p: CatalogProduct) => void }) {
-  const base     = product.sale_price && product.sale_price < product.price ? product.sale_price : product.price;
-  const bulkPrice = Math.round(base * 0.85);
-  const moq      = getMOQ(product.name);
-  const methods  = getBrandingMethods(product.name);
-
-  return (
-    <div className="group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-amber-300 transition-all duration-200">
-      {/* Image */}
-      <Link href={`/product/${product.slug}`} className="block relative aspect-square bg-gray-50 overflow-hidden">
-        {product.image_url ? (
-          <Image src={product.image_url} alt={product.name} fill sizes="(max-width:768px) 50vw, 25vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500" />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Package className="w-12 h-12 text-gray-300" />
-          </div>
-        )}
-        {/* MOQ badge */}
-        <div className="absolute top-2 left-2 px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded">
-          MOQ: {moq}
-        </div>
-        {product.is_personalizable && (
-          <div className="absolute top-2 right-2 px-2 py-0.5 bg-white border border-gray-200 text-gray-700 text-[10px] font-semibold rounded shadow-sm">
-            Customisable
-          </div>
-        )}
-      </Link>
-
-      {/* Info */}
-      <div className="p-3">
-        <Link href={`/product/${product.slug}`}>
-          <h3 className="text-sm font-semibold text-gray-900 leading-snug line-clamp-2 hover:text-amber-700 transition-colors">
-            {product.name}
-          </h3>
-        </Link>
-
-        {/* Branding methods */}
-        <div className="flex flex-wrap gap-1 mt-1.5">
-          {methods.map(m => (
-            <span key={m} className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
-              {m}
-            </span>
-          ))}
-        </div>
-
-        {/* Pricing */}
-        <div className="mt-2.5 flex items-end justify-between">
-          <div>
-            <p className="text-[10px] text-gray-400 leading-none">From {moq} units</p>
-            <p className="text-sm font-bold text-gray-900">{formatKsh(base)}</p>
-            <p className="text-[10px] text-green-600 font-semibold">
-              50+ units: {formatKsh(bulkPrice)} / unit
-            </p>
-          </div>
-          <button onClick={() => onQuote(product)}
-            className="shrink-0 px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg transition-colors">
-            Get Quote
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+import CorporateProductCard from "@/components/corporate/catalog/CorporateProductCard";
 // ─── Main catalog inner ───────────────────────────────────────────────────────
 function CatalogInner() {
   const router       = useRouter();
@@ -466,15 +403,15 @@ function CatalogInner() {
             </div>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-              {(loading && products.length === 0
-                ? Array.from({ length: 12 })
-                : products
-              ).map((product, i) => {
-                if (!product || !(product as CatalogProduct).id) {
-                  return <div key={`sk-${i}`} className="bg-white border border-gray-200 rounded-xl animate-pulse aspect-[3/4]" />;
-                }
-                return <ProductCard key={(product as CatalogProduct).id} product={product as CatalogProduct} onQuote={setQuoteProduct} />;
-              })}
+          {(loading && products.length === 0
+            ? Array.from({ length: 12 })
+            : products
+          ).map((product, i) => {
+            if (!product || !(product as CatalogProduct).id) {
+              return <div key={`sk-${i}`} className="bg-white border border-gray-200 rounded-xl animate-pulse aspect-[3/4]" />;
+            }
+            return <CorporateProductCard key={(product as CatalogProduct).id} product={product as CatalogProduct} onQuote={setQuoteProduct} />;
+          })}
             </div>
           )}
 

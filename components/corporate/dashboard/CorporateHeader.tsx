@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronRight, Bell, Search, X } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 /**
  * CorporateHeader – a sticky, scroll‑aware header for the corporate dashboard.
@@ -17,12 +17,14 @@ export default function CorporateHeader({
   demoPreset,
   isDemo,
   onSelectPreset,
+  onMobileNavToggle,
 }: {
   activeTabLabel: string;
   availablePresets?: { id: string; name: string; industry: string }[];
   demoPreset?: string;
   isDemo?: boolean;
   onSelectPreset?: (preset: string) => void;
+  onMobileNavToggle?: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -74,6 +76,16 @@ export default function CorporateHeader({
             Corporate
           </span>
         </Link>
+          {/* Mobile hamburger */}
+          <button
+            onClick={onMobileNavToggle}
+            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
+            aria-label="Open mobile navigation"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
 
         {/* Breadcrumb – hidden on very small screens */}
         <nav
@@ -83,6 +95,16 @@ export default function CorporateHeader({
           <Link href="/" className="text-var(--corp-text-faint)">
             Home
           </Link>
+          {/* Mobile hamburger */}
+          <button
+            onClick={onMobileNavToggle}
+            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
+            aria-label="Open mobile navigation"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
           <ChevronRight className="w-3.5 h-3.5 text-var(--corp-border)" />
           <span style={{ color: "var(--corp-text-muted)" }}>Corporate</span>
           <ChevronRight className="w-3.5 h-3.5 text-var(--corp-border)" />
@@ -125,6 +147,16 @@ export default function CorporateHeader({
             </svg>
             <span>Back to Main Store</span>
           </Link>
+          {/* Mobile hamburger */}
+          <button
+            onClick={onMobileNavToggle}
+            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
+            aria-label="Open mobile navigation"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
     </header>

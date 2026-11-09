@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
+import ControlRoomOverview from "@/components/corporate/dashboard/ControlRoomOverview";
 
 // Lazy-load heavy tabs so initial bundle stays small
 const ShopTab         = dynamic(() => import("@/components/corporate/tabs/ShopTab"),         { loading: () => <TabLoader /> });
