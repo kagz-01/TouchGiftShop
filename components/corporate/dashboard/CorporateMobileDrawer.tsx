@@ -54,7 +54,7 @@ const CORP_NAV_ITEMS = [
     icon: <LayoutDashboard className="w-5 h-5 text-emerald-500" />,
   },
   {
-    href: "/corporate/milestones",
+    href: "/corporate/dashboard?tab=milestones",
     label: "Milestones & Anniversaries",
     desc: "Automated workiversaries & employee birthdays",
     icon: <CalendarDays className="w-5 h-5 text-rose-500" />,
@@ -64,6 +64,12 @@ const CORP_NAV_ITEMS = [
     label: "Proforma Invoice & LPO",
     desc: "Instant quotation for corporate procurement",
     icon: <FileText className="w-5 h-5 text-brand dark:text-brand-light" />,
+  },
+  {
+    href: "/corporate/vendor-pack",
+    label: "Vendor Pack & Compliance",
+    desc: "Official KRA PIN, bank details & procurement pack",
+    icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />,
   },
 ];
 

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
 import {
   MessageSquare, Send, Bell, Users, Gift, Calendar,
   Check, ChevronRight, Smartphone, ArrowRight, Sparkles,
@@ -406,37 +407,39 @@ export default function WhatsAppBotPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#14080D] text-white">
-      {/* Header */}
-      <div className="bg-[#14080D]/90 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
-        <div className="page-container-capped py-6">
-          <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0B1620] text-gray-900 dark:text-zinc-100 pb-36">
+      <CorporateHeader activeTabLabel="WhatsApp Bot" />
+
+      {/* Header Info */}
+      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-gray-200 dark:border-zinc-800 sticky top-14 z-30">
+        <div className="page-container-capped py-5">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h1 className="font-display italic text-2xl font-bold text-amber-400">WhatsApp Bot</h1>
-              <p className="text-white/60 text-sm">Automate gift notifications, reminders, and contributions via WhatsApp.</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">WhatsApp Bot Automations</h1>
+              <p className="text-gray-500 dark:text-zinc-400 text-xs sm:text-sm">Automate gift notifications, pool invitations, and magic link tracking via WhatsApp.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              <span className="text-sm text-emerald-400 font-semibold">Connected</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-xs text-emerald-700 dark:text-emerald-400 font-bold">API Connected</span>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
             {[
-              { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-5 h-5" />, color: "text-emerald-400" },
-              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-5 h-5" />, color: "text-gold" },
-              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-5 h-5" />, color: "text-gold" },
-              { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-5 h-5" />, color: "text-amber-400" },
+              { label: "Messages Sent", value: statsLoading ? "..." : (stats?.monthOrders ?? 0).toLocaleString(), icon: <Send className="w-4 h-4" />, color: "text-emerald-600 dark:text-emerald-400" },
+              { label: "Active Flows", value: flows.filter((f) => f.is_enabled).length.toString(), icon: <Zap className="w-4 h-4" />, color: "text-amber-600 dark:text-amber-400" },
+              { label: "Conversions", value: statsLoading ? "..." : (stats?.totalOrders ? `${Math.round(((stats?.deliveredCount ?? 0) / stats.totalOrders) * 100)}%` : "0%"), icon: <BarChart3 className="w-4 h-4" />, color: "text-amber-600 dark:text-amber-400" },
+              { label: "Avg Response", value: statsLoading ? "..." : "2 min", icon: <Clock className="w-4 h-4" />, color: "text-amber-600 dark:text-amber-400" },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 ${stat.color}`}>
+              <div key={stat.label} className="bg-white dark:bg-zinc-800/80 rounded-2xl p-3.5 border border-gray-200 dark:border-zinc-700/80 shadow-sm">
+                <div className="flex items-center gap-2.5">
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-zinc-700/50 ${stat.color}`}>
                     {stat.icon}
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-white">{stat.value}</p>
-                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{stat.value}</p>
+                    <p className="text-[11px] text-gray-500 dark:text-zinc-400">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -453,10 +456,10 @@ export default function WhatsAppBotPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 min-h-[44px] ${
                   activeTab === tab.id
-                    ? "bg-gold text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] border border-gold"
-                    : "bg-white/5 border border-white/10 text-white/60 hover:border-gold/30 hover:text-white"
+                    ? "bg-brand text-white shadow-sm"
+                    : "bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-zinc-300 hover:text-gray-900 dark:hover:text-white"
                 }`}
               >
                 {tab.icon} {tab.label}

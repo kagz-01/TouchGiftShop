@@ -10,26 +10,8 @@ interface QuickActionBarProps {
 
 export default function QuickActionBar({ onNavigateTab, onOpenUpload }: QuickActionBarProps) {
   const handleDownloadVendorPack = () => {
-    // Generates TouchGift Corporate Vendor Pack summary
-    const content = `TOUCHGIFT EAST AFRICA LTD - CORPORATE VENDOR COMPLIANCE PACK
-=============================================================
-Registration: CPR/2023/102910
-KRA PIN: P052199201A
-eTIMS Integrated: Yes (Active)
-Standard Bank: Standard Chartered Bank Kenya (SCBLKENX)
-M-Pesa Corporate Paybill: 400200
-Physical Address: TouchGift Concierge Hub, Westlands, Nairobi
-Contact: corporate@touchgiftshop.co.ke | +254 700 000 000
-Services: Premium Corporate Hamper Assembly, Same-Day Nairobi Dispatch, WhatsApp Magic Link GPS Pin Intake.`;
-
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "TouchGift_Corporate_Vendor_Pack.txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    // Opens the authoritative printable A4 TouchGift Corporate Vendor Compliance Pack
+    window.open("/corporate/vendor-pack", "_blank");
   };
 
   const actions = [
