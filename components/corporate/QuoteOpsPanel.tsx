@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Inbox, Send, XCircle, CheckCircle, Loader2, Building2, Search,
   ChevronDown, Copy, Check, MessageCircle, Palette, User, CalendarClock,
-  FileText, FilterX, Phone, Mail, AlertCircle,
+  FileText, FilterX, Phone, Mail, AlertCircle, ExternalLink,
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 
@@ -569,6 +570,15 @@ export default function QuoteOpsPanel({
                     </button>
 
                     <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                      <Link
+                        href={`/corporate/proforma?quote_id=${q.id}&company=${encodeURIComponent(q.company_name)}`}
+                        target="_blank"
+                        title="View Official Touchline Quotation Sheet"
+                        className="flex items-center gap-1 px-2.5 py-1.5 bg-brand/10 hover:bg-brand/20 border border-brand/30 text-brand text-[10px] font-bold rounded-lg transition-all"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        <span className="hidden sm:inline">Quote Sheet</span>
+                      </Link>
                       <button
                         onClick={() => copy(`wa-${q.id}`, whatsappDeepLink(q.phone, q.company_name, q.product_name))}
                         title="Copy WhatsApp deep link"
@@ -592,7 +602,7 @@ export default function QuoteOpsPanel({
                           disabled={updating === q.id}
                           className={`flex items-center gap-1 px-2.5 py-1.5 border text-[10px] font-bold rounded-lg transition-all disabled:opacity-50 ${a.cls}`}
                         >
-                          {updating === q.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <a.icon className="w-3 h-3" />}
+                          {updating === q.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <a.icon className="w-3.5 h-3.5" />}
                           <span className="hidden md:inline">{a.label}</span>
                         </button>
                       ))}

@@ -34,24 +34,26 @@ const num = (v: unknown, fallback = 0) => {
 export function sellerConfig() {
   const registered = /^(1|true|yes)$/i.test(process.env.VAT_REGISTERED ?? "");
   return {
-    name: process.env.LEGAL_ENTITY_NAME || "TouchGift",
-    pin: process.env.LEGAL_ENTITY_PIN || null,
+    name: process.env.LEGAL_ENTITY_NAME || "Touchline Branding Limited",
+    tradingName: "Touchline",
+    slogan: process.env.LEGAL_ENTITY_SLOGAN || "YOUR IMAGE . YOUR SUCCESS",
+    pin: process.env.LEGAL_ENTITY_PIN || "P051549952X",
     vatNumber: process.env.LEGAL_ENTITY_VAT_NUMBER || null,
-    address: process.env.LEGAL_ENTITY_ADDRESS || null,
-    email: process.env.LEGAL_ENTITY_EMAIL || process.env.NOTIFY_EMAIL || null,
-    taxArea: process.env.LEGAL_ENTITY_TAX_AREA || null,
-    lrNumber: process.env.LEGAL_ENTITY_LR_NUMBER || null,
+    address: process.env.LEGAL_ENTITY_ADDRESS || "PJ PLACE, Enterprise Road, Nairobi, P.O. Box 43903, 00100",
+    email: process.env.LEGAL_ENTITY_EMAIL || process.env.NOTIFY_EMAIL || "info@touchlineltd.co.ke",
+    taxArea: process.env.LEGAL_ENTITY_TAX_AREA || "Industrial Area",
+    lrNumber: process.env.LEGAL_ENTITY_LR_NUMBER || "209/8177",
     /* The company number answers to the Registrar of Companies; the PIN answers
        to KRA. Printing one without the other leaves a client unable to verify
        the seller against the register they were told to check. */
-    companyNumber: process.env.LEGAL_ENTITY_COMPANY_NUMBER || null,
-    phone: process.env.LEGAL_ENTITY_PHONE || null,
+    companyNumber: process.env.LEGAL_ENTITY_COMPANY_NUMBER || "CPR/2015/185051",
+    phone: process.env.LEGAL_ENTITY_PHONE || "+254 722 668 696 / +254 700 485 400",
     vatRegistered: registered,
-    vatRate: registered ? num(process.env.VAT_RATE, 16.5) : 0,
+    vatRate: registered ? num(process.env.VAT_RATE, 16) : 0,
     /* Kenyan retail quotes tax-inclusive. If the business ever switches to
        ex-VAT pricing this flips and the arithmetic below follows. */
     pricesIncludeVat: !/^(0|false|no)$/i.test(process.env.PRICES_INCLUDE_VAT ?? "true"),
-    prefix: (process.env.INVOICE_PREFIX || "TG").toUpperCase(),
+    prefix: (process.env.INVOICE_PREFIX || "TLB").toUpperCase(),
   };
 }
 
@@ -59,11 +61,11 @@ export function sellerConfig() {
 export function sellerReadiness() {
   const c = sellerConfig();
   const missing: string[] = [];
-  if (!process.env.LEGAL_ENTITY_NAME) missing.push("LEGAL_ENTITY_NAME");
-  if (!process.env.LEGAL_ENTITY_PIN) missing.push("LEGAL_ENTITY_PIN");
-  if (!process.env.LEGAL_ENTITY_ADDRESS) missing.push("LEGAL_ENTITY_ADDRESS");
+  if (!c.name) missing.push("LEGAL_ENTITY_NAME");
+  if (!c.pin) missing.push("LEGAL_ENTITY_PIN");
+  if (!c.address) missing.push("LEGAL_ENTITY_ADDRESS");
   /* A VAT invoice without a VAT registration number is not a VAT invoice. The
-     alternative — charging 16.5% and printing no number — produces a document
+     alternative — charging 16% and printing no number — produces a document
      the client's finance team rejects and we cannot defend. */
   if (c.vatRegistered && !c.vatNumber) missing.push("LEGAL_ENTITY_VAT_NUMBER");
   return { config: c, missing };

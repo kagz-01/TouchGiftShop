@@ -4,24 +4,14 @@ import PortalPrintButton from "@/components/corporate/PortalPrintButton";
 import ProformaAutoPrint from "@/components/corporate/ProformaAutoPrint";
 import { getPack, calculatePack, clampQty } from "@/lib/corporate-packs";
 import { sellerConfig } from "@/lib/invoicing";
+import { amountInWords } from "@/lib/money-words";
+import { createClient } from "@supabase/supabase-js";
 
 export const metadata: Metadata = {
-  title: "Proforma Invoice | TouchGift Corporate",
-  description: "Indicative corporate gift pack proforma.",
+  title: "Official Quotation | Touchline Branding",
+  description: "Official corporate quotation and proforma document from Touchline Branding Limited.",
   robots: { index: false, follow: false },
 };
-
-/**
- * The proforma document.
- *
- * This is deliberately a document, not a checkout: no order exists yet, no
- * payment has been taken, and the buyer's finance team needs something they can
- * file and compare. It carries the same registered seller details as the real
- * invoice, and it is explicit that it is not a tax invoice.
- *
- * Print-first, A4, no corporate chrome. The browser's print dialog is the PDF
- * generator.
- */
 
 const money = (n: number) =>
   `KES ${Number(n).toLocaleString("en-KE", {
@@ -29,8 +19,15 @@ const money = (n: number) =>
     maximumFractionDigits: 2,
   })}`;
 
-const date = (d: Date) =>
+const dateStr = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+
+const stampDateStr = (d: Date) => {
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
+};
 
 function cleanRef(value: string | null) {
   if (!value) return null;
@@ -44,267 +41,432 @@ export default async function ProformaPage({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const sp = await searchParams;
-  const rawTier = typeof sp.tier === "string" ? sp.tier : null;
-  const pack = getPack(rawTier);
-  const rawQty = typeof sp.qty === "string" ? Number(sp.qty) : 50;
-  const qty = clampQty(Number.isFinite(rawQty) ? rawQty : 50);
-  const quote = calculatePack(pack, qty);
-  const reference = cleanRef(typeof sp.ref === "string" ? sp.ref : null) ?? "DRAFT";
   const autoPrint = sp.print === "1";
-  const company = typeof sp.company === "string" ? sp.company.slice(0, 120) : null;
-
   const seller = sellerConfig();
   const now = new Date();
   const validUntil = new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000);
 
-  /* Pack prices are retail, so they are VAT-inclusive when the seller is
-     registered. If the business ever switches to ex-VAT pricing, the same
-     `pricesIncludeVat` flag the invoice uses flips this arithmetic. */
-  let net = quote.subtotal;
+  // Check if a quote_id was provided
+  const quoteId = typeof sp.quote_id === "string" ? sp.quote_id : null;
+  let quoteRow: {
+    id: string;
+    product_name: string;
+    company_name: string;
+    email: string;
+    phone: string | null;
+    category: string | null;
+    quantity: number;
+    quoted_amount: number | null;
+    total_estimate: number | null;
+    notes: string | null;
+    valid_until: string | null;
+  } | null = null;
+
+  if (quoteId && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+      const { data } = await sb
+        .from("corporate_quote_requests")
+        .select("id, product_name, company_name, email, phone, category, quantity, quoted_amount, total_estimate, notes, valid_until")
+        .eq("id", quoteId)
+        .maybeSingle();
+      if (data) quoteRow = data;
+    } catch {
+      // Proceed with searchParam fallbacks
+    }
+  }
+
+  // Derive item details
+  let title = "Corporate Gift Pack";
+  let description = "Custom Corporate Order";
+  let quantity = 50;
+  let unitPrice = 0;
+  let subtotal = 0;
+  let discount = 0;
+  let company = typeof sp.company === "string" ? sp.company.slice(0, 120) : null;
+  let reference = cleanRef(typeof sp.ref === "string" ? sp.ref : null);
+
+  if (quoteRow) {
+    title = quoteRow.product_name;
+    description = quoteRow.notes || (quoteRow.category ? `Category: ${quoteRow.category}` : "Bespoke corporate merchandise & branding");
+    quantity = quoteRow.quantity || 1;
+    const totalAmount = quoteRow.quoted_amount ?? quoteRow.total_estimate ?? 0;
+    subtotal = totalAmount;
+    unitPrice = quantity > 0 ? Math.round(subtotal / quantity) : subtotal;
+    if (!company) company = quoteRow.company_name;
+    if (!reference) reference = `TBR-Q-${quoteRow.id.slice(0, 8).toUpperCase()}`;
+  } else {
+    const rawTier = typeof sp.tier === "string" ? sp.tier : null;
+    const pack = getPack(rawTier);
+    const rawQty = typeof sp.qty === "string" ? Number(sp.qty) : 50;
+    quantity = clampQty(Number.isFinite(rawQty) ? rawQty : 50);
+    const packQuote = calculatePack(pack, quantity);
+    title = `${pack.name} Gift Pack`;
+    description = pack.bestFor;
+    unitPrice = pack.price;
+    subtotal = packQuote.listTotal;
+    discount = packQuote.savings;
+    if (!reference) reference = `TBR-Q-${now.getFullYear()}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
+  }
+
+  const netAfterDiscount = Math.max(0, subtotal - discount);
+
+  // VAT calculations
+  let net = netAfterDiscount;
   let vat = 0;
-  let total = quote.subtotal;
+  let total = netAfterDiscount;
 
   if (seller.vatRegistered) {
     if (seller.pricesIncludeVat) {
-      net = Math.round((quote.subtotal * 100) / (100 + seller.vatRate));
-      vat = quote.subtotal - net;
-      total = quote.subtotal;
+      net = Math.round((netAfterDiscount * 100) / (100 + seller.vatRate));
+      vat = netAfterDiscount - net;
+      total = netAfterDiscount;
     } else {
-      net = quote.subtotal;
-      vat = Math.round((quote.subtotal * seller.vatRate) / 100);
-      total = quote.subtotal + vat;
+      net = netAfterDiscount;
+      vat = Math.round((netAfterDiscount * seller.vatRate) / 100);
+      total = netAfterDiscount + vat;
     }
   }
+
+  const words = amountInWords(total);
 
   return (
     <div className="min-h-screen bg-[#F4F1ED] py-8 print:bg-white print:py-0">
       <style>{`
-        @page { size: A4; margin: 16mm; }
+        @page { size: A4; margin: 12mm; }
         @media print {
           .no-print { display: none !important; }
-          body { background: #fff; }
+          body { background: #fff !important; }
+          article { box-shadow: none !important; padding: 0 !important; }
         }
       `}</style>
 
       <ProformaAutoPrint enabled={autoPrint} />
 
+      {/* ── Top Bar (Screen Only) ── */}
       <div className="no-print mx-auto mb-6 flex max-w-[210mm] items-center justify-between gap-4 px-4 flex-wrap">
         <Link
-          href="/corporate"
-          className="text-sm text-black/60 hover:text-black font-semibold"
+          href="/corporate/dashboard?tab=quotes"
+          className="text-sm text-gray-700 hover:text-black font-semibold flex items-center gap-1.5"
         >
-          ← Back to Corporate
+          ← Back to Quotes
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <Link
             href={`/corporate/dashboard?tab=orders&ref=${reference}`}
-            className="rounded-xl px-3.5 py-2 text-xs font-bold border border-black/15 bg-white hover:bg-black/5 text-black flex items-center gap-1.5 transition-colors shadow-sm"
+            className="rounded-xl px-3.5 py-2 text-xs font-bold border border-gray-300 bg-white hover:bg-gray-50 text-gray-800 flex items-center gap-1.5 transition-colors shadow-xs"
           >
             <span>Proceed with LPO</span>
           </Link>
           <a
-            href={`https://wa.me/254183172111?text=${encodeURIComponent(
-              `Hi TouchGift! Here is our Proforma Quote (${reference}) for ${company || "our organization"} (${qty} units, ${money(total)}). Please review our order.`
+            href={`https://wa.me/254722668696?text=${encodeURIComponent(
+              `Hi Touchline Branding! Here is our approved Quotation (${reference}) for ${company || "our organization"} (${quantity} units, ${money(total)}). Please proceed with artwork proof and production.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-xl px-3.5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 transition-colors shadow-sm"
+            className="rounded-xl px-3.5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 transition-colors shadow-xs"
           >
-            <span>Send to Quote Desk</span>
+            <span>Share via WhatsApp</span>
           </a>
           <PortalPrintButton
-            className="rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold shadow-sm"
+            className="rounded-xl px-4 py-2 text-xs sm:text-sm font-semibold shadow-xs"
             style={{ background: "#9B1B5A", color: "#FFFFFF" }}
           />
         </div>
       </div>
 
-      <article className="mx-auto max-w-[210mm] bg-white px-10 py-10 text-[#1A1410] shadow-[0_8px_40px_rgba(0,0,0,0.08)] print:max-w-none print:px-0 print:py-0 print:shadow-none">
-        {/* ── Header ── */}
-        <header className="flex items-start justify-between gap-8 border-b border-black/10 pb-6">
+      {/* ── TouchDesk Paper Document ── */}
+      <article className="mx-auto max-w-[210mm] bg-white px-8 sm:px-10 py-10 text-[#1A1410] shadow-[0_8px_40px_rgba(0,0,0,0.08)] rounded-2xl print:max-w-none print:px-0 print:py-0 print:shadow-none print:rounded-none">
+        {/* ── Letterhead ── */}
+        <header className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-gray-200 pb-5">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">{seller.name}</h1>
-            {seller.address && (
-              <p className="mt-2 max-w-xs text-xs leading-relaxed text-black/60">{seller.address}</p>
-            )}
-            <dl className="mt-3 space-y-0.5 text-[11px] text-black/60">
-              {seller.pin && (
-                <div className="flex gap-2">
-                  <dt className="w-24">KRA PIN</dt>
-                  <dd className="font-medium text-black/80">{seller.pin}</dd>
-                </div>
-              )}
-              {seller.vatRegistered && seller.vatNumber && (
-                <div className="flex gap-2">
-                  <dt className="w-24">VAT No.</dt>
-                  <dd className="font-medium text-black/80">{seller.vatNumber}</dd>
-                </div>
-              )}
-              {seller.email && (
-                <div className="flex gap-2">
-                  <dt className="w-24">Email</dt>
-                  <dd>{seller.email}</dd>
-                </div>
-              )}
-              {seller.companyNumber && (
-                <div className="flex gap-2">
-                  <dt className="w-24">Reg. No.</dt>
-                  <dd className="font-medium text-black/80">{seller.companyNumber}</dd>
-                </div>
-              )}
-              {seller.phone && (
-                <div className="flex gap-2">
-                  <dt className="w-24">Telephone</dt>
-                  <dd>{seller.phone}</dd>
-                </div>
-              )}
-            </dl>
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/branding-dark.png"
+                alt="Touchline Branding"
+                className="h-16 w-auto max-w-72 object-contain"
+              />
+            </div>
+            <p className="mt-2 text-xs font-bold uppercase tracking-wider text-gray-900">{seller.name}</p>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              {seller.address}
+            </p>
+            <p className="text-xs text-gray-600">
+              Tel: <span className="font-semibold text-gray-900">{seller.phone}</span>
+            </p>
+            <p className="text-xs text-gray-600">
+              {seller.email} · touchlineltd.co.ke
+            </p>
+            <p className="mt-1 text-xs font-bold tracking-wide text-[#9B1B5A] uppercase">
+              YOUR IMAGE . YOUR SUCCESS
+            </p>
+            <div className="mt-1 flex flex-wrap gap-3 text-xs text-gray-600">
+              {seller.pin ? (
+                <p>
+                  KRA PIN: <span className="font-mono font-semibold text-gray-900">{seller.pin}</span>
+                </p>
+              ) : null}
+              {seller.companyNumber ? (
+                <p>
+                  Reg No: <span className="font-mono font-semibold text-gray-900">{seller.companyNumber}</span>
+                </p>
+              ) : null}
+            </div>
           </div>
-
           <div className="text-right">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-black/50">Proforma invoice</p>
-            <p className="mt-1 font-mono text-lg font-semibold">{reference}</p>
-            <dl className="mt-3 space-y-0.5 text-[11px] text-black/60">
-              <div className="flex justify-end gap-3">
-                <dt>Date</dt>
-                <dd className="font-medium text-black/80">{date(now)}</dd>
-              </div>
-              <div className="flex justify-end gap-3">
-                <dt>Valid until</dt>
-                <dd className="font-medium text-black/80">{date(validUntil)}</dd>
-              </div>
-            </dl>
+            <span className="inline-block rounded-lg bg-[#c4962c] px-4 py-1.5 text-xs sm:text-sm font-black uppercase tracking-widest text-[#1c1914] shadow-xs">
+              OFFICIAL QUOTATION
+            </span>
+            <h1 className="mt-2 font-mono text-2xl sm:text-3xl font-black tracking-tight text-gray-900">
+              {reference}
+            </h1>
+            <p className="mt-1 text-xs text-gray-500 font-medium">TouchGift Corporate Storefront</p>
           </div>
         </header>
 
-        {/* ── Buyer / note ── */}
-        <section className="mt-6 grid grid-cols-2 gap-8">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Prepared for</p>
-            <p className="mt-1.5 border-b border-dashed border-black/25 pb-1 font-medium">
-              {company || "\u00A0"}
-            </p>
-            {!company && (
-              <p className="mt-1 text-[10px] text-black/40">Company name to be completed by the buyer.</p>
-            )}
+        {/* ── Metadata Grid ── */}
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3 text-sm">
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Client</span>
+              <span className="text-right font-semibold text-gray-900">{company || "Client Organization"}</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Project</span>
+              <span className="text-right font-medium text-gray-900 truncate max-w-[200px]">{title}</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Reference</span>
+              <span className="text-right font-mono font-medium text-gray-900">{reference}</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Division</span>
+              <span className="text-right font-medium text-[#9B1B5A]">Corporate Branding &amp; Gifts</span>
+            </div>
           </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Order reference</p>
-            <dl className="mt-1.5 space-y-1 text-xs text-black/70">
-              <div className="flex gap-3">
-                <dt className="w-24 text-black/50">Pack</dt>
-                <dd>{pack.name}</dd>
-              </div>
-              <div className="flex gap-3">
-                <dt className="w-24 text-black/50">Boxes</dt>
-                <dd>{quote.qty}</dd>
-              </div>
-              <div className="flex gap-3">
-                <dt className="w-24 text-black/50">Delivery</dt>
-                <dd>Quoted separately</dd>
-              </div>
-            </dl>
-          </div>
-        </section>
 
-        {/* ── Lines ── */}
-        <table className="mt-8 w-full border-collapse text-sm">
+          <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3 text-sm">
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Date</span>
+              <span className="text-right font-medium text-gray-900">{dateStr(now)}</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Valid Until</span>
+              <span className="text-right font-semibold text-amber-700">{dateStr(validUntil)}</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1 border-b border-gray-200/60">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Prepared By</span>
+              <span className="text-right font-medium text-gray-900">Touchline Corporate Desk</span>
+            </div>
+            <div className="flex justify-between gap-4 py-1">
+              <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">Tax Basis</span>
+              <span className="text-right font-medium text-gray-900">
+                {seller.vatRegistered ? "VAT Inclusive (16%)" : "VAT Exempt"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Line Items Table ── */}
+        <table className="mt-6 w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-black/20 text-left">
-              <th className="py-2 pr-3 font-medium text-[10px] uppercase tracking-[0.14em] text-black/50">
-                Description
+            <tr className="bg-gray-100/80 border-y border-gray-200">
+              <th className="border-x border-gray-200 px-3 py-2.5 text-left font-bold text-xs uppercase tracking-wide text-gray-800 w-12">
+                No.
               </th>
-              <th className="px-3 py-2 text-right font-medium text-[10px] uppercase tracking-[0.14em] text-black/50">
+              <th className="border-r border-gray-200 px-3 py-2.5 text-left font-bold text-xs uppercase tracking-wide text-gray-800">
+                Description &amp; Specification
+              </th>
+              <th className="border-r border-gray-200 px-3 py-2.5 text-right font-bold text-xs uppercase tracking-wide text-gray-800 w-20">
                 Qty
               </th>
-              <th className="px-3 py-2 text-right font-medium text-[10px] uppercase tracking-[0.14em] text-black/50">
+              <th className="border-r border-gray-200 px-3 py-2.5 text-center font-bold text-xs uppercase tracking-wide text-gray-800 w-16">
                 Unit
               </th>
-              <th className="py-2 pl-3 text-right font-medium text-[10px] uppercase tracking-[0.14em] text-black/50">
-                Amount
+              <th className="border-r border-gray-200 px-3 py-2.5 text-right font-bold text-xs uppercase tracking-wide text-gray-800 w-32">
+                Unit Price
+              </th>
+              <th className="border-r border-gray-200 px-3 py-2.5 text-right font-bold text-xs uppercase tracking-wide text-gray-800 w-36">
+                Total (KES)
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-black/5">
-              <td className="py-3 pr-3">
-                <p className="font-medium">{pack.name} gift pack</p>
-                <p className="mt-0.5 text-[11px] text-black/50">{pack.bestFor}</p>
+            <tr className="hover:bg-gray-50/50 transition-colors">
+              <td className="border border-gray-200 px-3 py-3 text-gray-500 text-center font-medium">1</td>
+              <td className="border border-gray-200 px-3 py-3">
+                <span className="font-bold text-gray-900">{title}</span>
+                <span className="block text-xs text-gray-500 mt-0.5 leading-relaxed">{description}</span>
+                <span className="inline-block text-[10px] font-semibold text-[#9B1B5A] mt-1 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                  Includes custom branding proof &amp; corporate packaging
+                </span>
               </td>
-              <td className="px-3 text-right tabular-nums text-black/70">{quote.qty}</td>
-              <td className="px-3 text-right tabular-nums text-black/70">{money(pack.price)}</td>
-              <td className="pl-3 text-right tabular-nums">{money(quote.listTotal)}</td>
+              <td className="border border-gray-200 px-3 py-3 text-right tabular-nums font-semibold text-gray-900">
+                {quantity}
+              </td>
+              <td className="border border-gray-200 px-3 py-3 text-center text-gray-500">pcs</td>
+              <td className="border border-gray-200 px-3 py-3 text-right tabular-nums font-medium text-gray-800">
+                {money(unitPrice)}
+              </td>
+              <td className="border border-gray-200 px-3 py-3 text-right tabular-nums font-bold text-gray-900">
+                {money(subtotal)}
+              </td>
             </tr>
-            {quote.savings > 0 && (
-              <tr className="border-b border-black/5">
-                <td className="py-3 pr-3 text-black/60">
-                  Volume discount ({quote.band.pct}% on {quote.qty} boxes)
+            {discount > 0 && (
+              <tr className="border border-gray-200 bg-emerald-50/40">
+                <td className="border border-gray-200 px-3 py-2 text-center text-emerald-800 text-xs font-bold">—</td>
+                <td className="border border-gray-200 px-3 py-2 text-xs font-semibold text-emerald-800" colSpan={4}>
+                  Corporate Volume Discount Tier
                 </td>
-                <td className="px-3 text-right tabular-nums text-black/60">1</td>
-                <td className="px-3 text-right tabular-nums text-black/60">
-                  − {money(quote.savings)}
-                </td>
-                <td className="pl-3 text-right tabular-nums text-emerald-700">
-                  − {money(quote.savings)}
+                <td className="border border-gray-200 px-3 py-2 text-right tabular-nums font-bold text-emerald-700">
+                  − {money(discount)}
                 </td>
               </tr>
             )}
           </tbody>
         </table>
 
-        {/* ── Totals ── */}
-        <section className="mt-6 flex justify-end">
-          <dl className="w-full max-w-xs space-y-1.5 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-black/60">Net amount</dt>
-              <dd className="tabular-nums">{money(net)}</dd>
+        {/* ── Totals Block ── */}
+        <div className="mt-5 ml-auto w-full max-w-sm rounded-xl border border-gray-200 bg-gray-50/50 p-3.5 text-sm">
+          <div className="flex justify-between gap-4 py-1">
+            <span className="text-gray-600">Subtotal</span>
+            <span className="tabular-nums font-semibold text-gray-900">{money(subtotal)}</span>
+          </div>
+          {discount > 0 && (
+            <div className="flex justify-between gap-4 py-1 border-t border-gray-200 text-emerald-700">
+              <span>Volume Discount</span>
+              <span className="tabular-nums font-semibold">− {money(discount)}</span>
             </div>
-            {seller.vatRegistered ? (
-              <div className="flex justify-between">
-                <dt className="text-black/60">VAT ({seller.vatRate}%)</dt>
-                <dd className="tabular-nums">{money(vat)}</dd>
-              </div>
-            ) : (
-              <p className="text-[11px] leading-relaxed text-black/50">
-                The seller is not registered for VAT. No VAT has been charged and this
-                proforma is not a tax invoice.
-              </p>
-            )}
-            <div className="flex justify-between border-t border-black/20 pt-2 text-base font-semibold">
-              <dt>Total</dt>
-              <dd className="tabular-nums">{money(total)}</dd>
-            </div>
-          </dl>
-        </section>
+          )}
+          <div className="flex justify-between gap-4 py-1 border-t border-gray-200 text-gray-600">
+            <span>Net (excl. VAT)</span>
+            <span className="tabular-nums font-semibold text-gray-900">{money(net)}</span>
+          </div>
+          <div className="flex justify-between gap-4 py-1 border-t border-gray-200 text-gray-600">
+            <span>VAT (16%)</span>
+            <span className="tabular-nums font-semibold text-gray-900">{money(vat)}</span>
+          </div>
+          <div className="flex justify-between gap-4 py-2 border-t-2 border-gray-300 text-base font-black text-gray-900">
+            <span>Grand Total</span>
+            <span className="tabular-nums text-[#9B1B5A]">{money(total)}</span>
+          </div>
+        </div>
 
-        {/* ── Terms ── */}
-        <section className="mt-8 border-t border-black/10 pt-4">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Terms</p>
-          <ul className="mt-1.5 space-y-1 text-[11px] leading-relaxed text-black/65">
-            <li>
-              This is an indicative proforma, not a tax invoice. Final pricing confirms
-              stock, branding, artwork and delivery.
+        {/* ── Amount In Words ── */}
+        <div className="mt-4 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-amber-800 mb-0.5">Amount in Words</p>
+          <p className="text-xs font-bold text-gray-900 italic">{words}</p>
+        </div>
+
+        {/* ── Terms & Conditions (TouchDesk Protocol) ── */}
+        <section className="mt-6 border-t border-gray-200 pt-4 text-xs">
+          <h2 className="font-bold uppercase tracking-wider text-gray-700 mb-2">Terms &amp; Conditions</h2>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1.5 text-gray-600 leading-relaxed">
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span><strong>50% deposit</strong> upon quote confirmation. Balance payable upon delivery.</span>
             </li>
-            <li>
-              Valid for 14 days from the date above. Delivery is quoted separately and
-              confirmed against the delivery address.
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span>Lead time commences upon receipt of deposit and formal client artwork approval.</span>
             </li>
-            <li>
-              Payment by Paystack (M-Pesa or card) or bank transfer. LPOs accepted for
-              approved corporate accounts. Payment terms are confirmed on the final quote.
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span>All prices include standard 16% VAT unless an official VAT exemption certificate is provided.</span>
             </li>
-            <li>
-              Branding: one logo, one position is included unless the final quote says
-              otherwise. A digital proof is issued before production.
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span>This quotation remains valid for <strong>14 days</strong> from the date of issue.</span>
+            </li>
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span>Deliveries within Nairobi CBD and industrial zone included on bulk orders; regional dispatch quoted on request.</span>
+            </li>
+            <li className="flex items-start gap-1.5">
+              <span className="text-[#9B1B5A] font-bold">•</span>
+              <span>Errors and omissions excepted (E&amp;OE).</span>
             </li>
           </ul>
         </section>
 
-        <footer className="mt-10 border-t border-black/10 pt-3 text-[10px] leading-relaxed text-black/40">
-          {seller.name}
-          {seller.pin ? ` · KRA PIN ${seller.pin}` : ""}
-          {seller.companyNumber ? ` · Reg. No. ${seller.companyNumber}` : ""} · Quote {reference} on
-          any payment or query. Generated {date(now)}.
+        {/* ── Payment Block (TouchDesk Standard) ── */}
+        <section className="mt-5 grid gap-3 sm:grid-cols-2 text-xs">
+          <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3.5">
+            <h3 className="font-bold uppercase tracking-wider text-gray-800 flex items-center gap-1.5 mb-2">
+              🏛️ Bank Payment Details
+            </h3>
+            <p className="font-semibold text-gray-900">Family Bank · Donholm Branch</p>
+            <p className="text-gray-500">P.O. Box 74145-0020 Nairobi</p>
+            <p className="text-gray-600 mt-1">A/C Name: <span className="font-semibold text-gray-900">TOUCHLINE BRANDING LIMITED</span></p>
+            <p className="font-mono font-bold text-gray-900 text-sm mt-0.5">A/C No: 033000036952</p>
+            <p className="text-gray-500 text-[11px]">Bank Code: 70-033</p>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3.5">
+            <h3 className="font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5 mb-2">
+              📱 M-Pesa Lipa Na M-Pesa
+            </h3>
+            <div className="flex items-baseline gap-2">
+              <span className="text-gray-600">Business No / Paybill:</span>
+              <span className="font-mono text-base font-black text-gray-900">222111</span>
+            </div>
+            <div className="flex items-baseline gap-2 mt-0.5">
+              <span className="text-gray-600">Account No:</span>
+              <span className="font-mono font-bold text-gray-900">2058527</span>
+            </div>
+            <p className="text-gray-600 mt-1 font-medium">Account Name: TOUCHLINE BRANDING</p>
+            <p className="text-gray-500 text-[11px]">Corporate Helpdesk: 0703 095 445 / +254 722 668 696</p>
+          </div>
+        </section>
+
+        {/* ── Company Authority Stamp & Signature ── */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 pt-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wide text-gray-800 mb-2">
+              For Touchline Branding Ltd
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="relative inline-block border border-blue-900/20 bg-blue-50/30 p-2 rounded-lg">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/brand/stamp-auth.png"
+                  alt="Touchline Authorised Signature"
+                  className="h-16 w-auto object-contain"
+                />
+                <span className="absolute bottom-3 right-4 font-mono text-[10px] font-bold text-blue-900">
+                  {stampDateStr(now)}
+                </span>
+              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/stamp-round.png"
+                alt="Touchline Branding Company Seal"
+                className="h-20 w-auto object-contain"
+              />
+            </div>
+          </div>
+
+          {/* ── Customer Acceptance / Stamp Box ── */}
+          <div className="w-full sm:w-auto min-w-[280px] rounded-xl border border-dashed border-gray-300 bg-gray-50/40 p-4 text-xs">
+            <p className="font-bold uppercase tracking-wider text-gray-700 mb-2">
+              Customer Acceptance &amp; Stamp
+            </p>
+            <div className="space-y-1.5 text-gray-600">
+              <p>Accepted By: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
+              <p>Date: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
+              <p>Signature: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
+              <p>LPO No: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
+            </div>
+            <div className="mt-3 border border-gray-200 bg-white rounded-lg p-3 text-center text-gray-400 text-[10px]">
+              Customer Official Stamp
+            </div>
+          </div>
+        </div>
+
+        {/* ── Document Footer ── */}
+        <footer className="mt-8 border-t border-gray-200 pt-3 text-center text-[11px] text-gray-500">
+          <span className="font-semibold text-gray-800">{seller.name}</span> · {seller.slogan || "YOUR IMAGE . YOUR SUCCESS"} · touchlineltd.co.ke · {seller.phone}
         </footer>
       </article>
     </div>

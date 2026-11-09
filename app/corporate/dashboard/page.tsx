@@ -25,6 +25,7 @@ const ClientsTab      = dynamic(() => import("@/components/corporate/tabs/Client
 const MilestonesTab   = dynamic(() => import("@/components/corporate/tabs/MilestonesTab"),   { loading: () => <TabLoader /> });
 const GiftCardsTab    = dynamic(() => import("@/components/corporate/tabs/GiftCardsTab"),    { loading: () => <TabLoader /> });
 const QuoteOpsPanel   = dynamic(() => import("@/components/corporate/QuoteOpsPanel"),        { loading: () => <TabLoader /> });
+const QuoteBuilder    = dynamic(() => import("@/components/corporate/QuoteBuilder"),          { loading: () => <TabLoader />, ssr: false });
 const PortalSettingsTab = dynamic(() => import("@/components/corporate/tabs/PortalSettingsTab"), { loading: () => <TabLoader /> });
 const InvoiceOpsPanel   = dynamic(() => import("@/components/corporate/InvoiceOpsPanel"),    { loading: () => <TabLoader /> });
 const WelcomeOnboarding = dynamic(() => import("@/components/corporate/WelcomeOnboarding"), { ssr: false });
@@ -554,6 +555,7 @@ function DashboardContent() {
   const settingsTabs  = NAV.filter(n => n.group === "settings");
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [quoteBuilderOpen, setQuoteBuilderOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
@@ -1020,13 +1022,51 @@ function DashboardContent() {
           {activeTab === "pools"       && <GiftPoolsTab />}
           {activeTab === "orders"      && <OrdersTab stats={stats} loading={loading} />}
           {activeTab === "invoices"    && <InvoicesTab stats={stats} loading={loading} />}
-          {activeTab === "quotes"      && <QuoteOpsPanel initialPending={stats?.pendingQuotes ?? 0} />}
+          {activeTab === "quotes"      && (
+            <div className="flex flex-col gap-4">
+              {/* Build Quote CTA */}
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <div>
+                  <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">Quote Requests</h2>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Incoming quote requests from corporate clients</p>
+                </div>
+                <button
+                  onClick={() => setQuoteBuilderOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#9B1B5A] hover:bg-[#7a1448] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm"
+                >
+                  <Plus className="w-4 h-4" />
+                  Build a Quote
+                </button>
+              </div>
+              <QuoteOpsPanel initialPending={stats?.pendingQuotes ?? 0} />
+            </div>
+          )}
           {activeTab === "clients"     && <ClientsTab />}
           {activeTab === "milestones"  && <MilestonesTab />}
           {(activeTab as string) === "calendar" && <CalendarTab />}
           {activeTab === "portal"      && <PortalSettingsTab />}
         </main>
       </div>
+
+      {/* ── QuoteBuilder modal ──────────────────────────────────────────────── */}
+      {quoteBuilderOpen && typeof document !== "undefined" && createPortal(
+        <div
+          className="fixed inset-0 z-[200] flex items-stretch sm:items-center justify-center sm:p-6"
+          role="dialog"
+          aria-modal="true"
+        >
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setQuoteBuilderOpen(false)}
+          />
+          {/* Panel */}
+          <div className="relative z-10 w-full sm:max-w-4xl sm:max-h-[90vh] h-full sm:h-auto sm:rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <QuoteBuilder onClose={() => setQuoteBuilderOpen(false)} />
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
