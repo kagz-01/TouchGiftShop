@@ -461,7 +461,7 @@ export default function CorporateHero({
           exit, on the corporate page only. The homepage and main catalog stay
           gift-led; this is where heavy brandable work gets handed off so the
           two brands stop competing for the same jobs. */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 pb-28">
+      <section className="relative z-10 max-w-7xl mx-auto px-4 pb-36 sm:pb-28">
         <div className="rounded-3xl border border-dashed border-[color:var(--corp-border-str)] bg-[color:var(--corp-surface)] p-6 sm:p-10">
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="flex-1 min-w-0">

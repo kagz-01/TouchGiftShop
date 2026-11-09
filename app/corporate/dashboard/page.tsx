@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
+import { createPortal } from "react-dom";
 import {
   LayoutDashboard, FileText, Inbox, Users, Gift, TrendingUp,
   Calendar, Settings, ChevronRight, RefreshCw, ArrowUp, ArrowDown,
   Building2, Package, DollarSign, Target, Clock, CheckCircle,
   AlertCircle, Plus, Zap, CreditCard, Bell, ShoppingBag, Loader2,
-  Moon, Sun,
+  Moon, Sun, Sparkles, ExternalLink,
 } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
@@ -484,12 +486,48 @@ function CalendarTab() {
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-export default function CorporateDashboard() {
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
-  const [stats, setStats]         = useState<any | null>(null);
-  const [loading, setLoading]     = useState(true);
-  const [preset, setPreset]       = useState("safaricom");
+// ─── Main inner component ─────────────────────────────────────────────────────
+function DashboardContent() {
+  const searchParams = useSearchParams();
+  const queryTab = searchParams.get("tab") as Tab | null;
+
+  const isValidTab = (t: string | null): t is Tab => {
+    return NAV.some(n => n.key === t);
+  };
+
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (queryTab && isValidTab(queryTab)) return queryTab;
+    return "overview";
+  });
+
+  const [activeHub, setActiveHub] = useState<"workspace" | "ops" | "settings">(() => {
+    const item = NAV.find(n => n.key === (queryTab && isValidTab(queryTab) ? queryTab : "overview"));
+    return item?.group || "workspace";
+  });
+
+  // Sync tab from URL if user navigates back/forward or deep links
+  useEffect(() => {
+    if (queryTab && isValidTab(queryTab) && queryTab !== activeTab) {
+      setActiveTab(queryTab);
+      const item = NAV.find(n => n.key === queryTab);
+      if (item) setActiveHub(item.group);
+    }
+  }, [queryTab]);
+
+  const switchTab = (t: Tab) => {
+    setActiveTab(t);
+    const item = NAV.find(n => n.key === t);
+    if (item) setActiveHub(item.group);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("tab", t);
+      window.history.replaceState({}, "", url.toString());
+    }
+  };
+
+  const [stats, setStats]     = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [preset, setPreset]   = useState("safaricom");
 
   const refresh = useCallback(async (selectedPreset?: string) => {
     setLoading(true);
@@ -515,35 +553,6 @@ export default function CorporateDashboard() {
   const opsTabs       = NAV.filter(n => n.group === "ops");
   const settingsTabs  = NAV.filter(n => n.group === "settings");
 
-  function NavBtn({ n }: { n: typeof NAV[number] }) {
-    const active = activeTab === n.key;
-    const badge =
-      n.key === "quotes"   ? (stats?.pendingQuotes ?? 0) :
-      n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
-    return (
-      <button onClick={() => setActiveTab(n.key)}
-        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
-        style={active ? {
-          background: "var(--portal-accent-tint)",
-          color: "var(--portal-accent)",
-          fontWeight: 600,
-          border: "1px solid var(--portal-accent-tint)",
-        } : {
-          color: "var(--portal-text-muted)",
-          border: "1px solid transparent",
-        }}>
-        <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
-        <span className="flex-1 truncate">{n.label}</span>
-        {badge > 0 && (
-          <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0"
-            style={{ background: "var(--portal-stop-tint)", color: "var(--portal-stop)" }}>
-            {badge}
-          </span>
-        )}
-      </button>
-    );
-  }
-
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
@@ -552,7 +561,7 @@ export default function CorporateDashboard() {
     <div className="corporate-portal min-h-screen font-sans flex relative">
 
       {/* First-visit welcome overlay — mounts client-side only (ssr:false) */}
-      <WelcomeOnboarding onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
+      <WelcomeOnboarding onNavigate={(tab) => switchTab(tab as Tab)} />
 
       {/* ─────────────────────────────────────────────────────────────────────
           SIDEBAR — desktop only, sticky, full height
@@ -607,7 +616,7 @@ export default function CorporateDashboard() {
                   const active = activeTab === n.key;
                   const badge = n.key === "quotes" ? (stats?.pendingQuotes ?? 0) : n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
                   return (
-                    <button key={n.key} onClick={() => setActiveTab(n.key)}
+                    <button key={n.key} onClick={() => switchTab(n.key)}
                       className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
                       style={active ? {
                         background: "var(--portal-accent-tint)",
@@ -734,16 +743,16 @@ export default function CorporateDashboard() {
               )}
 
               {/* Shop */}
-              <button onClick={() => setActiveTab("shop")}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+              <button onClick={() => switchTab("shop")}
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all min-h-[36px]"
                 style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)", color: "var(--portal-accent)" }}>
                 <ShoppingBag className="w-3.5 h-3.5" />
                 <span>Shop</span>
               </button>
 
               {/* Build Hamper — primary CTA */}
-              <button onClick={() => setActiveTab("hamper")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
+              <button onClick={() => switchTab("hamper")}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[36px]"
                 style={{ background: "var(--portal-accent)", color: "var(--portal-accent-text)" }}>
                 <Gift className="w-3.5 h-3.5" />
                 <span className="hidden sm:block">Build Hamper</span>
@@ -773,95 +782,215 @@ export default function CorporateDashboard() {
             </div>
           </div>
 
-          {/* Mobile tab scroll strip */}
-          <div className="lg:hidden flex items-center gap-1 px-3 pb-2.5 overflow-x-auto hide-scrollbar">
-            {NAV.map(n => (
-              <button key={n.key} onClick={() => { setActiveTab(n.key); setMobileNavOpen(false); }}
-                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
-                  activeTab === n.key
-                    ? "bg-amber-500 text-white shadow-sm"
-                    : "bg-gray-100 text-gray-500 hover:text-gray-800 hover:bg-gray-200"
-                }`}>
-                {n.label}
-              </button>
-            ))}
+          {/* ── Mobile Hub Switcher (3 clear ergonomic sections) ── */}
+          <div className="lg:hidden px-3 pt-2 pb-1 bg-gray-50/80 dark:bg-zinc-900/60 border-t border-b border-gray-200/50 dark:border-zinc-800/80 flex items-center gap-1">
+            {[
+              { id: "workspace" as const, label: "Workspace" },
+              { id: "ops" as const,       label: "Operations" },
+              { id: "settings" as const,  label: "Automations" },
+            ].map(hub => {
+              const isCurrentHub = activeHub === hub.id;
+              return (
+                <button
+                  key={hub.id}
+                  onClick={() => {
+                    setActiveHub(hub.id);
+                    const hubTabs = NAV.filter(n => n.group === hub.id);
+                    if (!hubTabs.some(n => n.key === activeTab)) {
+                      switchTab(hubTabs[0].key);
+                    }
+                  }}
+                  className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all text-center min-h-[36px] ${
+                    isCurrentHub
+                      ? "bg-brand text-white shadow-sm"
+                      : "text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white"
+                  }`}
+                >
+                  {hub.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ── Mobile Tab Scroll Strip (Scoped to Active Hub) ── */}
+          <div className="lg:hidden flex items-center gap-1.5 px-3 py-2 overflow-x-auto hide-scrollbar">
+            {NAV.filter(n => n.group === activeHub).map(n => {
+              const active = activeTab === n.key;
+              const badge = n.key === "quotes" ? (stats?.pendingQuotes ?? 0) : n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
+              return (
+                <button
+                  key={n.key}
+                  onClick={() => switchTab(n.key)}
+                  className="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap min-h-[44px]"
+                  style={active ? {
+                    background: "var(--portal-accent)",
+                    color: "var(--portal-accent-text)",
+                    boxShadow: "0 2px 8px rgba(155, 27, 90, 0.25)"
+                  } : {
+                    background: "var(--portal-surface)",
+                    border: "1px solid var(--portal-border)",
+                    color: "var(--portal-text-muted)"
+                  }}
+                >
+                  <n.icon className="w-3.5 h-3.5 shrink-0" />
+                  <span>{n.label}</span>
+                  {badge > 0 && (
+                    <span className="w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center bg-red-600 text-white shrink-0">
+                      {badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </header>
 
-        {/* ── Mobile nav drawer ── */}
-        {mobileNavOpen && (
-          <div className="lg:hidden fixed inset-0 z-50 flex">
-            <div className="absolute inset-0 bg-black/40" onClick={() => setMobileNavOpen(false)} />
-            <div className="relative w-64 bg-white h-full flex flex-col shadow-2xl">
-              <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100">
+        {/* ── Mobile Nav Drawer (Full Portal Portal Stacking) ── */}
+        {mobileNavOpen && typeof document !== "undefined" && createPortal(
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Corporate Portal Navigation"
+            className="fixed inset-0 z-[999] flex justify-start bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setMobileNavOpen(false)}
+          >
+            <div
+              className="relative w-full max-w-[320px] bg-white dark:bg-[#11111a] h-full shadow-2xl flex flex-col overflow-hidden border-r border-gray-200 dark:border-zinc-800 animate-in slide-in-from-left duration-300"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-zinc-800 shrink-0 bg-gray-50/50 dark:bg-zinc-900/50">
                 <div className="flex items-center gap-2.5">
-                  <div className="relative w-8 h-8">
+                  <div className="relative w-8 h-8 shrink-0">
                     <Image src="/logo/logo.webp" alt="TouchGift" fill sizes="32px" className="rounded-lg object-cover" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">TouchGift</p>
-                    <p className="text-[10px] text-amber-600 font-semibold uppercase tracking-wide">Corporate</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">TouchGift</p>
+                    <p className="text-[10px] text-brand dark:text-brand-light font-bold uppercase tracking-wider">Corporate Hub</p>
                   </div>
                 </div>
-                <button onClick={() => setMobileNavOpen(false)} className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200">
-                  <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <button
+                  onClick={() => setMobileNavOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-600 dark:text-zinc-300 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+
+              {/* Navigation Sections */}
+              <nav className="flex-1 px-3 py-4 space-y-5 overflow-y-auto" aria-label="Corporate sections">
                 {[
-                  { label: "Workspace", tabs: workspaceTabs },
-                  { label: "Operations", tabs: opsTabs },
-                  { label: "Settings", tabs: settingsTabs },
+                  { label: "Workspace & Gifting", tabs: workspaceTabs },
+                  { label: "Procurement & Ops", tabs: opsTabs },
+                  { label: "Automations & Admin", tabs: settingsTabs },
                 ].map(g => (
                   <div key={g.label}>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 mb-2">{g.label}</p>
-                    <div className="space-y-0.5">
-                      {g.tabs.map(n => (
-                        <button key={n.key} onClick={() => { setActiveTab(n.key); setMobileNavOpen(false); }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-all"
-                          style={activeTab === n.key ? {
-                            background: "var(--portal-accent-tint)",
-                            color: "var(--portal-accent)",
-                            fontWeight: 600,
-                            border: "1px solid var(--portal-accent-tint)",
-                          } : {
-                            color: "var(--portal-text-muted)",
-                            border: "1px solid transparent",
-                          }}>
-                          <n.icon className="w-4 h-4 shrink-0" style={{ color: activeTab === n.key ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
-                          {n.label}
-                        </button>
-                      ))}
+                    <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">{g.label}</p>
+                    <div className="space-y-1">
+                      {g.tabs.map(n => {
+                        const active = activeTab === n.key;
+                        const badge = n.key === "quotes" ? (stats?.pendingQuotes ?? 0) : n.key === "invoices" ? (stats?.overdueInvoices ?? 0) : 0;
+                        return (
+                          <button
+                            key={n.key}
+                            onClick={() => { switchTab(n.key); setMobileNavOpen(false); }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-sm font-medium transition-all min-h-[44px]"
+                            style={active ? {
+                              background: "var(--portal-accent-tint)",
+                              color: "var(--portal-accent)",
+                              fontWeight: 700,
+                              border: "1px solid var(--portal-accent-tint)",
+                            } : {
+                              color: "var(--portal-text-muted)",
+                              border: "1px solid transparent",
+                            }}
+                          >
+                            <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
+                            <span className="flex-1 truncate">{n.label}</span>
+                            {badge > 0 && (
+                              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white shrink-0">
+                                {badge}
+                              </span>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}
+
+                {/* Ecosystem Links */}
+                <div className="pt-2 border-t border-gray-100 dark:border-zinc-800">
+                  <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">Corporate Ecosystem</p>
+                  <div className="space-y-1">
+                    <Link
+                      href="/corporate/showroom"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800/60 transition-all min-h-[44px]"
+                    >
+                      <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                      <span>360° Showroom</span>
+                    </Link>
+                    <Link
+                      href="/corporate/catalog"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800/60 transition-all min-h-[44px]"
+                    >
+                      <Package className="w-4 h-4 text-brand dark:text-brand-light shrink-0" />
+                      <span>Corporate Catalog</span>
+                    </Link>
+                    <Link
+                      href="/corporate/whitelabel"
+                      onClick={() => setMobileNavOpen(false)}
+                      className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-gray-700 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800/60 transition-all min-h-[44px]"
+                    >
+                      <Building2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                      <span>Agency White-Label</span>
+                    </Link>
+                  </div>
+                </div>
               </nav>
-              <div className="px-3 py-3 border-t border-gray-100">
-                <Link href="/" className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-all">
-                  <svg className="w-4 h-4 shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                  </svg>
-                  Back to Main Store
+
+              {/* Drawer Footer with Back to Store & Theme */}
+              <div className="p-3 border-t border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-900/50 space-y-2">
+                <button
+                  onClick={toggleTheme}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-200 min-h-[44px]"
+                >
+                  <span className="flex items-center gap-2">
+                    {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-brand" />}
+                    <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
+                  </span>
+                  <span className="text-[10px] text-gray-400 uppercase font-bold">{theme}</span>
+                </button>
+                <Link
+                  href="/"
+                  className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-zinc-400 hover:text-gray-900 dark:hover:text-white transition-all min-h-[44px]"
+                >
+                  <ExternalLink className="w-4 h-4 shrink-0" />
+                  <span>Exit to Main Consumer Shop</span>
                 </Link>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
 
-        {/* ── Tab content ── */}
-        <main className="flex-1 p-4 sm:p-6 max-w-screen-xl w-full mx-auto" id="corp-main-content">
+        {/* ── Tab content (with bottom safe clearance for CorporateBottomNav) ── */}
+        <main className="flex-1 p-4 sm:p-6 pb-36 md:pb-12 max-w-screen-xl w-full mx-auto" id="corp-main-content">
           {activeTab === "overview" && (
             <>
               {/* QuickStart shown when account has no orders yet */}
               {!loading && (stats?.totalCorpOrders ?? 0) === 0 && (
-                <QuickStartBanner onNavigate={(tab) => setActiveTab(tab as Parameters<typeof setActiveTab>[0])} />
+                <QuickStartBanner onNavigate={(tab) => switchTab(tab as Tab)} />
               )}
               <ControlRoomOverview
                 stats={stats}
                 loading={loading}
-                onNavigateTab={setActiveTab}
+                onNavigateTab={switchTab}
                 onSelectPreset={handleSelectPreset}
               />
               {/* Historical Trend & Pipeline Velocity */}
@@ -899,5 +1028,13 @@ export default function CorporateDashboard() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function CorporateDashboard() {
+  return (
+    <Suspense fallback={<TabLoader />}>
+      <DashboardContent />
+    </Suspense>
   );
 }

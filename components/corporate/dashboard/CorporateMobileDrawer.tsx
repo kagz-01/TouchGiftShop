@@ -63,7 +63,7 @@ const CORP_NAV_ITEMS = [
     href: "/corporate/proforma",
     label: "Proforma Invoice & LPO",
     desc: "Instant quotation for corporate procurement",
-    icon: <FileText className="w-5 h-5 text-indigo-500" />,
+    icon: <FileText className="w-5 h-5 text-brand dark:text-brand-light" />,
   },
 ];
 
