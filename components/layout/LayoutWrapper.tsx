@@ -12,6 +12,7 @@ import FloatingThemeToggle from "@/components/ui/FloatingThemeToggle";
 import MobileTopBar from "@/components/layout/MobileTopBar";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
+import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
 import { createClient } from "@/lib/supabase-browser";
 import { isGuest } from "@/lib/guest";
 
@@ -119,6 +120,8 @@ export default function LayoutWrapper({
       <GiftChatWidget />
       {/* Mood-aware presence toast — watches idle time and tab switching */}
       <MoodPresenceToast userName={userName} />
+      {/* PWA 4-second intelligent install prompt */}
+      <PWAInstallPrompt />
     </>
   );
 }

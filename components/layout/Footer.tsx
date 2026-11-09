@@ -185,6 +185,20 @@ export default function Footer() {
                     </Link>
                   </li>
                 ))}
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        localStorage.removeItem("touchgift_pwa_dismissed_until");
+                        window.dispatchEvent(new CustomEvent("touchgift:open-pwa-prompt"));
+                      }
+                    }}
+                    className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors text-left"
+                  >
+                    Install TouchGift App
+                  </button>
+                </li>
               </ul>
             </div>
 
