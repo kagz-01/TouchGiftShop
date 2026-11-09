@@ -640,38 +640,46 @@ export function ProblemSection() {
           </Reveal>
         </div>
 
-        <div className="gd grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <DilemmaCard
-            delay={0}
-            title="The Racing Clock"
-            desc="Same-day delivery across Nairobi for the moments that cannot wait."
-          >
-            <ClockScene />
-          </DilemmaCard>
+        <div className="gd flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto no-scrollbar snap-x-scroll pb-2 px-1">
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start">
+            <DilemmaCard
+              delay={0}
+              title="The Racing Clock"
+              desc="Same-day delivery across Nairobi for the moments that cannot wait."
+            >
+              <ClockScene />
+            </DilemmaCard>
+          </div>
 
-          <DilemmaCard
-            delay={100}
-            title="Uninspired Choices"
-            desc="A tightly curated edit so you are never scrolling through filler."
-          >
-            <PickScene />
-          </DilemmaCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start">
+            <DilemmaCard
+              delay={100}
+              title="Uninspired Choices"
+              desc="A tightly curated edit so you are never scrolling through filler."
+            >
+              <PickScene />
+            </DilemmaCard>
+          </div>
 
-          <DilemmaCard
-            delay={200}
-            title="Logistical Headaches"
-            desc="No address? We can coordinate discreetly with your recipient."
-          >
-            <LogisticsScene />
-          </DilemmaCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start">
+            <DilemmaCard
+              delay={200}
+              title="Logistical Headaches"
+              desc="No address? We can coordinate discreetly with your recipient."
+            >
+              <LogisticsScene />
+            </DilemmaCard>
+          </div>
 
-          <DilemmaCard
-            delay={300}
-            title="Unexpected Costs"
-            desc="Clear pricing and transparent delivery from the start."
-          >
-            <CostScene />
-          </DilemmaCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start">
+            <DilemmaCard
+              delay={300}
+              title="Unexpected Costs"
+              desc="Clear pricing and transparent delivery from the start."
+            >
+              <CostScene />
+            </DilemmaCard>
+          </div>
         </div>
       </div>
 

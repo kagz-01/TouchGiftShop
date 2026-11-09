@@ -79,7 +79,7 @@ export default function CorporateHeader({
           {/* Mobile hamburger */}
           <button
             onClick={onMobileNavToggle}
-            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
+            className="lg:hidden w-11 h-11 flex items-center justify-center rounded-xl text-var(--corp-text-muted) hover:bg-var(--corp-surface-2) transition-colors"
             aria-label="Open mobile navigation"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -95,16 +95,6 @@ export default function CorporateHeader({
           <Link href="/" className="text-var(--corp-text-faint)">
             Home
           </Link>
-          {/* Mobile hamburger */}
-          <button
-            onClick={onMobileNavToggle}
-            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
-            aria-label="Open mobile navigation"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
           <ChevronRight className="w-3.5 h-3.5 text-var(--corp-border)" />
           <span style={{ color: "var(--corp-text-muted)" }}>Corporate</span>
           <ChevronRight className="w-3.5 h-3.5 text-var(--corp-border)" />
@@ -137,26 +127,16 @@ export default function CorporateHeader({
               ))}
             </div>
           )}
-          {/* Back to main store */}
+          {/* Back to main store pill */}
           <Link
             href="/"
-            className="flex items-center gap-1.5 text-xs text-var(--corp-text-muted) hover:text-var(--corp-text)"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-brand/10 text-brand dark:text-brand-light hover:bg-brand/20 transition-colors shrink-0 min-h-[36px]"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
               <path d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
             </svg>
-            <span>Back to Main Store</span>
+            <span>Gift Shop</span>
           </Link>
-          {/* Mobile hamburger */}
-          <button
-            onClick={onMobileNavToggle}
-            className="lg:hidden p-2 rounded-md text-var(--corp-text-muted) hover:bg-var(--corp-surface-2)"
-            aria-label="Open mobile navigation"
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
         </div>
       </div>
     </header>

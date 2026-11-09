@@ -319,48 +319,63 @@ export default function SuperpowersStrip() {
         </div>
 
         <div
-
-          className="sp grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          className="sp flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto no-scrollbar snap-x-scroll pb-2 px-1"
         >
-          <FeatureCard delay={0} href="/pool/create" title="Pool a Gift" cta="Pool a Gift"
-            desc="Everyone chips in what they can — we combine it into one extraordinary gift.">
-            <PoolScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={0} href="/pool/create" title="Pool a Gift" cta="Pool a Gift"
+              desc="Everyone chips in what they can — we combine it into one extraordinary gift.">
+              <PoolScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={60} href="/gift-lab" title="Build a Hamper" cta="Start Building"
-            desc="Pick each piece yourself — we arrange, wrap, and ribbon it into one bespoke gift.">
-            <HamperScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={60} href="/gift-lab" title="Build a Hamper" cta="Start Building"
+              desc="Pick each piece yourself — we arrange, wrap, and ribbon it into one bespoke gift.">
+              <HamperScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={120} href="/gift-finder" title="AI Gift Finder" cta="Find a Gift"
-            desc="Tell us who it's for and your budget — a 30-second quiz finds the match.">
-            <FinderScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={120} href="/gift-finder" title="AI Gift Finder" cta="Find a Gift"
+              desc="Tell us who it's for and your budget — a 30-second quiz finds the match.">
+              <FinderScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={180} href="/gift-cards" title="Gift Cards" cta="Buy a Gift Card"
-            desc="Instant digital gifting — when the best choice is letting them choose.">
-            <CardsScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={180} href="/gift-cards" title="Gift Cards" cta="Buy a Gift Card"
+              desc="Instant digital gifting — when the best choice is letting them choose.">
+              <CardsScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={240} href="/surprise" title="Send Anonymously" cta="Explore"
-            desc="Flip one switch and your name, price tag, and sender details all disappear.">
-            <AnonScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={240} href="/surprise" title="Send Anonymously" cta="Explore"
+              desc="Flip one switch and your name, price tag, and sender details all disappear.">
+              <AnonScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={300} href="/delivery" title="Photo Proof" cta="How it works"
-            desc="We photograph your wrapped gift and send it to you before it leaves for delivery.">
-            <ProofScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={300} href="/delivery" title="Photo Proof" cta="How it works"
+              desc="We photograph your wrapped gift and send it to you before it leaves for delivery.">
+              <ProofScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={360} href="/subscriptions" title="Gift Subscriptions" cta="Set It Up"
-            desc="Set the date once — we auto-send a gift every birthday and anniversary after.">
-            <SubsScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={360} href="/subscriptions" title="Gift Subscriptions" cta="Set It Up"
+              desc="Set the date once — we auto-send a gift every birthday and anniversary after.">
+              <SubsScene />
+            </FeatureCard>
+          </div>
 
-          <FeatureCard delay={420} href="/referrals" title="Rewards" cta="Get Your Code"
-            desc="Share your code — when a friend orders, you both earn 1,000 points toward a future gift.">
-            <RewardsScene />
-          </FeatureCard>
+          <div className="min-w-[260px] max-w-[280px] sm:min-w-0 sm:max-w-none snap-start h-full">
+            <FeatureCard delay={420} href="/referrals" title="Rewards" cta="Get Your Code"
+              desc="Share your code — when a friend orders, you both earn 1,000 points toward a future gift.">
+              <RewardsScene />
+            </FeatureCard>
+          </div>
         </div>
       </div>
 

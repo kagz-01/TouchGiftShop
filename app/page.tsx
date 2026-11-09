@@ -16,6 +16,7 @@ import PoolGiftShowcase from "@/components/home/PoolGiftShowcase";
 import VisitUs from "@/components/home/VisitUs";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { MobileGiftRail, QuickGiftFAB } from "@/components/home/MobileGiftRail";
 import { createClient } from "@supabase/supabase-js";
 import type { Product } from "@/lib/types";
 import { optimizeProductImagesList, optimizeImageUrl } from "@/lib/image-url";
@@ -375,40 +376,55 @@ export default async function HomePage() {
           ═══════════════════════════════════════════ */}
       <HeroCinematic />
 
+      {/* Scroll sentinel — QuickGiftFAB watches this to know when hero has left viewport */}
+      <div id="hero-sentinel" aria-hidden="true" />
+
       {/* ═══════════════════════════════════════════
-          CHAPTER 2: Immediate Discovery
+          MOBILE ONLY: Instant Gift Entry Rail (Hick's Law — 6 curated pathways)
+          Replaces the need to scroll through 9 storytelling chapters on small screens.
+          Desktop sees the full sequential narrative as-is.
+          ═══════════════════════════════════════════ */}
+      <MobileGiftRail />
+
+      {/* Floating "Find a Gift" FAB — appears after hero leaves mobile viewport */}
+      <QuickGiftFAB sentinelId="hero-sentinel" />
+
+      {/* ═══════════════════════════════════════════
+          CHAPTER 2: Immediate Discovery (desktop only — mobile uses MobileGiftRail above)
           Answers the hero prompt with live stock ready to send
           Trending ↓  |  Last Minute Under 5K ↑  |  Designer Scents ↓
           ═══════════════════════════════════════════ */}
-      <VerticalProductColumns
-        sectionEyebrow="You picked a mood"
-        sectionTitle="We already did the work."
-        sectionSub="Live stock, ready to send. Same-day across Nairobi."
-        columns={[
-          {
-            title: "Trending Now",
-            viewAllHref: "/shop",
-            products: trending,
-            direction: "down",
-            speed: 32,
-          },
-          {
-            title: "Last Minute",
-            viewAllHref: "/shop?budget=under-5k",
-            products: lastMinute,
-            direction: "up",
-            speed: 28,
-          },
-          {
-            title: "Perfumes",
-            viewAllHref: "/shop?category=perfumes",
-            products: perfume,
-            direction: "down",
-            speed: 36,
-          },
-        ]}
-        height={520}
-      />
+      <div className="hidden md:block">
+        <VerticalProductColumns
+          sectionEyebrow="You picked a mood"
+          sectionTitle="We already did the work."
+          sectionSub="Live stock, ready to send. Same-day across Nairobi."
+          columns={[
+            {
+              title: "Trending Now",
+              viewAllHref: "/shop",
+              products: trending,
+              direction: "down",
+              speed: 32,
+            },
+            {
+              title: "Last Minute",
+              viewAllHref: "/shop?budget=under-5k",
+              products: lastMinute,
+              direction: "up",
+              speed: 28,
+            },
+            {
+              title: "Perfumes",
+              viewAllHref: "/shop?category=perfumes",
+              products: perfume,
+              direction: "down",
+              speed: 36,
+            },
+          ]}
+          height={520}
+        />
+      </div>
 
       {/* ═══════════════════════════════════════════
           CHAPTER 3: The Gifting Dilemma
