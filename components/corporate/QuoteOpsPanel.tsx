@@ -45,25 +45,25 @@ export interface QuoteRow {
    that actually enforces. */
 const NEXT_ACTIONS: Record<QuoteStatus, { to: QuoteStatus; label: string; icon: typeof Send; cls: string }[]> = {
   pending: [
-    { to: "quoted",   label: "Send Quote",  icon: Send,       cls: "bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/20 text-blue-400" },
-    { to: "declined", label: "Decline",     icon: XCircle,    cls: "bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-400" },
+    { to: "quoted",   label: "Send Quote",  icon: Send,       cls: "bg-blue-500/10 hover:bg-blue-500/20 border-blue-500/30 text-blue-700 dark:text-blue-400" },
+    { to: "declined", label: "Decline",     icon: XCircle,    cls: "bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-400" },
   ],
   quoted: [
-    { to: "accepted", label: "Mark Accepted", icon: CheckCircle, cls: "bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/20 text-emerald-400" },
-    { to: "declined", label: "Decline",       icon: XCircle,     cls: "bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-400" },
-    { to: "pending",  label: "Reopen",        icon: Loader2,     cls: "bg-white/5 hover:bg-white/10 border-white/10 text-white/60" },
+    { to: "accepted", label: "Mark Accepted", icon: CheckCircle, cls: "bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-700 dark:text-emerald-400" },
+    { to: "declined", label: "Decline",       icon: XCircle,     cls: "bg-red-500/10 hover:bg-red-500/20 border-red-500/30 text-red-700 dark:text-red-400" },
+    { to: "pending",  label: "Reopen",        icon: Loader2,     cls: "bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white/60" },
   ],
   accepted: [],
   declined: [
-    { to: "pending", label: "Reopen", icon: Loader2, cls: "bg-white/5 hover:bg-white/10 border-white/10 text-white/60" },
+    { to: "pending", label: "Reopen", icon: Loader2, cls: "bg-gray-100 hover:bg-gray-200 dark:bg-white/5 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white/60" },
   ],
 };
 
 const STATUS_CONFIG: Record<QuoteStatus, { label: string; cls: string; dot: string }> = {
-  pending:  { label: "Pending",  cls: "bg-amber-500/10 text-amber-400 border-amber-500/20",         dot: "bg-amber-400" },
-  quoted:   { label: "Quoted",   cls: "bg-blue-500/10 text-blue-400 border-blue-500/20",            dot: "bg-blue-400" },
-  accepted: { label: "Accepted", cls: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20", dot: "bg-emerald-400" },
-  declined: { label: "Declined", cls: "bg-red-500/10 text-red-400 border-red-500/20",               dot: "bg-red-400" },
+  pending:  { label: "Pending",  cls: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20",         dot: "bg-amber-500 dark:bg-amber-400" },
+  quoted:   { label: "Quoted",   cls: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",            dot: "bg-blue-500 dark:bg-blue-400" },
+  accepted: { label: "Accepted", cls: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20", dot: "bg-emerald-500 dark:bg-emerald-400" },
+  declined: { label: "Declined", cls: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20",               dot: "bg-red-500 dark:bg-red-400" },
 };
 
 function StatusBadge({ status }: { status: QuoteStatus }) {
@@ -150,59 +150,59 @@ function QuoteDetail({
     validUntil !== (q.valid_until ? q.valid_until.slice(0, 10) : "");
 
   const inputCls =
-    "w-full bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-blue-400 focus:outline-none transition-colors";
+    "w-full bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 text-xs text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/30 focus:border-brand dark:focus:border-amber-400 focus:bg-white dark:focus:bg-black/40 focus:outline-none transition-colors";
 
   return (
-    <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="mt-3 pt-3 border-t border-gray-200 dark:border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* ── Customer context ── */}
       <div className="space-y-2.5 min-w-0">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">Customer</p>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-white/40">Customer</p>
         <div className="space-y-1.5 text-xs">
           <p className="flex items-center gap-2 min-w-0">
-            <Mail className="w-3.5 h-3.5 text-white/30 shrink-0" />
-            <a href={`mailto:${q.email}`} className="text-blue-300 hover:underline truncate">{q.email}</a>
+            <Mail className="w-3.5 h-3.5 text-gray-400 dark:text-white/30 shrink-0" />
+            <a href={`mailto:${q.email}`} className="text-brand dark:text-blue-300 hover:underline truncate">{q.email}</a>
           </p>
           {q.phone && (
             <p className="flex items-center gap-2 min-w-0">
-              <Phone className="w-3.5 h-3.5 text-white/30 shrink-0" />
-              <a href={`tel:${q.phone}`} className="text-blue-300 hover:underline truncate">{q.phone}</a>
+              <Phone className="w-3.5 h-3.5 text-gray-400 dark:text-white/30 shrink-0" />
+              <a href={`tel:${q.phone}`} className="text-brand dark:text-blue-300 hover:underline truncate">{q.phone}</a>
             </p>
           )}
           {q.category && (
             <p className="flex items-center gap-2">
-              <Building2 className="w-3.5 h-3.5 text-white/30 shrink-0" />
-              <span className="text-white/60">{q.category}</span>
+              <Building2 className="w-3.5 h-3.5 text-gray-400 dark:text-white/30 shrink-0" />
+              <span className="text-gray-700 dark:text-white/70">{q.category}</span>
             </p>
           )}
         </div>
 
         {q.notes && (
-          <div className="rounded-lg bg-amber-500/5 border border-amber-500/15 p-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-400/70 mb-1">Customer message</p>
-            <p className="text-xs text-white/70 leading-relaxed whitespace-pre-wrap break-words">{q.notes}</p>
+          <div className="rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/15 p-2.5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400/80 mb-1">Customer message</p>
+            <p className="text-xs text-gray-800 dark:text-white/80 leading-relaxed whitespace-pre-wrap break-words">{q.notes}</p>
           </div>
         )}
 
         {q.design_preview_url && (
-          <div className="rounded-lg border border-white/10 p-2.5">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-white/30 mb-1.5 flex items-center gap-1.5">
+          <div className="rounded-lg border border-gray-200 dark:border-white/10 p-2.5 bg-gray-50/50 dark:bg-transparent">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-white/40 mb-1.5 flex items-center gap-1.5">
               <Palette className="w-3 h-3" /> Studio design
             </p>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={q.design_preview_url}
               alt="Studio design preview"
-              className="w-full max-w-[220px] rounded-lg border border-white/10 bg-white/5 object-contain"
+              className="w-full max-w-[220px] rounded-lg border border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 object-contain"
             />
           </div>
         )}
 
         {q.design_payload && Object.keys(q.design_payload).length > 0 && (
-          <details className="rounded-lg border border-white/10 p-2.5">
-            <summary className="text-[10px] font-bold uppercase tracking-wider text-white/30 cursor-pointer select-none">
+          <details className="rounded-lg border border-gray-200 dark:border-white/10 p-2.5 bg-gray-50/30 dark:bg-transparent">
+            <summary className="text-[10px] font-bold uppercase tracking-wider text-gray-600 dark:text-white/40 cursor-pointer select-none">
               Fulfillment payload
             </summary>
-            <pre className="mt-2 text-[10px] text-white/50 overflow-x-auto max-h-40 whitespace-pre-wrap break-words">
+            <pre className="mt-2 text-[10px] text-gray-700 dark:text-white/60 overflow-x-auto max-h-40 whitespace-pre-wrap break-words">
               {JSON.stringify(q.design_payload, null, 2)}
             </pre>
           </details>
@@ -211,11 +211,11 @@ function QuoteDetail({
 
       {/* ── Ops editors ── */}
       <div className="space-y-2.5 min-w-0">
-        <p className="text-[10px] font-bold uppercase tracking-wider text-white/30">Ops</p>
+        <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-white/40">Ops</p>
         <div>
-          <label className="block text-[10px] text-white/40 mb-1">Assignee</label>
+          <label className="block text-[10px] font-medium text-gray-700 dark:text-white/60 mb-1">Assignee</label>
           <div className="relative">
-            <User className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
+            <User className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 pointer-events-none" />
             <input
               value={assignee}
               onChange={(e) => setAssignee(e.target.value)}
@@ -226,7 +226,7 @@ function QuoteDetail({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="min-w-0">
-            <label className="block text-[10px] text-white/40 mb-1">Quoted amount (KES)</label>
+            <label className="block text-[10px] font-medium text-gray-700 dark:text-white/60 mb-1">Quoted amount (KES)</label>
             <input
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^\d.]/g, ""))}
@@ -236,9 +236,9 @@ function QuoteDetail({
             />
           </div>
           <div className="min-w-0">
-            <label className="block text-[10px] text-white/40 mb-1">Valid until</label>
+            <label className="block text-[10px] font-medium text-gray-700 dark:text-white/60 mb-1">Valid until</label>
             <div className="relative">
-              <CalendarClock className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
+              <CalendarClock className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 pointer-events-none" />
               <input
                 type="date"
                 value={validUntil}
@@ -249,7 +249,7 @@ function QuoteDetail({
           </div>
         </div>
         <div>
-          <label className="block text-[10px] text-white/40 mb-1">Internal notes (ops only)</label>
+          <label className="block text-[10px] font-medium text-gray-700 dark:text-white/60 mb-1">Internal notes (ops only)</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
@@ -270,7 +270,7 @@ function QuoteDetail({
               })
             }
             disabled={saving}
-            className="w-full flex items-center justify-center gap-2 py-2 bg-blue-500 hover:bg-blue-400 text-black text-xs font-bold rounded-lg transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-2 bg-brand hover:bg-brand-dark text-white text-xs font-bold rounded-lg transition-all shadow-xs disabled:opacity-50"
           >
             {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
             Save ops fields
@@ -405,15 +405,15 @@ export default function QuoteOpsPanel({
   };
 
   return (
-    <div className="bg-white/[0.03] border border-white/10 rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/10 flex-wrap">
+    <div className="bg-white dark:bg-[#161626] border border-gray-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm dark:shadow-none">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-gray-200 dark:border-white/10 flex-wrap">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center shrink-0">
-            <Inbox className="w-4 h-4 text-amber-400" />
+            <Inbox className="w-4 h-4 text-amber-500 dark:text-amber-400" />
           </div>
           <div className="min-w-0">
-            <h3 className="font-bold text-sm">Quote Requests</h3>
-            <p className="text-[10px] text-white/40">
+            <h3 className="font-bold text-sm text-gray-900 dark:text-white">Quote Requests</h3>
+            <p className="text-[10px] text-gray-500 dark:text-white/40">
               {loading ? "Loading…" : `${total} request${total === 1 ? "" : "s"}`}
             </p>
           </div>
@@ -429,13 +429,19 @@ export default function QuoteOpsPanel({
               onClick={() => setStatus(t.key)}
               className={`px-3 py-1.5 text-[11px] font-bold rounded-lg transition-all flex items-center gap-1.5 ${
                 status === t.key
-                  ? "bg-amber-500/15 text-amber-400 border border-amber-500/25"
-                  : "bg-white/[0.03] text-white/40 border border-transparent hover:text-white/70"
+                  ? "bg-brand text-white border border-brand shadow-xs"
+                  : "bg-gray-100 dark:bg-white/[0.04] text-gray-700 dark:text-white/60 border border-gray-200/80 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white"
               }`}
             >
               {t.label}
               {t.count != null && (
-                <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-[9px]">{t.count}</span>
+                <span className={`px-1.5 py-0.5 rounded text-[9px] ${
+                  status === t.key
+                    ? "bg-white/20 text-white"
+                    : "bg-gray-200 dark:bg-white/10 text-gray-600 dark:text-white/60"
+                }`}>
+                  {t.count}
+                </span>
               )}
             </button>
           ))}
@@ -443,13 +449,13 @@ export default function QuoteOpsPanel({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
           <div className="relative lg:col-span-2">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 pointer-events-none" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search company, email, phone, product, or TGQ reference…"
               aria-label="Search quotes"
-              className="w-full bg-black/30 border border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-amber-400 focus:outline-none transition-colors min-w-0"
+              className="w-full bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg pl-8 pr-3 py-2 text-xs text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/30 focus:border-brand dark:focus:border-amber-400 focus:bg-white dark:focus:bg-black/40 focus:outline-none transition-colors min-w-0"
             />
           </div>
           <div className="relative">
@@ -457,14 +463,14 @@ export default function QuoteOpsPanel({
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               aria-label="Filter by category"
-              className="w-full appearance-none bg-black/30 border border-white/10 rounded-lg pl-3 pr-8 py-2 text-xs text-white focus:border-amber-400 focus:outline-none transition-colors"
+              className="w-full appearance-none bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg pl-3 pr-8 py-2 text-xs text-gray-900 dark:text-white focus:border-brand dark:focus:border-amber-400 focus:bg-white dark:focus:bg-black/40 focus:outline-none transition-colors"
             >
-              <option value="">All categories</option>
+              <option value="" className="bg-white dark:bg-[#0A0A12] text-gray-900 dark:text-white">All categories</option>
               {categories.map((c) => (
-                <option key={c} value={c} className="bg-[#0A0A12]">{c}</option>
+                <option key={c} value={c} className="bg-white dark:bg-[#0A0A12] text-gray-900 dark:text-white">{c}</option>
               ))}
             </select>
-            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
+            <ChevronDown className="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-white/30 pointer-events-none" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <input
@@ -472,14 +478,14 @@ export default function QuoteOpsPanel({
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               aria-label="From date"
-              className="min-w-0 bg-black/30 border border-white/10 rounded-lg px-2 py-2 text-[11px] text-white focus:border-amber-400 focus:outline-none"
+              className="min-w-0 bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg px-2 py-2 text-[11px] text-gray-900 dark:text-white focus:border-brand dark:focus:border-amber-400 focus:outline-none"
             />
             <input
               type="date"
               value={to}
               onChange={(e) => setTo(e.target.value)}
               aria-label="To date"
-              className="min-w-0 bg-black/30 border border-white/10 rounded-lg px-2 py-2 text-[11px] text-white focus:border-amber-400 focus:outline-none"
+              className="min-w-0 bg-gray-50 dark:bg-black/30 border border-gray-200 dark:border-white/10 rounded-lg px-2 py-2 text-[11px] text-gray-900 dark:text-white focus:border-brand dark:focus:border-amber-400 focus:outline-none"
             />
           </div>
         </div>
@@ -487,14 +493,14 @@ export default function QuoteOpsPanel({
         {hasFilters && (
           <button
             onClick={clearFilters}
-            className="inline-flex items-center gap-1.5 text-[11px] text-white/40 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-[11px] text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <FilterX className="w-3.5 h-3.5" /> Clear filters
           </button>
         )}
 
         {error && (
-          <div className="flex items-start gap-2 rounded-lg bg-red-500/10 border border-red-500/25 px-3 py-2 text-[11px] text-red-300">
+          <div className="flex items-start gap-2 rounded-lg bg-rose-50 dark:bg-red-500/10 border border-rose-200 dark:border-red-500/25 px-3 py-2 text-[11px] text-rose-700 dark:text-red-300">
             <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-px" />
             <span className="break-words">{error}</span>
           </div>
@@ -505,12 +511,12 @@ export default function QuoteOpsPanel({
       <div className="px-4 pb-4 mt-3">
         {loading && quotes.length === 0 ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 text-amber-400 animate-spin" />
+            <Loader2 className="w-6 h-6 text-brand dark:text-amber-400 animate-spin" />
           </div>
         ) : quotes.length === 0 ? (
           <div className="flex flex-col items-center py-10 text-center">
-            <Inbox className="w-8 h-8 text-white/10 mb-3" />
-            <p className="text-white/40 text-sm">
+            <Inbox className="w-8 h-8 text-gray-300 dark:text-white/15 mb-3" />
+            <p className="text-gray-600 dark:text-white/50 text-sm">
               {hasFilters ? "No quotes match these filters." : `No ${status !== "all" ? status : ""} quotes yet.`}
             </p>
           </div>
@@ -522,8 +528,10 @@ export default function QuoteOpsPanel({
               return (
                 <div
                   key={q.id}
-                  className={`bg-white/[0.02] border rounded-xl transition-all ${
-                    open ? "border-amber-500/30 bg-white/[0.05]" : "border-white/5 hover:border-white/15"
+                  className={`border rounded-xl transition-all ${
+                    open
+                      ? "border-brand/40 dark:border-amber-500/30 bg-gray-50/80 dark:bg-white/[0.05]"
+                      : "bg-gray-50/40 dark:bg-white/[0.02] border-gray-200 dark:border-white/5 hover:border-gray-300 dark:hover:border-white/15"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 p-3">
@@ -534,37 +542,37 @@ export default function QuoteOpsPanel({
                     >
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                          <p className="text-xs font-semibold text-white break-words">{q.product_name}</p>
+                          <p className="text-xs font-semibold text-gray-900 dark:text-white break-words">{q.product_name}</p>
                           <StatusBadge status={q.status} />
                           {q.assignee && (
-                            <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded bg-white/5 text-white/50 border border-white/10 max-w-[120px] truncate">
+                            <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/60 border border-gray-200 dark:border-white/10 max-w-[120px] truncate">
                               <User className="w-2.5 h-2.5 shrink-0" />{q.assignee}
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-x-3 gap-y-0.5 flex-wrap text-[10px] text-white/40">
+                        <div className="flex items-center gap-x-3 gap-y-0.5 flex-wrap text-[10px] text-gray-500 dark:text-white/50">
                           <span className="flex items-center gap-1 min-w-0 max-w-[180px]">
                             <Building2 className="w-3 h-3 shrink-0" />
                             <span className="truncate">{q.company_name}</span>
                           </span>
                           <span>{q.quantity} units</span>
-                          {q.moq_tier && <span className="text-white/30">{q.moq_tier}</span>}
+                          {q.moq_tier && <span className="text-gray-400 dark:text-white/40">{q.moq_tier}</span>}
                           {amount != null && (
-                            <span className="text-amber-400 font-semibold">
+                            <span className="text-amber-600 dark:text-amber-400 font-semibold">
                               {q.quoted_amount != null ? "Quoted " : ""}{formatKsh(amount)}
                             </span>
                           )}
                           <span>{new Date(q.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
                         </div>
                       </div>
-                      <ChevronDown className={`w-4 h-4 text-white/25 shrink-0 mt-0.5 transition-transform ${open ? "rotate-180" : ""}`} />
+                      <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-white/30 shrink-0 mt-0.5 transition-transform ${open ? "rotate-180" : ""}`} />
                     </button>
 
                     <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
                       <button
                         onClick={() => copy(`wa-${q.id}`, whatsappDeepLink(q.phone, q.company_name, q.product_name))}
                         title="Copy WhatsApp deep link"
-                        className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg transition-all"
+                        className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold rounded-lg transition-all"
                       >
                         {copied === `wa-${q.id}` ? <Check className="w-3 h-3" /> : <MessageCircle className="w-3 h-3" />}
                         <span className="hidden sm:inline">WhatsApp</span>
@@ -572,7 +580,7 @@ export default function QuoteOpsPanel({
                       <button
                         onClick={() => copy(`sum-${q.id}`, buildQuoteSummary(q))}
                         title="Copy quote summary"
-                        className="flex items-center gap-1 px-2.5 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 text-[10px] font-bold rounded-lg transition-all"
+                        className="flex items-center gap-1 px-2.5 py-1.5 bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white/70 text-[10px] font-bold rounded-lg transition-all"
                       >
                         {copied === `sum-${q.id}` ? <Check className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
                         <span className="hidden sm:inline">Summary</span>
@@ -599,26 +607,26 @@ export default function QuoteOpsPanel({
                       style={{
                         borderColor:
                           q.customer_response.decision === "accept"
-                            ? "rgba(16,185,129,0.28)"
-                            : "rgba(248,113,113,0.28)",
+                            ? "rgba(16,185,129,0.35)"
+                            : "rgba(248,113,113,0.35)",
                         background:
                           q.customer_response.decision === "accept"
                             ? "rgba(16,185,129,0.08)"
                             : "rgba(248,113,113,0.08)",
                       }}
                     >
-                      <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
+                      <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-gray-900 dark:text-white">
                         <MessageCircle className="h-3 w-3" />
                         Client{" "}
                         {q.customer_response.decision === "accept" ? "accepted" : "declined"}
                         {q.customer_response.responded_by && (
-                          <span className="font-normal normal-case tracking-normal text-white/40">
+                          <span className="font-normal normal-case tracking-normal text-gray-500 dark:text-white/50">
                             from {q.customer_response.responded_by}
                           </span>
                         )}
                       </p>
                       {q.customer_response.message && (
-                        <p className="mt-1.5 text-[11px] leading-relaxed text-white/70 whitespace-pre-wrap break-words">
+                        <p className="mt-1.5 text-[11px] leading-relaxed text-gray-800 dark:text-white/80 whitespace-pre-wrap break-words">
                           {q.customer_response.message}
                         </p>
                       )}
@@ -643,15 +651,15 @@ export default function QuoteOpsPanel({
                 <button
                   onClick={() => fetchQuotes({ status, pageNum: page - 1 })}
                   disabled={page === 1 || loading}
-                  className="px-3 py-1.5 text-[11px] text-white/40 hover:text-white disabled:opacity-30 transition-colors"
+                  className="px-3 py-1.5 text-[11px] text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
                 >
                   ← Prev
                 </button>
-                <span className="text-[10px] text-white/30">Page {page} of {Math.ceil(total / 20)}</span>
+                <span className="text-[10px] text-gray-500 dark:text-white/40">Page {page} of {Math.ceil(total / 20)}</span>
                 <button
                   onClick={() => fetchQuotes({ status, pageNum: page + 1 })}
                   disabled={quotes.length < 20 || loading}
-                  className="px-3 py-1.5 text-[11px] text-white/40 hover:text-white disabled:opacity-30 transition-colors"
+                  className="px-3 py-1.5 text-[11px] text-gray-600 dark:text-white/50 hover:text-gray-900 dark:hover:text-white disabled:opacity-30 transition-colors"
                 >
                   Next →
                 </button>

@@ -32,8 +32,8 @@ function PoolCard({ pool }: { pool: Pool }) {
     <div className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-sm hover:border-amber-300 transition-all">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center shrink-0">
-            <Target className="w-4 h-4 text-indigo-600" />
+          <div className="w-9 h-9 rounded-lg bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 flex items-center justify-center shrink-0">
+            <Target className="w-4 h-4 text-brand" />
           </div>
           <div className="min-w-0">
             <h3 className="text-sm font-semibold text-gray-900 truncate">{pool.title}</h3>
@@ -52,7 +52,7 @@ function PoolCard({ pool }: { pool: Pool }) {
           <span>of {formatKsh(pool.target_amount)} · {pct}%</span>
         </div>
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all duration-700 ${pct >= 100 ? "bg-green-500" : "bg-indigo-500"}`}
+          <div className={`h-full rounded-full transition-all duration-700 ${pct >= 100 ? "bg-green-500" : "bg-brand"}`}
             style={{ width: `${pct}%` }} />
         </div>
       </div>
@@ -77,7 +77,7 @@ function PoolCard({ pool }: { pool: Pool }) {
           {copied ? <><CheckCircle className="w-3.5 h-3.5 text-green-500" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy Link</>}
         </button>
         <Link href={`/corporate/pool/${pool.slug ?? pool.id}`} target="_blank"
-          className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 hover:border-indigo-300 text-xs font-semibold text-gray-700 rounded-lg transition-all">
+          className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 hover:border-brand/40 text-xs font-semibold text-gray-700 rounded-lg transition-all">
           <ExternalLink className="w-3.5 h-3.5" /> View
         </Link>
       </div>
@@ -126,19 +126,19 @@ function CreatePoolModal({ onClose, onCreated }: { onClose: () => void; onCreate
             <label className="block text-xs font-semibold text-gray-700 mb-1.5">Pool Title *</label>
             <input required value={title} onChange={e => setTitle(e.target.value)}
               placeholder="e.g. Year-End Gift for Sarah"
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/50" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Recipient Name *</label>
               <input required value={recipient} onChange={e => setRecipient(e.target.value)}
                 placeholder="Jane Doe"
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/50" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Occasion *</label>
               <select value={occasion} onChange={e => setOccasion(e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-brand/50">
                 {["birthday","work_anniversary","farewell","new_hire","holiday","promotion","custom"].map(o => (
                   <option key={o} value={o}>{o.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</option>
                 ))}
@@ -149,22 +149,22 @@ function CreatePoolModal({ onClose, onCreated }: { onClose: () => void; onCreate
             <label className="block text-xs font-semibold text-gray-700 mb-1.5">Description</label>
             <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2}
               placeholder="Optional message shown to contributors"
-              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand/50" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Target (KES) *</label>
               <input required type="number" min={500} value={target} onChange={e => setTarget(Number(e.target.value))}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/50" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-700 mb-1.5">Deadline</label>
               <input type="date" value={deadline} onChange={e => setDeadline(e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand/50" />
             </div>
           </div>
           <button type="submit" disabled={submitting}
-            className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
+            className="w-full py-2.5 bg-brand hover:bg-brand-dark text-white font-bold text-sm rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50">
             {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Target className="w-4 h-4" />}
             {submitting ? "Creating…" : "Create Pool & Get Share Link"}
           </button>
@@ -205,7 +205,7 @@ export default function GiftPoolsTab() {
           <p className="text-sm text-gray-500 mt-0.5">Group contributions for team and client gifts</p>
         </div>
         <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors">
+          className="flex items-center gap-1.5 px-4 py-2 bg-brand hover:bg-brand-dark text-white text-sm font-semibold rounded-lg transition-colors">
           <Plus className="w-4 h-4" /> New Pool
         </button>
       </div>
@@ -213,7 +213,7 @@ export default function GiftPoolsTab() {
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: "Active Pools",   val: loading ? "—" : String(active),              icon: Target,      bg: "bg-indigo-50 text-indigo-600" },
+          { label: "Active Pools",   val: loading ? "—" : String(active),              icon: Target,      bg: "bg-rose-50 text-brand" },
           { label: "Total Raised",   val: loading ? "—" : formatKsh(totalRaised),      icon: DollarSign,  bg: "bg-green-50 text-green-600" },
           { label: "Total Pools",    val: loading ? "—" : String(pools.length),         icon: Gift,        bg: "bg-amber-50 text-amber-600" },
         ].map(k => (
@@ -235,13 +235,13 @@ export default function GiftPoolsTab() {
         </div>
       ) : pools.length === 0 ? (
         <div className="flex flex-col items-center py-20 bg-white border border-gray-200 rounded-xl">
-          <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-center mb-3">
-            <Target className="w-6 h-6 text-indigo-400" />
+          <div className="w-12 h-12 bg-rose-50 border border-rose-100 rounded-xl flex items-center justify-center mb-3">
+            <Target className="w-6 h-6 text-brand" />
           </div>
           <h3 className="font-semibold text-gray-800 mb-1">No pools yet</h3>
           <p className="text-sm text-gray-400 mb-5 text-center max-w-xs">Create a gift pool and share the link — colleagues contribute towards a shared gift.</p>
           <button onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors">
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-brand hover:bg-brand-dark text-white text-sm font-semibold rounded-lg transition-colors">
             <Plus className="w-4 h-4" /> Create First Pool
           </button>
         </div>
