@@ -13,6 +13,7 @@ import MobileTopBar from "@/components/layout/MobileTopBar";
 import GiftChatWidget from "@/components/ai/GiftChatWidget";
 import MoodPresenceToast from "@/components/ui/MoodPresenceToast";
 import PWAInstallPrompt from "@/components/pwa/PWAInstallPrompt";
+import CorporateBottomNav from "@/components/corporate/dashboard/CorporateBottomNav";
 import { createClient } from "@/lib/supabase-browser";
 import { isGuest } from "@/lib/guest";
 
@@ -84,13 +85,15 @@ export default function LayoutWrapper({
 
     return (
       <>
-        <main className="flex-1 relative z-0">
+        <main className="flex-1 relative z-0 pb-20 md:pb-0">
           {children}
           {!isAdmin && <FloatingThemeToggle />}
           {!isAdmin && !isPortal && <WhatsAppFloat />}
           {!isAdmin && !isPortal && <GiftChatWidget />}
         </main>
         {legalStrip && <LegalStrip kraPin={kraPin ?? null} regNo={regNo ?? null} />}
+        {/* Corporate mobile bottom nav — mirrors the main platform nav for corporate context */}
+        {!isAdmin && <CorporateBottomNav />}
       </>
     );
   }

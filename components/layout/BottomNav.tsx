@@ -29,7 +29,7 @@ const TABS: Tab[] = [
 ];
 
 const CHIP_BASE =
-  "flex-1 min-w-0 flex flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+  "flex-1 min-w-0 flex flex-col items-center justify-center gap-1 rounded-2xl px-1 py-2.5 min-h-[48px] transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
 const CHIP_IDLE =
   "bg-gray-100/80 dark:bg-white/[0.06] text-brand-muted hover:text-brand hover:-translate-y-0.5";
 const CHIP_ACTIVE =

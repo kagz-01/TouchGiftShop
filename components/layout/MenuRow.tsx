@@ -21,7 +21,7 @@ export function MenuRow({
       role="menuitem"
       href={href}
       onClick={onNavigate}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors"
+      className="flex items-center gap-3 px-3 py-3 rounded-xl min-h-[48px] text-sm font-semibold text-brand-muted hover:text-brand hover:bg-brand/5 transition-colors"
     >
       <span className="text-brand shrink-0">{icon}</span>
       <span className="flex-1">{label}</span>

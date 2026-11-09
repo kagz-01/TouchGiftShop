@@ -1666,3 +1666,25 @@ position: absolute; opacity: 0; color: var(--gcface-accent, #e2bd66); pointer-ev
   background: currentColor;
   flex-shrink: 0;
 }
+
+/* ── Mobile UX Utilities ─────────────────────────────────────────────────────
+   Hide scrollbar while preserving scroll functionality on horizontal carousels
+   and category rails. Improves "Show, Don't Tell" UI on mobile. */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
+/* Snap-scroll horizontal carousel — peek effect shows 1.25 cards */
+.snap-x-scroll {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.snap-x-scroll > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}

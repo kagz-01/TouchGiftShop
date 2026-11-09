@@ -54,7 +54,8 @@ export default function MobileTopBar() {
   }, [menuOpen]);
 
   // The shop is a focused money surface with its own top row — don't stack bars.
-  if (pathname.startsWith("/shop")) return null;
+  // Also hide on corporate side — CorporateHeader handles that chrome.
+  if (pathname.startsWith("/shop") || pathname.startsWith("/corporate")) return null;
 
   return (
     <div
@@ -90,7 +91,7 @@ export default function MobileTopBar() {
           aria-expanded={menuOpen}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           className={cn(
-            "relative shrink-0 flex items-center justify-center w-9 h-9 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
+            "relative shrink-0 flex items-center justify-center w-11 h-11 rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
             menuOpen
               ? "bg-brand text-white shadow-ribbon"
               : "text-brand-muted hover:text-brand hover:bg-brand/5"
@@ -110,7 +111,7 @@ export default function MobileTopBar() {
         <Link
           href="/account"
           aria-label="Your profile"
-          className="shrink-0 flex items-center justify-center w-9 h-9 rounded-full bg-gradient-brand text-white shadow-ribbon font-display font-bold text-sm transition-transform active:scale-95"
+          className="shrink-0 flex items-center justify-center w-11 h-11 rounded-full bg-gradient-brand text-white shadow-ribbon font-display font-bold text-sm transition-transform active:scale-95"
         >
           T
         </Link>
