@@ -5,7 +5,7 @@ import ShopFilterBar from "@/components/home/ShopFilterBar";
 import { ShopRefineRail, ShopBottomBar } from "@/components/shop/ShopMobileFilters";
 import ShopHeaderActions from "@/components/shop/ShopHeaderActions";
 import { ProductGridSkeleton } from "@/components/ui/Skeletons";
-import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag, ChevronRight, X, Layers } from "lucide-react";
+import { Sparkles, ArrowLeft, Zap, Users, ShoppingBag, ChevronRight, X, Layers, Building2 } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -316,6 +316,37 @@ export default async function ShopPage({
           <Suspense fallback={null}>
             <ShopFilterBar />
           </Suspense>
+        </div>
+      </div>
+
+      {/* ── Corporate B2B Wholesale Intercept ── */}
+      <div className="page-container-capped pt-2 pb-4">
+        <div className="p-4 rounded-2xl border border-brand/20 bg-brand/[0.04] dark:bg-brand/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center shrink-0 shadow-sm">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
+                  Corporate & Teams
+                </span>
+                <span className="text-xs font-bold text-gray-900 dark:text-white">
+                  Ordering 10+ gifts or custom team merchandise?
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-zinc-400 mt-0.5">
+                Unlock 10%–25% wholesale volume discounts, free logo branding proofs, and KRA eTIMS invoices.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/corporate/catalog"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-deep text-white font-bold text-xs shrink-0 shadow-sm transition-all min-h-[44px]"
+          >
+            <span>Explore B2B Catalog & Rates</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
 

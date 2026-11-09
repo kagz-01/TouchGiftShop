@@ -448,8 +448,8 @@ export default async function ProductPage({
 
             {/* Corporate Bulk Awareness Banner */}
             <Link
-              href={`/corporate/catalog?search=${encodeURIComponent(product.name)}`}
-              className="group flex items-center gap-3.5 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white/5 dark:to-white/3 border border-slate-700/60 dark:border-white/10 hover:border-amber-500/40 rounded-2xl p-3.5 transition-all"
+              href={`/corporate/catalog?q=${encodeURIComponent(product.name)}`}
+              className="group flex items-center gap-3.5 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white/5 dark:to-white/3 border border-slate-700/60 dark:border-white/10 hover:border-amber-500/40 rounded-2xl p-3.5 transition-all min-h-[44px]"
             >
               <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
                 <span className="text-xl">🏢</span>

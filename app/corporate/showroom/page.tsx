@@ -26,9 +26,105 @@ type Product = {
   in_stock: boolean;
 };
 
+const SHOWROOM_PRESETS: Product[] = [
+  {
+    id: "preset-polo-01",
+    name: "Executive Piqué Corporate Polo Shirt",
+    slug: "executive-pique-polo",
+    price: 1850,
+    image_url: "/corprate-intro/jearsy.webp",
+    description: "220 GSM combed piqué cotton with reinforced twin-needle stitching and collar stays. Engineered for daily corporate wear, client summits, and sales team kits.",
+    category: "Polos & Apparel",
+    in_stock: true,
+  },
+  {
+    id: "preset-caps-02",
+    name: "Structured 6-Panel Brushed Twill Cap",
+    slug: "corporate-brushed-twill-cap",
+    price: 950,
+    image_url: "/corprate-intro/caps.webp",
+    description: "Heavy brushed cotton twill with pre-curved peak, embroidered eyelets, and adjustable brass buckle closure. 3D embroidery ready.",
+    category: "Polos & Apparel",
+    in_stock: true,
+  },
+  {
+    id: "preset-backpack-03",
+    name: "Executive Tech Transit Laptop Backpack",
+    slug: "executive-transit-backpack",
+    price: 3400,
+    image_url: "/corprate-intro/bags.webp",
+    description: "Water-repellent ballistic weave with padded 15.6\" shockproof laptop sleeve, hidden RFID security pocket, and ergonomic air-mesh shoulder harness.",
+    category: "Bags & Merchandise",
+    in_stock: true,
+  },
+  {
+    id: "preset-hamper-04",
+    name: "Prestige Executive Welcome Kit",
+    slug: "prestige-executive-welcome-kit",
+    price: 4800,
+    image_url: "/corprate-intro/3-luxury-gifts-in-1-box.webp",
+    description: "Curated 3-in-1 corporate onboarding box: thermal vacuum flask, vegan leather diary, and matching weighted rollerball pen nestled in custom EVA foam.",
+    category: "Gift Sets",
+    in_stock: true,
+  },
+  {
+    id: "preset-luxury-05",
+    name: "Grand Reserve Corporate Hamper Box",
+    slug: "grand-reserve-hamper-box",
+    price: 6500,
+    image_url: "/corprate-intro/Luxury-Packaging_3.webp",
+    description: "Rigid magnetic closure presentation box with foil debossing, curated artisanal Kenyan coffee, gourmet treats, and keepsake tumblers.",
+    category: "Gift Sets",
+    in_stock: true,
+  },
+];
+
+const SHOWROOM_CATEGORIES = [
+  { id: "all", label: "All Brandables" },
+  { id: "apparel", label: "Polos & Apparel" },
+  { id: "bags", label: "Bags & Gear" },
+  { id: "hampers", label: "Gift Sets" },
+];
+
+function getBrandingMethod(cat?: string, name?: string) {
+  const c = (cat || "").toLowerCase();
+  const n = (name || "").toLowerCase();
+  if (c.includes("apparel") || n.includes("polo") || n.includes("cap") || n.includes("shirt")) {
+    return {
+      technique: "Front Left Chest 3D Embroidery & Screen Print",
+      placement: "Left Chest (10cm) · Right Sleeve · Upper Back Neck",
+      leadTime: "3–5 Days for Nairobi Dispatch",
+      moq: "12 units"
+    };
+  }
+  if (c.includes("bag") || n.includes("backpack")) {
+    return {
+      technique: "High-Definition Heat Transfer & Leather Patch Deboss",
+      placement: "Center Front Pocket · Top Flap",
+      leadTime: "3–5 Days for Nairobi Dispatch",
+      moq: "10 units"
+    };
+  }
+  if (c.includes("drinkware") || n.includes("tumbler") || n.includes("flask") || n.includes("bottle")) {
+    return {
+      technique: "360° Rotary Laser Engraving & UV Full Color",
+      placement: "Vertical Body (14cm) · Horizontal Band",
+      leadTime: "24–48 Hours Fast Track Available",
+      moq: "12 units"
+    };
+  }
+  return {
+    technique: "Precision Laser Engraving & Gold/Silver Foil Stamp",
+    placement: "Custom Presentation Box Faceplate",
+    leadTime: "2–4 Days for Nairobi Dispatch",
+    moq: "10 units"
+  };
+}
+
 export default function VirtualShowroom() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<Product[]>(SHOWROOM_PRESETS);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [loading, setLoading] = useState(false);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [viewAngle, setViewAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(false);
@@ -38,13 +134,27 @@ export default function VirtualShowroom() {
     fetch("/api/products?limit=16")
       .then((r) => r.json())
       .then((d) => {
-        setProducts(d.products || []);
-        setLoading(false);
+        if (d.products && d.products.length > 0) {
+          setAllProducts([...SHOWROOM_PRESETS, ...d.products]);
+        }
       })
-      .catch(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
-  const product = products[selectedIdx];
+  const filteredProducts = allProducts.filter((p) => {
+    if (selectedCategory === "all") return true;
+    const cat = (p.category || "").toLowerCase();
+    const name = (p.name || "").toLowerCase();
+    if (selectedCategory === "apparel") return cat.includes("apparel") || name.includes("polo") || name.includes("cap");
+    if (selectedCategory === "bags") return cat.includes("bag") || name.includes("backpack") || name.includes("bag");
+    if (selectedCategory === "hampers") return cat.includes("gift-set") || cat.includes("sets") || name.includes("kit") || name.includes("hamper");
+    return true;
+  });
+
+  const products = filteredProducts.length > 0 ? filteredProducts : allProducts;
+  const product = products[selectedIdx] || products[0];
+
+  const branding = getBrandingMethod(product?.category, product?.name);
 
   const toggleRotate = () => {
     if (isRotating) {
@@ -99,17 +209,38 @@ export default function VirtualShowroom() {
               </h1>
             </div>
             <p className="text-gray-600 dark:text-zinc-400 mt-0.5">
-              Inspect build quality, materials, and request instant digital logo proofs before placing bulk orders.
+              Inspect build quality, embroidery/branding zones, and request instant digital proofs before placing bulk orders.
             </p>
           </div>
 
           <Link
             href="/corporate/build"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand hover:bg-brand-deep text-white font-bold text-xs shadow-sm transition-all shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand hover:bg-brand-deep text-white font-bold text-xs shadow-sm transition-all shrink-0 min-h-[44px]"
           >
             <Sparkles className="w-3.5 h-3.5" />
             Build Custom Hamper Pack
           </Link>
+        </div>
+
+        {/* Category Filter Strip */}
+        <div className="max-w-6xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar pt-3">
+          {SHOWROOM_CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => {
+                setSelectedCategory(cat.id);
+                setSelectedIdx(0);
+                setViewAngle(0);
+              }}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all min-h-[38px] ${
+                selectedCategory === cat.id
+                  ? "bg-brand text-white shadow-xs font-bold"
+                  : "bg-white dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-zinc-700 hover:border-brand/40"
+              }`}
+            >
+              {cat.label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -302,15 +433,18 @@ export default function VirtualShowroom() {
                     </p>
                   )}
 
-                  {/* Highlights */}
+                  {/* Branding Specs Box */}
                   <div className="space-y-2 border-t border-gray-100 dark:border-white/10 pt-3 text-xs text-gray-600 dark:text-zinc-300">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-                      <span>Laser Engraving & Screen Print Available</span>
+                    <div className="flex items-start gap-2">
+                      <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-bold text-gray-900 dark:text-white">{branding.technique}</p>
+                        <p className="text-[11px] text-gray-500 dark:text-zinc-400">{branding.placement}</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="w-4 h-4 text-sky-500 shrink-0" />
-                      <span>MOQ: 10 units for corporate wholesale rates</span>
+                      <span>MOQ: <strong>{branding.moq}</strong> · Lead time: <strong>{branding.leadTime}</strong></span>
                     </div>
                   </div>
 
@@ -327,11 +461,19 @@ export default function VirtualShowroom() {
                     </a>
 
                     <Link
+                      href={`/corporate/catalog?q=${encodeURIComponent(product.name)}`}
+                      className="w-full py-2.5 px-4 rounded-xl bg-brand hover:bg-brand-deep text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all min-h-[44px]"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      Calculate Volume Pricing & Proforma
+                    </Link>
+
+                    <Link
                       href={`/product/${product.slug}`}
                       className="w-full py-2.5 px-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-gray-800 dark:text-zinc-200 font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors min-h-[44px]"
                     >
                       <Eye className="w-4 h-4" />
-                      View Full Product & Buy Sample
+                      View Full Product & Buy Single Sample
                     </Link>
                   </div>
                 </div>

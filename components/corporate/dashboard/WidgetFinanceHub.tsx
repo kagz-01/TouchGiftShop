@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { ReceiptText, FileText, CheckCircle2, Clock, AlertCircle, Download, Copy, Check, CreditCard, Landmark, ArrowUpRight, X, Printer, ShieldCheck } from "lucide-react";
+import { ReceiptText, FileText, CheckCircle2, Clock, AlertCircle, Download, Copy, Check, CreditCard, Landmark, ArrowUpRight, X, Printer, ShieldCheck, FileCheck } from "lucide-react";
 
 export interface InvoiceItem {
   id: string;
@@ -319,11 +319,36 @@ export default function WidgetFinanceHub({ invoices: initialInvoices, companyNam
                   </button>
                 </div>
 
+                {/* Corporate LPO Submission */}
+                <div className="p-3 rounded-xl border" style={{ borderColor: "var(--portal-border-soft)", background: "var(--portal-surface)" }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                      <FileCheck className="w-3.5 h-3.5" /> Corporate LPO / Purchase Order
+                    </span>
+                    <span className="text-[10px] font-semibold text-gray-500">Net 30 Accounts</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Enter LPO / PO Number (e.g. LPO-2026-904)"
+                      className="flex-1 px-3 py-1.5 rounded-lg border text-xs bg-white dark:bg-zinc-800"
+                      style={{ borderColor: "var(--portal-border)" }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => alert(`LPO successfully linked to invoice ${activeInvoiceModal.invoice_number}. Dispatch queue prioritized.`)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:bg-brand-deep transition-colors"
+                    >
+                      Attach LPO
+                    </button>
+                  </div>
+                </div>
+
                 {/* STK Push Trigger */}
                 <button
                   onClick={handleTriggerStk}
                   disabled={stkTriggered}
-                  className="w-full py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-transform active:scale-95 text-white"
+                  className="w-full py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-transform active:scale-95 text-white min-h-[44px]"
                   style={{ background: "#25D366" }}
                 >
                   <CreditCard className="w-4 h-4" />

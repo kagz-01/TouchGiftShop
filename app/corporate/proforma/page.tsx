@@ -96,6 +96,12 @@ export default async function ProformaPage({
           ← Back to Corporate
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
+          <Link
+            href={`/corporate/dashboard?tab=orders&ref=${reference}`}
+            className="rounded-xl px-3.5 py-2 text-xs font-bold border border-black/15 bg-white hover:bg-black/5 text-black flex items-center gap-1.5 transition-colors shadow-sm"
+          >
+            <span>Proceed with LPO</span>
+          </Link>
           <a
             href={`https://wa.me/254183172111?text=${encodeURIComponent(
               `Hi TouchGift! Here is our Proforma Quote (${reference}) for ${company || "our organization"} (${qty} units, ${money(total)}). Please review our order.`
