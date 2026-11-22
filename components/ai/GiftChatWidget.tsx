@@ -148,7 +148,6 @@ export default function GiftChatWidget() {
           </div>
         ) : (
           <div className="relative">
-            <span className="absolute inset-0 rounded-full bg-brand animate-ping opacity-20" />
             <div className="relative w-14 h-14 bg-brand hover:bg-brand-dark text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
               <span className="text-xl">✨</span>
             </div>

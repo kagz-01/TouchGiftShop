@@ -20,9 +20,6 @@ export default function WhatsAppFloat() {
       className="fixed bottom-24 left-4 md:bottom-8 md:left-8 z-50 group"
       aria-label="Chat on WhatsApp"
     >
-      {/* Ping ring */}
-      <span className="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-20" />
-
       {/* Button */}
       <div className="relative w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
         <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
