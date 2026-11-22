@@ -157,11 +157,11 @@ const HERO_MOODS = MOODS.filter((m) =>
 
 const MOOD_TYPEWRITER_MESSAGES: Record<string, string[]> = {
   default:      ["Your ultimate gifting concierge.", "We curate the best gifts across Nairobi.", "Checkout securely on our partner stores.", "Wrapped beautifully. Delivered with care."],
-  corporate:    ["Professional gifts. On time. Every time. 🏢", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
-  flowers:      ["Love, wrapped and delivered today. 🌹", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
-  liquor:       ["Let the celebrations begin! 🥂", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
-  perfumes:     ["A sensory journey in every spray. ✨", "Authentic fragrances, delivered today.", "Leave a scent they'll never forget."],
-  hampers:      ["Picked the morning they receive it. 🍎", "Sun-ripened, hand-selected, never warehouse-fresh.", "Fruit at the exact moment it's sweetest."],
+  corporate:    ["Professional gifts. On time. Every time.", "Impeccable corporate gifting across Nairobi.", "Delivered with precision, branded with care."],
+  flowers:      ["Love, wrapped and delivered today.", "Because flowers say what words cannot.", "Make their heart skip — same-day romance delivered."],
+  liquor:       ["Let the celebrations begin!", "Pop. Confetti. Wow. Same-day delivery.", "Premium spirits that match the moment."],
+  perfumes:     ["A sensory journey in every spray.", "Authentic fragrances, delivered today.", "Leave a scent they'll never forget."],
+  hampers:      ["Picked the morning they receive it.", "Sun-ripened, hand-selected, never warehouse-fresh.", "Fruit at the exact moment it's sweetest."],
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -376,7 +376,7 @@ export function HeroCinematic() {
             {/* Features / Typewriter */}
             {moodMeta.id === "corporate" ? (
               <div className="flex items-center gap-2 text-xs md:text-sm text-white/90 font-medium tracking-tight">
-                <span className="text-[#34A853]">✓</span> Professional gifts. On time. Every time. 🏢
+                <span className="text-[#34A853]">✓</span> Professional gifts. On time. Every time.
               </div>
             ) : moodMeta.id === "romantic" || moodMeta.id === "flowers" ? (
               <div className="flex items-center gap-4 text-xs md:text-sm text-white/90 font-medium tracking-tight">
