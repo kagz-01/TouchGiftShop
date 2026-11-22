@@ -123,7 +123,7 @@ export default function BudgetMode({
               }`}
             >
               <p className="text-sm font-bold text-theme-heading">{preset.label}</p>
-              <p className="text-[10px] text-theme-muted uppercase tracking-wider">{preset.tier}</p>
+              <p className="text-[12px] text-theme-muted uppercase tracking-wider">{preset.tier}</p>
             </button>
           ))}
         </div>

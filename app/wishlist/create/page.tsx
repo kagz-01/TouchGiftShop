@@ -126,7 +126,7 @@ export default function CreateWishlistPage() {
                       }`}
                     >
                       <span className="text-2xl">{occ.emoji}</span>
-                      <span className="text-[10px] font-semibold text-gray-600 leading-tight">{occ.label}</span>
+                      <span className="text-[12px] font-semibold text-gray-600 leading-tight">{occ.label}</span>
                     </button>
                   ))}
                 </div>

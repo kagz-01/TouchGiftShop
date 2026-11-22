@@ -68,7 +68,7 @@ function MilestoneRing({ pct }: { pct: number }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
         <span className="text-3xl font-black text-white">{Math.round(Math.min(pct, 100))}%</span>
-        <span className="text-[10px] text-white/40 font-medium">funded</span>
+        <span className="text-[12px] text-white/40 font-medium">funded</span>
       </div>
     </div>
   );
@@ -318,7 +318,7 @@ export default function PoolManagePage() {
               >
                 {tab.icon} {tab.label}
                 {tab.id === "messages" && messages.length > 0 && (
-                  <span className="ml-1 text-[10px] bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded-full">{messages.length}</span>
+                  <span className="ml-1 text-[12px] bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded-full">{messages.length}</span>
                 )}
               </button>
             ))}
@@ -338,15 +338,15 @@ export default function PoolManagePage() {
               <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-6">
                 <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
                   <p className="text-base sm:text-lg font-bold text-rose-400 truncate">KES {totalRaised.toLocaleString()}</p>
-                  <p className="text-[10px] text-white/40 truncate">Raised</p>
+                  <p className="text-[12px] text-white/40 truncate">Raised</p>
                 </div>
                 <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
                   <p className="text-base sm:text-lg font-bold text-white truncate">{contributions.length}</p>
-                  <p className="text-[10px] text-white/40 truncate">Contributors</p>
+                  <p className="text-[12px] text-white/40 truncate">Contributors</p>
                 </div>
                 <div className="min-w-0 text-center p-2 sm:p-3 bg-black/30 rounded-2xl border border-white/5">
                   <p className="text-base sm:text-lg font-bold text-amber-400 truncate">KES {remaining.toLocaleString()}</p>
-                  <p className="text-[10px] text-white/40 truncate">To Go</p>
+                  <p className="text-[12px] text-white/40 truncate">To Go</p>
                 </div>
               </div>
 
@@ -640,7 +640,7 @@ export default function PoolManagePage() {
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-sm font-bold text-rose-400">KES {c.total.toLocaleString()}</p>
-                    <p className="text-[10px] text-white/30">
+                    <p className="text-[12px] text-white/30">
                       {pool.target_amount > 0 ? `${Math.round((c.total / pool.target_amount) * 100)}% of goal` : ""}
                     </p>
                   </div>
@@ -718,7 +718,7 @@ export default function PoolManagePage() {
                           <p className="text-xs font-semibold text-white">{name}</p>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-xs text-rose-400 font-bold">KES {c.amount.toLocaleString()}</span>
-                            <span className="text-[10px] text-white/30">{timeAgo}</span>
+                            <span className="text-[12px] text-white/30">{timeAgo}</span>
                           </div>
                         </div>
                         <p className="text-sm text-white/70 italic leading-relaxed">&ldquo;{c.message}&rdquo;</p>
@@ -801,11 +801,11 @@ export default function PoolManagePage() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-sm font-bold text-emerald-400">KES {c.amount.toLocaleString()}</p>
-                      <p className={`text-[10px] font-semibold ${
+                      <p className={`text-[12px] font-semibold ${
                         c.is_verified ? "text-emerald-400" : "text-amber-400"
                       }`}>{c.is_verified ? "✓ Verified" : "⏳ Pending"}</p>
                       {c.refund_status && (
-                        <p className={`text-[10px] font-semibold ${
+                        <p className={`text-[12px] font-semibold ${
                           c.refund_status === "completed" ? "text-blue-400" :
                           c.refund_status === "failed" ? "text-red-400" : "text-amber-400"
                         }`}>

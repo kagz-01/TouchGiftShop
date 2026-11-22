@@ -294,7 +294,7 @@ function LoginPage() {
                 <UserRound className="w-4 h-4" />
                 Continue as guest
               </button>
-              <p className="text-[11px] text-theme-body text-center -mt-2">
+              <p className="text-[12px] text-theme-body text-center -mt-2">
                 Browse &amp; order without an account — no points or saved history.
               </p>
             </div>

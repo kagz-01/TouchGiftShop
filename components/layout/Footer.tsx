@@ -140,12 +140,12 @@ export default function Footer() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Your email"
-                      className="flex-1 bg-gray-100/10 border border-gray-200 rounded-xl px-3 py-2 text-sm placeholder:text-gray-600 focus:outline-none focus:border-gold transition-colors"
+                      className="flex-1 bg-gray-100/10 border border-gray-200 rounded-xl px-3 py-2.5 text-sm placeholder:text-gray-600 focus:outline-none focus:border-gold transition-colors"
                       required
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-gold text-theme-heading rounded-xl font-semibold text-sm hover:bg-gold-light transition-colors"
+                      className="px-4 py-2.5 bg-gold text-theme-heading rounded-xl font-semibold text-sm hover:bg-gold-light transition-colors"
                     >
                       Sign Up
                     </button>
@@ -160,7 +160,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 rounded-full bg-gray-100/10 flex items-center justify-center text-on-theme hover:bg-gold/20 hover:text-gold transition-all"
+                    className="w-10 h-10 rounded-full bg-gray-100/10 flex items-center justify-center text-on-theme hover:bg-gold/20 hover:text-gold transition-all"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -174,12 +174,12 @@ export default function Footer() {
               <h4 className="text-xs text-gold font-semibold uppercase tracking-wider mb-3">
                 Quick Links
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {QUICK_LINKS.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-2.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -194,7 +194,7 @@ export default function Footer() {
                         window.dispatchEvent(new CustomEvent("touchgift:open-pwa-prompt"));
                       }
                     }}
-                    className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors text-left"
+                    className="inline-block py-2.5 text-sm text-on-theme hover:text-gold transition-colors text-left"
                   >
                     Install TouchGift App
                   </button>
@@ -207,14 +207,14 @@ export default function Footer() {
               <h4 className="text-xs text-gold font-semibold uppercase tracking-wider mb-3">
                 Support
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {SUPPORT_LINKS.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
-                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-2.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -228,12 +228,12 @@ export default function Footer() {
               <h4 className="text-xs text-gold font-semibold uppercase tracking-wider mb-3">
                 Policies
               </h4>
-              <ul className="space-y-2">
+              <ul className="space-y-0.5">
                 {POLICY_LINKS.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="inline-block py-1.5 text-sm text-on-theme hover:text-gold transition-colors"
+                      className="inline-block py-2.5 text-sm text-on-theme hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -259,9 +259,9 @@ export default function Footer() {
             </span>
             <span className="hidden sm:inline text-gold">•</span>
             <span className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold bg-gold/20 text-gold rounded px-1.5 py-0.5">M-PESA</span>
-              <span className="text-[10px] font-bold bg-brand/30 text-on-theme rounded px-1.5 py-0.5">VISA</span>
-              <span className="text-[10px] font-bold bg-gray-500/30 text-on-theme rounded px-1.5 py-0.5">Mastercard</span>
+              <span className="text-[12px] font-bold bg-gold/20 text-gold rounded px-1.5 py-0.5">M-PESA</span>
+              <span className="text-[12px] font-bold bg-brand/30 text-on-theme rounded px-1.5 py-0.5">VISA</span>
+              <span className="text-[12px] font-bold bg-gray-500/30 text-on-theme rounded px-1.5 py-0.5">Mastercard</span>
               accepted
             </span>
             <span className="hidden sm:inline text-gold">•</span>
@@ -283,7 +283,7 @@ export default function Footer() {
                   registered business selling through it. Naming the entity is
                   not pedantry — it is what a card issuer's statement descriptor
                   and a consumer's chargeback both turn up against. */}
-              <p className="mt-1 text-[11px] text-on-theme/60">
+              <p className="mt-1 text-[12px] text-on-theme/60">
                 TouchGift is a storefront operated by {LEGAL_ENTITY}.
               </p>
             </div>

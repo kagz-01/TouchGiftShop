@@ -81,7 +81,7 @@ export default function CorporateHero({
               />
               <div>
                 <p className="font-display font-bold text-sm sm:text-base leading-tight text-[color:var(--corp-text)]">TouchGift</p>
-                <p className="text-[9px] sm:text-[10px] text-brand font-semibold uppercase tracking-wider">Corporate</p>
+                <p className="text-[12px] sm:text-[12px] text-brand font-semibold uppercase tracking-wider">Corporate</p>
               </div>
             </Link>
           </div>
@@ -152,7 +152,7 @@ export default function CorporateHero({
               centred pill */}
           <div className="flex items-center gap-3 mb-5">
             <span className="h-px w-10 bg-[color:var(--corp-hero-gold)]" />
-            <span className="text-[11px] font-bold uppercase tracking-[0.25em]" style={{ color: "var(--corp-hero-gold)" }}>
+            <span className="text-[12px] font-bold uppercase tracking-[0.25em]" style={{ color: "var(--corp-hero-gold)" }}>
               B2B Gifting, Reinvented
             </span>
           </div>
@@ -207,7 +207,7 @@ export default function CorporateHero({
             >
               <s.icon className="w-5 h-5" style={{ color: "var(--corp-hero-gold)" }} />
               <span className="font-bold text-sm" style={{ color: "var(--corp-hero-text)" }}>{s.title}</span>
-              <span className="text-[11px] leading-snug" style={{ color: "var(--corp-hero-muted)" }}>{s.note}</span>
+              <span className="text-[12px] leading-snug" style={{ color: "var(--corp-hero-muted)" }}>{s.note}</span>
             </div>
           ))}
         </motion.div>
@@ -221,7 +221,7 @@ export default function CorporateHero({
         >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--corp-hero-gold)" }}>
+              <p className="text-[12px] font-bold uppercase tracking-[0.2em]" style={{ color: "var(--corp-hero-gold)" }}>
                 Trusted by Kenya&apos;s Top HR & Procurement Teams
               </p>
               <p className="text-xs text-[color:var(--corp-hero-muted)] mt-0.5">
@@ -298,7 +298,7 @@ export default function CorporateHero({
               <div className="flex items-start justify-between gap-3 mb-4">
                 <h3 className="font-display text-xl font-bold text-[color:var(--corp-text)]">{c.title}</h3>
                 <span
-                  className="shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border"
+                  className="shrink-0 text-[12px] font-bold uppercase tracking-wider px-2 py-1 rounded-full border"
                   style={
                     c.state === "live"
                       ? {
@@ -380,12 +380,12 @@ export default function CorporateHero({
               <span className="text-2xl sm:text-3xl shrink-0 mt-0.5" aria-hidden>{cat.emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-[color:var(--corp-text)] text-sm truncate">{cat.label}</p>
-                <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-0.5 leading-snug">{cat.blurb}</p>
+                <p className="text-[color:var(--corp-text-muted)] text-[12px] mt-0.5 leading-snug">{cat.blurb}</p>
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[color:var(--corp-accent)]/12 text-[color:var(--corp-accent-soft)]">
+                  <span className="text-[12px] font-bold px-2 py-0.5 rounded-full bg-[color:var(--corp-accent)]/12 text-[color:var(--corp-accent-soft)]">
                     Personalisable
                   </span>
-                  <span className="text-[10px] text-[color:var(--corp-text-muted)] whitespace-nowrap">
+                  <span className="text-[12px] text-[color:var(--corp-text-muted)] whitespace-nowrap">
                     MOQ {cat.moq}
                   </span>
                 </div>
@@ -406,7 +406,7 @@ export default function CorporateHero({
             <Layers className="w-8 h-8 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] transition-colors" />
             <div>
               <p className="font-bold text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text)] text-sm transition-colors">View All Products</p>
-              <p className="text-[color:var(--corp-text-muted)] text-[11px] mt-1">170+ brandable items</p>
+              <p className="text-[color:var(--corp-text-muted)] text-[12px] mt-1">170+ brandable items</p>
             </div>
             <ArrowRight className="w-4 h-4 text-[color:var(--corp-text-muted)] group-hover:text-[color:var(--corp-text-muted)] group-hover:translate-x-1 transition-all" />
           </motion.a>
@@ -465,7 +465,7 @@ export default function CorporateHero({
         <div className="rounded-3xl border border-dashed border-[color:var(--corp-border-str)] bg-[color:var(--corp-surface)] p-6 sm:p-10">
           <div className="flex flex-col sm:flex-row sm:items-center gap-6">
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)] mb-2">
+              <p className="text-[12px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)] mb-2">
                 {TOUCHLINE_BRIDGE.eyebrow}
               </p>
               <h3 className="font-display text-xl sm:text-2xl font-bold text-[color:var(--corp-text)] mb-2">

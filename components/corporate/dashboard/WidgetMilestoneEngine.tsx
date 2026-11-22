@@ -198,7 +198,7 @@ export default function WidgetMilestoneEngine({ milestones: initialMilestones, c
 
                     {/* Occasion badge */}
                     <span
-                      className="px-2.5 py-1 rounded-md text-[10px] font-bold inline-flex items-center gap-1 shrink-0 uppercase tracking-wider"
+                      className="px-2.5 py-1 rounded-md text-[12px] font-bold inline-flex items-center gap-1 shrink-0 uppercase tracking-wider"
                       style={{
                         background: "var(--portal-gold-tint)",
                         color: "var(--portal-gold)",
@@ -212,13 +212,13 @@ export default function WidgetMilestoneEngine({ milestones: initialMilestones, c
                   {/* Date & budget breakdown */}
                   <div className="mt-3 p-2.5 rounded-lg text-xs space-y-1.5" style={{ background: "var(--portal-surface)", border: "1px solid var(--portal-border-soft)" }}>
                     <div className="flex justify-between items-center">
-                      <span className="text-[11px]" style={{ color: "var(--portal-text-muted)" }}>Event Date</span>
+                      <span className="text-[12px]" style={{ color: "var(--portal-text-muted)" }}>Event Date</span>
                       <span className="font-semibold" style={{ color: "var(--portal-text)" }}>
                         {item.date} ({item.daysLeft} days away)
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[11px]" style={{ color: "var(--portal-text-muted)" }}>Allocated Tier</span>
+                      <span className="text-[12px]" style={{ color: "var(--portal-text-muted)" }}>Allocated Tier</span>
                       <span className="font-bold" style={{ color: "var(--portal-accent)" }}>
                         {item.recommendedTier} · KES {item.tierCost.toLocaleString()}
                       </span>
@@ -229,11 +229,11 @@ export default function WidgetMilestoneEngine({ milestones: initialMilestones, c
                 {/* Bottom Action */}
                 <div className="mt-4 pt-3 flex items-center justify-between border-t" style={{ borderColor: "var(--portal-border-soft)" }}>
                   {isCriticalPrompt && !isApproved ? (
-                    <span className="text-[11px] font-bold inline-flex items-center gap-1" style={{ color: "var(--portal-stop)" }}>
+                    <span className="text-[12px] font-bold inline-flex items-center gap-1" style={{ color: "var(--portal-stop)" }}>
                       <Clock className="w-3.5 h-3.5" /> 7-Day Action Window
                     </span>
                   ) : (
-                    <span className="text-[11px]" style={{ color: "var(--portal-text-faint)" }}>
+                    <span className="text-[12px]" style={{ color: "var(--portal-text-faint)" }}>
                       Auto-scheduled
                     </span>
                   )}

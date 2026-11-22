@@ -257,7 +257,7 @@ export default function TemplateLibrary({ onSelect, selectedId }: TemplateLibrar
               }`}
             >
               {template.popular && selectedId !== template.id && (
-                <span className="absolute top-3 right-3 bg-gold text-brand-deep text-[10px] font-bold px-2 py-0.5 shape-premium-button uppercase tracking-wider">
+                <span className="absolute top-3 right-3 bg-gold text-brand-deep text-[12px] font-bold px-2 py-0.5 shape-premium-button uppercase tracking-wider">
                   Popular
                 </span>
               )}
@@ -285,12 +285,12 @@ export default function TemplateLibrary({ onSelect, selectedId }: TemplateLibrar
               {template.items.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1">
                   {template.items.slice(0, 3).map((item, i) => (
-                    <span key={i} className="text-[10px] bg-white/10 dark:bg-white/5 text-theme-muted px-2 py-0.5 rounded-full">
+                    <span key={i} className="text-[12px] bg-white/10 dark:bg-white/5 text-theme-muted px-2 py-0.5 rounded-full">
                       {item.name}
                     </span>
                   ))}
                   {template.items.length > 3 && (
-                    <span className="text-[10px] bg-white/10 dark:bg-white/5 text-theme-muted px-2 py-0.5 rounded-full">
+                    <span className="text-[12px] bg-white/10 dark:bg-white/5 text-theme-muted px-2 py-0.5 rounded-full">
                       +{template.items.length - 3} more
                     </span>
                   )}

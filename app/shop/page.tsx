@@ -328,7 +328,7 @@ export default async function ShopPage({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
+                <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
                   Corporate & Teams
                 </span>
                 <span className="text-xs font-bold text-gray-900 dark:text-white">
@@ -362,7 +362,7 @@ export default async function ShopPage({
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light rounded-3xl p-8 flex items-center justify-between gap-6 flex-wrap">
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full translate-x-16 -translate-y-16" />
           <div className="relative z-10">
-            <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-1">Can't decide?</p>
+            <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-1">Can't decide?</p>
             <h3 className="font-display text-xl font-bold text-white mb-1">Let AI find the perfect gift.</h3>
             <p className="text-white/60 text-sm">Answer 3 quick questions — get a personalised list in seconds.</p>
           </div>

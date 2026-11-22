@@ -382,7 +382,7 @@ export default function HamperBuilder() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold truncate">{item.product.name}</p>
-                      <p className="text-[11px] text-brand-muted">{formatKsh(item.product.price)}</p>
+                      <p className="text-[12px] text-brand-muted">{formatKsh(item.product.price)}</p>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                       <button

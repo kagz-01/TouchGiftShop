@@ -307,7 +307,7 @@ export default function BrandStudio({
                   </p>
                   <div className="mt-3 flex items-center justify-center gap-2">
                     <div className="h-px flex-1 bg-white/30" />
-                    <span className="text-white/60 text-[10px] uppercase tracking-widest">with care</span>
+                    <span className="text-white/60 text-[12px] uppercase tracking-widest">with care</span>
                     <div className="h-px flex-1 bg-white/30" />
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export default function BrandStudio({
                       {companyName ? companyName.charAt(0).toUpperCase() : "T"}
                     </span>
                   )}
-                  <span className="text-white text-[9px] font-semibold uppercase tracking-wider">
+                  <span className="text-white text-[12px] font-semibold uppercase tracking-wider">
                     {companyName || "TouchGift"}
                   </span>
                 </div>

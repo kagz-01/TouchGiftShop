@@ -41,7 +41,7 @@ export default function VisitUs() {
           
           {/* Left Column: Concierge & Info */}
           <div className="flex flex-col h-full">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-brand mb-4">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.25em] text-brand mb-4">
               Gifting Concierge
             </h3>
             <h2 className="font-display text-4xl lg:text-5xl text-theme-heading mb-5 leading-[1.15]">
@@ -142,7 +142,7 @@ export default function VisitUs() {
 
           {/* Right Column: FAQs */}
           <div>
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-brand mb-6">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.25em] text-brand mb-6">
               Everything you need to know
             </h3>
             

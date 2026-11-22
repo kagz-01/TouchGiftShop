@@ -70,18 +70,18 @@ export default function ProductAIHelper({ productName, productId }: Props) {
 
           {noteText && (
             <div className="bg-white rounded-xl p-3 border border-surface-border">
-              <p className="text-[10px] text-gold font-semibold mb-1">Note for this gift:</p>
+              <p className="text-[12px] text-gold font-semibold mb-1">Note for this gift:</p>
               <p className="text-sm italic text-brand-deep">&ldquo;{noteText}&rdquo;</p>
               <div className="flex gap-2 mt-2">
                 <button
                   onClick={() => navigator.clipboard?.writeText(noteText)}
-                  className="text-[10px] text-brand hover:underline"
+                  className="text-[12px] text-brand hover:underline"
                 >
                   Copy
                 </button>
                 <Link
                   href={`/checkout?productId=${productId}&note=${encodeURIComponent(noteText)}`}
-                  className="text-[10px] text-gold hover:underline"
+                  className="text-[12px] text-gold hover:underline"
                 >
                   Attach to order →
                 </Link>

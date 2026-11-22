@@ -654,7 +654,7 @@ export default function CheckoutForm({
               </div>
               {senderPhoneError
                 ? <p className="text-xs text-red-500 mt-1.5">{senderPhoneError}</p>
-                : <p className="text-[11px] text-brand-muted mt-1.5">We auto-format common local numbers to the selected country code</p>
+                : <p className="text-[12px] text-brand-muted mt-1.5">We auto-format common local numbers to the selected country code</p>
               }
             </div>
           </div>
@@ -726,7 +726,7 @@ export default function CheckoutForm({
                       }`}
                     >
                       <p className="text-xs font-bold text-brand-deep">{addr.label}</p>
-                      <p className="text-[11px] text-brand-muted truncate">{addr.address_line1}, {addr.city}</p>
+                      <p className="text-[12px] text-brand-muted truncate">{addr.address_line1}, {addr.city}</p>
                     </button>
                   ))}
                 </div>
@@ -790,13 +790,13 @@ export default function CheckoutForm({
                       />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-brand-deep">{slot.name}</p>
-                        <p className="text-[11px] text-brand-muted">{slot.description}</p>
+                        <p className="text-[12px] text-brand-muted">{slot.description}</p>
                       </div>
                       {slot.extraFee > 0 && (
                         <span className="text-xs font-bold text-brand-deep">+{formatKsh(slot.extraFee)}</span>
                       )}
                       {slot.remainingSlots <= 5 && (
-                        <span className="text-[10px] font-bold text-orange-500">{slot.remainingSlots} left</span>
+                        <span className="text-[12px] font-bold text-orange-500">{slot.remainingSlots} left</span>
                       )}
                     </label>
                   ))}
@@ -842,7 +842,7 @@ export default function CheckoutForm({
           {/* Summary card */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm overflow-hidden">
             <div className="bg-gradient-to-br from-brand-dark to-brand px-6 py-5">
-              <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-1">Order summary</p>
+              <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-1">Order summary</p>
               <p className="font-display text-2xl font-bold text-white">{formatKsh(total)}</p>
               {deliveryZone && !usePinDrop && (
                 <p className="text-xs text-white/60 mt-0.5">incl. {formatKsh(deliveryZone.fee)} delivery</p>
@@ -939,7 +939,7 @@ export default function CheckoutForm({
               </div>
               <div className="flex-1">
                 <p className="text-xs font-semibold text-brand-deep capitalize">{loyaltyInfo.tier} Member</p>
-                <p className="text-[10px] text-brand-muted">
+                <p className="text-[12px] text-brand-muted">
                   {loyaltyInfo.discountPercent > 0
                     ? `${loyaltyInfo.discountPercent}% off every order`
                     : loyaltyInfo.ordersToNext > 0
@@ -1037,12 +1037,12 @@ export default function CheckoutForm({
                   <span className="text-brand-muted">KES {Math.min(walletBalance ?? 0, subtotal).toLocaleString()}</span>
                 </div>
                 {walletApply > 0 && total > 0 && (
-                  <p className="text-[11px] text-brand-muted">
+                  <p className="text-[12px] text-brand-muted">
                     Remaining <span className="font-bold text-brand-deep">{formatKsh(total)}</span> paid via {selectedPaymentMethod === 'card' ? 'Card' : selectedPaymentMethod === 'airtel' ? 'Airtel Money' : selectedPaymentMethod === 'bank' ? 'Bank Transfer' : 'M-Pesa'}
                   </p>
                 )}
                 {walletApply > 0 && total === 0 && (
-                  <p className="text-[11px] text-emerald-600 font-semibold">✓ Fully covered by wallet — no additional payment needed!</p>
+                  <p className="text-[12px] text-emerald-600 font-semibold">✓ Fully covered by wallet — no additional payment needed!</p>
                 )}
               </div>
             )}
@@ -1058,7 +1058,7 @@ export default function CheckoutForm({
                 <p className="text-sm font-semibold text-brand-deep">Redeem Points</p>
                 <span className="text-xs font-bold text-brand">{pointsBalance.toLocaleString()} pts</span>
               </div>
-              <p className="text-[11px] text-brand-muted">
+              <p className="text-[12px] text-brand-muted">
                 {POINTS_PER_KSH_REDEEM} pts = KSh 1 · min {MIN_REDEEM_POINTS} pts · max {maxPoints.toLocaleString()} pts this order
               </p>
               <div className="flex items-center gap-2">
@@ -1113,7 +1113,7 @@ export default function CheckoutForm({
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-5 space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold text-brand-deep">Select Payment Method</p>
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wide">
+              <span className="text-[12px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wide">
                 Instant Settlement
               </span>
             </div>
@@ -1129,10 +1129,10 @@ export default function CheckoutForm({
                       isSelected ? pm.activeBg : pm.bg
                     }`}
                   >
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded mb-1 ${pm.badge}`}>
+                    <span className={`text-[12px] font-bold px-2 py-0.5 rounded mb-1 ${pm.badge}`}>
                       {pm.label}
                     </span>
-                    <span className="text-[10px] text-brand-muted leading-tight font-medium">
+                    <span className="text-[12px] text-brand-muted leading-tight font-medium">
                       {pm.sublabel}
                     </span>
                   </button>
@@ -1140,7 +1140,7 @@ export default function CheckoutForm({
               })}
             </div>
             {/* All-methods disclosure */}
-            <p className="text-[10px] text-brand-muted text-center leading-relaxed pt-1">
+            <p className="text-[12px] text-brand-muted text-center leading-relaxed pt-1">
               All methods processed by <strong className="text-brand-deep">Paystack</strong> via our corporate account &mdash; <strong className="text-brand-deep">Touch Line Ltd</strong>
             </p>
           </div>
@@ -1163,7 +1163,7 @@ export default function CheckoutForm({
 
           {/* Corporate Transparency & Payment Disclosure */}
           <div className="p-4 bg-gray-50 border border-black/5 rounded-2xl space-y-2.5">
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider flex items-center justify-center gap-1.5">
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider flex items-center justify-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               Secured by Paystack
             </p>
@@ -1179,13 +1179,13 @@ export default function CheckoutForm({
               ].map(({ label, color }) => (
                 <span
                   key={label}
-                  className={`${color} text-white text-[9px] font-bold px-2 py-0.5 rounded`}
+                  className={`${color} text-white text-[12px] font-bold px-2 py-0.5 rounded`}
                 >
                   {label}
                 </span>
               ))}
             </div>
-            <p className="text-[10px] text-brand-muted text-center leading-relaxed">
+            <p className="text-[12px] text-brand-muted text-center leading-relaxed">
               Payments processed via our corporate account: <strong className="text-brand-deep">Touch Line Ltd</strong>
             </p>
           </div>

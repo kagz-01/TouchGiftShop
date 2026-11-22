@@ -110,7 +110,7 @@ export default function CorporateHeader({
         <div className="ml-auto flex items-center gap-4">
           {isDemo && availablePresets && onSelectPreset && (
             <div className="flex items-center gap-1.5 p-1 rounded-xl" style={{ background: "var(--corp-surface-2)", border: "1px solid var(--corp-border-soft)" }}>
-              <span className="text-[11px] font-semibold" style={{ color: "var(--corp-text-faint)" }}>
+              <span className="text-[12px] font-semibold" style={{ color: "var(--corp-text-faint)" }}>
                 Demo Client:
               </span>
               {(availablePresets || []).map(p => (

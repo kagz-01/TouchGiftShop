@@ -12,7 +12,7 @@ export default function ThemeToggle() {
       onClick={toggleTheme}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       className={`
-        relative w-14 h-7 rounded-full border transition-all duration-500 flex-shrink-0
+        relative w-14 h-7 rounded-full border before:content-[''] before:absolute before:-inset-2.5 transition-all duration-500 flex-shrink-0
         focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)]
         ${isDark
           ? "bg-gradient-to-r from-[#3D0A6B] to-[#6D1340] border-[#9B1B5A]/50 shadow-[0_0_12px_rgba(155,27,90,0.5)]"

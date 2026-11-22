@@ -52,7 +52,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
           </Link>
           <div>
             <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Your Orders</h1>
-            <p className="text-[11px] text-brand-muted mt-0.5">Track and manage your gift deliveries</p>
+            <p className="text-[12px] text-brand-muted mt-0.5">Track and manage your gift deliveries</p>
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                       <div className="flex justify-between items-start">
                         <div>
                           <span className={cn(
-                            "inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1",
+                            "inline-block text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1",
                             isFailed ? "bg-red-50 text-red-600" : isDelivered ? "bg-green-50 text-green-600" : "bg-brand/10 text-brand"
                           )}>
                             {STATUS_LABELS[order.status] ?? order.status}
@@ -144,7 +144,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                         </div>
                         <div className="text-right">
                            {order.pre_dispatch_photo_url && (
-                            <span className="bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span className="bg-green-50 text-green-700 text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1">
                               📸 Photo
                             </span>
                           )}

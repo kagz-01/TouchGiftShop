@@ -281,7 +281,7 @@ export default function CorporatePoolCreate() {
                       }`}
                     >
                       <p className="text-sm font-bold text-white/80">{tier.label}</p>
-                      <p className="text-[10px] text-white/50">{tier.range}</p>
+                      <p className="text-[12px] text-white/50">{tier.range}</p>
                     </button>
                   ))}
                 </div>
@@ -460,15 +460,15 @@ export default function CorporatePoolCreate() {
                 <div className="mt-4 flex items-center justify-center gap-6 text-sm">
                   <div className="text-center">
                     <p className="font-bold text-fuchsia-400">KSh {config.targetAmount.toLocaleString()}</p>
-                    <p className="text-[10px] text-white/50">Target</p>
+                    <p className="text-[12px] text-white/50">Target</p>
                   </div>
                   <div className="text-center">
                     <p className="font-bold text-white/80">KSh {config.minContribution}</p>
-                    <p className="text-[10px] text-white/50">Min</p>
+                    <p className="text-[12px] text-white/50">Min</p>
                   </div>
                   <div className="text-center">
                     <p className="font-bold text-white/80">{config.deadline || "TBD"}</p>
-                    <p className="text-[10px] text-white/50">Deadline</p>
+                    <p className="text-[12px] text-white/50">Deadline</p>
                   </div>
                 </div>
                 {config.companyMatch && (

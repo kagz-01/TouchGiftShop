@@ -222,7 +222,7 @@ function CorporateCheckoutContent() {
               className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               disabled={deliveryMethod === "csv" && csvPhones.length > 0}
             />
-            <div className="flex justify-between text-[10px] text-white/30 uppercase font-bold mt-3 tracking-wider">
+            <div className="flex justify-between text-[12px] text-white/30 uppercase font-bold mt-3 tracking-wider">
               <span>Min: 10</span>
               <div className="flex gap-3">
                 <span className={quantity >= 50 && quantity < 100 ? "text-emerald-400" : ""}>50+ (5%)</span>
@@ -352,14 +352,14 @@ function CorporateCheckoutContent() {
                 <span className="text-white/60 font-medium">Total Due</span>
                 <div className="text-right">
                   <span className="font-display text-3xl font-bold tracking-tight">KES {finalAmt.toLocaleString()}</span>
-                  <p className="text-[10px] text-white/40 uppercase tracking-wider mt-0.5">Inclusive of all taxes</p>
+                  <p className="text-[12px] text-white/40 uppercase tracking-wider mt-0.5">Inclusive of all taxes</p>
                 </div>
               </div>
             </div>
 
             {/* Settlement */}
             <div>
-              <label className="block text-[10px] font-bold text-white/40 uppercase tracking-wider mb-2">Settlement</label>
+              <label className="block text-[12px] font-bold text-white/40 uppercase tracking-wider mb-2">Settlement</label>
               <div className="flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4">
                 <CreditCard className="w-5 h-5 mt-0.5 shrink-0 text-emerald-400" />
                 <div>
@@ -400,7 +400,7 @@ function CorporateCheckoutContent() {
               </span>
             </button>
 
-            <p className="text-center text-[10px] text-white/30 uppercase tracking-widest flex items-center justify-center gap-2">
+            <p className="text-center text-[12px] text-white/30 uppercase tracking-widest flex items-center justify-center gap-2">
               <ShieldCheck className="w-3 h-3" /> Secured by Paystack Enterprise
             </p>
           </div>

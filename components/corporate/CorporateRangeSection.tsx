@@ -103,7 +103,7 @@ export default function CorporateRangeSection() {
               style={{ background: "var(--corp-surface)", borderColor: "var(--corp-border)" }}
             >
               <Icon className="w-3.5 h-3.5" style={{ color: "var(--corp-accent-soft)" }} />
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)]">
+              <span className="text-[12px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)]">
                 {current.tab}
               </span>
             </span>
@@ -146,7 +146,7 @@ export default function CorporateRangeSection() {
         )}
 
         {/* Categories — the "what fits" layer */}
-        <p className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)] mb-4">
+        <p className="text-[12px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)] mb-4">
           {current.moments ? "What fits this" : `All ${MERCH_CATEGORIES.length} categories`}
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -159,10 +159,10 @@ export default function CorporateRangeSection() {
             >
               <span className="text-2xl block mb-2" aria-hidden>{c.emoji}</span>
               <p className="font-bold text-sm text-[color:var(--corp-text)] truncate">{c.label}</p>
-              <p className="text-[11px] text-[color:var(--corp-text-muted)] leading-snug mt-1 line-clamp-2">
+              <p className="text-[12px] text-[color:var(--corp-text-muted)] leading-snug mt-1 line-clamp-2">
                 {c.blurb}
               </p>
-              <span className="inline-flex items-center gap-1 mt-3 text-[10px] font-bold text-[color:var(--corp-accent-soft)] opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="inline-flex items-center gap-1 mt-3 text-[12px] font-bold text-[color:var(--corp-accent-soft)] opacity-0 group-hover:opacity-100 transition-opacity">
                 Browse <ArrowRight className="w-3 h-3" />
               </span>
             </Link>

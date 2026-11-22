@@ -137,7 +137,7 @@ export default function PackCalculator({
             style={{ background: "var(--corp-surface)", borderColor: "var(--corp-border)" }}
           >
             <Sparkles className="w-3.5 h-3.5" style={{ color: "var(--corp-accent-soft)" }} />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)]">
+            <span className="text-[12px] font-bold uppercase tracking-widest text-[color:var(--corp-text-muted)]">
               Packs, not vague tiers
             </span>
           </div>
@@ -193,7 +193,7 @@ export default function PackCalculator({
             >
               <div className="flex items-start justify-between gap-3 mb-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
+                  <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
                     {p.eyebrow}
                   </p>
                   <h3 className="font-display text-2xl font-bold text-[color:var(--corp-text)] mt-1">
@@ -218,7 +218,7 @@ export default function PackCalculator({
                   / box
                 </span>
               </p>
-              <p className="mt-1 text-[11px] text-[color:var(--corp-text-muted)]">
+              <p className="mt-1 text-[12px] text-[color:var(--corp-text-muted)]">
                 MOQ {p.moq} boxes · {p.bestFor}
               </p>
 
@@ -238,7 +238,7 @@ export default function PackCalculator({
                 ))}
               </ul>
 
-              <p className="mt-4 border-t pt-3 text-[11px] italic leading-relaxed text-[color:var(--corp-text-muted)]" style={{ borderColor: "var(--corp-border)" }}>
+              <p className="mt-4 border-t pt-3 text-[12px] italic leading-relaxed text-[color:var(--corp-text-muted)]" style={{ borderColor: "var(--corp-border)" }}>
                 {p.outcome}
               </p>
             </button>
@@ -256,7 +256,7 @@ export default function PackCalculator({
           <div>
             <div className="flex items-center justify-between gap-3 mb-3">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
+                <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
                   Quantity
                 </p>
                 <p className="text-sm text-[color:var(--corp-text-muted)] mt-0.5">
@@ -264,7 +264,7 @@ export default function PackCalculator({
                 </p>
               </div>
               <span
-                className="rounded-full border px-3 py-1 text-[11px] font-bold"
+                className="rounded-full border px-3 py-1 text-[12px] font-bold"
                 style={{
                   borderColor: "var(--corp-border-str)",
                   color: quote.band.pct > 0 ? "var(--corp-accent-soft)" : "var(--corp-text-muted)",
@@ -319,7 +319,7 @@ export default function PackCalculator({
               {VOLUME_BANDS.map((band) => (
                 <span
                   key={`${band.min}-${band.max ?? "max"}`}
-                  className="rounded-full border px-2.5 py-1 text-[10px] font-semibold"
+                  className="rounded-full border px-2.5 py-1 text-[12px] font-semibold"
                   style={{
                     borderColor:
                       band.min === quote.band.min ? "var(--corp-accent)" : "var(--corp-border)",
@@ -336,7 +336,7 @@ export default function PackCalculator({
             </div>
 
             <div
-              className="mt-5 flex items-start gap-2 rounded-xl border border-dashed p-3 text-[11px] leading-relaxed text-[color:var(--corp-text-muted)]"
+              className="mt-5 flex items-start gap-2 rounded-xl border border-dashed p-3 text-[12px] leading-relaxed text-[color:var(--corp-text-muted)]"
               style={{ borderColor: "var(--corp-border-str)" }}
             >
               <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" style={{ color: "var(--corp-accent-soft)" }} />
@@ -356,14 +356,14 @@ export default function PackCalculator({
           >
             <div className="flex items-center justify-between gap-3 mb-4">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
+                <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-[color:var(--corp-text-muted)]">
                   Your estimate
                 </p>
                 <p className="font-display text-lg font-bold text-[color:var(--corp-text)]">
                   {pack.name} × {quote.qty}
                 </p>
               </div>
-              <span className="text-[11px] font-semibold text-[color:var(--corp-text-muted)]">
+              <span className="text-[12px] font-semibold text-[color:var(--corp-text-muted)]">
                 {formatKsh(quote.unitPrice)} / box
               </span>
             </div>
@@ -424,7 +424,7 @@ export default function PackCalculator({
                 <Send className="h-4 w-4" /> Request quote
               </button>
             </div>
-            <p className="mt-2 text-center text-[10px] text-[color:var(--corp-text-muted)]">
+            <p className="mt-2 text-center text-[12px] text-[color:var(--corp-text-muted)]">
               Proforma opens print-ready. Choose &ldquo;Save as PDF&rdquo; in the print dialog.
             </p>
           </div>
@@ -508,7 +508,7 @@ export default function PackCalculator({
                 )}
 
                 <div className="md:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <p className="text-[11px] text-[color:var(--corp-text-muted)]">
+                  <p className="text-[12px] text-[color:var(--corp-text-muted)]">
                     No payment now. We confirm stock, branding and delivery first.
                   </p>
                   <button

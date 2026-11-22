@@ -30,7 +30,7 @@ export default function Error({
           <pre className="whitespace-pre-wrap break-words text-[12px] bg-transparent p-0 m-0">{error?.message}</pre>
           <div className="mt-3">
             <p className="font-semibold mb-1">Stack trace:</p>
-            <pre className="whitespace-pre-wrap break-words text-[11px] bg-transparent p-0 m-0">{(error as any)?.stack ?? '—'}</pre>
+            <pre className="whitespace-pre-wrap break-words text-[12px] bg-transparent p-0 m-0">{(error as any)?.stack ?? '—'}</pre>
           </div>
         </div>
       )}

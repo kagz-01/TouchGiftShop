@@ -48,14 +48,14 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
             {hasSale && (
-              <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm">
+              <span className="bg-red-500 text-white text-[12px] font-bold px-2 py-1 rounded-lg shadow-sm">
                 SALE
               </span>
             )}
             {badges.map((badge) => (
               <span
                 key={badge.label}
-                className={`${badge.color} text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1`}
+                className={`${badge.color} text-[12px] font-bold px-2 py-1 rounded-lg shadow-sm flex items-center gap-1`}
               >
                 <span>{badge.emoji}</span>
                 {badge.label}
@@ -65,7 +65,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
 
           {/* Coming soon */}
           {product.is_coming_soon && (
-            <div className="absolute top-3 right-3 bg-brand-deep text-gold text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
+            <div className="absolute top-3 right-3 bg-brand-deep text-gold text-[12px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
               Coming soon
             </div>
           )}
@@ -105,7 +105,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
               {product.product_specs.slice(0, 3).map((spec) => (
                 <span
                   key={spec.spec_key}
-                  className="inline-flex items-center gap-0.5 text-[10px] bg-gray-50 border border-black/5 text-gray-500 rounded-full px-1.5 py-0.5"
+                  className="inline-flex items-center gap-0.5 text-[12px] bg-gray-50 border border-black/5 text-gray-500 rounded-full px-1.5 py-0.5"
                   title={`${spec.spec_key}: ${spec.spec_value}`}
                 >
                   {spec.icon && <span>{spec.icon}</span>}
@@ -127,19 +127,19 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
                 />
               ))}
               {product.color_variants!.length > 5 && (
-                <span className="text-[10px] text-gray-400 ml-0.5">+{product.color_variants!.length - 5}</span>
+                <span className="text-[12px] text-gray-400 ml-0.5">+{product.color_variants!.length - 5}</span>
               )}
             </div>
           )}
 
           <div className="flex items-center justify-between gap-2">
             {product.is_personalizable && (
-              <span className="text-[9px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
+              <span className="text-[12px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
                 ✏️ Custom
               </span>
             )}
             {product.size_variants && product.size_variants.length > 0 && (
-              <span className="text-[9px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full flex-shrink-0">
+              <span className="text-[12px] font-bold bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full flex-shrink-0">
                 {product.size_variants.length} sizes
               </span>
             )}
@@ -336,7 +336,7 @@ export default function ProductGridClient({
                     }
                     router.push(`${url.pathname}${url.search}`);
                   }}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
                     isActive
                       ? "bg-brand text-white border-brand shadow-brand/20"
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
@@ -375,7 +375,7 @@ export default function ProductGridClient({
                     }
                     router.push(`${url.pathname}${url.search}`);
                   }}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
                     isActive
                       ? "bg-brand text-white border-brand shadow-brand/20"
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
@@ -412,7 +412,7 @@ export default function ProductGridClient({
                     }
                     router.push(`${url.pathname}${url.search}`);
                   }}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] md:text-xs font-semibold rounded-full border transition-all shadow-sm hover:scale-105 ${
                     isActive
                       ? "bg-brand text-white border-brand shadow-brand/20"
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"

@@ -22,7 +22,7 @@ export default function CategorySuggestions({ category }: { category: string }) 
           >
             <span className="text-base group-hover:scale-110 transition-transform">{s.emoji}</span>
             <span>{s.label}</span>
-            <span className="text-[10px] text-brand-muted group-hover:text-white/70 hidden md:inline">
+            <span className="text-[12px] text-brand-muted group-hover:text-white/70 hidden md:inline">
               — {s.reason}
             </span>
           </Link>

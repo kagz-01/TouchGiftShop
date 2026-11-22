@@ -4,7 +4,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gradient-warm">
       <div className="page-container py-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-brand-muted hover:text-brand transition-colors py-2.5 -mt-2.5 mb-5">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>

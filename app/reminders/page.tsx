@@ -333,7 +333,7 @@ function RemindersDashboard() {
                           <div className="flex-1">
                             <div className="flex justify-between items-start">
                               <div>
-                                <span className="inline-block bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1">
+                                <span className="inline-block bg-brand/10 text-brand text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1">
                                   {sub.frequency} • {sub.delivery_day}s
                                 </span>
                                 <h3 className="font-display font-bold text-lg text-brand-deep leading-tight">

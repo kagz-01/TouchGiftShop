@@ -22,7 +22,7 @@ export default function WhiteLabelDashboard() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-brand text-white font-bold text-[10px] uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full bg-brand text-white font-bold text-[12px] uppercase tracking-wider">
                 Agency Partner Console
               </span>
               <span className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
@@ -65,7 +65,7 @@ export default function WhiteLabelDashboard() {
                 className="p-4 rounded-3xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#121B26] shadow-sm flex flex-col justify-between"
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-semibold text-gray-500 dark:text-zinc-400">
+                  <span className="text-[12px] font-semibold text-gray-500 dark:text-zinc-400">
                     {stat.label}
                   </span>
                   <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-white/5 flex items-center justify-center">
@@ -76,7 +76,7 @@ export default function WhiteLabelDashboard() {
                   <p className="font-display font-bold text-xl sm:text-2xl text-gray-900 dark:text-white">
                     {stat.value}
                   </p>
-                  <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
+                  <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1">
                     {stat.trend}
                   </p>
                 </div>
@@ -115,7 +115,7 @@ export default function WhiteLabelDashboard() {
                     <p className="font-bold text-gray-900 dark:text-white truncate">
                       {order.client}
                     </p>
-                    <p className="text-[11px] text-gray-500 dark:text-zinc-400 mt-0.5">
+                    <p className="text-[12px] text-gray-500 dark:text-zinc-400 mt-0.5">
                       {order.items} · <span className="opacity-80">{order.date}</span>
                     </p>
                   </div>
@@ -124,13 +124,13 @@ export default function WhiteLabelDashboard() {
                     <p className="font-bold text-gray-900 dark:text-white">
                       {formatKsh(order.amount)}
                     </p>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-bold">
+                    <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-bold">
                       +{formatKsh(order.com)} payout
                     </p>
                   </div>
 
                   <span
-                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${
+                    className={`px-2 py-0.5 rounded-md text-[12px] font-bold shrink-0 ${
                       order.status === "Delivered"
                         ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                         : "bg-amber-500/10 text-amber-700 dark:text-amber-400"
@@ -156,7 +156,7 @@ export default function WhiteLabelDashboard() {
                     {formatKsh(37800)}
                   </span>
                 </div>
-                <p className="text-[10px] text-gray-500 dark:text-zinc-400">
+                <p className="text-[12px] text-gray-500 dark:text-zinc-400">
                   Settled automatically via M-Pesa Paybill / Bank Transfer every 1st & 15th of the month.
                 </p>
               </div>

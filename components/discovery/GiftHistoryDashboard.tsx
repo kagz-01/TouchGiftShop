@@ -101,15 +101,15 @@ export default function GiftHistoryDashboard() {
       <div className="grid grid-cols-3 gap-2 sm:gap-3">
         <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
           <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{summaries.length}</p>
-          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Recipients</p>
+          <p className="text-[12px] sm:text-xs text-gray-500 truncate">Recipients</p>
         </div>
         <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
           <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{totalGiftsAll}</p>
-          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Gifts Given</p>
+          <p className="text-[12px] sm:text-xs text-gray-500 truncate">Gifts Given</p>
         </div>
         <div className="min-w-0 rounded-xl border border-gray-100 bg-white p-2 sm:p-3 text-center">
           <p className="text-base sm:text-lg font-bold text-gray-900 truncate">{formatKsh(totalSpentAll)}</p>
-          <p className="text-[10px] sm:text-xs text-gray-500 truncate">Total Spent</p>
+          <p className="text-[12px] sm:text-xs text-gray-500 truncate">Total Spent</p>
         </div>
       </div>
 

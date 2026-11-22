@@ -267,13 +267,13 @@ export default function LiveTrackingClient({
             <h1 className="font-display text-sm font-bold text-brand-deep">
               Live Tracking
             </h1>
-            <p className="text-[11px] text-brand-muted">
+            <p className="text-[12px] text-brand-muted">
               {data?.recipientName}&apos;s gift
             </p>
           </div>
           <div className="flex items-center gap-2">
             {riderStale && (
-              <span className="text-[10px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-[12px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
                 Stale
               </span>
             )}
@@ -312,7 +312,7 @@ export default function LiveTrackingClient({
                     : `Status: ${data?.status?.replace("_", " ")}`}
                 </p>
                 {lastUpdate && (
-                  <p className="text-[10px] text-brand-muted">
+                  <p className="text-[12px] text-brand-muted">
                     Updated {lastUpdate.toLocaleTimeString("en-KE", {
                       hour: "2-digit",
                       minute: "2-digit",

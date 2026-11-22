@@ -173,7 +173,7 @@ export default function GiftChatPage() {
             </div>
             <div className="min-w-0">
               <h1 className="font-display font-bold text-brand-deep text-sm leading-none">T-Gifter</h1>
-              <p className="text-[11px] text-brand-muted mt-0.5">AI Gift Concierge · Online</p>
+              <p className="text-[12px] text-brand-muted mt-0.5">AI Gift Concierge · Online</p>
             </div>
           </div>
 
@@ -242,7 +242,7 @@ export default function GiftChatPage() {
                 {/* Product recommendations */}
                 {msg.recommendations && msg.recommendations.length > 0 && (
                   <div className="mt-4 space-y-2 pt-3 border-t border-black/8">
-                    <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider">
+                    <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider">
                       Picked for you
                     </p>
                     {msg.recommendations.map((rec) => (
@@ -255,10 +255,10 @@ export default function GiftChatPage() {
                           <p className="font-semibold text-xs text-brand-deep group-hover:text-brand truncate">
                             {rec.name}
                           </p>
-                          <p className="text-[11px] text-brand-muted mt-0.5 line-clamp-1">{rec.reason}</p>
+                          <p className="text-[12px] text-brand-muted mt-0.5 line-clamp-1">{rec.reason}</p>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-[10px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-semibold">
+                          <span className="text-[12px] bg-brand/10 text-brand px-2 py-0.5 rounded-full font-semibold">
                             {Math.round(rec.confidence * 100)}% match
                           </span>
                           <ExternalLink className="w-3.5 h-3.5 text-brand-muted group-hover:text-brand transition-colors" />
@@ -271,7 +271,7 @@ export default function GiftChatPage() {
                 {/* Note suggestion */}
                 {msg.noteSuggestion && (
                   <div className="mt-4 bg-gradient-to-br from-gold/10 to-amber-50 rounded-xl p-3.5 border border-gold/20 pt-3 border-t border-black/8">
-                    <p className="text-[10px] font-bold text-gold-dark uppercase tracking-wider mb-1.5">
+                    <p className="text-[12px] font-bold text-gold-dark uppercase tracking-wider mb-1.5">
                       ✍️ Suggested Gift Note
                     </p>
                     <p className="text-xs italic text-brand-deep leading-relaxed">
@@ -280,14 +280,14 @@ export default function GiftChatPage() {
                     <div className="flex gap-2 mt-3">
                       <button
                         onClick={() => navigator.clipboard?.writeText(msg.noteSuggestion!)}
-                        className="flex items-center gap-1 text-[11px] bg-white text-brand-muted border border-black/10 px-3 py-1.5 rounded-lg hover:border-brand/30 hover:text-brand transition-all"
+                        className="flex items-center gap-1 text-[12px] bg-white text-brand-muted border border-black/10 px-3 py-1.5 rounded-lg hover:border-brand/30 hover:text-brand transition-all"
                       >
                         <Copy className="w-3 h-3" />
                         Copy
                       </button>
                       <Link
                         href={`/gift-lab/build-hamper?note=${encodeURIComponent(msg.noteSuggestion!)}`}
-                        className="flex items-center gap-1 text-[11px] bg-brand/10 text-brand px-3 py-1.5 rounded-lg hover:bg-brand/20 transition-colors font-semibold"
+                        className="flex items-center gap-1 text-[12px] bg-brand/10 text-brand px-3 py-1.5 rounded-lg hover:bg-brand/20 transition-colors font-semibold"
                       >
                         Attach to hamper →
                       </Link>
@@ -296,7 +296,7 @@ export default function GiftChatPage() {
                 )}
 
                 {msg.provider && msg.role === "assistant" && (
-                  <p className="text-[9px] text-black/20 mt-2 text-right">via {msg.provider}</p>
+                  <p className="text-[12px] text-black/20 mt-2 text-right">via {msg.provider}</p>
                 )}
               </div>
             </div>
@@ -325,7 +325,7 @@ export default function GiftChatPage() {
       {/* ── Quick starts (shown only at the start) ── */}
       {isEmptyConversation && (
         <div className="flex-shrink-0 max-w-3xl mx-auto w-full px-4 pb-3">
-          <p className="text-[11px] text-brand-muted text-center mb-2.5 uppercase tracking-wider font-medium">
+          <p className="text-[12px] text-brand-muted text-center mb-2.5 uppercase tracking-wider font-medium">
             Quick start
           </p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -338,7 +338,7 @@ export default function GiftChatPage() {
                 <span className="text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
                   {qs.emoji}
                 </span>
-                <span className="text-[11px] font-medium text-brand-muted group-hover:text-brand leading-tight">
+                <span className="text-[12px] font-medium text-brand-muted group-hover:text-brand leading-tight">
                   {qs.text}
                 </span>
               </button>
@@ -372,7 +372,7 @@ export default function GiftChatPage() {
               <Send className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-[10px] text-brand-muted/40 text-center mt-2">
+          <p className="text-[12px] text-brand-muted/40 text-center mt-2">
             T-Gifter is powered by AI · responses may vary · TouchGift delivers across Nairobi
           </p>
         </form>

@@ -220,7 +220,7 @@ export default function GiftCardsTab() {
             return (
               <div key={s.label} className="flex items-center flex-1">
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-all"
+                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold transition-all"
                     style={{ background: done || active ? "var(--portal-accent)" : "var(--portal-accent-tint)", color: done || active ? "var(--portal-accent-text)" : "var(--portal-text-faint)" }}>
                     {done ? <CheckCircle className="w-3.5 h-3.5" /> : i + 1}
                   </div>

@@ -190,9 +190,9 @@ export default function ShopFilterBar() {
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1.5 shrink-0">
             <Banknote className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Budget</h3>
+            <h3 className="text-[12px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Budget</h3>
             {hasPriceFilter && (
-              <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
+              <span className="text-[12px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
                 {activeMinPrice && !activeMaxPrice
                   ? `${formatPrice(Number(activeMinPrice))}+`
                   : !activeMinPrice && activeMaxPrice
@@ -201,7 +201,7 @@ export default function ShopFilterBar() {
               </span>
             )}
             {hasPriceFilter && (
-              <button onClick={resetPrice} className="text-[10px] text-brand hover:underline font-semibold">
+              <button onClick={resetPrice} className="text-[12px] text-brand hover:underline font-semibold">
                 Clear
               </button>
             )}
@@ -214,7 +214,7 @@ export default function ShopFilterBar() {
                 key={preset.label}
                 onClick={() => applyPreset(preset.min, preset.max)}
                 className={cn(
-                  "px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all duration-200",
+                  "px-2.5 py-1 rounded-xl text-[12px] font-bold transition-all duration-200",
                   active ? "bg-brand text-white shadow-sm" : "hover:border-brand/40 hover:text-brand"
                 )}
                 style={!active ? {
@@ -232,7 +232,7 @@ export default function ShopFilterBar() {
           <button
             onClick={() => setShowCustom(!showCustom)}
             className={cn(
-              "px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all duration-200",
+              "px-2.5 py-1 rounded-xl text-[12px] font-bold transition-all duration-200",
               (showCustom || hasCustomPrice) ? "bg-brand/10 text-brand border border-brand/30" : "hover:border-brand/40 hover:text-brand"
             )}
             style={!(showCustom || hasCustomPrice) ? {
@@ -251,7 +251,7 @@ export default function ShopFilterBar() {
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 shrink-0">
             <SlidersHorizontal className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-            <h3 className="text-[11px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Filters</h3>
+            <h3 className="text-[12px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Filters</h3>
           </div>
           {QUICK_FILTERS.map((f) => {
             const isActive = searchParams.get(f.param) === f.value;
@@ -260,7 +260,7 @@ export default function ShopFilterBar() {
                 key={f.param + f.value}
                 onClick={() => toggleParam(f.param, f.value)}
                 className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all duration-200 [&>svg]:w-3 [&>svg]:h-3",
+                  "flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[12px] font-bold transition-all duration-200 [&>svg]:w-3 [&>svg]:h-3",
                   isActive ? "bg-brand text-white shadow-sm" : "hover:border-brand/40 hover:text-brand"
                 )}
                 style={!isActive ? {
@@ -280,7 +280,7 @@ export default function ShopFilterBar() {
           <button
             onClick={() => setShowAdvanced(!showAdvanced)}
             className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-bold transition-all duration-200",
+              "flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[12px] font-bold transition-all duration-200",
               showAdvanced ? "bg-brand-deep text-white shadow-sm" : "hover:border-brand/40 hover:text-brand"
             )}
             style={!showAdvanced ? {
@@ -298,7 +298,7 @@ export default function ShopFilterBar() {
         {/* Right cluster: active count + sort */}
         <div className="flex items-center gap-2 ml-auto shrink-0">
           {activeFilterCount > 0 && (
-            <span className="text-[10px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
+            <span className="text-[12px] font-bold text-brand bg-brand/10 px-2 py-0.5 rounded-full">
               {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
             </span>
           )}
@@ -306,7 +306,7 @@ export default function ShopFilterBar() {
             <button
               onClick={() => setSortOpen(!sortOpen)}
               className={cn(
-                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all",
+                "flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-bold transition-all",
                 activeSort ? "bg-brand text-white shadow-sm" : ""
               )}
               style={!activeSort ? {
@@ -403,7 +403,7 @@ export default function ShopFilterBar() {
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <div className="flex items-center gap-2 shrink-0">
               <Star className="w-4 h-4" style={{ color: "var(--text-muted)" }} />
-              <h3 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Min Rating:</h3>
+              <h3 className="text-[12px] sm:text-xs font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>Min Rating:</h3>
             </div>
             <div className="flex gap-2">
               {[4, 3, 2].map((r) => {
@@ -413,7 +413,7 @@ export default function ShopFilterBar() {
                     key={r}
                     onClick={() => toggleParam("minRating", String(r))}
                     className={cn(
-                      "flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all duration-200",
+                      "flex items-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[12px] sm:text-xs font-bold transition-all duration-200",
                       isActive ? "bg-yellow-400 text-white shadow-sm" : "hover:border-yellow-300"
                     )}
                     style={!isActive ? {

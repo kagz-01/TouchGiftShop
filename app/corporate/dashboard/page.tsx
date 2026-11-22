@@ -110,7 +110,7 @@ function Badge({ status }: { status: string }) {
   const isWarn  = warnStatuses.includes(status);
   const isOk    = okStatuses.includes(status);
   return (
-    <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold"
+    <span className="inline-flex items-center px-2 py-0.5 rounded text-[12px] font-semibold"
       style={{
         background: isAlert ? "var(--portal-stop-tint)"
           : isWarn ? "var(--portal-warn-tint, rgba(180,90,30,0.12))"
@@ -206,7 +206,7 @@ function MonthlyChart({ data, loading }: { data: Stats["monthlyActivity"]; loadi
             ))}
           </div>
           <div className="flex gap-3">
-            {rows.map(d => <div key={d.month} className="flex-1 text-center"><span className="text-[10px] font-medium" style={{ color: "var(--portal-text-faint)" }}>{d.month}</span></div>)}
+            {rows.map(d => <div key={d.month} className="flex-1 text-center"><span className="text-[12px] font-medium" style={{ color: "var(--portal-text-faint)" }}>{d.month}</span></div>)}
           </div>
         </>
       )}
@@ -591,7 +591,7 @@ function DashboardContent() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold leading-tight truncate" style={{ color: "var(--portal-text)" }}>TouchGift</p>
-              <p className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--portal-accent)" }}>Corporate Dashboard</p>
+              <p className="text-[12px] font-bold uppercase tracking-widest mt-0.5" style={{ color: "var(--portal-accent)" }}>Corporate Dashboard</p>
             </div>
           </div>
         </div>
@@ -612,7 +612,7 @@ function DashboardContent() {
             { label: "Settings", tabs: settingsTabs },
           ].map(group => (
             <div key={group.label}>
-              <p className="text-[10px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "var(--portal-text-faint)" }}>{group.label}</p>
+              <p className="text-[12px] font-bold uppercase tracking-widest px-2 mb-2" style={{ color: "var(--portal-text-faint)" }}>{group.label}</p>
               <div className="space-y-0.5">
                 {group.tabs.map(n => {
                   const active = activeTab === n.key;
@@ -633,7 +633,7 @@ function DashboardContent() {
                       <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
                       <span className="flex-1 truncate">{n.label}</span>
                       {badge > 0 && (
-                        <span className="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center shrink-0"
+                        <span className="w-5 h-5 rounded-full text-[12px] font-bold flex items-center justify-center shrink-0"
                           style={{ background: "var(--portal-stop-tint)", color: "var(--portal-stop)" }}>
                           {badge}
                         </span>
@@ -837,7 +837,7 @@ function DashboardContent() {
                   <n.icon className="w-3.5 h-3.5 shrink-0" />
                   <span>{n.label}</span>
                   {badge > 0 && (
-                    <span className="w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center bg-red-600 text-white shrink-0">
+                    <span className="w-4 h-4 rounded-full text-[12px] font-bold flex items-center justify-center bg-red-600 text-white shrink-0">
                       {badge}
                     </span>
                   )}
@@ -868,7 +868,7 @@ function DashboardContent() {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">TouchGift</p>
-                    <p className="text-[10px] text-brand dark:text-brand-light font-bold uppercase tracking-wider">Corporate Hub</p>
+                    <p className="text-[12px] text-brand dark:text-brand-light font-bold uppercase tracking-wider">Corporate Hub</p>
                   </div>
                 </div>
                 <button
@@ -890,7 +890,7 @@ function DashboardContent() {
                   { label: "Automations & Admin", tabs: settingsTabs },
                 ].map(g => (
                   <div key={g.label}>
-                    <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">{g.label}</p>
+                    <p className="text-[12px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">{g.label}</p>
                     <div className="space-y-1">
                       {g.tabs.map(n => {
                         const active = activeTab === n.key;
@@ -913,7 +913,7 @@ function DashboardContent() {
                             <n.icon className="w-4 h-4 shrink-0" style={{ color: active ? "var(--portal-accent)" : "var(--portal-text-faint)" }} />
                             <span className="flex-1 truncate">{n.label}</span>
                             {badge > 0 && (
-                              <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white shrink-0">
+                              <span className="px-1.5 py-0.5 rounded-full text-[12px] font-bold bg-red-600 text-white shrink-0">
                                 {badge}
                               </span>
                             )}
@@ -926,7 +926,7 @@ function DashboardContent() {
 
                 {/* Ecosystem Links */}
                 <div className="pt-2 border-t border-gray-100 dark:border-zinc-800">
-                  <p className="text-[10px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">Corporate Ecosystem</p>
+                  <p className="text-[12px] text-gray-400 dark:text-zinc-500 font-bold uppercase tracking-widest px-2 mb-2">Corporate Ecosystem</p>
                   <div className="space-y-1">
                     <Link
                       href="/corporate/showroom"
@@ -966,7 +966,7 @@ function DashboardContent() {
                     {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-brand" />}
                     <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
                   </span>
-                  <span className="text-[10px] text-gray-400 uppercase font-bold">{theme}</span>
+                  <span className="text-[12px] text-gray-400 uppercase font-bold">{theme}</span>
                 </button>
                 <Link
                   href="/"

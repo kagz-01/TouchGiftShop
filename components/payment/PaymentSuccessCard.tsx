@@ -196,7 +196,7 @@ export default function PaymentSuccessCard({
                     <p className={`font-semibold ${step.status === "current" ? "text-gold-dark dark:text-gold-light" : step.status === "done" ? "text-emerald-700 dark:text-emerald-400" : "text-brand-muted"}`}>
                       {step.title}
                     </p>
-                    <p className="text-[11px] text-gray-500 dark:text-white/50">{step.desc}</p>
+                    <p className="text-[12px] text-gray-500 dark:text-white/50">{step.desc}</p>
                   </div>
                 </div>
               ))}

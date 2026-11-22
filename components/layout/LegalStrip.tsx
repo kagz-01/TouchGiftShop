@@ -34,23 +34,23 @@ export default function LegalStrip({
           {regNo ? ` · Reg. No. ${regNo}` : ""}.
         </p>
         <nav className="flex flex-wrap items-center gap-x-4 gap-y-1">
-          <Link href="/terms" className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
+          <Link href="/terms" className="inline-block py-3 transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
             Terms
           </Link>
-          <Link href="/privacy" className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
+          <Link href="/privacy" className="inline-block py-3 transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
             Privacy
           </Link>
-          <Link href="/returns" className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
+          <Link href="/returns" className="inline-block py-3 transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
             Returns
           </Link>
-          <Link href="/delivery" className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
+          <Link href="/delivery" className="inline-block py-3 transition-colors hover:text-[color:var(--portal-text,#1A1410)]">
             Delivery
           </Link>
           <a
             href="https://wa.me/254183172111"
             target="_blank"
             rel="noopener noreferrer"
-            className="transition-colors hover:text-[color:var(--portal-text,#1A1410)]"
+            className="inline-block py-3 transition-colors hover:text-[color:var(--portal-text,#1A1410)]"
           >
             Contact
           </a>

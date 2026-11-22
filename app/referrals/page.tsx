@@ -140,7 +140,7 @@ export default function ReferralsPage() {
 
           {/* Referral code */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-white/50 mb-1">Your referral code</p>
+            <p className="text-[12px] font-bold uppercase tracking-wider text-white/50 mb-1">Your referral code</p>
             <div className="flex items-center justify-center gap-3">
               <span className="font-mono text-2xl font-bold tracking-wider">{data.referralCode}</span>
               <button
@@ -181,7 +181,7 @@ export default function ReferralsPage() {
             <div key={stat.label} className="min-w-0 bg-white rounded-2xl border border-black/6 shadow-sm p-3 sm:p-4 text-center">
               <stat.icon className="w-5 h-5 text-brand mx-auto mb-2" />
               <p className="font-bold text-brand-deep text-base sm:text-lg truncate">{stat.value}</p>
-              <p className="text-[10px] text-brand-muted uppercase tracking-wider truncate">{stat.label}</p>
+              <p className="text-[12px] text-brand-muted uppercase tracking-wider truncate">{stat.label}</p>
             </div>
           ))}
         </div>

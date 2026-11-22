@@ -139,7 +139,7 @@ Payment Terms: Net-30 available for approved corporate PO/LPO`;
               className="rounded-2xl p-5 border flex flex-col justify-between transition-colors bg-surface-secondary/30 dark:bg-white/[0.02] border-surface-border dark:border-white/10"
             >
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 block mb-1">
+                <span className="text-[12px] font-bold uppercase tracking-wider text-emerald-600 block mb-1">
                   {item.status}
                 </span>
                 <h4 className="text-sm font-bold mb-1 text-[color:var(--corp-text)]">
@@ -151,7 +151,7 @@ Payment Terms: Net-30 available for approved corporate PO/LPO`;
               </div>
 
               <div className="pt-3 border-t border-surface-border dark:border-white/10 flex items-center justify-between">
-                <span className="font-mono text-[11px] font-semibold text-[color:var(--corp-text)] truncate max-w-[140px]">
+                <span className="font-mono text-[12px] font-semibold text-[color:var(--corp-text)] truncate max-w-[140px]">
                   {item.id}
                 </span>
                 <button

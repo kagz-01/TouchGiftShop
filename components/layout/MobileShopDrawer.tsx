@@ -139,7 +139,7 @@ export default function MobileShopDrawer({
               <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white">
                 Find a Gift
               </h2>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
                 Nairobi Same-Day
               </span>
             </div>
@@ -166,14 +166,14 @@ export default function MobileShopDrawer({
           >
             <Search className="w-4 h-4 text-brand shrink-0" />
             <span className="flex-1 truncate">Search 500+ gifts, perfumes, hampers...</span>
-            <span className="text-[10px] font-semibold text-brand px-2 py-0.5 bg-brand/10 rounded-lg">
+            <span className="text-[12px] font-semibold text-brand px-2 py-0.5 bg-brand/10 rounded-lg">
               Search
             </span>
           </Link>
 
           {/* Quick Filter Chips (HCI Fitts's Law) */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
               Fast Gifting by Budget
             </p>
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
@@ -193,7 +193,7 @@ export default function MobileShopDrawer({
           {/* Visual Category Grid (Show, Don't Tell - 2 Columns) */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
+              <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500">
                 Curated Departments
               </p>
               <Link
@@ -218,7 +218,7 @@ export default function MobileShopDrawer({
                       {cat.icon}
                     </div>
                     {cat.badge && (
-                      <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-brand text-white shadow-xs">
+                      <span className="text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-brand text-white shadow-xs">
                         {cat.badge}
                       </span>
                     )}
@@ -227,7 +227,7 @@ export default function MobileShopDrawer({
                     <h3 className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-white leading-tight group-hover:text-brand transition-colors">
                       {cat.title}
                     </h3>
-                    <p className="text-[10px] text-gray-500 dark:text-zinc-400 mt-0.5 line-clamp-1">
+                    <p className="text-[12px] text-gray-500 dark:text-zinc-400 mt-0.5 line-clamp-1">
                       {cat.subtitle}
                     </p>
                   </div>
@@ -238,7 +238,7 @@ export default function MobileShopDrawer({
 
           {/* Shop by Recipient Pills */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
               Who is this gift for?
             </p>
             <div className="grid grid-cols-2 gap-2">
@@ -268,7 +268,7 @@ export default function MobileShopDrawer({
             </div>
             <div className="flex-1 min-w-0">
               <span className="text-xs font-bold block">Indecisive? Let AI Match the Gift</span>
-              <p className="text-[10px] text-white/80 leading-snug">
+              <p className="text-[12px] text-white/80 leading-snug">
                 Answer 3 quick questions — get instant personalized picks in Nairobi.
               </p>
             </div>

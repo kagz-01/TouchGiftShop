@@ -40,7 +40,7 @@ function PoolCard({ pool }: { pool: Pool }) {
             {pool.description && <p className="text-xs text-gray-400 mt-0.5 truncate">{pool.description}</p>}
           </div>
         </div>
-        <span className={`shrink-0 ml-2 text-[10px] font-bold px-2 py-0.5 rounded border ${STATUS_COLOR[pool.status] ?? "bg-gray-100 text-gray-500 border-gray-200"}`}>
+        <span className={`shrink-0 ml-2 text-[12px] font-bold px-2 py-0.5 rounded border ${STATUS_COLOR[pool.status] ?? "bg-gray-100 text-gray-500 border-gray-200"}`}>
           {pool.status.charAt(0).toUpperCase() + pool.status.slice(1)}
         </span>
       </div>

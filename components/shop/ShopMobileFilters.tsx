@@ -333,7 +333,7 @@ export function ShopRefineRail() {
           <SlidersHorizontal className="w-3.5 h-3.5" />
           More
           {moreCount > 0 && (
-            <span className="ml-0.5 min-w-4 h-4 px-0.5 bg-white text-brand text-[9px] font-bold rounded-full flex items-center justify-center">
+            <span className="ml-0.5 min-w-4 h-4 px-0.5 bg-white text-brand text-[12px] font-bold rounded-full flex items-center justify-center">
               {moreCount}
             </span>
           )}
@@ -461,7 +461,7 @@ export function ShopRefineRail() {
       </Sheet>
 
       <Sheet open={sheet === "more"} onClose={() => setSheet(null)} title="More filters">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 mb-2">
           Minimum rating
         </p>
         <div className="flex gap-2">
@@ -613,7 +613,7 @@ export function ShopBottomBar() {
         {pickerGroups.map((group, gi) => (
           <div key={group.name ?? `g${gi}`} className="mt-3">
             {group.name && (
-              <p className="px-1 mb-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-400">
+              <p className="px-1 mb-1.5 text-[12px] font-bold uppercase tracking-wider text-gray-400">
                 {group.name}
               </p>
             )}

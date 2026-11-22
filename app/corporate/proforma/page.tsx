@@ -298,7 +298,7 @@ export default async function ProformaPage({
               <td className="border border-gray-200 px-3 py-3">
                 <span className="font-bold text-gray-900">{title}</span>
                 <span className="block text-xs text-gray-500 mt-0.5 leading-relaxed">{description}</span>
-                <span className="inline-block text-[10px] font-semibold text-[#9B1B5A] mt-1 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                <span className="inline-block text-[12px] font-semibold text-[#9B1B5A] mt-1 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
                   Includes custom branding proof &amp; corporate packaging
                 </span>
               </td>
@@ -355,7 +355,7 @@ export default async function ProformaPage({
 
         {/* ── Amount In Words ── */}
         <div className="mt-4 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3.5 py-2.5">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-amber-800 mb-0.5">Amount in Words</p>
+          <p className="text-[12px] font-bold uppercase tracking-wider text-amber-800 mb-0.5">Amount in Words</p>
           <p className="text-xs font-bold text-gray-900 italic">{words}</p>
         </div>
 
@@ -400,7 +400,7 @@ export default async function ProformaPage({
             <p className="text-gray-500">P.O. Box 74145-0020 Nairobi</p>
             <p className="text-gray-600 mt-1">A/C Name: <span className="font-semibold text-gray-900">TOUCHLINE BRANDING LIMITED</span></p>
             <p className="font-mono font-bold text-gray-900 text-sm mt-0.5">A/C No: 033000036952</p>
-            <p className="text-gray-500 text-[11px]">Bank Code: 70-033</p>
+            <p className="text-gray-500 text-[12px]">Bank Code: 70-033</p>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3.5">
@@ -416,7 +416,7 @@ export default async function ProformaPage({
               <span className="font-mono font-bold text-gray-900">2058527</span>
             </div>
             <p className="text-gray-600 mt-1 font-medium">Account Name: TOUCHLINE BRANDING</p>
-            <p className="text-gray-500 text-[11px]">Corporate Helpdesk: 0703 095 445 / +254 722 668 696</p>
+            <p className="text-gray-500 text-[12px]">Corporate Helpdesk: 0703 095 445 / +254 722 668 696</p>
           </div>
         </section>
 
@@ -434,7 +434,7 @@ export default async function ProformaPage({
                   alt="Touchline Authorised Signature"
                   className="h-16 w-auto object-contain"
                 />
-                <span className="absolute bottom-3 right-4 font-mono text-[10px] font-bold text-blue-900">
+                <span className="absolute bottom-3 right-4 font-mono text-[12px] font-bold text-blue-900">
                   {stampDateStr(now)}
                 </span>
               </div>
@@ -458,14 +458,14 @@ export default async function ProformaPage({
               <p>Signature: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
               <p>LPO No: <span className="border-b border-gray-300 inline-block w-40">&nbsp;</span></p>
             </div>
-            <div className="mt-3 border border-gray-200 bg-white rounded-lg p-3 text-center text-gray-400 text-[10px]">
+            <div className="mt-3 border border-gray-200 bg-white rounded-lg p-3 text-center text-gray-400 text-[12px]">
               Customer Official Stamp
             </div>
           </div>
         </div>
 
         {/* ── Document Footer ── */}
-        <footer className="mt-8 border-t border-gray-200 pt-3 text-center text-[11px] text-gray-500">
+        <footer className="mt-8 border-t border-gray-200 pt-3 text-center text-[12px] text-gray-500">
           <span className="font-semibold text-gray-800">{seller.name}</span> · {seller.slogan || "YOUR IMAGE . YOUR SUCCESS"} · touchlineltd.co.ke · {seller.phone}
         </footer>
       </article>

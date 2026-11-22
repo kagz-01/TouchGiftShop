@@ -165,7 +165,7 @@ export default function HamperBuilderTab() {
                         <div className="flex items-center justify-between">
                           <p className="text-xs font-bold text-gray-900">{formatKsh(p.price)}</p>
                           <button onClick={() => addToBasket(p)}
-                            className="flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg transition-colors">
+                            className="flex items-center gap-1 px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-bold rounded-lg transition-colors">
                             <Plus className="w-3 h-3" /> Add
                           </button>
                         </div>
@@ -198,7 +198,7 @@ export default function HamperBuilderTab() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-medium text-gray-900 truncate">{x.name}</p>
-                        <p className="text-[10px] text-gray-400">{formatKsh(x.price)} × {x.qty}</p>
+                        <p className="text-[12px] text-gray-400">{formatKsh(x.price)} × {x.qty}</p>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <button onClick={() => updateQty(x.id, -1)} className="w-5 h-5 rounded flex items-center justify-center bg-gray-100 hover:bg-gray-200"><Minus className="w-3 h-3" /></button>
@@ -214,7 +214,7 @@ export default function HamperBuilderTab() {
                     <span className="text-gray-500">Per hamper</span>
                     <span className="font-semibold text-gray-900">{formatKsh(hamperTotal)}</span>
                   </div>
-                  <p className="text-[11px] text-gray-400">× {Math.max(1, recipientCount)} recipients on next step</p>
+                  <p className="text-[12px] text-gray-400">× {Math.max(1, recipientCount)} recipients on next step</p>
                 </div>
                 <button onClick={() => setStep(2)} className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-lg flex items-center justify-center gap-1.5 transition-colors">
                   Next: Recipients <ArrowRight className="w-4 h-4" />

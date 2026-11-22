@@ -82,7 +82,7 @@ export default function ControlRoomOverview({
               </span>
               {isDemo && (
                 <span
-                  className="px-2 py-0.5 rounded-full text-[11px] font-bold"
+                  className="px-2 py-0.5 rounded-full text-[12px] font-bold"
                   style={{
                     background: "var(--portal-positive-tint)",
                     color: "var(--portal-positive)",
@@ -101,7 +101,7 @@ export default function ControlRoomOverview({
         {/* Demo Preset Switcher (allows instant testing of Safaricom / Equity / KCB) */}
         {isDemo && onSelectPreset && (
           <div className="flex items-center gap-1.5 p-1 rounded-xl shrink-0 self-start md:self-center" style={{ background: "var(--portal-surface-2)", border: "1px solid var(--portal-border-soft)" }}>
-            <span className="text-[11px] font-semibold px-2" style={{ color: "var(--portal-text-faint)" }}>
+            <span className="text-[12px] font-semibold px-2" style={{ color: "var(--portal-text-faint)" }}>
               Demo Client:
             </span>
             {(stats?.availablePresets || [
@@ -182,7 +182,7 @@ export default function ControlRoomOverview({
                 >
                   <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-[11px] font-semibold" style={{ color: "var(--portal-text-faint)" }}>
+                <span className="text-[12px] font-semibold" style={{ color: "var(--portal-text-faint)" }}>
                   Live Ops
                 </span>
               </div>
@@ -192,7 +192,7 @@ export default function ControlRoomOverview({
               <p className="text-xs font-medium mt-0.5" style={{ color: "var(--portal-text-muted)" }}>
                 {k.label}
               </p>
-              <p className="text-[11px] mt-2 pt-2 border-t" style={{ borderColor: "var(--portal-border-soft)", color: "var(--portal-text-faint)" }}>
+              <p className="text-[12px] mt-2 pt-2 border-t" style={{ borderColor: "var(--portal-border-soft)", color: "var(--portal-text-faint)" }}>
                 {k.sub}
               </p>
             </div>
@@ -281,7 +281,7 @@ export default function ControlRoomOverview({
                     KES {Number(ord.subtotal).toLocaleString()}
                   </p>
                   <span
-                    className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
+                    className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded"
                     style={{
                       background: ord.status === "delivered" ? "var(--portal-positive-tint)" : "var(--portal-warn-tint)",
                       color: ord.status === "delivered" ? "var(--portal-positive)" : "var(--portal-warn)",

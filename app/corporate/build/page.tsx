@@ -302,7 +302,7 @@ export default function CorporateHamperBuilder() {
               <ChevronRight className="w-5 h-5 rotate-180" />
             </Link>
             <div>
-              <div className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-zinc-400 font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-[12px] text-gray-500 dark:text-zinc-400 font-semibold uppercase tracking-wider">
                 <Link href="/corporate" className="hover:text-brand">Corporate</Link>
                 <span>/</span>
                 <span className="text-brand dark:text-brand-light font-bold">Pack & Hamper Configurator</span>
@@ -331,14 +331,14 @@ export default function CorporateHamperBuilder() {
       <div className="bg-gradient-to-r from-brand/5 via-amber-500/5 to-transparent border-b border-gray-100 dark:border-white/5 py-4 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded-full bg-brand text-white font-bold text-[10px] uppercase tracking-wider">
+            <span className="px-2 py-0.5 rounded-full bg-brand text-white font-bold text-[12px] uppercase tracking-wider">
               Wholesale SLA
             </span>
             <p className="text-gray-700 dark:text-zinc-300">
               <strong>100% Brandable</strong> · Free Laser/Embroidery Proof · eTIMS Compliant LPO & Proforma · Same-Day Delivery Dispatch
             </p>
           </div>
-          <div className="flex items-center gap-4 text-gray-500 dark:text-zinc-400 text-[11px]">
+          <div className="flex items-center gap-4 text-gray-500 dark:text-zinc-400 text-[12px]">
             <span className="flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> KRA Tax Compliant
             </span>
@@ -364,7 +364,7 @@ export default function CorporateHamperBuilder() {
                 Choose a proven corporate baseline. You can customize, swap, or add items in step 2.
               </p>
             </div>
-            <span className="text-[11px] font-semibold text-gray-500 dark:text-zinc-400 ml-8 sm:ml-0">
+            <span className="text-[12px] font-semibold text-gray-500 dark:text-zinc-400 ml-8 sm:ml-0">
               Showing 6 Tested B2B Bundles
             </span>
           </div>
@@ -389,7 +389,7 @@ export default function CorporateHamperBuilder() {
                     <span className="text-2xl">{pack.icon}</span>
                     <div className="flex items-center gap-1.5">
                       {pack.badge && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                        <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
                           {pack.badge}
                         </span>
                       )}
@@ -413,30 +413,30 @@ export default function CorporateHamperBuilder() {
                     <p className="text-xs text-brand dark:text-brand-light font-semibold mt-0.5">
                       {pack.tagline}
                     </p>
-                    <p className="text-[11px] text-gray-600 dark:text-zinc-300 mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-[12px] text-gray-600 dark:text-zinc-300 mt-2 line-clamp-2 leading-relaxed">
                       {pack.description}
                     </p>
                   </div>
 
                   {/* Included Items Pills */}
                   <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/10">
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-zinc-400 mb-2">
+                    <div className="flex items-center justify-between text-[12px] text-gray-500 dark:text-zinc-400 mb-2">
                       <span>Includes {hasCustomizations ? customItemsByPack[pack.id].length : pack.defaultItems.length} curated items:</span>
                       {hasCustomizations && (
-                        <span className="text-amber-500 font-bold text-[10px]">Customized</span>
+                        <span className="text-amber-500 font-bold text-[12px]">Customized</span>
                       )}
                     </div>
                     <div className="flex flex-wrap gap-1.5">
                       {(hasCustomizations ? customItemsByPack[pack.id] : pack.defaultItems).slice(0, 3).map((item) => (
                         <span
                           key={item.id}
-                          className="text-[10px] bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-zinc-200 px-2 py-0.5 rounded-md truncate max-w-[170px]"
+                          className="text-[12px] bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-zinc-200 px-2 py-0.5 rounded-md truncate max-w-[170px]"
                         >
                           {item.name}
                         </span>
                       ))}
                       {(hasCustomizations ? customItemsByPack[pack.id].length : pack.defaultItems.length) > 3 && (
-                        <span className="text-[10px] bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-zinc-400 px-1.5 py-0.5 rounded-md font-semibold">
+                        <span className="text-[12px] bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-zinc-400 px-1.5 py-0.5 rounded-md font-semibold">
                           +{(hasCustomizations ? customItemsByPack[pack.id].length : pack.defaultItems.length) - 3} more
                         </span>
                       )}
@@ -446,7 +446,7 @@ export default function CorporateHamperBuilder() {
                   {/* Pricing Footer */}
                   <div className="mt-4 pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-gray-400 dark:text-zinc-500">Base Unit Rate</span>
+                      <span className="text-[12px] uppercase font-bold text-gray-400 dark:text-zinc-500">Base Unit Rate</span>
                       <p className="font-display font-bold text-base text-gray-900 dark:text-white">
                         {formatKsh(pack.baseUnitPrice)}
                       </p>
@@ -502,7 +502,7 @@ export default function CorporateHamperBuilder() {
               {discountRate > 0 ? (
                 <div className="px-3 py-1.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-right">
                   <span className="text-xs font-bold block">{Math.round(discountRate * 100)}% Volume Discount</span>
-                  <span className="text-[10px] opacity-80">Saving {formatKsh(savings)}</span>
+                  <span className="text-[12px] opacity-80">Saving {formatKsh(savings)}</span>
                 </div>
               ) : (
                 <div className="px-3 py-1.5 rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-zinc-400 text-xs">
@@ -544,25 +544,25 @@ export default function CorporateHamperBuilder() {
           {/* Pricing Summary Grid */}
           <div className="mt-8 p-4 rounded-2xl bg-gray-50 dark:bg-[#0E1520] border border-gray-100 dark:border-white/5 grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <span className="text-[11px] text-gray-400 font-semibold uppercase">Unit Base Cost</span>
+              <span className="text-[12px] text-gray-400 font-semibold uppercase">Unit Base Cost</span>
               <p className="font-bold text-base text-gray-900 dark:text-white mt-0.5">
                 {formatKsh(calculatedUnitPrice)}
               </p>
             </div>
             <div>
-              <span className="text-[11px] text-gray-400 font-semibold uppercase">Discounted Unit</span>
+              <span className="text-[12px] text-gray-400 font-semibold uppercase">Discounted Unit</span>
               <p className="font-bold text-base text-emerald-600 dark:text-emerald-400 mt-0.5">
                 {formatKsh(discountedUnitPrice)}
               </p>
             </div>
             <div>
-              <span className="text-[11px] text-gray-400 font-semibold uppercase">Subtotal ({quantity} units)</span>
+              <span className="text-[12px] text-gray-400 font-semibold uppercase">Subtotal ({quantity} units)</span>
               <p className="font-bold text-base text-gray-900 dark:text-white mt-0.5">
                 {formatKsh(subtotal)}
               </p>
             </div>
             <div>
-              <span className="text-[11px] text-gray-400 font-semibold uppercase">
+              <span className="text-[12px] text-gray-400 font-semibold uppercase">
                 {includeVat ? "Total (incl. 16% VAT)" : "Total (excl. VAT)"}
               </span>
               <p className="font-display font-bold text-lg text-brand dark:text-brand-light mt-0.5">
@@ -647,7 +647,7 @@ export default function CorporateHamperBuilder() {
           {/* Corporate Form Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+              <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                 Company / Organization *
               </label>
               <input
@@ -660,7 +660,7 @@ export default function CorporateHamperBuilder() {
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+              <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                 Work Email (For Proforma PDF) *
               </label>
               <input
@@ -673,7 +673,7 @@ export default function CorporateHamperBuilder() {
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+              <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                 Contact Phone / WhatsApp
               </label>
               <input
@@ -687,7 +687,7 @@ export default function CorporateHamperBuilder() {
           </div>
 
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+            <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
               Custom Branding / Packaging Requirements
             </label>
             <input
@@ -861,7 +861,7 @@ export default function CorporateHamperBuilder() {
             {/* Modal Footer */}
             <div className="p-4 border-t border-gray-100 dark:border-white/10 flex items-center justify-between bg-gray-50 dark:bg-[#0E1520]">
               <div>
-                <span className="text-[10px] text-gray-400 uppercase font-semibold">Recalculated Unit Rate</span>
+                <span className="text-[12px] text-gray-400 uppercase font-semibold">Recalculated Unit Rate</span>
                 <p className="font-bold text-base text-gray-900 dark:text-white">
                   {formatKsh(calculatedUnitPrice)}
                 </p>
@@ -891,7 +891,7 @@ export default function CorporateHamperBuilder() {
               ✓
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full bg-emerald-500/10">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 px-2.5 py-1 rounded-full bg-emerald-500/10">
                 Official Proforma Generated
               </span>
               <h3 className="font-display font-bold text-xl text-gray-900 dark:text-white mt-2">

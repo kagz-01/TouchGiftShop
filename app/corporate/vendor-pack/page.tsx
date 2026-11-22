@@ -70,7 +70,7 @@ export default function VendorPackPage() {
       <article className="mx-auto max-w-[210mm] bg-white px-10 py-10 text-[#1A1410] shadow-[0_8px_40px_rgba(0,0,0,0.08)] print:max-w-none print:px-0 print:py-0 print:shadow-none">
         <header className="flex items-start justify-between gap-8 border-b border-black/10 pb-6">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-black/45">TouchGift Corporate</p>
+            <p className="text-[12px] uppercase tracking-[0.2em] text-black/45">TouchGift Corporate</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-tight">Procurement vendor pack</h1>
             <p className="mt-2 max-w-md text-xs leading-relaxed text-black/60">
               Company profile, tax registration, service levels and ordering terms for
@@ -78,15 +78,15 @@ export default function VendorPackPage() {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] uppercase tracking-[0.18em] text-black/45">Issued</p>
+            <p className="text-[12px] uppercase tracking-[0.18em] text-black/45">Issued</p>
             <p className="mt-1 font-medium">{date(now)}</p>
-            <p className="mt-3 text-[10px] text-black/45">Valid until</p>
+            <p className="mt-3 text-[12px] text-black/45">Valid until</p>
             <p className="font-medium">{date(new Date(now.getTime() + 180 * 864e5))}</p>
           </div>
         </header>
 
         {missing.length > 0 && (
-          <div className="mt-6 border border-amber-500/40 bg-amber-50 px-4 py-3 text-[11px] leading-relaxed text-amber-900">
+          <div className="mt-6 border border-amber-500/40 bg-amber-50 px-4 py-3 text-[12px] leading-relaxed text-amber-900">
             <strong>Internal note:</strong> {missing.join(", ")} not configured. The
             corresponding fields are omitted from this pack. Complete them before sending
             to a buyer.
@@ -94,7 +94,7 @@ export default function VendorPackPage() {
         )}
 
         <section className="mt-8">
-          <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/50">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-black/50">
             1. Company profile
           </h2>
           <dl className="mt-2">
@@ -119,7 +119,7 @@ export default function VendorPackPage() {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/50">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-black/50">
             2. Tax & compliance
           </h2>
           <div className="mt-2 space-y-2 text-xs leading-relaxed text-black/70">
@@ -150,7 +150,7 @@ export default function VendorPackPage() {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/50">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-black/50">
             3. Service levels
           </h2>
           <div className="mt-2 overflow-hidden rounded border border-black/10">
@@ -190,14 +190,14 @@ export default function VendorPackPage() {
               </tbody>
             </table>
           </div>
-          <p className="mt-2 text-[10px] leading-relaxed text-black/45">
+          <p className="mt-2 text-[12px] leading-relaxed text-black/45">
             These are standard service levels. The final quote confirms the delivery date
             and any seasonal cut-off for the specific order.
           </p>
         </section>
 
         <section className="mt-8">
-          <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/50">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-black/50">
             4. Ordering & payment
           </h2>
           <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-xs leading-relaxed text-black/70">
@@ -230,7 +230,7 @@ export default function VendorPackPage() {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-[10px] font-semibold uppercase tracking-[0.18em] text-black/50">
+          <h2 className="text-[12px] font-semibold uppercase tracking-[0.18em] text-black/50">
             5. Documents available on request
           </h2>
           <ul className="mt-2 grid grid-cols-2 gap-x-8 gap-y-1 text-xs text-black/70">
@@ -251,18 +251,18 @@ export default function VendorPackPage() {
         </section>
 
         <section className="mt-8 border-t border-black/10 pt-4 text-xs leading-relaxed text-black/65">
-          <p className="text-[10px] uppercase tracking-[0.18em] text-black/50">Contact</p>
+          <p className="text-[12px] uppercase tracking-[0.18em] text-black/50">Contact</p>
           <p className="mt-1.5">
             {seller.email ?? "Email available on request"}
             {seller.phone ? ` · ${seller.phone}` : ""}
           </p>
-          <p className="mt-1 text-[11px] text-black/45">
+          <p className="mt-1 text-[12px] text-black/45">
             Quote the reference <span className="font-mono">VENDOR-{now.getFullYear()}</span> on
             any correspondence.
           </p>
         </section>
 
-        <footer className="mt-10 border-t border-black/10 pt-3 text-[10px] leading-relaxed text-black/40">
+        <footer className="mt-10 border-t border-black/10 pt-3 text-[12px] leading-relaxed text-black/40">
           {seller.name}
           {seller.pin ? ` · KRA PIN ${seller.pin}` : ""}
           {seller.companyNumber ? ` · Reg. No. ${seller.companyNumber}` : ""} · Generated{" "}

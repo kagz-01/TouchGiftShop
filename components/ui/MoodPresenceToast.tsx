@@ -230,7 +230,7 @@ export default function MoodPresenceToast({ userName }: Props) {
               {interpolate(message.text)}
             </p>
             {isReturn && (
-              <p className="text-[10px] text-theme-muted mt-0.5">
+              <p className="text-[12px] text-theme-muted mt-0.5">
                 {moodMeta.label} mode is still active ✨
               </p>
             )}

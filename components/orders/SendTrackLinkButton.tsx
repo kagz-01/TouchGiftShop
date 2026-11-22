@@ -143,10 +143,10 @@ export default function SendTrackLinkButton({
 
       {/* Editable Phone Input & Validation Box */}
       <div className="space-y-1.5 pt-1">
-        <label className="text-[11px] font-bold text-brand-deep uppercase tracking-wider flex items-center justify-between">
+        <label className="text-[12px] font-bold text-brand-deep uppercase tracking-wider flex items-center justify-between">
           <span>Recipient WhatsApp / Phone Number</span>
           {phone && (
-            <span className={`text-[10px] font-semibold flex items-center gap-1 ${
+            <span className={`text-[12px] font-semibold flex items-center gap-1 ${
               validation.isValid ? "text-emerald-600" : "text-amber-600"
             }`}>
               {validation.isValid ? (
@@ -187,13 +187,13 @@ export default function SendTrackLinkButton({
         </div>
 
         {phone && !validation.isValid && validation.error && (
-          <p className="text-[11px] text-amber-700 font-medium pt-0.5">
+          <p className="text-[12px] text-amber-700 font-medium pt-0.5">
             {validation.error}
           </p>
         )}
 
         {phone && validation.isValid && (
-          <p className="text-[11px] text-emerald-700 font-medium pt-0.5 flex items-center gap-1">
+          <p className="text-[12px] text-emerald-700 font-medium pt-0.5 flex items-center gap-1">
             <span>Formatted for WhatsApp:</span>
             <span className="font-mono font-bold">{validation.display}</span>
           </p>
@@ -259,7 +259,7 @@ export default function SendTrackLinkButton({
           <button
             type="button"
             onClick={() => setSent(false)}
-            className="text-[11px] font-bold text-emerald-700 hover:underline flex items-center gap-1"
+            className="text-[12px] font-bold text-emerald-700 hover:underline flex items-center gap-1"
           >
             <RefreshCw className="w-3 h-3" /> Resend
           </button>

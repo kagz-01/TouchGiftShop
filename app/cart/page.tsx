@@ -185,7 +185,7 @@ export default function CartPage() {
                     {(item.selectedColor || item.selectedSize) && (
                       <div className="flex items-center gap-2 mt-1">
                         {item.selectedColor && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-brand-muted bg-brand/5 px-2 py-0.5 rounded-full">
+                          <span className="inline-flex items-center gap-1 text-[12px] font-semibold text-brand-muted bg-brand/5 px-2 py-0.5 rounded-full">
                             <span
                               className="w-2 h-2 rounded-full border border-black/10"
                               style={{ backgroundColor: item.selectedColor.toLowerCase() }}
@@ -194,7 +194,7 @@ export default function CartPage() {
                           </span>
                         )}
                         {item.selectedSize && (
-                          <span className="text-[10px] font-semibold text-brand-muted bg-brand/5 px-2 py-0.5 rounded-full">
+                          <span className="text-[12px] font-semibold text-brand-muted bg-brand/5 px-2 py-0.5 rounded-full">
                             {item.selectedSize}
                           </span>
                         )}
@@ -203,7 +203,7 @@ export default function CartPage() {
 
                     {/* Gift Note */}
                     {item.giftNote && (
-                      <p className="text-[11px] text-brand-muted mt-1.5 bg-brand/5 px-2.5 py-1.5 rounded-xl italic line-clamp-1">
+                      <p className="text-[12px] text-brand-muted mt-1.5 bg-brand/5 px-2.5 py-1.5 rounded-xl italic line-clamp-1">
                         🎀 &ldquo;{item.giftNote}&rdquo;
                       </p>
                     )}
@@ -233,7 +233,7 @@ export default function CartPage() {
 
                       <div className="text-right">
                         {item.quantity > 1 && (
-                          <p className="text-[10px] text-brand-muted">
+                          <p className="text-[12px] text-brand-muted">
                             {formatKsh(item.price)} each
                           </p>
                         )}
@@ -284,7 +284,7 @@ export default function CartPage() {
               ].map(({ icon: Icon, text }) => (
                 <div key={text} className="bg-white/80 rounded-2xl p-3 flex flex-col items-center gap-1.5 text-center border border-brand/8">
                   <Icon className="w-4 h-4 text-brand" />
-                  <p className="text-[10px] font-semibold text-brand-muted leading-tight">{text}</p>
+                  <p className="text-[12px] font-semibold text-brand-muted leading-tight">{text}</p>
                 </div>
               ))}
             </div>
@@ -300,13 +300,13 @@ export default function CartPage() {
               {/* Header */}
               <div className="bg-gradient-to-br from-brand-deep to-brand px-6 py-5 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,168,83,0.18),transparent_50%)] pointer-events-none" />
-                <p className="text-[11px] font-bold text-white/60 uppercase tracking-wider mb-1 relative z-10">
+                <p className="text-[12px] font-bold text-white/60 uppercase tracking-wider mb-1 relative z-10">
                   Order Summary
                 </p>
                 <p className="font-display text-3xl font-bold text-white relative z-10">
                   {formatKsh(subtotal)}
                 </p>
-                <p className="text-[11px] text-white/50 mt-1 relative z-10">
+                <p className="text-[12px] text-white/50 mt-1 relative z-10">
                   + delivery fee calculated at checkout
                 </p>
               </div>
@@ -348,7 +348,7 @@ export default function CartPage() {
                   </button>
                 )}
 
-                <p className="text-[10px] text-center text-brand-muted mt-3 leading-relaxed">
+                <p className="text-[12px] text-center text-brand-muted mt-3 leading-relaxed">
                   🔒 Secured by Paystack · M-Pesa · Airtel · Visa/MC · Bank Transfer
                 </p>
               </div>
@@ -379,7 +379,7 @@ export default function CartPage() {
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-lg border-t border-brand/10 px-4 py-3 safe-area-inset-bottom shadow-[0_-8px_30px_rgba(155,27,90,0.12)]">
         <div className="flex items-center justify-between mb-2.5">
           <div>
-            <p className="text-[11px] text-brand-muted font-semibold uppercase tracking-wider">
+            <p className="text-[12px] text-brand-muted font-semibold uppercase tracking-wider">
               {itemCount} item{itemCount === 1 ? "" : "s"}
             </p>
             <p className="font-bold text-lg text-brand-deep">{formatKsh(subtotal)}</p>
@@ -400,7 +400,7 @@ export default function CartPage() {
             </button>
           )}
         </div>
-        <div className="flex items-center justify-center gap-1 text-[10px] text-brand-muted/70">
+        <div className="flex items-center justify-center gap-1 text-[12px] text-brand-muted/70">
           <ShieldCheck className="w-3 h-3" />
           <span>Secured by Paystack</span>
         </div>

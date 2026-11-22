@@ -440,7 +440,7 @@ export default function SubscriptionsPage() {
             {[3, 6, 12].map((months) => (
               <div key={months} className="min-w-0 bg-theme-surface rounded-xl p-2 sm:p-3">
                 <p className="font-display font-bold text-brand text-sm sm:text-base truncate">{fmtKsh(monthlySavings * months)}</p>
-                <p className="text-[10px] sm:text-xs text-theme-muted mt-1 truncate">{months} months</p>
+                <p className="text-[12px] sm:text-xs text-theme-muted mt-1 truncate">{months} months</p>
               </div>
             ))}
           </div>

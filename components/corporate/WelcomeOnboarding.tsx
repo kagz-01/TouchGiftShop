@@ -127,7 +127,7 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
               {STATS.map(s => (
                 <div key={s.label} className="px-4 py-4 text-center">
                   <p className="text-xl font-bold text-gray-900">{s.val}</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5 leading-tight">{s.label}</p>
+                  <p className="text-[12px] text-gray-400 mt-0.5 leading-tight">{s.label}</p>
                 </div>
               ))}
             </div>
@@ -178,7 +178,7 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
                       <p className="text-sm font-bold text-gray-900">{p.headline}</p>
-                      <span className={`hidden sm:block text-[10px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>{p.badge}</span>
+                      <span className={`hidden sm:block text-[12px] font-bold px-2 py-0.5 rounded-full border ${p.badgeColor}`}>{p.badge}</span>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">{p.sub}</p>
                   </div>

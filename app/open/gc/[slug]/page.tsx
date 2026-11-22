@@ -236,7 +236,7 @@ export default function UnboxGiftCardPage() {
             </div>
 
             <div className="relative z-10">
-              <p className="text-white/50 text-[10px] uppercase tracking-widest mb-1">Gift Value</p>
+              <p className="text-white/50 text-[12px] uppercase tracking-widest mb-1">Gift Value</p>
               <p className="font-display text-4xl font-bold italic text-white">KES {Number(giftCard.amount).toLocaleString()}</p>
               {giftCard.sender_name && (
                 <p className="text-white/50 text-xs mt-1">From {giftCard.sender_name}</p>

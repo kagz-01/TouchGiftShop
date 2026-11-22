@@ -16,7 +16,7 @@ export default function BuildHamperPage() {
           </Link>
           <div>
             <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Build a Hamper</h1>
-            <p className="text-[11px] text-brand-muted mt-0.5">Handpick every item · We box it beautifully</p>
+            <p className="text-[12px] text-brand-muted mt-0.5">Handpick every item · We box it beautifully</p>
           </div>
         </div>
       </div>

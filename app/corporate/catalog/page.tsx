@@ -249,7 +249,7 @@ function QuoteModal({ product, onClose }: { product: CatalogProduct; onClose: ()
                   { label: "You Save",    val: formatKsh((base - unit) * qty), color: "text-green-700 dark:text-green-400" },
                 ].map(c => (
                   <div key={c.label} className="text-center">
-                    <p className="text-[10px] text-amber-600 dark:text-amber-400 uppercase font-semibold">{c.label}</p>
+                    <p className="text-[12px] text-amber-600 dark:text-amber-400 uppercase font-semibold">{c.label}</p>
                     <p className={`text-sm font-semibold ${c.color}`}>{c.val}</p>
                   </div>
                 ))}
@@ -384,7 +384,7 @@ function CatalogInner() {
 
         {/* Sidebar */}
         <aside className="hidden xl:flex flex-col w-56 shrink-0 gap-1 sticky top-[148px] self-start max-h-[calc(100vh-160px)] overflow-y-auto">
-          <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider px-2 mb-2">Categories</p>
+          <p className="text-[12px] text-gray-400 font-bold uppercase tracking-wider px-2 mb-2">Categories</p>
           {CATEGORIES.map(cat => (
             <button key={cat.key} onClick={() => handleCategory(cat.key)}
               className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left transition-all ${
@@ -395,8 +395,8 @@ function CatalogInner() {
               <span className="text-base w-5 text-center shrink-0 mt-0.5">{cat.emoji}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold leading-tight">{cat.label}</p>
-                <p className="text-[10px] text-gray-400 dark:text-zinc-500 mt-0.5 leading-tight">{cat.desc}</p>
-                {cat.moq && <p className="text-[9px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">MOQ {cat.moq} units</p>}
+                <p className="text-[12px] text-gray-400 dark:text-zinc-500 mt-0.5 leading-tight">{cat.desc}</p>
+                {cat.moq && <p className="text-[12px] font-bold text-amber-600 dark:text-amber-400 mt-0.5">MOQ {cat.moq} units</p>}
               </div>
             </button>
           ))}
@@ -410,7 +410,7 @@ function CatalogInner() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">🎁 Pack Configurator</p>
-                <p className="text-[11px] text-amber-800 dark:text-amber-400/90 mb-0 leading-relaxed">
+                <p className="text-[12px] text-amber-800 dark:text-amber-400/90 mb-0 leading-relaxed">
                   Bulk hampers with instant proforma quotes.
                 </p>
               </div>

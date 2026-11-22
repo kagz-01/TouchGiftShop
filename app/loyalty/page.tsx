@@ -211,7 +211,7 @@ export default function LoyaltyPage() {
                 ].map((stat) => (
                   <div key={stat.label} className="min-w-0 bg-white/10 backdrop-blur-sm rounded-2xl p-3 text-center">
                     <p className="font-display font-bold text-base sm:text-lg truncate">{stat.value}</p>
-                    <p className="text-[10px] text-white/60 uppercase tracking-wider truncate">{stat.label}</p>
+                    <p className="text-[12px] text-white/60 uppercase tracking-wider truncate">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -221,7 +221,7 @@ export default function LoyaltyPage() {
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
               {nextTierConfig ? (
                 <>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/60 mb-1">Progress to {nextTierConfig.name}</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.15em] text-white/60 mb-1">Progress to {nextTierConfig.name}</p>
                   <p className="font-display font-bold text-2xl mb-4">
                     {data?.totalOrders} / {nextTierConfig.minOrders} orders
                   </p>
@@ -290,7 +290,7 @@ export default function LoyaltyPage() {
                   <div>
                     <p className="font-semibold text-theme-heading text-sm">{item.label}</p>
                     <p className="text-xs text-theme-muted">{item.detail}</p>
-                    {item.highlight && <span className="text-[10px] font-bold text-gold uppercase tracking-wider">Best way to earn</span>}
+                    {item.highlight && <span className="text-[12px] font-bold text-gold uppercase tracking-wider">Best way to earn</span>}
                   </div>
                 </div>
               ))}
@@ -341,7 +341,7 @@ export default function LoyaltyPage() {
                 <span>You pay</span>
                 <span>KSh 4,000</span>
               </div>
-              <p className="text-[11px] text-theme-muted pt-1">Points are applied at checkout — just slide the redemption toggle.</p>
+              <p className="text-[12px] text-theme-muted pt-1">Points are applied at checkout — just slide the redemption toggle.</p>
             </div>
 
             <Link href="/shop" className="block w-full py-3 rounded-xl bg-brand/10 text-brand font-semibold text-sm text-center hover:bg-brand/20 transition-colors">
@@ -371,7 +371,7 @@ export default function LoyaltyPage() {
                 >
                   {isCurrent && (
                     <div className="absolute -top-2.5 left-4">
-                      <span className="px-3 py-0.5 bg-brand text-white rounded-full text-[10px] font-bold uppercase tracking-wider">Current</span>
+                      <span className="px-3 py-0.5 bg-brand text-white rounded-full text-[12px] font-bold uppercase tracking-wider">Current</span>
                     </div>
                   )}
                   {isLocked && (
