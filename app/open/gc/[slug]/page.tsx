@@ -193,7 +193,7 @@ export default function UnboxGiftCardPage() {
             </div>
           </div>
 
-          <h1 className="font-display text-4xl font-bold italic mb-3">
+          <h1 className="font-display text-4xl font-bold mb-3">
             A Gift{giftCard.sender_name ? ` from ${giftCard.sender_name}` : " for You"}
           </h1>
           <p className="text-white/50 text-sm mb-8">
@@ -334,7 +334,7 @@ export default function UnboxGiftCardPage() {
             <span className="text-emerald-400 text-xs font-bold uppercase tracking-wide">Funds Secured!</span>
           </div>
 
-          <h2 className="font-display text-3xl font-bold italic mb-3">It's in your wallet!</h2>
+          <h2 className="font-display text-3xl font-bold mb-3">It's in your wallet!</h2>
           <p className="text-white/60 text-sm leading-relaxed mb-3">
             <span className="text-emerald-400 font-bold text-lg">KES {Number(giftCard.amount).toLocaleString()}</span> has been added to your TouchGift Wallet.
           </p>

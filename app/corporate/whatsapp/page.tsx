@@ -690,7 +690,7 @@ export default function WhatsAppBotPage() {
             {/* Header */}
             <div className="sticky top-0 bg-[#14080D]/90 backdrop-blur-md px-6 py-4 border-b border-white/10 flex items-center justify-between z-10">
               <div>
-                <h2 className="font-display italic text-lg font-bold text-amber-400">Edit Flow</h2>
+                <h2 className="font-display text-lg font-bold text-amber-400">Edit Flow</h2>
                 <p className="text-xs text-white/60">Customize the message template for this flow</p>
               </div>
               <button onClick={() => setEditingFlow(null)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">

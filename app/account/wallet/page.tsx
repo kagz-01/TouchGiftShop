@@ -163,7 +163,7 @@ export default function WalletPage() {
               <Wallet className="w-5 h-5 text-emerald-400" />
             </div>
             <div>
-              <h1 className="font-display italic font-bold text-white text-lg leading-tight">My Wallet</h1>
+              <h1 className="font-display font-bold text-white text-lg leading-tight">My Wallet</h1>
               <p className="text-[12px] text-emerald-400">TouchGift Balance</p>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function WalletPage() {
               <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(16,185,129,0.15)]">
                 <Wallet className="w-10 h-10 text-emerald-400" />
               </div>
-              <h2 className="font-display italic font-bold text-2xl mb-2">Access Your Wallet</h2>
+              <h2 className="font-display font-bold text-2xl mb-2">Access Your Wallet</h2>
               <p className="text-white/50 text-sm">We'll send you a quick OTP to verify it's you.</p>
             </div>
 

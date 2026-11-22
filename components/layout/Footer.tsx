@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { showsFullFooter } from "@/lib/footer-paths";
+import { Zap, Camera, EyeOff } from "lucide-react";
 
 /** The registered business behind the storefront. Kept in one place so the
  *  footer, the invoices and the Paystack statements cannot drift apart. */
@@ -99,15 +100,15 @@ export default function Footer() {
         <div className="page-container-capped py-5">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
             <div className="flex items-center justify-center gap-2">
-              <span className="text-xl">⚡</span>
+              <Zap className="w-5 h-5" aria-hidden="true" />
               <p className="text-sm font-semibold">On-time or it&apos;s free</p>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-xl">📸</span>
+              <Camera className="w-5 h-5" aria-hidden="true" />
               <p className="text-sm font-semibold">Photo proof first</p>
             </div>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-xl">🤫</span>
+              <EyeOff className="w-5 h-5" aria-hidden="true" />
               <p className="text-sm font-semibold">Stay anonymous</p>
             </div>
           </div>

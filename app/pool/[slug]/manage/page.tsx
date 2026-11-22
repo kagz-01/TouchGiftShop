@@ -258,7 +258,7 @@ export default function PoolManagePage() {
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="font-display italic font-bold text-white text-lg leading-tight">{pool.title}</h1>
+              <h1 className="font-display font-bold text-white text-lg leading-tight">{pool.title}</h1>
               <p className="text-xs text-rose-400">Organizer Dashboard</p>
             </div>
           </div>
@@ -455,7 +455,7 @@ export default function PoolManagePage() {
             {isCompleted && (
               <div className="bg-gradient-to-r from-rose-600/20 to-orange-500/20 border border-rose-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
                 <div className="text-4xl mb-3">🎉</div>
-                <h3 className="font-display italic text-xl font-bold text-white mb-1">Goal Reached!</h3>
+                <h3 className="font-display text-xl font-bold text-white mb-1">Goal Reached!</h3>
                 <p className="text-white/60 text-sm mb-4">
                   KES {totalRaised.toLocaleString()} collected from {contributions.length} contributors.
                   Time to order the gift!

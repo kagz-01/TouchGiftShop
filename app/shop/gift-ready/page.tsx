@@ -41,7 +41,7 @@ export default function GiftReadyPage() {
           <CheckCircle2 className="w-10 h-10 text-emerald-400" />
         </div>
 
-        <h1 className="font-display text-3xl font-bold italic mb-3">Gift Secured!</h1>
+        <h1 className="font-display text-3xl font-bold mb-3">Gift Secured!</h1>
         <p className="text-white/60 text-sm leading-relaxed mb-8">
           Your payment was successful. We've created a magical digital unboxing link for your recipient.
         </p>

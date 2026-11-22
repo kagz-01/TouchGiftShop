@@ -412,7 +412,7 @@ export default function PoolLandingPage() {
               {pool.occasion}
             </div>
           )}
-          <h1 className="font-display text-3xl md:text-4xl font-bold italic text-white leading-tight">{pool.title}</h1>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight">{pool.title}</h1>
           {pool.description && <p className="text-white/60 mt-3 text-sm max-w-sm mx-auto">&ldquo;{pool.description}&rdquo;</p>}
           <div className="mt-4 flex items-center justify-center gap-4">
             <TimeLeft expiresAt={pool.expires_at} />

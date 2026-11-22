@@ -135,7 +135,7 @@ export default function BrandStudio({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-display italic text-xl font-bold mb-2 text-theme-heading">Brand Studio</h3>
+          <h3 className="font-display text-xl font-bold mb-2 text-theme-heading">Brand Studio</h3>
           <p className="text-theme-muted text-sm">Upload your logo and choose brand colors. Preview how they look on gifts.</p>
         </div>
         {saved && (
