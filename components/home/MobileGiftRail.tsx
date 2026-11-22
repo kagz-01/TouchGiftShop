@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Sparkles, Zap, Users, Gift, ChevronRight, ArrowRight } from "lucide-react";
+import { Sparkles, Zap, Users, Gift, ChevronRight, ArrowRight, CreditCard, Building2, Cake, Heart, HandHeart, Baby, Trophy, Flower2, GraduationCap, Gem, Flame, type LucideIcon } from "lucide-react";
 
 /*
   MobileGiftRail
@@ -23,7 +23,7 @@ import { Sparkles, Zap, Users, Gift, ChevronRight, ArrowRight } from "lucide-rea
 
 type GiftTile = {
   id: string;
-  emoji: string;
+  Icon: LucideIcon;
   title: string;
   sub: string;
   href: string;
@@ -35,7 +35,7 @@ type GiftTile = {
 const GIFT_TILES: GiftTile[] = [
   {
     id: "same-day",
-    emoji: "⚡",
+    Icon: Zap,
     title: "Same-Day Gifts",
     sub: "Order before 2 PM",
     href: "/shop?fast_delivery=1",
@@ -45,7 +45,7 @@ const GIFT_TILES: GiftTile[] = [
   },
   {
     id: "hampers",
-    emoji: "🎁",
+    Icon: Gift,
     title: "Gift Hampers",
     sub: "Curated & hand-packed",
     href: "/shop?category=gift-sets",
@@ -55,7 +55,7 @@ const GIFT_TILES: GiftTile[] = [
   },
   {
     id: "perfumes",
-    emoji: "✨",
+    Icon: Sparkles,
     title: "Luxury Perfumes",
     sub: "Designer & authentic",
     href: "/shop?category=perfumes",
@@ -64,7 +64,7 @@ const GIFT_TILES: GiftTile[] = [
   },
   {
     id: "group",
-    emoji: "👥",
+    Icon: Users,
     title: "Pool a Gift",
     sub: "Chip in together",
     href: "/pool/create",
@@ -74,7 +74,7 @@ const GIFT_TILES: GiftTile[] = [
   },
   {
     id: "under3k",
-    emoji: "💳",
+    Icon: CreditCard,
     title: "Under KSh 3,000",
     sub: "Great gifts, any budget",
     href: "/shop?budget=under-3k",
@@ -83,7 +83,7 @@ const GIFT_TILES: GiftTile[] = [
   },
   {
     id: "corporate",
-    emoji: "🏢",
+    Icon: Building2,
     title: "Corporate Gifts",
     sub: "Branded, invoiced, bulk",
     href: "/corporate/catalog",
@@ -93,16 +93,16 @@ const GIFT_TILES: GiftTile[] = [
   },
 ];
 
-type OccasionChip = { label: string; emoji: string; href: string };
+type OccasionChip = { label: string; Icon: LucideIcon; href: string };
 const OCCASION_CHIPS: OccasionChip[] = [
-  { label: "Birthday", emoji: "🎂", href: "/shop?occasion=birthday" },
-  { label: "Romance", emoji: "💕", href: "/shop?occasion=romance" },
-  { label: "Apology", emoji: "🙏", href: "/shop?occasion=apology" },
-  { label: "New Baby", emoji: "👶", href: "/shop?occasion=new-baby" },
-  { label: "Promotion", emoji: "🏆", href: "/shop?occasion=promotion" },
-  { label: "Get Well", emoji: "💐", href: "/shop?occasion=get-well" },
-  { label: "Graduation", emoji: "🎓", href: "/shop?occasion=graduation" },
-  { label: "Wedding", emoji: "💍", href: "/shop?occasion=wedding" },
+  { label: "Birthday", Icon: Cake, href: "/shop?occasion=birthday" },
+  { label: "Romance", Icon: Heart, href: "/shop?occasion=romance" },
+  { label: "Apology", Icon: HandHeart, href: "/shop?occasion=apology" },
+  { label: "New Baby", Icon: Baby, href: "/shop?occasion=new-baby" },
+  { label: "Promotion", Icon: Trophy, href: "/shop?occasion=promotion" },
+  { label: "Get Well", Icon: Flower2, href: "/shop?occasion=get-well" },
+  { label: "Graduation", Icon: GraduationCap, href: "/shop?occasion=graduation" },
+  { label: "Wedding", Icon: Gem, href: "/shop?occasion=wedding" },
 ];
 
 export function MobileGiftRail() {
@@ -148,7 +148,7 @@ export function MobileGiftRail() {
             )}
             {/* Emoji */}
             <span className="text-2xl leading-none" aria-hidden="true">
-              {tile.emoji}
+              <tile.Icon className="w-7 h-7" strokeWidth={1.75} />
             </span>
             {/* Text */}
             <div>
@@ -171,7 +171,7 @@ export function MobileGiftRail() {
               href={chip.href}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 border border-transparent hover:border-brand/30 text-xs font-semibold whitespace-nowrap text-gray-800 dark:text-zinc-200 min-h-[44px] transition-colors"
             >
-              <span aria-hidden="true">{chip.emoji}</span>
+              <chip.Icon className="w-4 h-4" aria-hidden="true" />
               {chip.label}
             </Link>
           ))}
@@ -225,10 +225,10 @@ export function QuickGiftFAB({ sentinelId = "hero-sentinel" }: { sentinelId?: st
 */
 type TabKey = "trending" | "build" | "corporate";
 
-const MOBILE_TABS: { key: TabKey; label: string; emoji: string }[] = [
-  { key: "trending", label: "Trending", emoji: "🔥" },
-  { key: "build", label: "Build a Gift", emoji: "🎁" },
-  { key: "corporate", label: "Corporate", emoji: "🏢" },
+const MOBILE_TABS: { key: TabKey; label: string; Icon: LucideIcon }[] = [
+  { key: "trending", label: "Trending", Icon: Flame },
+  { key: "build", label: "Build a Gift", Icon: Gift },
+  { key: "corporate", label: "Corporate", Icon: Building2 },
 ];
 
 export function MobileHomeTabs({
@@ -264,7 +264,7 @@ export function MobileHomeTabs({
               aria-selected={active === tab.key}
               role="tab"
             >
-              <span aria-hidden="true">{tab.emoji}</span>
+              <tab.Icon className="w-4 h-4" aria-hidden="true" />
               {tab.label}
             </button>
           ))}
