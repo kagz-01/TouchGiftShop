@@ -178,7 +178,7 @@ function LineRow({
               const v = parseInt(e.target.value, 10);
               if (Number.isFinite(v) && v > 0) onChange(line.id, { qty: v });
             }}
-            className="w-10 text-center text-sm font-semibold bg-transparent text-zinc-900 dark:text-zinc-100 outline-none"
+            className="w-10 text-center text-sm font-semibold bg-transparent text-zinc-900 dark:text-zinc-100 outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
           />
           <button
             onClick={() => onChange(line.id, { qty: line.qty + 1 })}
@@ -440,7 +440,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
                 placeholder="Acme Ltd"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
-                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none"
+                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
               />
             </div>
           </label>
@@ -455,7 +455,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
                 placeholder="you@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none"
+                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
               />
             </div>
           </label>
@@ -469,7 +469,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
                 placeholder="+254 7XX XXX XXX"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none"
+                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
               />
             </div>
           </label>
@@ -483,7 +483,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
                 placeholder="Any special requirements, branding specs, event date..."
                 value={globalNotes}
                 onChange={(e) => setGlobalNotes(e.target.value)}
-                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none resize-none"
+                className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-brand/50 resize-none"
               />
             </div>
           </label>
@@ -536,7 +536,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
             placeholder="Search products…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none"
+            className="flex-1 text-sm bg-transparent text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
           />
           {search && (
             <button onClick={() => setSearch("")} className="text-zinc-400 hover:text-zinc-600">

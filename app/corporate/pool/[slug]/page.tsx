@@ -267,7 +267,7 @@ export default function CorporatePoolPage() {
                     required
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base tabular-nums outline-none transition-colors"
+                    className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-brand/50 transition-colors"
                     style={{ borderColor: "var(--portal-border)", color: "var(--portal-text)" }}
                   />
                 </div>
@@ -283,7 +283,7 @@ export default function CorporatePoolPage() {
                       maxLength={100}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base outline-none transition-colors"
+                      className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-brand/50 transition-colors"
                       style={{ borderColor: "var(--portal-border)", color: "var(--portal-text)" }}
                     />
                   </div>
@@ -299,7 +299,7 @@ export default function CorporatePoolPage() {
                       placeholder="07…"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base outline-none transition-colors"
+                      className="mt-1.5 w-full rounded-xl border bg-transparent px-4 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-brand/50 transition-colors"
                       style={{ borderColor: "var(--portal-border)", color: "var(--portal-text)" }}
                     />
                   </div>
@@ -315,7 +315,7 @@ export default function CorporatePoolPage() {
                     maxLength={500}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="mt-1.5 w-full resize-y rounded-xl border bg-transparent px-4 py-3 text-base outline-none transition-colors"
+                    className="mt-1.5 w-full resize-y rounded-xl border bg-transparent px-4 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-brand/50 transition-colors"
                     style={{ borderColor: "var(--portal-border)", color: "var(--portal-text)" }}
                   />
                 </div>

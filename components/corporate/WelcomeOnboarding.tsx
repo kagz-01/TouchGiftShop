@@ -12,6 +12,7 @@
  */
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { Gift, Package, Users, Target, ChevronRight, X, Sparkles, Zap } from "lucide-react";
 
 const STORAGE_KEY = "tg_corp_welcomed_v1";
@@ -84,10 +85,12 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
     onNavigate(tabId);
   }
 
+  useEscapeKey(dismiss, visible);
+
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8" role="dialog" aria-modal="true" aria-label="Welcome to TouchGift for Business">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={dismiss} />
 
@@ -95,7 +98,7 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
       <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
 
         {/* Dismiss */}
-        <button onClick={dismiss} className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+        <button onClick={dismiss} className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
           <X className="w-4 h-4 text-gray-500" />
         </button>
 
