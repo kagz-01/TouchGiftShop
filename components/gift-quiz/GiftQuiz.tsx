@@ -2,20 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Baby, BadgeDollarSign, Banknote, BookOpen, Briefcase, Cake, CalendarDays, Church, Coins, Dices, Flower2, Gem, Gift, GraduationCap, HandHeart, Handshake, Heart, House, Shirt, Smartphone, Smile, Sparkles, Star, TreePine, UserRound, Users, Wallet, Wine, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getRecommendation, type QuizAnswer } from "@/lib/gift-quiz";
 
 type QuizOption = {
   value: string;
   label: string;
-  emoji: string;
+  Icon: LucideIcon;
   description?: string;
 };
 
 type QuizStep = {
   id: string;
   question: string;
-  emoji: string;
+  Icon: LucideIcon;
   multiple?: boolean;
   options: QuizOption[];
 };
@@ -24,60 +25,60 @@ const STEPS: QuizStep[] = [
   {
     id: "recipient",
     question: "Who are you gifting?",
-    emoji: "🎁",
+    Icon: Gift,
     options: [
-      { value: "her", label: "For Her", emoji: "👩", description: "Girlfriend, wife, sister, or mum" },
-      { value: "him", label: "For Him", emoji: "👨", description: "Boyfriend, husband, brother, or dad" },
-      { value: "couple", label: "A Couple", emoji: "👫", description: "Wedding, anniversary, or housewarming" },
-      { value: "parents", label: "Parents", emoji: "👴👵", description: "Mum, dad, or grandparents" },
-      { value: "child", label: "A Child", emoji: "🧒", description: "Niece, nephew, or your own" },
-      { value: "baby", label: "A Baby", emoji: "👶", description: "Newborn or baby shower" },
-      { value: "colleague", label: "Colleague", emoji: "👔", description: "Boss, coworker, or employee" },
-      { value: "friend", label: "Friend", emoji: "🤝", description: "Bestie, classmate, or neighbour" },
+      { value: "her", label: "For Her", Icon: UserRound, description: "Girlfriend, wife, sister, or mum" },
+      { value: "him", label: "For Him", Icon: UserRound, description: "Boyfriend, husband, brother, or dad" },
+      { value: "couple", label: "A Couple", Icon: Users, description: "Wedding, anniversary, or housewarming" },
+      { value: "parents", label: "Parents", Icon: Users, description: "Mum, dad, or grandparents" },
+      { value: "child", label: "A Child", Icon: Smile, description: "Niece, nephew, or your own" },
+      { value: "baby", label: "A Baby", Icon: Baby, description: "Newborn or baby shower" },
+      { value: "colleague", label: "Colleague", Icon: Briefcase, description: "Boss, coworker, or employee" },
+      { value: "friend", label: "Friend", Icon: Handshake, description: "Bestie, classmate, or neighbour" },
     ],
   },
   {
     id: "occasion",
     question: "What's the occasion?",
-    emoji: "📅",
+    Icon: CalendarDays,
     options: [
-      { value: "birthday", label: "Birthday", emoji: "🎂" },
-      { value: "wedding", label: "Wedding", emoji: "💒" },
-      { value: "anniversary", label: "Anniversary", emoji: "💍" },
-      { value: "baby-shower", label: "Baby Shower", emoji: "🍼" },
-      { value: "graduation", label: "Graduation", emoji: "🎓" },
-      { value: "valentines", label: "Valentine's Day", emoji: "❤️" },
-      { value: "christmas", label: "Christmas", emoji: "🎄" },
-      { value: "thank-you", label: "Thank You", emoji: "🙏" },
-      { value: "just-because", label: "Just Because", emoji: "💝" },
-      { value: "any", label: "No Occasion", emoji: "✨" },
+      { value: "birthday", label: "Birthday", Icon: Cake },
+      { value: "wedding", label: "Wedding", Icon: Church },
+      { value: "anniversary", label: "Anniversary", Icon: Gem },
+      { value: "baby-shower", label: "Baby Shower", Icon: Baby },
+      { value: "graduation", label: "Graduation", Icon: GraduationCap },
+      { value: "valentines", label: "Valentine's Day", Icon: Heart },
+      { value: "christmas", label: "Christmas", Icon: TreePine },
+      { value: "thank-you", label: "Thank You", Icon: HandHeart },
+      { value: "just-because", label: "Just Because", Icon: Gift },
+      { value: "any", label: "No Occasion", Icon: Sparkles },
     ],
   },
   {
     id: "budget",
     question: "What's your budget?",
-    emoji: "💰",
+    Icon: Wallet,
     options: [
-      { value: "under-2k", label: "Under KSh 2,000", emoji: "💵", description: "Thoughtful & affordable" },
-      { value: "2k-5k", label: "KSh 2,000 - 5,000", emoji: "💵💵", description: "Sweet spot for most gifts" },
-      { value: "5k-10k", label: "KSh 5,000 - 10,000", emoji: "💵💵💵", description: "Premium gifting" },
-      { value: "10k+", label: "Over KSh 10,000", emoji: "💎", description: "Go all out" },
-      { value: "any", label: "Surprise Me", emoji: "🎲", description: "Show me everything" },
+      { value: "under-2k", label: "Under KSh 2,000", Icon: Coins, description: "Thoughtful & affordable" },
+      { value: "2k-5k", label: "KSh 2,000 - 5,000", Icon: Banknote, description: "Sweet spot for most gifts" },
+      { value: "5k-10k", label: "KSh 5,000 - 10,000", Icon: BadgeDollarSign, description: "Premium gifting" },
+      { value: "10k+", label: "Over KSh 10,000", Icon: Gem, description: "Go all out" },
+      { value: "any", label: "Surprise Me", Icon: Dices, description: "Show me everything" },
     ],
   },
   {
     id: "interests",
     question: "What do they love?",
-    emoji: "💫",
+    Icon: Sparkles,
     multiple: true,
     options: [
-      { value: "food", label: "Food & Drinks", emoji: "🍷" },
-      { value: "wellness", label: "Wellness & Spa", emoji: "🧖" },
-      { value: "fashion", label: "Fashion & Style", emoji: "👗" },
-      { value: "tech", label: "Tech & Gadgets", emoji: "📱" },
-      { value: "books", label: "Books & Learning", emoji: "📚" },
-      { value: "home", label: "Home & Living", emoji: "🏠" },
-      { value: "experience", label: "Experiences", emoji: "🌟" },
+      { value: "food", label: "Food & Drinks", Icon: Wine },
+      { value: "wellness", label: "Wellness & Spa", Icon: Flower2 },
+      { value: "fashion", label: "Fashion & Style", Icon: Shirt },
+      { value: "tech", label: "Tech & Gadgets", Icon: Smartphone },
+      { value: "books", label: "Books & Learning", Icon: BookOpen },
+      { value: "home", label: "Home & Living", Icon: House },
+      { value: "experience", label: "Experiences", Icon: Star },
     ],
   },
 ];
@@ -156,7 +157,7 @@ export default function GiftQuiz() {
 
         {/* Question */}
         <div className="text-center mb-8 animate-fade-in">
-          <span className="text-5xl mb-4 block animate-float">{currentStep.emoji}</span>
+          <currentStep.Icon className="w-12 h-12 mb-4 mx-auto text-brand animate-float" aria-hidden="true" />
           <h2 className="font-display text-2xl md:text-3xl font-bold mb-2">
             {currentStep.question}
           </h2>
@@ -188,7 +189,7 @@ export default function GiftQuiz() {
               >
                 <div className="flex flex-col items-center text-center gap-2">
                   <span className="text-3xl group-hover:scale-110 transition-transform">
-                    {option.emoji}
+                    <option.Icon className="w-8 h-8 text-brand" aria-hidden="true" />
                   </span>
                   <div>
                     <p className={cn(
@@ -241,7 +242,7 @@ export default function GiftQuiz() {
                   : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
               )}
             >
-              Find My Gift 🎁
+              Find My Gift
             </Link>
           ) : (
             <button
