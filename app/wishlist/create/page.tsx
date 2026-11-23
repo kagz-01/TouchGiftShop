@@ -157,7 +157,7 @@ export default function CreateWishlistPage() {
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
               <label className="block text-sm font-semibold text-gray-700 mb-2">A note for your gifters</label>
               <textarea
-                placeholder={`e.g. "I'd love anything from my birthday list — thanks so much! 🥰"`}
+                placeholder={`e.g. "I'd love anything from my birthday list — thanks so much!"`}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={4}
@@ -202,7 +202,7 @@ export default function CreateWishlistPage() {
             </div>
 
             <div>
-              <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">Wishlist Created! 🎉</h2>
+              <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">Wishlist Created!</h2>
               <p className="text-gray-500 text-sm max-w-xs mx-auto">
                 Now browse the shop and heart anything you love. Your registry is ready to share!
               </p>

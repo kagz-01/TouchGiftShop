@@ -291,7 +291,7 @@ export default function PoolManagePage() {
              isActive    ? <Flame className="w-3.5 h-3.5" />       :
              isRefunded  ? <RotateCcw className="w-3.5 h-3.5" />   :
                            <AlertCircle className="w-3.5 h-3.5" />}
-            {isCompleted ? "🎉 Goal reached! Ready to order the gift." :
+            {isCompleted ? "Goal reached! Ready to order the gift." :
              isActive    ? <span>Live · <TimeLeft expiresAt={pool.expires_at} /></span> :
              isRefunded  ? "All contributions refunded." :
                            "Pool expired — choose what to do next"}
@@ -370,10 +370,10 @@ export default function PoolManagePage() {
               </div>
               <div className="space-y-3">
                 {[
-                  { pct: 25, label: "Quarter way!", reward: "First shout-out unlocked 🎉", icon: "🌱" },
-                  { pct: 50, label: "Halfway there!", reward: "Share badge unlocked 🏅", icon: "⚡" },
-                  { pct: 75, label: "Almost there!", reward: "Express delivery eligible 🚀", icon: "🔥" },
-                  { pct: 100, label: "Goal reached!", reward: "Order the gift now! 🎁", icon: "🏆" },
+                  { pct: 25, label: "Quarter way!", reward: "First shout-out unlocked", icon: "🌱" },
+                  { pct: 50, label: "Halfway there!", reward: "Share badge unlocked", icon: "⚡" },
+                  { pct: 75, label: "Almost there!", reward: "Express delivery eligible", icon: "🔥" },
+                  { pct: 100, label: "Goal reached!", reward: "Order the gift now!", icon: "🏆" },
                 ].map((m) => {
                   const unlocked = unlockedMilestones.includes(m.pct);
                   return (
@@ -685,7 +685,7 @@ export default function PoolManagePage() {
         {activeTab === "messages" && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">Wall of Love 💌</h2>
+              <h2 className="text-lg font-bold text-white">Wall of Love</h2>
               <span className="text-xs text-white/40">{messages.length} messages</span>
             </div>
 
@@ -803,7 +803,7 @@ export default function PoolManagePage() {
                       <p className="text-sm font-bold text-emerald-400">KES {c.amount.toLocaleString()}</p>
                       <p className={`text-[12px] font-semibold ${
                         c.is_verified ? "text-emerald-400" : "text-amber-400"
-                      }`}>{c.is_verified ? "✓ Verified" : "⏳ Pending"}</p>
+                      }`}>{c.is_verified ? "✓ Verified" : "Pending"}</p>
                       {c.refund_status && (
                         <p className={`text-[12px] font-semibold ${
                           c.refund_status === "completed" ? "text-blue-400" :

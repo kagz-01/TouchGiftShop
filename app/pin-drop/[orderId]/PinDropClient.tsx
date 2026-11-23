@@ -278,7 +278,7 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
                     Saving...
                   </span>
                 ) : (
-                  "Confirm my pin 📍"
+                  "Confirm my pin"
                 )}
               </button>
             </div>

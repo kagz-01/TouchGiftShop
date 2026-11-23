@@ -11,6 +11,7 @@ import {
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import QRCode from "react-qr-code";
+import { stripLeadingEmoji } from "@/lib/display";
 
 type Pool = {
   id: string; slug: string; title: string; description: string | null;
@@ -103,7 +104,7 @@ function PollBallot({
               </div>
               <div className="text-right flex-shrink-0 ml-4">
                 {isLeading && grandTotal > 0 && (
-                  <div className="text-[12px] font-bold text-rose-300 mb-0.5 animate-pulse">🔥 Leading</div>
+                  <div className="text-[12px] font-bold text-rose-300 mb-0.5 animate-pulse">Leading</div>
                 )}
                 <span className={`text-lg font-bold ${isLeading && grandTotal > 0 ? "text-rose-300" : "text-white/60"}`}>
                   {pct}%
@@ -151,8 +152,8 @@ function ProgressBar({ current, target }: { current: number; target: number }) {
       </div>
       <div className="flex justify-between mt-1.5">
         <span className="text-xs font-bold text-rose-400">{pct}% funded</span>
-        {pct >= 80 && pct < 100 && <span className="text-xs font-semibold text-gold animate-pulse">Almost there! 🔥</span>}
-        {pct >= 100 && <span className="text-xs font-bold text-emerald-400">🎉 Goal reached!</span>}
+        {pct >= 80 && pct < 100 && <span className="text-xs font-semibold text-gold animate-pulse">Almost there!</span>}
+        {pct >= 100 && <span className="text-xs font-bold text-emerald-400">Goal reached!</span>}
       </div>
     </div>
   );
@@ -192,8 +193,8 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
 
       <div className="space-y-2 max-h-52 overflow-y-auto pr-1">
         {contributions.map((c, i) => {
-          const name = c.is_ghost ? "👻 Anonymous" :
-            privacyMode === "anonymous" || c.is_anonymous ? "💛 Contributor" :
+          const name = c.is_ghost ? "Anonymous" :
+            privacyMode === "anonymous" || c.is_anonymous ? "Contributor" :
             c.contributor_name ?? "Someone";
           const timeAgo = (() => {
             const diff = Date.now() - new Date(c.created_at).getTime();
@@ -409,7 +410,7 @@ export default function PoolLandingPage() {
           </div>
           {pool.occasion && (
             <div className="inline-block px-3 py-1 bg-rose-500/15 rounded-full text-rose-300 text-xs font-semibold mb-3 border border-rose-500/20">
-              {pool.occasion}
+              {stripLeadingEmoji(pool.occasion)}
             </div>
           )}
           <h1 className="font-display text-3xl md:text-4xl font-bold text-white leading-tight">{pool.title}</h1>
@@ -444,7 +445,7 @@ export default function PoolLandingPage() {
               ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
               : "bg-red-500/10 text-red-400 border border-red-500/20"
           }`}>
-            {isCompleted ? "🎉 This pool reached its goal!" : pool.status === "expired" ? "⏰ This pool has expired" : "This pool is closed"}
+            {isCompleted ? "This pool reached its goal!" : pool.status === "expired" ? "This pool has expired" : "This pool is closed"}
           </div>
         )}
 
@@ -484,7 +485,7 @@ export default function PoolLandingPage() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-white/40 uppercase tracking-wide">The Gift</p>
-                    <p className="font-semibold text-white">🤫 It&apos;s a surprise!</p>
+                    <p className="font-semibold text-white">It&apos;s a surprise!</p>
                     <p className="text-sm text-white/40">Revealed when delivered</p>
                   </div>
                 </div>

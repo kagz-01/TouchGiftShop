@@ -181,7 +181,7 @@ export default function ContributePage() {
           <div className="relative z-10">
             <p className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-1">Contributing to</p>
             <h1 className="font-display text-xl font-bold text-white">{pool.title}</h1>
-            {pool.gift_name && <p className="text-white/50 text-sm mt-1">🎁 {pool.gift_name}</p>}
+            {pool.gift_name && <p className="text-white/50 text-sm mt-1">{pool.gift_name}</p>}
             <div className="mt-3">
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-white/80 font-semibold">KES {pool.current_balance.toLocaleString()}</span>
