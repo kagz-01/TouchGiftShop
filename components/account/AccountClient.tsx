@@ -9,7 +9,7 @@ import { clearGuest } from "@/lib/guest";
 import { getLoyaltyTier, getNextTier, LOYALTY_TIERS, TIER_LIST } from "@/lib/loyalty";
 import {
   User, ShoppingBag, Gift, Settings, ChevronRight,
-  Camera, Check, Copy, Star, LogOut, Bell, Eye, EyeOff
+  Camera, Check, Copy, Star, LogOut, Bell, Eye, EyeOff, AlertTriangle, Medal, Gem, type LucideIcon
 } from "lucide-react";
 
 interface AccountClientProps {
@@ -44,12 +44,17 @@ const STATUS_LABELS: Record<string, string> = {
   failed: "Payment failed",
 };
 
-const TIER_ICONS: Record<string, string> = {
-  Bronze: "🥉",
-  Silver: "🥈",
-  Gold: "🥇",
-  Platinum: "💎",
+const TIER_ICONS: Record<string, LucideIcon> = {
+  Bronze: Medal,
+  Silver: Medal,
+  Gold: Medal,
+  Platinum: Gem,
 };
+
+function TierIcon({ name, className }: { name: string; className?: string }) {
+  const Icon = TIER_ICONS[name];
+  return Icon ? <Icon className={className} aria-hidden="true" /> : null;
+}
 
 export default function AccountClient({ userId, phone, name, email, avatarUrl }: AccountClientProps) {
   const [activeSection, setActiveSection] = useState("profile");
@@ -242,7 +247,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
       {duplicates.length > 0 && (
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-3">
           <div className="max-w-5xl mx-auto flex items-start gap-3">
-            <span className="text-lg flex-shrink-0">⚠️</span>
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
             <div className="text-xs text-amber-800">
               <p className="font-semibold">You may have another account</p>
               <p className="mt-0.5">
@@ -535,7 +540,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                   <div className="p-6" style={{ background: `linear-gradient(135deg, ${tier.color}15 0%, transparent 100%)` }}>
                     <div className="flex items-center gap-4 mb-5">
                       <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-md flex-shrink-0" style={{ backgroundColor: tier.color + "22", border: `2px solid ${tier.color}44` }}>
-                        {TIER_ICONS[tier.name]}
+                        <TierIcon name={tier.name} className="w-4 h-4 inline-block" />
                       </div>
                       <div>
                         <p className="text-xs font-bold uppercase tracking-wider text-brand-muted">Your current tier</p>
@@ -590,7 +595,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                       const isUnlocked = orderCount >= t.minOrders && totalSpend >= t.minSpend;
                       return (
                         <div key={t.name} className={cn("flex items-center gap-4 p-4 rounded-xl transition-all border-2", isActive ? "border-brand/30" : "bg-surface border-transparent")} style={isActive ? { backgroundColor: t.color + "08" } : {}}>
-                          <span className="text-2xl">{TIER_ICONS[t.name]}</span>
+                          <span className="text-2xl"><TierIcon name={t.name} className="w-6 h-6" /></span>
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <p className="font-bold text-brand-deep text-sm">{t.name}</p>

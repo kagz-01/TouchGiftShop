@@ -7,7 +7,7 @@ import { formatKsh } from "@/lib/utils";
 import { useCart } from "@/lib/cart";
 import type { Product } from "@/lib/types";
 import CartDrawer from "@/components/cart/CartDrawer";
-import { X, Minus, Plus, Sparkles, Zap, ShoppingCart, Check } from "lucide-react";
+import { X, Minus, Plus, Sparkles, Zap, ShoppingCart, Check, Gift } from "lucide-react";
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const router = useRouter();
@@ -157,9 +157,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
             <div className="flex-1 overflow-y-auto p-5 space-y-4">
               {/* Product summary */}
               <div className="bg-white rounded-2xl border border-black/6 p-4 flex items-center gap-4 shadow-sm">
-                <div className="w-14 h-14 bg-brand/8 rounded-xl flex items-center justify-center text-2xl flex-shrink-0">
-                  🎁
-                </div>
+                <div className="w-14 h-14 bg-brand/8 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"><Gift className="w-7 h-7 text-brand" aria-hidden="true" /></div>
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-brand-deep text-sm truncate">{product.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">

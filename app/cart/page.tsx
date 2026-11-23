@@ -20,7 +20,7 @@ import {
   Zap,
   Tag,
   X,
-  Check,
+  Check, Lock
 } from "lucide-react";
 import PackagingDecision, { type PackagingMode } from "@/components/checkout/PackagingDecision";
 import LoyaltyCartUpsell from "@/components/cart/LoyaltyCartUpsell";
@@ -160,9 +160,7 @@ export default function CartPage() {
                         sizes="(max-width: 768px) 80px, 96px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-3xl">
-                        🎁
-                      </div>
+                      <div className="w-full h-full flex items-center justify-center text-3xl"><Gift className="w-8 h-8 text-brand/50" aria-hidden="true" /></div>
                     )}
                   </div>
 
@@ -204,7 +202,7 @@ export default function CartPage() {
                     {/* Gift Note */}
                     {item.giftNote && (
                       <p className="text-[12px] text-brand-muted mt-1.5 bg-brand/5 px-2.5 py-1.5 rounded-xl italic line-clamp-1">
-                        🎀 &ldquo;{item.giftNote}&rdquo;
+                        &ldquo;{item.giftNote}&rdquo;
                       </p>
                     )}
 
@@ -349,7 +347,7 @@ export default function CartPage() {
                 )}
 
                 <p className="text-[12px] text-center text-brand-muted mt-3 leading-relaxed">
-                  🔒 Secured by Paystack · M-Pesa · Airtel · Visa/MC · Bank Transfer
+                  <Lock className="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" aria-hidden="true" />Secured by Paystack · M-Pesa · Airtel · Visa/MC · Bank Transfer
                 </p>
               </div>
             </div>

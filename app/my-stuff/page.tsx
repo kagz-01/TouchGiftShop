@@ -6,15 +6,16 @@ import GiftHistoryDashboard from "@/components/discovery/GiftHistoryDashboard";
 import TasteQuiz from "@/components/discovery/TasteQuiz";
 import SmartReorderBanner from "@/components/discovery/SmartReorderBanner";
 import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
+import { House, ScrollText, Target, RefreshCw, Heart, CreditCard, Package, Clock, type LucideIcon } from "lucide-react";
 
 type Tab = "overview" | "history" | "taste" | "reorder" | "reminders";
 
-const TABS: Array<{ id: Tab; label: string; icon: string }> = [
-  { id: "overview", label: "Overview", icon: "🏠" },
-  { id: "history", label: "Gift History", icon: "📜" },
-  { id: "taste", label: "Taste Profiles", icon: "🎯" },
-  { id: "reorder", label: "Smart Reorder", icon: "🔄" },
-  { id: "reminders", label: "Reminders", icon: "⏰" },
+const TABS: Array<{ id: Tab; label: string; Icon: LucideIcon }> = [
+  { id: "overview", label: "Overview", Icon: House },
+  { id: "history", label: "Gift History", Icon: ScrollText },
+  { id: "taste", label: "Taste Profiles", Icon: Target },
+  { id: "reorder", label: "Smart Reorder", Icon: RefreshCw },
+  { id: "reminders", label: "Reminders", Icon: Clock },
 ];
 
 export default function MyStuffPage() {
@@ -50,7 +51,7 @@ export default function MyStuffPage() {
                   : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
               }`}
             >
-              <span>{tab.icon}</span>
+              <tab.Icon className="w-4 h-4" aria-hidden="true" />
               {tab.label}
             </button>
           ))}
@@ -68,28 +69,28 @@ export default function MyStuffPage() {
                 href="/wishlist"
                 className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-pink-200 hover:bg-pink-50 transition-colors"
               >
-                <span className="text-2xl">💝</span>
+                <Heart className="w-6 h-6" aria-hidden="true" />
                 <span className="text-xs font-medium text-gray-700">Wishlist</span>
               </Link>
               <Link
                 href="/reminders"
                 className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition-colors"
               >
-                <span className="text-2xl">⏰</span>
+                <Clock className="w-6 h-6" aria-hidden="true" />
                 <span className="text-xs font-medium text-gray-700">Reminders</span>
               </Link>
               <Link
                 href="/gift-cards"
                 className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-brand/20 hover:bg-rose-50 transition-colors"
               >
-                <span className="text-2xl">💳</span>
+                <CreditCard className="w-6 h-6" aria-hidden="true" />
                 <span className="text-xs font-medium text-gray-700">Gift Cards</span>
               </Link>
               <Link
                 href="/orders"
                 className="flex flex-col items-center gap-2 rounded-xl bg-white p-4 border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-colors"
               >
-                <span className="text-2xl">📦</span>
+                <Package className="w-6 h-6" aria-hidden="true" />
                 <span className="text-xs font-medium text-gray-700">Orders</span>
               </Link>
             </div>

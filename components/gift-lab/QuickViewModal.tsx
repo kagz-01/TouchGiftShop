@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
-import { X, ShoppingBag } from "lucide-react";
+import { X, ShoppingBag, Gift } from "lucide-react";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -76,7 +76,7 @@ export default function QuickViewModal({ product, isOpen, onClose, onAdd, disabl
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-6xl" aria-hidden="true">🎁</div>
+            <div className="w-full h-full flex items-center justify-center "><Gift className="w-14 h-14 text-brand/50" aria-hidden="true" /></div>
           )}
         </div>
 

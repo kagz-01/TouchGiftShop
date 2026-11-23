@@ -278,7 +278,7 @@ export default function Footer() {
           <div className="mt-4 pt-5 border-t border-gray-700/30 flex flex-col md:flex-row items-center justify-between gap-3">
             <div className="text-xs text-on-theme">
               <p>
-                © {new Date().getFullYear()} TouchGift — Just Say It 🎁
+                © {new Date().getFullYear()} TouchGift — Just Say It
               </p>
               {/* TouchGift is the storefront; Touchline Branding is the
                   registered business selling through it. Naming the entity is
