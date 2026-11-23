@@ -156,7 +156,7 @@ export default function WhiteLabelPortal() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-brand text-white font-bold text-[10px] uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full bg-brand text-white font-bold text-[12px] uppercase tracking-wider">
                 B2B Agency Reseller Platform
               </span>
               <span className="text-xs font-semibold text-gray-500 dark:text-zinc-400">
@@ -226,7 +226,7 @@ export default function WhiteLabelPortal() {
                 title="Desktop View"
               >
                 <Monitor className="w-3.5 h-3.5" />
-                <span className="text-[11px]">Desktop</span>
+                <span className="text-[12px]">Desktop</span>
               </button>
               <button
                 type="button"
@@ -239,7 +239,7 @@ export default function WhiteLabelPortal() {
                 title="Mobile View"
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span className="text-[11px]">Mobile</span>
+                <span className="text-[12px]">Mobile</span>
               </button>
             </div>
           )}
@@ -317,12 +317,12 @@ export default function WhiteLabelPortal() {
 
                 <div className="mt-4 flex items-center justify-center gap-2">
                   <span
-                    className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
+                    className="text-[12px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white"
                     style={{ backgroundColor: brandColor }}
                   >
                     Client Procurement Active
                   </span>
-                  <span className="text-[10px] text-gray-500 font-medium">
+                  <span className="text-[12px] text-gray-500 font-medium">
                     LPO & Direct Bank Settlement
                   </span>
                 </div>
@@ -334,7 +334,7 @@ export default function WhiteLabelPortal() {
                   <h3 className="font-bold text-sm text-gray-900 dark:text-white">
                     Corporate Hampers & Brandables
                   </h3>
-                  <span className="text-[11px] text-gray-500">Wholesale Volume Guaranteed</span>
+                  <span className="text-[12px] text-gray-500">Wholesale Volume Guaranteed</span>
                 </div>
 
                 <div className={`grid gap-3 ${viewportMode === "mobile" ? "grid-cols-1" : "grid-cols-2 sm:grid-cols-4"}`}>
@@ -344,7 +344,7 @@ export default function WhiteLabelPortal() {
                       className="p-3.5 rounded-2xl border border-gray-200 dark:border-white/10 bg-gray-50/50 dark:bg-zinc-800/40 hover:border-gray-300 transition-all flex flex-col justify-between"
                     >
                       <div>
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
+                        <span className="text-[12px] font-bold uppercase tracking-wider text-gray-400 block mb-1">
                           {item.category}
                         </span>
                         <h4 className="font-bold text-xs text-gray-900 dark:text-white line-clamp-2">
@@ -353,13 +353,13 @@ export default function WhiteLabelPortal() {
                       </div>
 
                       <div className="mt-3 pt-2 border-t border-gray-100 dark:border-white/5">
-                        <span className="text-[10px] text-gray-400 block">Client Rate</span>
+                        <span className="text-[12px] text-gray-400 block">Client Rate</span>
                         <p className="font-bold text-xs" style={{ color: brandColor }}>
                           {formatKsh(item.price)}
                         </p>
                         <button
                           type="button"
-                          className="w-full mt-2 py-1.5 rounded-lg text-white font-bold text-[10px] shadow-xs"
+                          className="w-full mt-2 py-1.5 rounded-lg text-white font-bold text-[12px] shadow-xs"
                           style={{ backgroundColor: brandColor }}
                         >
                           Select for Quote
@@ -373,7 +373,7 @@ export default function WhiteLabelPortal() {
               {/* White-Label Footer */}
               <div className="p-4 bg-gray-50 dark:bg-[#0E1520] border-t border-gray-200 dark:border-white/10 text-center text-xs text-gray-500 dark:text-zinc-400 flex items-center justify-between flex-wrap gap-2">
                 <span>© {new Date().getFullYear()} {brandName}. All rights reserved.</span>
-                <span className="text-[10px] text-gray-400 font-mono">
+                <span className="text-[12px] text-gray-400 font-mono">
                   Encrypted B2B Portal · Powered by Secure Fulfillment
                 </span>
               </div>
@@ -395,7 +395,7 @@ export default function WhiteLabelPortal() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+                <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                   Agency / Brand Name *
                 </label>
                 <input
@@ -408,7 +408,7 @@ export default function WhiteLabelPortal() {
               </div>
 
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+                <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                   Subdomain or Custom URL *
                 </label>
                 <input
@@ -422,7 +422,7 @@ export default function WhiteLabelPortal() {
             </div>
 
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
+              <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-1">
                 Storefront Greeting / Tagline
               </label>
               <input
@@ -436,7 +436,7 @@ export default function WhiteLabelPortal() {
 
             {/* Brand Accent Color */}
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-2">
+              <label className="text-[12px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-2">
                 Primary Brand Accent Color
               </label>
               <div className="flex flex-wrap items-center gap-3">
@@ -532,7 +532,7 @@ export default function WhiteLabelPortal() {
                         {plan.name}
                       </span>
                       {plan.badge && (
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand text-white">
+                        <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand text-white">
                           {plan.badge}
                         </span>
                       )}

@@ -114,7 +114,7 @@ export default function NotificationBell({ user }: { user: any }) {
       </button>
 
       {!isOpen && (
-        <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
+        <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[12px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">
           Notifications & Reminders
         </span>
       )}
@@ -165,7 +165,7 @@ export default function NotificationBell({ user }: { user: any }) {
                       {!n.is_read && <span className="w-2 h-2 bg-brand rounded-full flex-shrink-0 mt-1" />}
                     </div>
                     <p className="text-xs text-brand-muted line-clamp-2">{n.message}</p>
-                    <span className="text-[10px] text-brand-muted/70 mt-2 block font-medium uppercase tracking-wider">
+                    <span className="text-[12px] text-brand-muted/70 mt-2 block font-medium uppercase tracking-wider">
                       {formatDistanceToNow(new Date(n.created_at), { addSuffix: true })}
                     </span>
                   </div>

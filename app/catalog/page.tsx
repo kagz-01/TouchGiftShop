@@ -176,11 +176,11 @@ function CatalogPage() {
                     )}
                     {b.is_coming_soon && (
                       <span className="absolute inset-0 bg-brand-deep/40 backdrop-blur-[1px] flex items-center justify-center">
-                        <span className="bg-brand-deep text-gold text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest">Coming Soon</span>
+                        <span className="bg-brand-deep text-gold text-[12px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest">Coming Soon</span>
                       </span>
                     )}
                     {!b.is_coming_soon && pct > 0 && (
-                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg">SAVE {pct}%</span>
+                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[12px] font-bold px-2 py-1 rounded-lg">SAVE {pct}%</span>
                     )}
                   </div>
                   <div className="p-3">
@@ -263,7 +263,7 @@ function CatalogPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {hasSale && (
-                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-md">SALE</span>
+                      <span className="absolute top-2 left-2 bg-red-500 text-white text-[12px] font-bold px-1.5 py-0.5 rounded-md">SALE</span>
                     )}
                   </div>
                   <div className="p-3">
@@ -274,7 +274,7 @@ function CatalogPage() {
                       {hasSale ? (
                         <>
                           <span className="text-sm font-bold text-red-500">{formatKsh(p.sale_price!)}</span>
-                          <span className="text-[11px] text-gray-400 line-through">{formatKsh(p.price)}</span>
+                          <span className="text-[12px] text-gray-400 line-through">{formatKsh(p.price)}</span>
                         </>
                       ) : (
                         <span className="text-sm font-bold text-brand">{formatKsh(p.price)}</span>
@@ -285,7 +285,7 @@ function CatalogPage() {
                     {p.product_specs && p.product_specs.length > 0 && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {p.product_specs.slice(0, 3).map((spec) => (
-                          <span key={spec.spec_key} className="inline-flex items-center gap-0.5 text-[10px] bg-gray-50 border border-gray-100 text-gray-500 rounded-full px-1.5 py-0.5">
+                          <span key={spec.spec_key} className="inline-flex items-center gap-0.5 text-[12px] bg-gray-50 border border-gray-100 text-gray-500 rounded-full px-1.5 py-0.5">
                             {spec.icon && <span>{spec.icon}</span>}
                             {spec.spec_value}
                           </span>
@@ -294,7 +294,7 @@ function CatalogPage() {
                     )}
 
                     {p.sku && (
-                      <p className="text-[10px] text-gray-300 mt-1.5 font-mono truncate">{p.sku}</p>
+                      <p className="text-[12px] text-gray-300 mt-1.5 font-mono truncate">{p.sku}</p>
                     )}
                   </div>
                 </Link>

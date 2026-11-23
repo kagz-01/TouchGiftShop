@@ -294,11 +294,11 @@ export default function ContributePage() {
                     {(splitRatio !== "custom" || Number(customSplit) > 0) && (
                       <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10">
-                          <p className="text-[10px] font-bold text-white/40 uppercase tracking-wide mb-1">You pay</p>
+                          <p className="text-[12px] font-bold text-white/40 uppercase tracking-wide mb-1">You pay</p>
                           <p className="text-lg font-bold text-white">KES {myShare > 0 ? myShare.toLocaleString() : "—"}</p>
                         </div>
                         <div className="bg-blue-500/10 rounded-xl p-3 text-center border border-blue-400/20">
-                          <p className="text-[10px] font-bold text-blue-300/70 uppercase tracking-wide mb-1">Friend pays</p>
+                          <p className="text-[12px] font-bold text-blue-300/70 uppercase tracking-wide mb-1">Friend pays</p>
                           <p className="text-lg font-bold text-blue-300">KES {friendShare > 0 ? friendShare.toLocaleString() : "—"}</p>
                         </div>
                       </div>

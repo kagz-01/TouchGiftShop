@@ -65,7 +65,7 @@ export default function BottomNav() {
               <span className="w-5 h-5 shrink-0">{tab.icon}</span>
               <span
                 className={cn(
-                  "text-[10px] leading-none whitespace-nowrap",
+                  "text-[12px] leading-none whitespace-nowrap",
                   isActive ? "font-bold" : "font-semibold"
                 )}
               >

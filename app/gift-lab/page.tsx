@@ -21,7 +21,7 @@ export default function GiftLabPage() {
           </Link>
           <div>
             <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Gift Lab</h1>
-            <p className="text-[11px] text-brand-muted mt-0.5">Two creative ways to make someone&apos;s day</p>
+            <p className="text-[12px] text-brand-muted mt-0.5">Two creative ways to make someone&apos;s day</p>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function GiftLabPage() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand/8 rounded-full mb-4">
             <Sparkles className="w-3.5 h-3.5 text-brand" />
-            <span className="text-[11px] font-semibold text-brand uppercase tracking-wider">Gift Lab</span>
+            <span className="text-[12px] font-semibold text-brand uppercase tracking-wider">Gift Lab</span>
           </div>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-brand-deep dark:text-white mb-3 leading-tight">
             Go beyond the generic.
@@ -63,7 +63,7 @@ export default function GiftLabPage() {
               </p>
               <div className="flex flex-wrap gap-2 mb-5">
                 {["Custom sizes", "100+ products", "Beautiful boxing"].map((tag) => (
-                  <span key={tag} className="text-[10px] bg-brand/8 text-brand px-2.5 py-1 rounded-full font-semibold">
+                  <span key={tag} className="text-[12px] bg-brand/8 text-brand px-2.5 py-1 rounded-full font-semibold">
                     {tag}
                   </span>
                 ))}
@@ -94,7 +94,7 @@ export default function GiftLabPage() {
               </p>
               <div className="flex flex-wrap gap-2 mb-5">
                 {["Split the cost", "M-Pesa friendly", "Auto-orders"].map((tag) => (
-                  <span key={tag} className="text-[10px] bg-gold/15 text-gold-dark px-2.5 py-1 rounded-full font-semibold">
+                  <span key={tag} className="text-[12px] bg-gold/15 text-gold-dark px-2.5 py-1 rounded-full font-semibold">
                     {tag}
                   </span>
                 ))}
@@ -116,7 +116,7 @@ export default function GiftLabPage() {
           ].map((item, i) => (
             <div key={i} className="bg-white rounded-2xl p-4 border border-black/5 flex flex-col items-center gap-2 text-center">
               {item.icon}
-              <p className="text-[11px] font-medium text-brand-muted">{item.label}</p>
+              <p className="text-[12px] font-medium text-brand-muted">{item.label}</p>
             </div>
           ))}
         </div>

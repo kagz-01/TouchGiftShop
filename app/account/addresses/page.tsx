@@ -287,7 +287,7 @@ export default function AddressesPage() {
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-brand-deep text-sm">{addr.label}</p>
                       {addr.is_default && (
-                        <span className="text-[9px] font-bold bg-brand/10 text-brand px-2 py-0.5 rounded-full">Default</span>
+                        <span className="text-[12px] font-bold bg-brand/10 text-brand px-2 py-0.5 rounded-full">Default</span>
                       )}
                     </div>
                     {addr.full_name && <p className="text-xs text-brand-muted">{addr.full_name}</p>}

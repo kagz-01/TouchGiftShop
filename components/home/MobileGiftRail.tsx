@@ -142,7 +142,7 @@ export function MobileGiftRail() {
           >
             {/* Badge */}
             {tile.badge && (
-              <span className="absolute top-2.5 right-2.5 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/25 text-white backdrop-blur-sm">
+              <span className="absolute top-2.5 right-2.5 text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/25 text-white backdrop-blur-sm">
                 {tile.badge}
               </span>
             )}
@@ -153,7 +153,7 @@ export function MobileGiftRail() {
             {/* Text */}
             <div>
               <h3 className="font-bold text-xs text-white leading-tight">{tile.title}</h3>
-              <p className="text-[10px] text-white/75 mt-0.5 leading-snug">{tile.sub}</p>
+              <p className="text-[12px] text-white/75 mt-0.5 leading-snug">{tile.sub}</p>
             </div>
           </Link>
         ))}
@@ -161,7 +161,7 @@ export function MobileGiftRail() {
 
       {/* Occasion Chips — horizontal scrollable */}
       <div className="mt-4 px-4">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
+        <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2">
           Shop by Occasion
         </p>
         <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">

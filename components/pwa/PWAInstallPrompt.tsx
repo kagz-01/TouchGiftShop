@@ -197,7 +197,7 @@ export default function PWAInstallPrompt() {
               <h3 className="font-semibold text-sm text-gray-900 dark:text-white">
                 Install TouchGift
               </h3>
-              <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-brand/10 text-brand dark:text-brand-light rounded-full">
+              <span className="inline-flex items-center gap-0.5 text-[12px] font-semibold tracking-wider uppercase px-1.5 py-0.5 bg-brand/10 text-brand dark:text-brand-light rounded-full">
                 <Sparkles className="w-2.5 h-2.5" /> App
               </span>
             </div>
@@ -209,7 +209,7 @@ export default function PWAInstallPrompt() {
 
         <button
           onClick={handleDismiss}
-          className="text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors shrink-0"
+          className="text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200 p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors shrink-0 min-w-[40px] min-h-[40px] inline-flex items-center justify-center"
           aria-label="Dismiss install prompt"
         >
           <X className="w-4 h-4" />
@@ -224,7 +224,7 @@ export default function PWAInstallPrompt() {
           </p>
           <ol className="space-y-2 text-xs bg-gray-50 dark:bg-zinc-800/60 p-2.5 rounded-xl border border-gray-100 dark:border-zinc-800">
             <li className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-brand/10 text-brand dark:text-brand-light font-bold flex items-center justify-center shrink-0 text-[11px]">
+              <span className="w-5 h-5 rounded-full bg-brand/10 text-brand dark:text-brand-light font-bold flex items-center justify-center shrink-0 text-[12px]">
                 1
               </span>
               <span>
@@ -232,7 +232,7 @@ export default function PWAInstallPrompt() {
               </span>
             </li>
             <li className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-brand/10 text-brand dark:text-brand-light font-bold flex items-center justify-center shrink-0 text-[11px]">
+              <span className="w-5 h-5 rounded-full bg-brand/10 text-brand dark:text-brand-light font-bold flex items-center justify-center shrink-0 text-[12px]">
                 2
               </span>
               <span>
@@ -254,13 +254,13 @@ export default function PWAInstallPrompt() {
         <div className="mt-3.5 pt-2.5 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-end gap-2">
           <button
             onClick={handleDismiss}
-            className="text-xs font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 px-3 py-1.5 rounded-lg transition-colors"
+            className="text-xs font-medium text-gray-500 dark:text-zinc-400 hover:text-gray-800 dark:hover:text-zinc-200 px-3 py-2.5 min-h-[40px] rounded-lg transition-colors"
           >
             Not now
           </button>
           <button
             onClick={handleInstallClick}
-            className="text-xs font-semibold px-3.5 py-1.5 bg-brand hover:bg-brand-light active:scale-95 text-white rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+            className="text-xs font-semibold px-3.5 py-2.5 min-h-[40px] bg-brand hover:bg-brand-light active:scale-95 text-white rounded-xl shadow-sm transition-all flex items-center gap-1.5"
           >
             <Download className="w-3.5 h-3.5" />
             {isIOS ? "How to Install" : "Install App"}

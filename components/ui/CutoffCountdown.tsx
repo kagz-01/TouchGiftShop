@@ -53,7 +53,7 @@ export default function CutoffCountdown({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[11px] font-semibold",
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] font-semibold",
         variant === "onBrand"
           ? "border-white/20 bg-white/15 text-white"
           : beforeCutoff

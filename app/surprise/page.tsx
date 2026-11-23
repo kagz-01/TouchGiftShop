@@ -81,7 +81,7 @@ export default function SurpriseFeaturePage() {
           </Link>
           <div>
             <h1 className="font-display font-bold text-brand-deep text-sm leading-none">Surprise Someone</h1>
-            <p className="text-[11px] text-brand-muted mt-0.5">Anonymous · Pin Drop · Photo Proof</p>
+            <p className="text-[12px] text-brand-muted mt-0.5">Anonymous · Pin Drop · Photo Proof</p>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default function SurpriseFeaturePage() {
         <div className="relative z-10 max-w-2xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-full border border-white/15 mb-6">
             <EyeOff className="w-3.5 h-3.5 text-gold" />
-            <span className="text-[11px] font-semibold text-white/80 uppercase tracking-wider">Anonymous Gifting</span>
+            <span className="text-[12px] font-semibold text-white/80 uppercase tracking-wider">Anonymous Gifting</span>
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
             Surprise them,<br />
@@ -129,7 +129,7 @@ export default function SurpriseFeaturePage() {
               <div className="w-8 h-8 bg-brand/8 rounded-xl flex items-center justify-center flex-shrink-0">
                 {pill.icon}
               </div>
-              <span className="text-[11px] font-semibold text-brand-deep leading-tight">{pill.label}</span>
+              <span className="text-[12px] font-semibold text-brand-deep leading-tight">{pill.label}</span>
             </div>
           ))}
         </div>
@@ -138,7 +138,7 @@ export default function SurpriseFeaturePage() {
       {/* ── How it works ── */}
       <div className="max-w-3xl mx-auto px-4 mb-16">
         <div className="text-center mb-8">
-          <p className="text-[11px] font-semibold text-brand/60 uppercase tracking-wider mb-2">Step by step</p>
+          <p className="text-[12px] font-semibold text-brand/60 uppercase tracking-wider mb-2">Step by step</p>
           <h3 className="font-display text-2xl md:text-3xl font-bold text-brand-deep">How it works</h3>
         </div>
 
@@ -153,8 +153,8 @@ export default function SurpriseFeaturePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-bold text-brand-muted/60 uppercase tracking-widest">{step.number}</span>
-                  <span className="text-[10px] font-semibold bg-brand/8 text-brand px-2 py-0.5 rounded-full">{step.tag}</span>
+                  <span className="text-[12px] font-bold text-brand-muted/60 uppercase tracking-widest">{step.number}</span>
+                  <span className="text-[12px] font-semibold bg-brand/8 text-brand px-2 py-0.5 rounded-full">{step.tag}</span>
                 </div>
                 <h4 className="font-display font-bold text-brand-deep mb-1.5">{step.title}</h4>
                 <p className="text-sm text-brand-muted leading-relaxed">{step.description}</p>

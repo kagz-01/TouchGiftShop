@@ -101,7 +101,7 @@ export default function MobileTopBar() {
         >
           <Menu className="w-5 h-5" />
           {itemCount > 0 && (
-            <span className="absolute top-0.5 right-0.5 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[8px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
+            <span className="absolute top-0.5 right-0.5 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[12px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
               {itemCount > 9 ? "9+" : itemCount}
             </span>
           )}
@@ -178,9 +178,9 @@ export default function MobileTopBar() {
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold leading-tight flex items-center gap-1.5">
                 Corporate Portal
-                <span className="text-[8px] bg-brand text-white px-1.5 py-0.2 rounded font-bold uppercase">B2B</span>
+                <span className="text-[12px] bg-brand text-white px-1.5 py-0.2 rounded font-bold uppercase">B2B</span>
               </p>
-              <p className="text-[10px] text-gray-500 dark:text-zinc-400 truncate">Bulk packs & branded merch</p>
+              <p className="text-[12px] text-gray-500 dark:text-zinc-400 truncate">Bulk packs & branded merch</p>
             </div>
             <ArrowRight className="w-3.5 h-3.5 shrink-0 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
           </Link>

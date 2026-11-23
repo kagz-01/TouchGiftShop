@@ -490,7 +490,7 @@ export default function LiveCustomizer({
         <div className="px-6 py-4 border-b border-black/8 dark:border-white/10 flex items-center justify-between flex-shrink-0 bg-gradient-to-r from-brand/5 to-transparent">
           <div>
             <h2 className="font-display font-bold text-base text-brand-deep dark:text-white">Customization Studio</h2>
-            <p className="text-[11px] text-brand-muted mt-0.5 truncate max-w-[200px]">{productName}</p>
+            <p className="text-[12px] text-brand-muted mt-0.5 truncate max-w-[200px]">{productName}</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors">
             <X className="w-5 h-5 text-brand-muted" />
@@ -532,16 +532,16 @@ export default function LiveCustomizer({
                   <input type="file" accept="image/*,.svg" className="hidden" onChange={addLogo} />
                   <ImageIcon className="w-6 h-6 text-brand group-hover:scale-110 transition-transform" />
                   <span className="text-xs font-bold text-brand-deep dark:text-white">Upload Logo</span>
-                  <span className="text-[10px] text-brand-muted">PNG, JPG, SVG</span>
+                  <span className="text-[12px] text-brand-muted">PNG, JPG, SVG</span>
                 </label>
               </div>
 
               <div className="bg-brand/4 border border-brand/15 rounded-2xl p-4 space-y-2">
                 <p className="text-xs font-bold text-brand-deep dark:text-white uppercase tracking-wide">💡 Tips</p>
-                <ul className="text-[11px] text-brand-muted space-y-1">
+                <ul className="text-[12px] text-brand-muted space-y-1">
                   <li>• Double-click text to edit it directly</li>
                   <li>• Drag to reposition · use corners to resize</li>
-                  <li>• Press <kbd className="px-1.5 py-0.5 bg-black/10 rounded text-[10px]">Delete</kbd> to remove selected</li>
+                  <li>• Press <kbd className="px-1.5 py-0.5 bg-black/10 rounded text-[12px]">Delete</kbd> to remove selected</li>
                   <li>• Stay inside the dashed engravable area</li>
                 </ul>
               </div>
@@ -578,7 +578,7 @@ export default function LiveCustomizer({
 
                   {/* Color */}
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Color</label>
+                    <label className="text-[12px] font-semibold text-brand-muted block mb-2">Color</label>
                     <div className="flex items-center gap-3">
                       <input
                         type="color"
@@ -601,7 +601,7 @@ export default function LiveCustomizer({
 
                   {/* Font */}
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Font</label>
+                    <label className="text-[12px] font-semibold text-brand-muted block mb-2">Font</label>
                     <div className="grid grid-cols-1 gap-1.5">
                       {FONTS.map((f) => (
                         <button
@@ -622,7 +622,7 @@ export default function LiveCustomizer({
 
                   {/* Style toggles */}
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Style</label>
+                    <label className="text-[12px] font-semibold text-brand-muted block mb-2">Style</label>
                     <div className="flex gap-2">
                       <button
                         onClick={() => { iText.set("fontWeight", iText.fontWeight === "bold" ? "normal" : "bold"); canvas?.renderAll(); }}
@@ -654,7 +654,7 @@ export default function LiveCustomizer({
 
                   {/* Font size */}
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">Size — {Math.round(iText.fontSize || 28)}pt</label>
+                    <label className="text-[12px] font-semibold text-brand-muted block mb-2">Size — {Math.round(iText.fontSize || 28)}pt</label>
                     <input
                       type="range"
                       min={10}
@@ -678,12 +678,12 @@ export default function LiveCustomizer({
                     </button>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-brand-muted block mb-2">
+                    <label className="text-[12px] font-semibold text-brand-muted block mb-2">
                       Branding Method
                     </label>
                     {/* Recommended for this material */}
                     {materialType !== "default" && (
-                      <p className="text-[10px] text-brand-muted/70 mb-2">
+                      <p className="text-[12px] text-brand-muted/70 mb-2">
                         ✦ Recommended for{" "}
                         <span className="capitalize font-semibold text-brand">{materialType}</span>
                       </p>
@@ -713,7 +713,7 @@ export default function LiveCustomizer({
                   {/* Print Location Selector */}
                   {PRINT_LOCATIONS[materialType] && (
                     <div>
-                      <label className="text-[11px] font-semibold text-brand-muted block mb-2">Print Location</label>
+                      <label className="text-[12px] font-semibold text-brand-muted block mb-2">Print Location</label>
                       <div className="grid grid-cols-2 gap-1.5">
                         {PRINT_LOCATIONS[materialType].map((loc) => (
                           <button
@@ -747,7 +747,7 @@ export default function LiveCustomizer({
                 </p>
               </div>
               <div>
-                <label className="text-[11px] font-bold text-brand-muted uppercase tracking-wide block mb-2">
+                <label className="text-[12px] font-bold text-brand-muted uppercase tracking-wide block mb-2">
                   Names List ({bulkNames.split("\n").filter((n) => n.trim()).length} names)
                 </label>
                 <textarea
@@ -799,7 +799,7 @@ export default function LiveCustomizer({
             )}
           </button>
           {userObjects.length === 0 && (
-            <p className="text-[11px] text-brand-muted text-center mt-2">Add text or a logo to save your design</p>
+            <p className="text-[12px] text-brand-muted text-center mt-2">Add text or a logo to save your design</p>
           )}
         </div>
       </div>
@@ -807,7 +807,7 @@ export default function LiveCustomizer({
       {/* ── CANVAS AREA ── */}
       <div className="flex-1 bg-[#F7F5F8] dark:bg-[#08080C] flex items-center justify-center p-4 md:p-8 relative overflow-hidden">
         {/* Zoom hint */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[11px] px-3 py-1.5 rounded-full backdrop-blur-sm z-10 flex items-center gap-1.5">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-black/60 text-white text-[12px] px-3 py-1.5 rounded-full backdrop-blur-sm z-10 flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse inline-block" />
           Double-click text to edit · Drag to move · Scroll to zoom
         </div>

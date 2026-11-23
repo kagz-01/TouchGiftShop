@@ -26,7 +26,7 @@ export function MenuRow({
       <span className="text-brand shrink-0">{icon}</span>
       <span className="flex-1">{label}</span>
       {!!badge && badge > 0 && (
-        <span className="min-w-4 h-4 px-1 bg-coral text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
+        <span className="min-w-4 h-4 px-1 bg-coral text-white text-[12px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/60 dark:ring-[#12121a]">
           {badge > 9 ? "9+" : badge}
         </span>
       )}

@@ -82,7 +82,7 @@ export default function QuickActionBar({ onNavigateTab, onOpenUpload }: QuickAct
             <div>
               <p className="text-xs font-bold leading-tight">{act.label}</p>
               <p
-                className="text-[11px] mt-0.5 truncate"
+                className="text-[12px] mt-0.5 truncate"
                 style={{
                   color: act.primary ? "rgba(255,255,255,0.8)" : "var(--portal-text-muted)",
                 }}

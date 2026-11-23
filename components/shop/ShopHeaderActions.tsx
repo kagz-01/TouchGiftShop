@@ -67,7 +67,7 @@ export default function ShopHeaderActions() {
       >
         <ShoppingBag className="w-4 h-4" />
         {itemCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[8px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/70 dark:ring-[#12121a]">
+          <span className="absolute -top-0.5 -right-0.5 min-w-3.5 h-3.5 px-0.5 bg-coral text-white text-[12px] font-bold rounded-full flex items-center justify-center leading-none ring-2 ring-white/70 dark:ring-[#12121a]">
             {itemCount > 9 ? "9+" : itemCount}
           </span>
         )}

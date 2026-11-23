@@ -93,7 +93,7 @@ export default function CorporateProof() {
               <span className="text-xs font-bold text-[color:var(--corp-text)] leading-tight">
                 {s.label}
               </span>
-              <span className="text-[11px] text-[color:var(--corp-text-muted)] leading-tight">
+              <span className="text-[12px] text-[color:var(--corp-text-muted)] leading-tight">
                 {s.sub}
               </span>
             </div>

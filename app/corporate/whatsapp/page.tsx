@@ -439,7 +439,7 @@ export default function WhatsAppBotPage() {
                   </div>
                   <div>
                     <p className="text-lg font-bold text-gray-900 dark:text-white leading-tight">{stat.value}</p>
-                    <p className="text-[11px] text-gray-500 dark:text-zinc-400">{stat.label}</p>
+                    <p className="text-[12px] text-gray-500 dark:text-zinc-400">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function WhatsAppBotPage() {
                           ))}
                         </div>
                       )}
-                      <p className={`text-[10px] mt-1 ${msg.sender === "user" ? "text-green-700/60 dark:text-green-300/40" : "text-gray-400 dark:text-gray-500"} text-right`}>
+                      <p className={`text-[12px] mt-1 ${msg.sender === "user" ? "text-green-700/60 dark:text-green-300/40" : "text-gray-400 dark:text-gray-500"} text-right`}>
                         {msg.time}
                       </p>
                     </div>
@@ -754,7 +754,7 @@ export default function WhatsAppBotPage() {
                 <div className="mt-3 space-y-2.5">
                   {VARIABLE_CATEGORIES.map((cat) => (
                     <div key={cat.name}>
-                      <p className="text-[11px] font-semibold text-white/60 uppercase tracking-wider mb-1">{cat.name}</p>
+                      <p className="text-[12px] font-semibold text-white/60 uppercase tracking-wider mb-1">{cat.name}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {cat.items.map((v) => (
                           <button
@@ -774,7 +774,7 @@ export default function WhatsAppBotPage() {
                 {/* Active variables in template */}
                 {extractVariables(editMessage).length > 0 && (
                   <div className="mt-3 p-3 bg-gold/5 border border-gold/10 rounded-xl">
-                    <p className="text-[11px] font-semibold text-gold uppercase tracking-wider mb-1.5">In this template</p>
+                    <p className="text-[12px] font-semibold text-gold uppercase tracking-wider mb-1.5">In this template</p>
                     <div className="flex flex-wrap gap-1.5">
                       {extractVariables(editMessage).map((v) => {
                         const cat = VARIABLE_CATEGORIES.find(c => c.items.some(i => i.key === v));
@@ -851,7 +851,7 @@ export default function WhatsAppBotPage() {
               <div className="flex justify-start">
                 <div className="bg-white dark:bg-[#1F2C34] rounded-xl px-3 py-2 shadow-sm max-w-[90%] text-gray-800 dark:text-white">
                   <p className="text-sm whitespace-pre-line">{renderPreview(testingFlow.message_template)}</p>
-                  <p className="text-[10px] mt-1 text-gray-400 dark:text-gray-500 text-right">9:00 AM</p>
+                  <p className="text-[12px] mt-1 text-gray-400 dark:text-gray-500 text-right">9:00 AM</p>
                 </div>
               </div>
             </div>

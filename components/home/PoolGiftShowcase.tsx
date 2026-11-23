@@ -109,7 +109,7 @@ export default function PoolGiftShowcase() {
                 className="w-full h-2 bg-surface-secondary rounded-lg appearance-none cursor-pointer accent-brand"
                 aria-label="Number of contributors"
               />
-              <div className="flex justify-between text-[11px] text-theme-body/50 mt-1">
+              <div className="flex justify-between text-[12px] text-theme-body/50 mt-1">
                 <span>2 (Duo)</span>
                 <span>10 (Friends squad)</span>
                 <span>25 (Whole team)</span>
@@ -151,10 +151,10 @@ export default function PoolGiftShowcase() {
                 </div>
               </div>
               <div className="text-left sm:text-right">
-                <span className="inline-block text-[11px] font-semibold text-gold bg-gold/10 px-2.5 py-1 rounded-full border border-gold/30">
+                <span className="inline-block text-[12px] font-semibold text-gold bg-gold/10 px-2.5 py-1 rounded-full border border-gold/30">
                   {peopleCount} × {formatKsh(perPersonAmount)} each
                 </span>
-                <p className="text-[11px] text-theme-body/60 mt-1">Automated receipts & tracking</p>
+                <p className="text-[12px] text-theme-body/60 mt-1">Automated receipts & tracking</p>
               </div>
             </div>
 
@@ -163,17 +163,17 @@ export default function PoolGiftShowcase() {
               <div>
                 <div className="w-6 h-6 rounded-full bg-brand/10 text-brand text-xs font-bold mx-auto mb-1.5 flex items-center justify-center">1</div>
                 <p className="font-semibold text-xs text-theme-heading">Create Pool</p>
-                <p className="text-[10px] text-theme-body/60 mt-0.5">Free, 60 seconds</p>
+                <p className="text-[12px] text-theme-body/60 mt-0.5">Free, 60 seconds</p>
               </div>
               <div>
                 <div className="w-6 h-6 rounded-full bg-brand/10 text-brand text-xs font-bold mx-auto mb-1.5 flex items-center justify-center">2</div>
                 <p className="font-semibold text-xs text-theme-heading">WhatsApp Share</p>
-                <p className="text-[10px] text-theme-body/60 mt-0.5">M-Pesa STK push</p>
+                <p className="text-[12px] text-theme-body/60 mt-0.5">M-Pesa STK push</p>
               </div>
               <div>
                 <div className="w-6 h-6 rounded-full bg-brand/10 text-brand text-xs font-bold mx-auto mb-1.5 flex items-center justify-center">3</div>
                 <p className="font-semibold text-xs text-theme-heading">VIP Delivery</p>
-                <p className="text-[10px] text-theme-body/60 mt-0.5">Wax-sealed card</p>
+                <p className="text-[12px] text-theme-body/60 mt-0.5">Wax-sealed card</p>
               </div>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default function PoolGiftShowcase() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-gold/15 rounded-full blur-2xl" />
 
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[10px] uppercase tracking-widest text-gold font-bold px-2.5 py-0.5 rounded-full bg-gold/10 border border-gold/20">
+                <span className="text-[12px] uppercase tracking-widest text-gold font-bold px-2.5 py-0.5 rounded-full bg-gold/10 border border-gold/20">
                   {currentTier.badge}
                 </span>
                 <span className="text-xs text-white/50">Unlocked tier</span>
@@ -199,7 +199,7 @@ export default function PoolGiftShowcase() {
 
               {/* What's included preview */}
               <div className="space-y-2 mb-6">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-white/40">Includes in the hamper:</p>
+                <p className="text-[12px] font-bold uppercase tracking-wider text-white/40">Includes in the hamper:</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {currentTier.sampleItems.map((item, i) => (
                     <div key={i} className="flex items-center gap-1.5 text-white/90">
@@ -212,7 +212,7 @@ export default function PoolGiftShowcase() {
 
               {/* Wax seal keepsake card preview */}
               <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 backdrop-blur-sm mb-6">
-                <div className="flex items-center justify-between text-[11px] text-white/60 mb-1">
+                <div className="flex items-center justify-between text-[12px] text-white/60 mb-1">
                   <span>Signatures on card</span>
                   <span className="text-gold font-semibold">Wax-Sealed Touch</span>
                 </div>
@@ -236,7 +236,7 @@ export default function PoolGiftShowcase() {
               <ShieldCheck className="w-6 h-6 text-emerald-500 shrink-0" />
               <div>
                 <p className="font-bold text-theme-heading">100% Risk-Free Guarantee</p>
-                <p className="text-[11px] text-theme-body/70">
+                <p className="text-[12px] text-theme-body/70">
                   Target not met before the event? Contributors can extend, top up, or trigger instant automated M-Pesa refunds.
                 </p>
               </div>

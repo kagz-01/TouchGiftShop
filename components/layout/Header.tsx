@@ -177,7 +177,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
                   <Link href="/login?next=/reminders" aria-label="Gift reminders" className="w-11 h-11 flex items-center justify-center shape-premium-button text-theme-body hover:text-brand hover:bg-brand/5 transition-all duration-200">
                     <Bell className="w-4 h-4" />
                   </Link>
-                  <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[10px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">Reminders</span>
+                  <span className="absolute top-full mt-1.5 px-2 py-1 bg-gray-900 text-white text-[12px] font-medium rounded shadow-sm opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 transition-all duration-200 z-50 whitespace-nowrap">Reminders</span>
                 </div>
               )}
             </div>
@@ -190,7 +190,7 @@ export default function Header({ user, guest }: { user: SessionUser; guest: bool
               </Link>
             ) : (guest || user?.is_anonymous) ? (
               <Link href="/login?next=/account" className="flex items-center gap-2 pl-1.5 pr-3 py-1.5 shape-premium-button bg-brand/5 hover:bg-brand/10 transition-colors border border-brand/10 flex-shrink-0 rounded-full" aria-label="Guest — sign in">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-[10px] font-bold shadow-sm">G</div>
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-400 to-gray-500 flex items-center justify-center text-white text-[12px] font-bold shadow-sm">G</div>
                 <span className="text-xs font-semibold text-theme-heading hidden sm:block">Guest</span>
               </Link>
             ) : (

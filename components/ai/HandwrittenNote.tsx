@@ -192,7 +192,7 @@ export default function HandwrittenNote({
                 >
                   <span className="text-lg">{s.icon}</span>
                   <p className="text-xs font-semibold mt-1">{s.label}</p>
-                  <p className="text-[10px] text-brand-muted">{s.desc}</p>
+                  <p className="text-[12px] text-brand-muted">{s.desc}</p>
                 </button>
               ))}
             </div>

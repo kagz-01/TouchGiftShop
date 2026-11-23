@@ -72,7 +72,7 @@ export default function OrderFulfillmentStatus({
             </span>
           </div>
 
-          <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
+          <span className={`text-[12px] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${
             status === "delivered"
               ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
               : status === "dispatched"
@@ -186,7 +186,7 @@ export default function OrderFulfillmentStatus({
                 <Navigation className="w-3.5 h-3.5 text-brand" />
                 Sending Your Own Rider or Prefer Pickup?
               </p>
-              <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+              <p className="text-[12px] text-gray-600 mt-1 leading-relaxed">
                 Want to send your personal courier (Uber Package, Bolt, Fargo) or pick up directly from our hub? Connect directly with our dispatch concierge.
               </p>
             </div>

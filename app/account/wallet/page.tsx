@@ -164,7 +164,7 @@ export default function WalletPage() {
             </div>
             <div>
               <h1 className="font-display italic font-bold text-white text-lg leading-tight">My Wallet</h1>
-              <p className="text-[11px] text-emerald-400">TouchGift Balance</p>
+              <p className="text-[12px] text-emerald-400">TouchGift Balance</p>
             </div>
           </div>
           {authStep === "authed" && (
@@ -252,7 +252,7 @@ export default function WalletPage() {
               <div className="absolute top-3 right-4">
                 <div className="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-full px-3 py-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-emerald-400 text-[10px] font-bold uppercase tracking-wide">Live</span>
+                  <span className="text-emerald-400 text-[12px] font-bold uppercase tracking-wide">Live</span>
                 </div>
               </div>
 
@@ -267,11 +267,11 @@ export default function WalletPage() {
 
               <div className="grid grid-cols-2 gap-3 mt-6 relative z-10">
                 <div className="bg-black/20 rounded-2xl p-3 border border-white/5">
-                  <p className="text-[10px] text-white/40 mb-0.5">Total Received</p>
+                  <p className="text-[12px] text-white/40 mb-0.5">Total Received</p>
                   <p className="text-sm font-bold text-emerald-400">KES {totalCredited.toLocaleString()}</p>
                 </div>
                 <div className="bg-black/20 rounded-2xl p-3 border border-white/5">
-                  <p className="text-[10px] text-white/40 mb-0.5">Total Spent</p>
+                  <p className="text-[12px] text-white/40 mb-0.5">Total Spent</p>
                   <p className="text-sm font-bold text-rose-400">KES {totalSpent.toLocaleString()}</p>
                 </div>
               </div>
@@ -294,7 +294,7 @@ export default function WalletPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-white">Have a Gift Card?</h3>
-                  <p className="text-[11px] text-white/50">Redeem any TG voucher directly into your wallet</p>
+                  <p className="text-[12px] text-white/50">Redeem any TG voucher directly into your wallet</p>
                 </div>
               </div>
 

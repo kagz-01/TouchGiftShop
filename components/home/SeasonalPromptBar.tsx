@@ -70,7 +70,7 @@ export default function SeasonalPromptBar({
             {event ? event.icon : <Sparkles className="w-3 h-3" />}
           </span>
           {event && (
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/80">
+            <span className="text-[12px] font-bold uppercase tracking-[0.2em] text-white/80">
               {formatCountdown(event.daysBefore)}
             </span>
           )}
@@ -84,7 +84,7 @@ export default function SeasonalPromptBar({
               <span className="text-white/90 truncate">{event.message}</span>
               <button
                 onClick={handleShop}
-                className="group shrink-0 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-white hover:text-gold transition-colors"
+                className="group shrink-0 inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-wider text-white hover:text-gold transition-colors"
               >
                 Shop the Edit
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

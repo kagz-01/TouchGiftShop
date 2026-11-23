@@ -254,7 +254,7 @@ export function HeroCinematic() {
           {/* Eyebrow */}
           <div className={`flex items-center gap-3 mb-3 md:mb-4 transition-all duration-1000 delay-500 ${loaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
             <div className="h-[1px] w-8 md:w-12 bg-gold"></div>
-            <span className="text-[10px] md:text-[11px] uppercase tracking-[0.25em] text-gold font-bold">
+            <span className="text-[12px] md:text-[12px] uppercase tracking-[0.25em] text-gold font-bold">
               {moodMeta.id === "default" ? "TouchGift Signature" : moodMeta.tagline || "TouchGift Signature"}
             </span>
           </div>
@@ -321,7 +321,7 @@ export function HeroCinematic() {
                     <span className="relative z-10 flex flex-col items-center justify-center gap-1">
                       <span className="inline-flex items-center gap-2">
                         <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
-                        <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-white/15 text-white/80 whitespace-nowrap">
+                        <span className="text-[12px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-white/15 text-white/80 whitespace-nowrap">
                           {moodMeta.soonBadge ?? "Soon"}
                         </span>
                       </span>
@@ -396,7 +396,7 @@ export function HeroCinematic() {
             )}
 
             {/* Same-day dispatch & fee transparency badge */}
-            <div className="mt-3.5 inline-flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-white/90 bg-black/45 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-md">
+            <div className="mt-3.5 inline-flex flex-wrap items-center gap-2 sm:gap-3 text-[12px] sm:text-xs text-white/90 bg-black/45 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/15 shadow-md">
               <span className="flex items-center gap-1.5 font-semibold text-gold">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 Same-day Nairobi from KES 300
@@ -419,10 +419,10 @@ export function HeroCinematic() {
       >
         {/* Hint text */}
         <div className="flex flex-col items-center mb-3 animate-pulse">
-          <span className="text-white/80 text-[11px] md:text-xs uppercase tracking-[0.2em] font-bold drop-shadow-md mb-1">
+          <span className="text-white/80 text-[12px] md:text-xs uppercase tracking-[0.2em] font-bold drop-shadow-md mb-1">
             HOW DO YOU WANT THEM TO FEEL?
           </span>
-          <span className="text-gold/90 text-[10px] md:text-[11px] uppercase tracking-widest font-semibold drop-shadow-md flex items-center gap-2">
+          <span className="text-gold/90 text-[12px] md:text-[12px] uppercase tracking-widest font-semibold drop-shadow-md flex items-center gap-2">
             <svg className="w-3 h-3 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
@@ -828,7 +828,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
       </div>
       <div className="bg-white dark:bg-[#1A1A22] px-2.5 py-2 border border-t-0 border-brand/10 dark:border-white/10 rounded-b-2xl">
         <p className="font-display font-semibold text-xs text-theme-heading leading-tight line-clamp-1">{g.label}</p>
-        <span className="text-[11px] text-brand font-medium">{N[g.t]} · {formatKsh(g.price)}</span>
+        <span className="text-[12px] text-brand font-medium">{N[g.t]} · {formatKsh(g.price)}</span>
       </div>
     </div>
   );
@@ -847,7 +847,7 @@ export function SolutionSection({ shots }: { shots: CorporateShot[] }) {
           <div className="flex flex-col">
             <Reveal delay={100}>
               <div className="mb-8 lg:mb-10">
-                <p className="text-brand font-bold text-[11px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
+                <p className="text-brand font-bold text-[12px] uppercase tracking-[0.25em] mb-4">Corporate gifting</p>
                 <h2
                   className="font-display font-bold text-theme-heading leading-[1.08] mb-4"
                   style={{ fontSize: "clamp(1.9rem, 3.4vw, 3rem)" }}
@@ -967,7 +967,7 @@ export function SocialProof() {
           {/* Left: Heading block */}
           <div className="max-w-md">
             <Reveal>
-              <p className="text-brand font-bold text-[10px] uppercase tracking-[0.2em] mb-4">
+              <p className="text-brand font-bold text-[12px] uppercase tracking-[0.2em] mb-4">
                 Real people • Real moments
               </p>
             </Reveal>
@@ -992,7 +992,7 @@ export function SocialProof() {
                   <p className="font-display text-xl lg:text-2xl font-semibold text-theme-heading mb-1">
                     <Counter target={stat.target} suffix={stat.suffix} />
                   </p>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-theme-body/70 mt-1">
+                  <p className="text-[12px] font-bold uppercase tracking-widest text-theme-body/70 mt-1">
                     {stat.label}
                   </p>
                 </div>
@@ -1016,7 +1016,7 @@ export function SocialProof() {
                     {/* Author & Stars */}
                     <div className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-full bg-surface-warm dark:bg-white/10 flex items-center justify-center shrink-0">
-                        <span className="text-brand dark:text-white/80 text-[11px] font-bold tracking-wider">{t.initials}</span>
+                        <span className="text-brand dark:text-white/80 text-[12px] font-bold tracking-wider">{t.initials}</span>
                       </div>
                       <div>
                         <span className="block font-bold text-sm tracking-wide text-theme-heading mb-1">{t.name}</span>

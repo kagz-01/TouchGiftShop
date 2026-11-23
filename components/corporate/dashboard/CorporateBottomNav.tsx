@@ -43,7 +43,7 @@ export default function CorporateBottomNav() {
               aria-current={isActive ? "page" : undefined}
             >
               <span className="w-5 h-5 shrink-0">{tab.icon}</span>
-              <span className="text-[10px] leading-none whitespace-nowrap">
+              <span className="text-[12px] leading-none whitespace-nowrap">
                 {tab.label}
               </span>
             </Link>

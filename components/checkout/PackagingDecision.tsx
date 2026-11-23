@@ -119,7 +119,7 @@ export default function PackagingDecision({ cartItems, onConfirm }: PackagingDec
                 )}
                 <div>
                   <p className="text-xs font-semibold text-brand-deep leading-tight line-clamp-1 max-w-[120px]">{item.name}</p>
-                  <p className="text-[10px] text-brand-muted">
+                  <p className="text-[12px] text-brand-muted">
                     Qty: {item.quantity} · KSh {(item.price * item.quantity).toLocaleString("en-US")}
                   </p>
                 </div>
@@ -142,7 +142,7 @@ export default function PackagingDecision({ cartItems, onConfirm }: PackagingDec
               }`}
             >
               {/* Badge */}
-              <div className={`absolute top-3 left-3 z-10 text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${opt.badgeColor}`}>
+              <div className={`absolute top-3 left-3 z-10 text-[12px] font-black uppercase px-2.5 py-1 rounded-full ${opt.badgeColor}`}>
                 {opt.badge}
               </div>
 
@@ -179,7 +179,7 @@ export default function PackagingDecision({ cartItems, onConfirm }: PackagingDec
                 <p className="text-xs text-brand-muted leading-relaxed">{opt.subtitle}</p>
                 <ul className="space-y-1 pt-1">
                   {opt.pros.map((pro, i) => (
-                    <li key={i} className="flex items-start gap-1.5 text-[11px] text-brand-deep/70">
+                    <li key={i} className="flex items-start gap-1.5 text-[12px] text-brand-deep/70">
                       <Check className="w-3 h-3 text-emerald-500 flex-shrink-0 mt-0.5" />
                       {pro}
                     </li>

@@ -153,7 +153,7 @@ export default function GiftChatWidget() {
             </div>
             {/* Notification badge */}
             <div className="absolute -top-1 -right-1 w-5 h-5 bg-gold rounded-full flex items-center justify-center">
-              <span className="text-[10px] font-bold text-brand-deep">1</span>
+              <span className="text-[12px] font-bold text-brand-deep">1</span>
             </div>
           </div>
         )}
@@ -248,7 +248,7 @@ export default function GiftChatWidget() {
 
                     {/* Provider badge */}
                     {msg.provider && msg.role === "assistant" && (
-                      <p className="text-[10px] text-brand-muted/50 mt-2 text-right">
+                      <p className="text-[12px] text-brand-muted/50 mt-2 text-right">
                         via {msg.provider}
                       </p>
                     )}

@@ -398,7 +398,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                                 </button>
                               </div>
                               {fieldError && <p className="text-xs text-red-600 font-medium flex items-center gap-1">⚠ {fieldError}</p>}
-                              <p className="text-[11px] text-brand-muted">{hint}</p>
+                              <p className="text-[12px] text-brand-muted">{hint}</p>
                             </div>
                           ) : (
                             <div className="flex items-center justify-between bg-surface rounded-xl px-4 py-3">
@@ -476,7 +476,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                   ].map((stat) => (
                     <div key={stat.label} className="min-w-0 bg-white rounded-2xl border border-surface-border p-3 sm:p-5 text-center shadow-card">
                       <p className="font-display text-lg sm:text-2xl font-bold text-brand-deep truncate">{stat.value}</p>
-                      <p className="text-[10px] sm:text-xs text-brand-muted mt-1 font-medium truncate">{stat.label}</p>
+                      <p className="text-[12px] sm:text-xs text-brand-muted mt-1 font-medium truncate">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -509,7 +509,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                             </div>
                             <div className="text-right">
                               <p className="font-bold text-brand">{formatKsh(order.total_amount)}</p>
-                              <span className={cn("inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1", STATUS_COLORS[order.status] ?? "bg-gray-100 text-gray-500")}>
+                              <span className={cn("inline-block text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1", STATUS_COLORS[order.status] ?? "bg-gray-100 text-gray-500")}>
                                 {STATUS_LABELS[order.status] ?? order.status}
                               </span>
                             </div>
@@ -594,7 +594,7 @@ export default function AccountClient({ userId, phone, name, email, avatarUrl }:
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <p className="font-bold text-brand-deep text-sm">{t.name}</p>
-                              {isActive && <span className="text-[10px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: t.color }}>Current</span>}
+                              {isActive && <span className="text-[12px] font-bold px-2 py-0.5 rounded-full text-white" style={{ backgroundColor: t.color }}>Current</span>}
                               {isUnlocked && !isActive && <Check className="w-3.5 h-3.5 text-green-500" />}
                             </div>
                             <p className="text-xs text-brand-muted">{t.minOrders}+ orders · {formatKsh(t.minSpend)}+ spend{t.discount > 0 ? ` · ${t.discount}% off` : ""}</p>

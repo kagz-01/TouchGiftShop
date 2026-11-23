@@ -75,7 +75,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
               <h2 className="font-display font-bold text-brand-deep text-base leading-tight">
                 Your Bag
               </h2>
-              <p className="text-[11px] text-brand-muted">
+              <p className="text-[12px] text-brand-muted">
                 {itemCount === 0 ? "Empty" : `${itemCount} item${itemCount === 1 ? "" : "s"}`}
               </p>
             </div>
@@ -83,7 +83,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
           <button
             onClick={onClose}
             aria-label="Close cart"
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-brand-muted hover:text-brand hover:bg-brand/8 transition-all"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-brand-muted hover:text-brand hover:bg-brand/8 transition-all"
           >
             <X className="w-5 h-5" />
           </button>
@@ -141,12 +141,12 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                       {item.name}
                     </p>
                     {(item.selectedColor || item.selectedSize) && (
-                      <p className="text-[10px] text-brand-muted">
+                      <p className="text-[12px] text-brand-muted">
                         {[item.selectedColor, item.selectedSize].filter(Boolean).join(" · ")}
                       </p>
                     )}
                     {item.giftNote && (
-                      <p className="text-[10px] text-brand-muted italic truncate">
+                      <p className="text-[12px] text-brand-muted italic truncate">
                         Note: &ldquo;{item.giftNote}&rdquo;
                       </p>
                     )}
@@ -255,13 +255,13 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                 ].map(({ label, color }) => (
                   <span
                     key={label}
-                    className={`${color} text-white text-[9px] font-bold px-1.5 py-0.5 rounded`}
+                    className={`${color} text-white text-[12px] font-bold px-1.5 py-0.5 rounded`}
                   >
                     {label}
                   </span>
                 ))}
               </div>
-              <p className="text-[10px] text-center text-brand-muted">
+              <p className="text-[12px] text-center text-brand-muted">
                 🔒 Secured by Paystack · Touch Line Ltd
               </p>
             </div>

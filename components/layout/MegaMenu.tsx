@@ -376,7 +376,7 @@ export default function MegaMenu() {
               <div className="flex-1 min-w-0 flex divide-x divide-gray-100 dark:divide-white/8">
                 {activeData.sections.map((section) => (
                   <div key={section.title} className="flex-1 min-w-0 p-5">
-                    <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-theme-body/50 mb-3">
+                    <p className="flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-theme-body/50 mb-3">
                       <span className="w-4 h-px bg-brand/40" />
                       {section.title}
                     </p>
@@ -395,13 +395,13 @@ export default function MegaMenu() {
                                   {link.label}
                                 </span>
                                 {!link.href && (
-                                  <span className="shrink-0 text-[9px] font-bold uppercase tracking-wider text-brand/60 bg-brand/8 rounded-full px-1.5 py-0.5">
+                                  <span className="shrink-0 text-[12px] font-bold uppercase tracking-wider text-brand/60 bg-brand/8 rounded-full px-1.5 py-0.5">
                                     Soon
                                   </span>
                                 )}
                               </span>
                               {link.description && (
-                                <span className="block text-[11px] leading-snug text-theme-body/60 mt-0.5">
+                                <span className="block text-[12px] leading-snug text-theme-body/60 mt-0.5">
                                   {link.description}
                                 </span>
                               )}
@@ -437,7 +437,7 @@ export default function MegaMenu() {
                 <aside className="relative w-[300px] shrink-0 overflow-hidden bg-gradient-to-br from-brand/8 via-brand/4 to-coral/6 dark:from-brand/18 dark:via-brand/10 dark:to-coral/12 p-6 flex flex-col border-l border-gray-100 dark:border-white/8">
                   <span className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-brand/10 blur-3xl pointer-events-none" />
                   <span className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full bg-coral/10 blur-2xl pointer-events-none" />
-                  <span className="relative inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.22em] text-brand/60 mb-4">
+                  <span className="relative inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.22em] text-brand/60 mb-4">
                     <span className="w-4 h-px bg-brand/40" />
                     TouchGift Edit
                   </span>

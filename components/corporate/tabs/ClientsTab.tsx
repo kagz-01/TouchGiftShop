@@ -30,7 +30,7 @@ function ClientRow({ c, selected, onClick }: { c: Client; selected: boolean; onC
           </div>
           <div>
             <p className="text-sm font-semibold text-gray-900">{c.name}</p>
-            {c.role && <p className="text-[10px] text-gray-400">{c.role}</p>}
+            {c.role && <p className="text-[12px] text-gray-400">{c.role}</p>}
           </div>
         </div>
       </td>
@@ -38,7 +38,7 @@ function ClientRow({ c, selected, onClick }: { c: Client; selected: boolean; onC
       <td className="px-4 py-3 text-sm text-gray-600">{c.company ?? "—"}</td>
       <td className="px-4 py-3">
         {c.tier && (
-          <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${TIER_COLORS[c.tier] ?? "bg-gray-100 border-gray-200 text-gray-500"}`}>
+          <span className={`text-[12px] font-bold px-2 py-0.5 rounded border ${TIER_COLORS[c.tier] ?? "bg-gray-100 border-gray-200 text-gray-500"}`}>
             {c.tier}
           </span>
         )}
@@ -65,7 +65,7 @@ function ClientDetail({ c, onClose }: { c: Client; onClose: () => void }) {
               {c.company ? ` · ${c.company}` : ""}
             </p>
             {c.tier && (
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${TIER_COLORS[c.tier] ?? "bg-gray-100 border-gray-200 text-gray-500"}`}>
+              <span className={`text-[12px] font-bold px-2 py-0.5 rounded border ${TIER_COLORS[c.tier] ?? "bg-gray-100 border-gray-200 text-gray-500"}`}>
                 {c.tier}
               </span>
             )}
@@ -88,7 +88,7 @@ function ClientDetail({ c, onClose }: { c: Client; onClose: () => void }) {
             <div key={f.label} className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg">
               <f.icon className="w-3.5 h-3.5 text-gray-400 mt-0.5 shrink-0" />
               <div>
-                <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">{f.label}</p>
+                <p className="text-[12px] text-gray-400 font-semibold uppercase tracking-wider">{f.label}</p>
                 <p className="text-sm font-medium text-gray-900 mt-0.5 break-all">{f.val ?? "—"}</p>
               </div>
             </div>

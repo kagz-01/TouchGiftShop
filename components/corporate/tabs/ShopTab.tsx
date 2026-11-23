@@ -81,7 +81,7 @@ function QuoteModal({ product, onClose }: { product: Product; onClose: () => voi
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2">
               <div className="flex justify-between text-xs">
                 <span className="text-amber-800 font-semibold">Qty: <strong>{qty} units</strong></span>
-                {tier && <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full font-bold text-[10px]">{tier.pct}% OFF</span>}
+                {tier && <span className="bg-amber-500 text-white px-2 py-0.5 rounded-full font-bold text-[12px]">{tier.pct}% OFF</span>}
               </div>
               <input type="range" min={moq} max={500} step={moq} value={qty} onChange={e => setQty(Number(e.target.value))} className="w-full accent-amber-500" />
               <div className="flex justify-between text-sm">
@@ -114,9 +114,9 @@ function ProductCard({ p, onQuote }: { p: Product; onQuote: (p: Product) => void
           ? <Image src={p.image_url} alt={p.name} fill sizes="(max-width:640px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-500" />
           : <div className="absolute inset-0 flex items-center justify-center"><Package className="w-10 h-10 text-gray-300" /></div>
         }
-        <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded">MOQ {moq}</div>
+        <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-amber-500 text-white text-[12px] font-bold rounded">MOQ {moq}</div>
         {p.is_personalizable && (
-          <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-white border border-gray-200 text-[10px] font-semibold rounded shadow-sm flex items-center gap-1">
+          <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-white border border-gray-200 text-[12px] font-semibold rounded shadow-sm flex items-center gap-1">
             <Palette className="w-2.5 h-2.5" /> Custom
           </div>
         )}
@@ -128,9 +128,9 @@ function ProductCard({ p, onQuote }: { p: Product; onQuote: (p: Product) => void
         <div className="flex items-end justify-between">
           <div>
             <p className="text-xs font-bold text-gray-900">{formatKsh(base)}</p>
-            <p className="text-[10px] text-green-600 font-medium">50+ units: {formatKsh(bulk)}/u</p>
+            <p className="text-[12px] text-green-600 font-medium">50+ units: {formatKsh(bulk)}/u</p>
           </div>
-          <button onClick={() => onQuote(p)} className="px-2 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg transition-colors">
+          <button onClick={() => onQuote(p)} className="px-2 py-1.5 bg-amber-500 hover:bg-amber-600 text-white text-[12px] font-bold rounded-lg transition-colors">
             Get Quote
           </button>
         </div>
@@ -190,7 +190,7 @@ export default function ShopTab() {
                   { num: "3", icon: "🚚", text: "We brand, pack & deliver across Kenya" },
                 ].map(s => (
                   <div key={s.num} className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded-full bg-amber-500 text-white text-[10px] font-bold flex items-center justify-center shrink-0">{s.num}</div>
+                    <div className="w-5 h-5 rounded-full bg-amber-500 text-white text-[12px] font-bold flex items-center justify-center shrink-0">{s.num}</div>
                     <span className="text-xs text-gray-600">{s.icon} {s.text}</span>
                   </div>
                 ))}

@@ -91,7 +91,7 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
                   {(review as any).reviewer_name || review.reviewerName || "Anonymous"}
                 </p>
                 {review.isVerifiedPurchase && (
-                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">
+                  <span className="inline-flex items-center gap-1 text-[12px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">
                     <svg
                       className="w-3 h-3"
                       fill="currentColor"
@@ -107,7 +107,7 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-brand-muted">
+              <p className="text-[12px] text-brand-muted">
                 {timeAgo(review.createdAt)}
               </p>
             </div>
@@ -177,7 +177,7 @@ export default function ReviewCard({ review, onVote }: ReviewCardProps) {
         {/* Seller reply */}
         {review.sellerReply && (
           <div className="bg-brand/5 border border-brand/10 rounded-xl p-3 mb-3">
-            <p className="text-[11px] font-semibold text-on-theme mb-1">
+            <p className="text-[12px] font-semibold text-on-theme mb-1">
               TouchGift Reply
             </p>
             <p className="text-xs text-theme-body leading-relaxed">

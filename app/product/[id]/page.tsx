@@ -119,17 +119,17 @@ function StructuredDescription({ text }: { text: string }) {
         
         {whoFor && (
           <div>
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Who it's for</p>
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Who it's for</p>
             <p className="text-sm text-brand-deep/80 dark:text-white/70">{whoFor}.</p>
           </div>
         )}
         
         {notes && (
           <div>
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Notes</p>
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Notes</p>
             <div className="flex flex-wrap gap-2 mt-1.5">
               {notes.replace(/and/g, "·").split(/·|,/).map(n => n.trim()).filter(Boolean).map(note => (
-                <span key={note} className="text-[11px] font-semibold bg-brand/10 dark:bg-brand/20 border border-brand/20 text-brand dark:text-brand-light px-2 py-1 rounded-md">
+                <span key={note} className="text-[12px] font-semibold bg-brand/10 dark:bg-brand/20 border border-brand/20 text-brand dark:text-brand-light px-2 py-1 rounded-md">
                   {note}
                 </span>
               ))}
@@ -139,21 +139,21 @@ function StructuredDescription({ text }: { text: string }) {
         
         {bestFor && (
           <div>
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Best worn</p>
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Best worn</p>
             <p className="text-sm text-brand-deep/80 dark:text-white/70">{bestFor}.</p>
           </div>
         )}
         
         {ifYouLike && (
           <div>
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">If you like</p>
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-1">If you like</p>
             <p className="text-sm text-brand-deep/80 dark:text-white/70">{ifYouLike}.</p>
           </div>
         )}
         
         {whyBuy && whyBuy !== hook && (
           <div className="pt-2 mt-2 border-t border-black/5 dark:border-white/10">
-            <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Why gift them</p>
+            <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-1">Why gift them</p>
             <p className="text-sm text-brand-deep/80 dark:text-white/70">{whyBuy}</p>
           </div>
         )}
@@ -339,7 +339,7 @@ export default async function ProductPage({
             {/* Title & price */}
             <div>
               {product.category && (
-                <p className="text-[11px] font-semibold text-brand/70 dark:text-white/60 uppercase tracking-wider mb-2">
+                <p className="text-[12px] font-semibold text-brand/70 dark:text-white/60 uppercase tracking-wider mb-2">
                   {product.category.replace(/-/g, " ")}
                 </p>
               )}
@@ -367,7 +367,7 @@ export default async function ProductPage({
             {/* Color Variants */}
             {product.color_variants && product.color_variants.length > 0 && (
               <div>
-                <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Color</p>
+                <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Color</p>
                 <div className="flex flex-wrap gap-2">
                   {product.color_variants.map((cv, i) => (
                     <button
@@ -388,7 +388,7 @@ export default async function ProductPage({
             {/* Size Variants */}
             {product.size_variants && product.size_variants.length > 0 && (
               <div>
-                <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Size</p>
+                <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-2">Size</p>
                 <div className="flex flex-wrap gap-2">
                   {product.size_variants.map((sv, i) => (
                     <button
@@ -409,7 +409,7 @@ export default async function ProductPage({
             {product.tags && product.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {product.tags.map((tag) => (
-                  <span key={tag} className="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                  <span key={tag} className="text-[12px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
                     {tag}
                   </span>
                 ))}
@@ -425,7 +425,7 @@ export default async function ProductPage({
               ].map((pill, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-black/8 rounded-full text-[11px] font-semibold text-brand-muted shadow-sm"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-black/8 rounded-full text-[12px] font-semibold text-brand-muted shadow-sm"
                 >
                   {pill.icon}
                   {pill.label}
@@ -436,7 +436,7 @@ export default async function ProductPage({
             {/* Description */}
             {product.description && (
               <div className="bg-white dark:bg-white/5 rounded-2xl border border-black/6 dark:border-white/10 p-5">
-                <p className="text-[11px] font-semibold text-brand-muted uppercase tracking-wider mb-3">
+                <p className="text-[12px] font-semibold text-brand-muted uppercase tracking-wider mb-3">
                   About this gift
                 </p>
                 <StructuredDescription text={product.description} />
@@ -458,11 +458,11 @@ export default async function ProductPage({
                 <p className="text-xs font-bold text-amber-400 group-hover:text-amber-300 transition-colors">
                   Need this in bulk?
                 </p>
-                <p className="text-[11px] text-slate-400 dark:text-white/40 leading-snug mt-0.5">
+                <p className="text-[12px] text-slate-400 dark:text-white/40 leading-snug mt-0.5">
                   Brand with your logo · Bulk names · Invoice / LPO · From 10 units
                 </p>
               </div>
-              <span className="text-[10px] font-bold px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20 whitespace-nowrap group-hover:bg-amber-500/20 transition-colors">
+              <span className="text-[12px] font-bold px-2.5 py-1 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20 whitespace-nowrap group-hover:bg-amber-500/20 transition-colors">
                 Get Quote →
               </span>
             </Link>

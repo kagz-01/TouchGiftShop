@@ -132,7 +132,7 @@ export default function BuildToolkitSheet({
               <h2 className="font-display font-bold text-lg text-gray-900 dark:text-white">
                 TouchGift Studio
               </h2>
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light flex items-center gap-1">
+              <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light flex items-center gap-1">
                 <Sparkles className="w-2.5 h-2.5" /> Gift Lab
               </span>
             </div>
@@ -164,7 +164,7 @@ export default function BuildToolkitSheet({
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/80 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-100 dark:border-zinc-700">
+                  <span className="text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/80 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 border border-gray-100 dark:border-zinc-700">
                     {card.badge}
                   </span>
                 </div>

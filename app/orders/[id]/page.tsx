@@ -95,11 +95,11 @@ export default async function OrderDetailPage({
           </Link>
           
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+            <span className="font-mono text-[12px] text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
               #{shortId}
             </span>
             {order.status === "delivered" && (
-              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
+              <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[12px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full flex items-center gap-1">
                 <Check className="w-3 h-3" /> Delivered
               </span>
             )}
@@ -216,7 +216,7 @@ export default async function OrderDetailPage({
         {/* Surprise Safeguard Badges */}
         {(isAnonymous || dontCall) && (
           <div className="bg-white/90 backdrop-blur-md rounded-3xl p-5 border border-brand/10 shadow-sm">
-            <p className="text-[11px] font-bold text-brand-deep uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <p className="text-[12px] font-bold text-brand-deep uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-brand" />
               Surprise Safeguard Active
             </p>
@@ -271,7 +271,7 @@ export default async function OrderDetailPage({
 
         {/* Order details Card */}
         <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 border border-brand/10 shadow-sm">
-          <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider mb-4">
+          <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider mb-4">
             Order Summary
           </p>
 
@@ -342,7 +342,7 @@ export default async function OrderDetailPage({
             <div className="mt-5 pt-5 border-t border-black/5 space-y-3">
               {order.gift_note && (
                 <div className="bg-brand/5 p-4 rounded-2xl border border-brand/10">
-                  <p className="text-[10px] font-bold text-brand uppercase tracking-wider mb-1">
+                  <p className="text-[12px] font-bold text-brand uppercase tracking-wider mb-1">
                     Personalized Gift Note
                   </p>
                   <p className="text-xs font-medium text-brand-deep italic leading-relaxed">
@@ -352,7 +352,7 @@ export default async function OrderDetailPage({
               )}
               {order.engraving && (
                 <div className="bg-gray-50 p-4 rounded-2xl border border-black/5">
-                  <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-1">
+                  <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider mb-1">
                     Custom Engraving
                   </p>
                   <p className="text-xs font-medium text-brand-deep">
@@ -362,7 +362,7 @@ export default async function OrderDetailPage({
               )}
               {order.customization_image_url && (
                 <div className="bg-gray-50 p-4 rounded-2xl border border-black/5">
-                  <p className="text-[10px] font-bold text-brand-muted uppercase tracking-wider mb-2">
+                  <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider mb-2">
                     Custom Artwork / Photo
                   </p>
                   <img

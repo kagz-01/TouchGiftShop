@@ -67,7 +67,7 @@ export default function PinDropStatus({
             <div className="flex items-start gap-3">
               <Navigation className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Landmark</p>
+                <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider">Landmark</p>
                 <p className="text-sm font-medium text-brand-deep mt-0.5">{deliveryLandmark}</p>
               </div>
             </div>
@@ -78,7 +78,7 @@ export default function PinDropStatus({
             <div className="flex items-start gap-3">
               <Clock className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Preferred time</p>
+                <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider">Preferred time</p>
                 <p className="text-sm font-medium text-brand-deep mt-0.5">
                   {deliveryTimeWindow.charAt(0).toUpperCase() + deliveryTimeWindow.slice(1)}
                   {TIME_LABELS[deliveryTimeWindow] && ` (${TIME_LABELS[deliveryTimeWindow]})`}
@@ -91,7 +91,7 @@ export default function PinDropStatus({
           <div className="flex items-start gap-3">
             <MapPin className="w-4 h-4 text-brand flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] font-bold text-brand-muted uppercase tracking-wider">Coordinates</p>
+              <p className="text-[12px] font-bold text-brand-muted uppercase tracking-wider">Coordinates</p>
               <p className="text-sm font-medium text-brand-deep mt-0.5">
                 {deliveryLat.toFixed(6)}, {deliveryLng.toFixed(6)}
               </p>

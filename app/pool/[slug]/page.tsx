@@ -103,12 +103,12 @@ function PollBallot({
               </div>
               <div className="text-right flex-shrink-0 ml-4">
                 {isLeading && grandTotal > 0 && (
-                  <div className="text-[10px] font-bold text-rose-300 mb-0.5 animate-pulse">🔥 Leading</div>
+                  <div className="text-[12px] font-bold text-rose-300 mb-0.5 animate-pulse">🔥 Leading</div>
                 )}
                 <span className={`text-lg font-bold ${isLeading && grandTotal > 0 ? "text-rose-300" : "text-white/60"}`}>
                   {pct}%
                 </span>
-                <p className="text-[10px] text-white/40">{voteTotals[idx] > 0 ? `KES ${voteTotals[idx].toLocaleString()}` : "No votes yet"}</p>
+                <p className="text-[12px] text-white/40">{voteTotals[idx] > 0 ? `KES ${voteTotals[idx].toLocaleString()}` : "No votes yet"}</p>
               </div>
             </div>
             {!isClosed && (
@@ -267,7 +267,7 @@ function VoicePlayer({ url }: { url: string }) {
         <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-rose-500 to-orange-500 transition-all duration-200" style={{ width: `${progress}%` }} />
         </div>
-        <p className="text-[10px] text-white/40 mt-1 uppercase tracking-wider">{playing ? 'Playing...' : 'Tap to play'}</p>
+        <p className="text-[12px] text-white/40 mt-1 uppercase tracking-wider">{playing ? 'Playing...' : 'Tap to play'}</p>
       </div>
     </div>
   );

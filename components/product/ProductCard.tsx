@@ -131,7 +131,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
           {showWishlistInput && (
             <div className="absolute top-14 right-3 bg-white/10 backdrop-blur-xl rounded-xl shadow-card-hover border border-white/20 p-3 z-20 w-56 animate-pop" onClick={(e) => e.stopPropagation()}>
               <p className="text-xs font-semibold mb-2 text-white">Your wishlist link?</p>
-              <p className="text-[10px] text-white/70 mb-2">Paste your wishlist slug (from the URL)</p>
+              <p className="text-[12px] text-white/70 mb-2">Paste your wishlist slug (from the URL)</p>
               <div className="flex gap-1">
                 <input
                   type="text"

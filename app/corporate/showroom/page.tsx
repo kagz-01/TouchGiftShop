@@ -201,7 +201,7 @@ export default function VirtualShowroom() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
           <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full bg-brand text-white font-bold text-[10px] uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full bg-brand text-white font-bold text-[12px] uppercase tracking-wider">
                 Digital Proof Studio
               </span>
               <h1 className="font-display font-bold text-base text-gray-900 dark:text-white">
@@ -347,7 +347,7 @@ export default function VirtualShowroom() {
                   </div>
 
                   {/* Angle Display Badge */}
-                  <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md px-3 py-1 rounded-xl text-[11px] font-mono text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-white/10 shadow-xs">
+                  <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md px-3 py-1 rounded-xl text-[12px] font-mono text-gray-700 dark:text-zinc-300 border border-gray-200 dark:border-white/10 shadow-xs">
                     Angle: {viewAngle}°
                   </div>
 
@@ -362,7 +362,7 @@ export default function VirtualShowroom() {
                         key={p.angle}
                         type="button"
                         onClick={() => setViewAngle(p.angle)}
-                        className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all ${
+                        className={`px-2.5 py-1 rounded-lg text-[12px] font-semibold transition-all ${
                           viewAngle === p.angle
                             ? "bg-brand text-white shadow-xs"
                             : "bg-white/90 dark:bg-zinc-800/90 text-gray-700 dark:text-zinc-300 hover:bg-white"
@@ -415,7 +415,7 @@ export default function VirtualShowroom() {
                 <div className="bg-white dark:bg-[#121B26] rounded-3xl border border-gray-200 dark:border-white/10 p-5 shadow-sm space-y-4">
                   <div>
                     {product.category && (
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
+                      <span className="text-[12px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand/10 text-brand dark:text-brand-light">
                         {product.category}
                       </span>
                     )}
@@ -439,7 +439,7 @@ export default function VirtualShowroom() {
                       <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                       <div>
                         <p className="font-bold text-gray-900 dark:text-white">{branding.technique}</p>
-                        <p className="text-[11px] text-gray-500 dark:text-zinc-400">{branding.placement}</p>
+                        <p className="text-[12px] text-gray-500 dark:text-zinc-400">{branding.placement}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -498,7 +498,7 @@ export default function VirtualShowroom() {
                           <span className="font-bold text-gray-900 dark:text-white">
                             {formatKsh(Math.round(product.price * tier.rate))}
                           </span>
-                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 ml-1.5 font-semibold">
+                          <span className="text-[12px] text-emerald-600 dark:text-emerald-400 ml-1.5 font-semibold">
                             ({tier.label})
                           </span>
                         </div>

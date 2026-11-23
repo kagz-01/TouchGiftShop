@@ -38,12 +38,12 @@ function Tile({ tile }: { tile: CategoryTileData }) {
 
         {/* 18+ or Special Badge */}
         {tile.is18Plus && (
-          <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[10px] font-bold text-amber-400 border border-amber-400/40">
+          <div className="absolute top-3 right-3 z-10 px-2 py-0.5 rounded-full bg-black/70 backdrop-blur-md text-[12px] font-bold text-amber-400 border border-amber-400/40">
             18+ Only
           </div>
         )}
         {tile.badge && !tile.is18Plus && (
-          <div className="absolute top-3 right-3 z-10 px-2.5 py-0.5 rounded-full bg-brand/85 backdrop-blur-md text-[10px] font-bold text-white border border-white/20">
+          <div className="absolute top-3 right-3 z-10 px-2.5 py-0.5 rounded-full bg-brand/85 backdrop-blur-md text-[12px] font-bold text-white border border-white/20">
             {tile.badge}
           </div>
         )}

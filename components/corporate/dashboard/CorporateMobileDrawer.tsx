@@ -114,7 +114,7 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
               <p className="font-display font-bold text-base leading-tight text-gray-900 dark:text-white">
                 TouchGift
               </p>
-              <p className="text-[10px] text-brand font-bold uppercase tracking-wider">
+              <p className="text-[12px] text-brand font-bold uppercase tracking-wider">
                 Corporate Tier
               </p>
             </div>
@@ -133,7 +133,7 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
         <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-12">
           {/* Core Routes */}
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
               Corporate Workspace
             </p>
             <div className="space-y-1">
@@ -153,12 +153,12 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
                         {item.label}
                       </span>
                       {item.badge && (
-                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                        <span className="text-[12px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400">
                           {item.badge}
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] text-gray-500 dark:text-zinc-400 leading-snug line-clamp-1 mt-0.5">
+                    <p className="text-[12px] text-gray-500 dark:text-zinc-400 leading-snug line-clamp-1 mt-0.5">
                       {item.desc}
                     </p>
                   </div>
@@ -170,7 +170,7 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
 
           {/* Direct B2B Support */}
           <div className="pt-2 border-t border-gray-100 dark:border-white/10">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
               Concierge & Procurement
             </p>
             <a
@@ -184,14 +184,14 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold leading-tight">WhatsApp Corporate Desk</p>
-                <p className="text-[10px] opacity-80 mt-0.5">Direct chat with account manager</p>
+                <p className="text-[12px] opacity-80 mt-0.5">Direct chat with account manager</p>
               </div>
             </a>
           </div>
 
           {/* Switch to Main Retail Gift Shop */}
           <div className="pt-2 border-t border-gray-100 dark:border-white/10">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
+            <p className="text-[12px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-2 px-1">
               Personal Gifting
             </p>
             <Link
@@ -204,7 +204,7 @@ export default function CorporateMobileDrawer({ open, onClose }: CorporateMobile
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold leading-tight">Exit to Retail Gift Shop</p>
-                <p className="text-[10px] text-gray-500 dark:text-zinc-400 mt-0.5">Switch to personal orders & delivery</p>
+                <p className="text-[12px] text-gray-500 dark:text-zinc-400 mt-0.5">Switch to personal orders & delivery</p>
               </div>
               <ArrowRight className="w-4 h-4 shrink-0 group-hover:translate-x-0.5 transition-transform" />
             </Link>

@@ -85,7 +85,7 @@ export default function CorporateAdvantages() {
                     <Icon className="w-6 h-6" />
                   </div>
                   <span
-                    className="text-[11px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border bg-gold/10 text-gold border-gold/30"
+                    className="text-[12px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border bg-gold/10 text-gold border-gold/30"
                   >
                     {adv.badge}
                   </span>

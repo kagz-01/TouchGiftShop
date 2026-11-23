@@ -44,7 +44,7 @@ export default function OrderStatusTimeline({ currentStep = 0 }: { currentStep?:
               </div>
               <p 
                 className={cn(
-                  "text-[10px] font-bold uppercase tracking-wider text-center transition-colors",
+                  "text-[12px] font-bold uppercase tracking-wider text-center transition-colors",
                   isCurrent ? "text-brand-deep font-extrabold" : isCompleted ? "text-brand" : "text-gray-400"
                 )}
               >

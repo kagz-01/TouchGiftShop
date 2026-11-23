@@ -66,7 +66,7 @@ export default function MapPinPicker({
           </div>
           <div>
             <p className="text-xs font-semibold text-brand-deep mb-0.5">Pin drop link will be sent after payment</p>
-            <p className="text-[11px] text-brand-muted leading-relaxed">
+            <p className="text-[12px] text-brand-muted leading-relaxed">
               {recipientName
                 ? `${recipientName} will receive a WhatsApp message with a map link to drop their delivery pin.`
                 : "The recipient will receive a WhatsApp message with a map link to drop their delivery pin."}

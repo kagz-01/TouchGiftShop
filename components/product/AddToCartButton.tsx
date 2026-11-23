@@ -143,7 +143,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
             <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-black/6">
               <div>
                 <h2 className="font-display font-bold text-brand-deep">Item Options</h2>
-                <p className="text-[11px] text-brand-muted">Customize your selection</p>
+                <p className="text-[12px] text-brand-muted">Customize your selection</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
@@ -184,7 +184,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                     <p className="text-xs font-bold text-emerald-800 flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5" /> Studio Design Attached
                     </p>
-                    <p className="text-[11px] text-emerald-600 mt-0.5 truncate">{personalization || "Custom design"}</p>
+                    <p className="text-[12px] text-emerald-600 mt-0.5 truncate">{personalization || "Custom design"}</p>
                   </div>
                 </div>
               )}
@@ -242,7 +242,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-brand-deep">Quantity</p>
-                    <p className="text-[11px] text-brand-muted mt-0.5">For multiple recipients</p>
+                    <p className="text-[12px] text-brand-muted mt-0.5">For multiple recipients</p>
                   </div>
                   <div className="flex items-center bg-gray-50 border border-black/8 rounded-xl overflow-hidden">
                     <button
@@ -285,7 +285,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
               <div className="bg-white rounded-2xl border border-black/6 p-4 shadow-sm space-y-3">
                 <div>
                   <p className="text-sm font-semibold text-brand-deep">Gift Note</p>
-                  <p className="text-[11px] text-brand-muted mt-0.5">Printed and attached to the gift</p>
+                  <p className="text-[12px] text-brand-muted mt-0.5">Printed and attached to the gift</p>
                 </div>
                 <textarea
                   placeholder="Write a heartfelt message…"

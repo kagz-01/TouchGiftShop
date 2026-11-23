@@ -220,12 +220,12 @@ export default function GiftCardRecipientView({
                     <button
                       type="button"
                       onClick={() => setShowClaimBox(false)}
-                      className="text-[11px] text-emerald-700 hover:underline"
+                      className="text-[12px] text-emerald-700 hover:underline"
                     >
                       Cancel
                     </button>
                   </div>
-                  <p className="text-[11px] text-emerald-800 leading-relaxed">
+                  <p className="text-[12px] text-emerald-800 leading-relaxed">
                     Enter your Safaricom or Airtel phone number to deposit this balance into your stored wallet for 1-tap checkout.
                   </p>
 
@@ -238,7 +238,7 @@ export default function GiftCardRecipientView({
                       className="w-full bg-white border border-emerald-300 rounded-xl px-3.5 py-2.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-400"
                     />
                     {claimPhone && (
-                      <p className={`text-[10px] font-semibold ${phoneValidation.isValid ? "text-emerald-700" : "text-amber-700"}`}>
+                      <p className={`text-[12px] font-semibold ${phoneValidation.isValid ? "text-emerald-700" : "text-amber-700"}`}>
                         {phoneValidation.isValid ? `✓ Formatted: ${phoneValidation.display}` : phoneValidation.error}
                       </p>
                     )}

@@ -94,7 +94,7 @@ function ProductCard({
           </div>
         )}
         {product.moq && (
-          <span className="absolute top-2 left-2 bg-black/60 text-white text-[10px] font-medium px-2 py-0.5 rounded-full">
+          <span className="absolute top-2 left-2 bg-black/60 text-white text-[12px] font-medium px-2 py-0.5 rounded-full">
             MOQ {product.moq}
           </span>
         )}
@@ -104,7 +104,7 @@ function ProductCard({
           {product.name}
         </p>
         {product.category_name && (
-          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">{product.category_name}</p>
+          <p className="text-[12px] text-zinc-500 dark:text-zinc-400">{product.category_name}</p>
         )}
         <p className="text-sm font-bold text-[#9B1B5A] mt-auto pt-1">
           {formatKsh(product.price)}
@@ -142,7 +142,7 @@ function LineRow({
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{line.name}</p>
         {line.category && (
-          <p className="text-[10px] text-zinc-500 dark:text-zinc-400">{line.category}</p>
+          <p className="text-[12px] text-zinc-500 dark:text-zinc-400">{line.category}</p>
         )}
         <input
           type="text"
@@ -156,7 +156,7 @@ function LineRow({
       <div className="flex items-center gap-2 shrink-0">
         {/* Unit price */}
         <div className="flex flex-col items-end">
-          <span className="text-[10px] text-zinc-400 dark:text-zinc-500">Unit price</span>
+          <span className="text-[12px] text-zinc-400 dark:text-zinc-500">Unit price</span>
           <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
             {formatKsh(line.unitPrice)}
           </span>
@@ -190,7 +190,7 @@ function LineRow({
 
         {/* Line total */}
         <div className="flex flex-col items-end min-w-[72px]">
-          <span className="text-[10px] text-zinc-400 dark:text-zinc-500">Line total</span>
+          <span className="text-[12px] text-zinc-400 dark:text-zinc-500">Line total</span>
           <span className="text-sm font-bold text-[#9B1B5A]">{formatKsh(lineTotal)}</span>
         </div>
 
@@ -416,7 +416,7 @@ export default function QuoteBuilder({ onClose }: { onClose?: () => void }) {
               <span className="text-sm text-zinc-600 dark:text-zinc-400">Estimated Total</span>
               <span className="text-lg font-bold text-[#9B1B5A]">{formatKsh(subtotal)}</span>
             </div>
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 -mt-1">
+            <p className="text-[12px] text-zinc-500 dark:text-zinc-400 -mt-1">
               * Indicative pricing. Final quotation will be sent after review.
             </p>
           </div>

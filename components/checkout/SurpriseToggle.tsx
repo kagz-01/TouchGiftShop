@@ -24,7 +24,7 @@ function Toggle({
       onClick={onToggle}
       aria-pressed={on}
       aria-label={label}
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors duration-200 ${on ? "bg-brand" : "bg-gray-200"}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full before:content-[''] before:absolute before:-inset-2 transition-colors duration-200 ${on ? "bg-brand" : "bg-gray-200"}`}
     >
       <span
         className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform duration-200 ${on ? "translate-x-6" : "translate-x-1"}`}
@@ -41,12 +41,12 @@ function InfoPopover({ text, open, onToggle }: { text: string; open: boolean; on
         onClick={(e) => { e.preventDefault(); onToggle(); }}
         aria-label="What does this do?"
         aria-expanded={open}
-        className="w-4 h-4 text-brand-muted hover:text-brand transition-colors"
+        className="w-4 h-4 text-brand-muted hover:text-brand transition-colors relative before:content-[''] before:absolute before:-inset-3"
       >
         <Info className="w-4 h-4" />
       </button>
       {open && (
-        <div className="absolute left-full top-0 ml-2 z-20 w-52 bg-brand-deep text-white text-[11px] leading-relaxed rounded-xl px-3 py-2.5 shadow-lg">
+        <div className="absolute left-full top-0 ml-2 z-20 w-52 bg-brand-deep text-white text-[12px] leading-relaxed rounded-xl px-3 py-2.5 shadow-lg">
           {text}
           <div className="absolute right-full top-3 w-0 h-0 border-t-4 border-b-4 border-r-4 border-t-transparent border-b-transparent border-r-brand-deep" />
         </div>
@@ -84,7 +84,7 @@ export default function SurpriseToggle({
         </div>
         <div>
           <h3 className="text-sm font-bold text-white">Surprise Safeguard</h3>
-          <p className="text-[11px] text-white/65">Keep the surprise completely intact</p>
+          <p className="text-[12px] text-white/65">Keep the surprise completely intact</p>
         </div>
       </div>
 
@@ -133,13 +133,13 @@ export default function SurpriseToggle({
         {(dontCall || anonymous) && (
           <div className="flex flex-wrap gap-2 pt-1">
             {dontCall && (
-              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[11px] font-semibold px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[12px] font-semibold px-3 py-1.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
                 No-contact delivery
               </span>
             )}
             {anonymous && (
-              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[11px] font-semibold px-3 py-1.5 rounded-full">
+              <span className="inline-flex items-center gap-1.5 bg-brand/8 text-brand text-[12px] font-semibold px-3 py-1.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse" />
                 Anonymous sender
               </span>

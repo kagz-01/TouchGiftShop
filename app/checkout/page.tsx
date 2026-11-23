@@ -34,7 +34,7 @@ export default async function CheckoutPage({
         <div className="page-container-capped py-3 flex items-center justify-between">
           <Link
             href={isCart ? "/cart" : isHamper ? "/gift-lab/build-hamper" : "/shop"}
-            className="flex items-center gap-2 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
+            className="flex items-center gap-2 py-2.5 -my-2.5 text-sm font-medium text-brand-muted hover:text-brand transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{isCart ? "Back to Cart" : isHamper ? "Back to Hamper Builder" : "Back to Shop"}</span>
