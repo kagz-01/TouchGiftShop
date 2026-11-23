@@ -5,6 +5,9 @@ import { useEscapeKey } from "@/hooks/useEscapeKey";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import {
+  UserRound,
+  HeartHandshake,
+  Building2,
   X,
   Sparkles,
   Gift,
@@ -79,17 +82,17 @@ const VISUAL_CATEGORIES: VisualCategory[] = [
 ];
 
 const BUDGET_CHIPS = [
-  { label: "⚡ Under 3K", href: "/shop?budget=under-3k" },
-  { label: "🎁 Under 5K", href: "/shop?budget=under-5k" },
-  { label: "💎 Luxury 10K+", href: "/shop?budget=10k-plus" },
-  { label: "🚀 Same-Day Delivery", href: "/shop?fast_delivery=1" },
+  { label: "Under 3K", href: "/shop?budget=under-3k" },
+  { label: "Under 5K", href: "/shop?budget=under-5k" },
+  { label: "Luxury 10K+", href: "/shop?budget=10k-plus" },
+  { label: "Same-Day Delivery", href: "/shop?fast_delivery=1" },
 ];
 
 const RECIPIENT_CHIPS = [
-  { label: "For Her", href: "/shop?recipient=her", icon: "👩" },
-  { label: "For Him", href: "/shop?recipient=him", icon: "👨" },
-  { label: "Couples", href: "/shop?recipient=couples", icon: "💍" },
-  { label: "Corporate", href: "/corporate", icon: "🏢" },
+  { label: "For Her", href: "/shop?recipient=her", Icon: UserRound },
+  { label: "For Him", href: "/shop?recipient=him", Icon: UserRound },
+  { label: "Couples", href: "/shop?recipient=couples", Icon: HeartHandshake },
+  { label: "Corporate", href: "/corporate", Icon: Building2 },
 ];
 
 export default function MobileShopDrawer({
@@ -252,7 +255,7 @@ export default function MobileShopDrawer({
                   onClick={onClose}
                   className="flex items-center gap-2.5 p-2.5 rounded-xl border border-gray-100 dark:border-zinc-800 bg-gray-50/50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 text-xs font-semibold text-gray-800 dark:text-zinc-200 transition-colors min-h-[44px]"
                 >
-                  <span className="text-base" aria-hidden="true">{chip.icon}</span>
+                  <chip.Icon className="w-4 h-4 text-brand" aria-hidden="true" />
                   <span className="flex-1">{chip.label}</span>
                   <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
                 </Link>
