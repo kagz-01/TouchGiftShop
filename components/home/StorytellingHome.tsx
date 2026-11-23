@@ -8,7 +8,7 @@ import {
   MapPin,
   Target, Zap, EyeOff, ShoppingBag, CreditCard, Rocket,
   Building2,
-  Camera
+  Camera, Bike, House
 } from "lucide-react";
 import type { ReviewWithMedia } from "@/lib/types";
 import { formatKsh } from "@/lib/utils";
@@ -513,7 +513,7 @@ function ClockScene() {
         <line x1="90" y1="60" x2="90" y2="40" stroke="#9B1B5A" strokeWidth="3" strokeLinecap="round" className="gd-hand1-svg" />
         <line x1="90" y1="60" x2="105" y2="60" stroke="#D4A853" strokeWidth="3" strokeLinecap="round" className="gd-hand2-svg" />
         <circle cx="90" cy="60" r="4" fill="#9B1B5A" />
-        <text x="20" y="115" fontSize="26" className="gd-scooter-svg">🛵</text>
+        <g className="gd-scooter-svg"><Bike x={23} y={91} size={30} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
         <defs>
           <linearGradient id="clockGrad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#fff" />
@@ -540,7 +540,7 @@ function PickScene() {
           <rect x="146" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
           <rect x="186" y="70" width="30" height="30" rx="4" fill="#e5e5e5" stroke="#ccc" strokeWidth="1" />
         </g>
-        <text x="135" y="60" fontSize="16" className="gd-sparkle-svg">✨</text>
+        <g className="gd-sparkle-svg"><Sparkles x={137} y={44} size={18} color="currentColor" className="text-[#D4A853]" strokeWidth={1.6} /></g>
         <defs>
           <linearGradient id="brandGrad" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#9B1B5A" />
@@ -566,9 +566,9 @@ function LogisticsScene() {
       <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
         <path d="M 30 70 Q 50 20, 80 80 T 120 40 T 150 70" fill="none" stroke="#ccc" strokeWidth="2" strokeDasharray="4 4" className="gd-chaos-svg" />
         <path d="M 30 70 Q 90 20 150 70" fill="none" stroke="#9B1B5A" strokeWidth="3" strokeDasharray="140" className="gd-smooth-svg" />
-        <text x="30" y="80" textAnchor="middle" fontSize="24">🏠</text>
-        <text x="150" y="80" textAnchor="middle" fontSize="24">🎁</text>
-        <text x="150" y="45" textAnchor="middle" fontSize="24" className="gd-mappin-svg">📍</text>
+        <House x={16} y={57} size={28} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} />
+        <Gift x={136} y={57} size={28} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} />
+        <g className="gd-mappin-svg"><MapPin x={136} y={22} size={28} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} /></g>
       </svg>
     </div>
   );

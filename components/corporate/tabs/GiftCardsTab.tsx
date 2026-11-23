@@ -294,7 +294,7 @@ export default function GiftCardsTab() {
         {step === "review" && (
           <div className="p-6 space-y-5">
             <div className="rounded-xl p-4 space-y-3" style={{ background: "var(--portal-accent-tint)", border: "1px solid var(--portal-border)" }}>
-              <p className="text-sm font-bold" style={{ color: "var(--portal-text)" }}>📋 Import CSV</p>
+              <p className="text-sm font-bold" style={{ color: "var(--portal-text)" }}>Import CSV</p>
               <p className="text-xs" style={{ color: "var(--portal-text-muted)" }}>One per line: <code className="font-mono">Full Name, email@company.com</code></p>
               <textarea value={csvText} onChange={e => setCsvText(e.target.value)} rows={4}
                 placeholder={"Jane Doe, jane@acme.com\nJohn Smith, john@acme.com"}
@@ -404,7 +404,7 @@ export default function GiftCardsTab() {
               }
               <div>
                 <p className="font-bold" style={{ color: "var(--portal-text)" }}>
-                  {results.failed === 0 ? `🎉 All ${results.sent} gift cards issued!` : `${results.sent} sent · ${results.failed} failed`}
+                  {results.failed === 0 ? `All ${results.sent} gift cards issued!` : `${results.sent} sent · ${results.failed} failed`}
                 </p>
                 <p className="text-sm mt-0.5" style={{ color: "var(--portal-text-muted)" }}>Recipients receive their cards on {sendDate} via email.</p>
               </div>

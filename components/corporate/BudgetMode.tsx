@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Target, RefreshCw, Sparkles } from "lucide-react";
+import { Target, RefreshCw, Sparkles, Gift } from "lucide-react";
 
 type Product = {
   id: string;
@@ -186,7 +186,7 @@ export default function BudgetMode({
                       {item.product.image_url ? (
                         <img src={item.product.image_url} alt="" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-sm">🎁</div>
+                        <div className="w-full h-full flex items-center justify-center"><Gift className="w-4 h-4 text-brand/50" aria-hidden="true" /></div>
                       )}
                     </div>
                     <div>

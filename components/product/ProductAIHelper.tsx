@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Bot } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
@@ -43,7 +44,7 @@ export default function ProductAIHelper({ productName, productId }: Props) {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-center gap-2 py-3 bg-brand/5 hover:bg-brand/10 border border-brand/20 rounded-xl text-sm font-medium text-brand transition-all"
       >
-        <span className="text-lg">🤖</span>
+        <Bot className="w-5 h-5" aria-hidden="true" />
         Need help? Ask T-Gifter about this gift
       </button>
 
@@ -64,7 +65,7 @@ export default function ProductAIHelper({ productName, productId }: Props) {
               disabled={isGenerating}
               className="flex-1 py-2.5 bg-gold text-brand-deep rounded-xl text-xs font-semibold hover:bg-gold-light transition-colors disabled:opacity-50"
             >
-              {isGenerating ? "Generating..." : "Generate a Note ✍️"}
+              {isGenerating ? "Generating..." : "Generate a Note"}
             </button>
           </div>
 
