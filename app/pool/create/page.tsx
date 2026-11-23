@@ -3,11 +3,12 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
+import { stripLeadingEmoji } from "@/lib/display";
 import {
   Gift, Users, Settings, Eye, Share2, CheckCircle2,
   ChevronRight, ChevronLeft, Upload, Calendar, Lock,
   Globe, Sparkles, Target, ArrowRight, UserRound,
-  Plus, Minus, Vote, X, Mic
+  Plus, Minus, Vote, X, Mic, MessageCircle
 } from "lucide-react";
 
 // ─── Step config ────────────────────────────────────────────────────────────
@@ -126,7 +127,7 @@ function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardD
                   : "bg-brand/5 text-brand-deep hover:bg-brand/10"
               }`}
             >
-              {occ}
+              {stripLeadingEmoji(occ)}
             </button>
           ))}
         </div>
@@ -174,7 +175,7 @@ function StepRecipient({ data, set }: { data: WizardData; set: (k: keyof WizardD
 
       <div className="flex items-center justify-between p-4 rounded-2xl bg-brand/5 border border-brand/10">
         <div>
-          <p className="font-semibold text-brand-deep text-sm">🎁 Surprise Mode</p>
+          <p className="font-semibold text-brand-deep text-sm">Surprise Mode</p>
           <p className="text-xs text-brand-deep/60 mt-0.5">Recipient is notified only when the gift ships, not during collection</p>
         </div>
         <button
@@ -377,7 +378,7 @@ function StepGift({ data, set }: { data: WizardData; set: (k: keyof WizardData, 
         /* ── POLL MODE ── */
         <div className="space-y-4">
           <div className="p-3 rounded-2xl bg-rose-50 border border-rose-100 text-center">
-            <p className="text-xs font-semibold text-rose-700">🗳️ Contributors vote with their contributions — the most-funded option wins!</p>
+            <p className="text-xs font-semibold text-rose-700">Contributors vote with their contributions — the most-funded option wins!</p>
           </div>
 
           {data.pollOptions.map((opt, index) => (
@@ -506,8 +507,8 @@ function StepPoolSetup({ data, set }: { data: WizardData; set: (k: keyof WizardD
         <label className="block text-sm font-semibold text-brand-deep mb-3">If we overshoot the target…</label>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { val: "wallet_credit", label: "💳 Platform Credit", desc: "Excess goes to your TouchGift wallet" },
-            { val: "gift_upgrade", label: "⬆️ Upgrade Gift", desc: "We suggest a better gift from the catalogue" },
+            { val: "wallet_credit", label: "Platform Credit", desc: "Excess goes to your TouchGift wallet" },
+            { val: "gift_upgrade", label: "Upgrade Gift", desc: "We suggest a better gift from the catalogue" },
           ].map(opt => (
             <button
               key={opt.val}
@@ -564,8 +565,8 @@ function StepPrivacy({ data, set }: { data: WizardData; set: (k: keyof WizardDat
       </div>
 
       {[
-        { key: "ghostModeAllowed", label: "👻 Allow Ghost Contributions", desc: "Contributors can pay without any name shown anywhere" },
-        { key: "surpriseMode", label: "🎁 Surprise Mode", desc: "Recipient notified only when gift is dispatched" },
+        { key: "ghostModeAllowed", label: "Allow Ghost Contributions", desc: "Contributors can pay without any name shown anywhere" },
+        { key: "surpriseMode", label: "Surprise Mode", desc: "Recipient notified only when gift is dispatched" },
       ].map(toggle => (
         <div key={toggle.key} className="flex items-center justify-between p-4 rounded-2xl bg-brand/5 border border-brand/10">
           <div>
@@ -593,10 +594,10 @@ function StepPreview({ data }: { data: WizardData }) {
         {/* Mock Pool Landing */}
         <div className="bg-gradient-to-br from-brand-deep to-brand p-6 text-white text-center">
           <div className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center text-3xl">
-            {data.recipientPhoto ? <img src={data.recipientPhoto} className="w-full h-full object-cover rounded-full" alt="" /> : "🎁"}
+            {data.recipientPhoto ? <img src={data.recipientPhoto} className="w-full h-full object-cover rounded-full" alt="" /> : <Gift className="w-8 h-8" aria-hidden="true" />}
           </div>
           <h3 className="font-display text-2xl font-bold ">{data.title || `Gift Pool for ${data.recipientName}`}</h3>
-          <p className="text-white/70 text-sm mt-1">{data.occasion === "✨ Other" ? data.customOccasion : data.occasion}</p>
+          <p className="text-white/70 text-sm mt-1">{data.occasion === "✨ Other" ? data.customOccasion : stripLeadingEmoji(data.occasion)}</p>
         </div>
         <div className="bg-white p-5">
           <div className="mb-4">
@@ -631,7 +632,7 @@ function StepLaunch({ data, poolSlug }: { data: WizardData; poolSlug: string }) 
         <CheckCircle2 className="w-10 h-10 text-success" />
       </div>
       <div>
-        <h3 className="font-display text-2xl font-bold text-brand-deep">Your pool is live! 🎉</h3>
+        <h3 className="font-display text-2xl font-bold text-brand-deep">Your pool is live!</h3>
         <p className="text-brand-deep/60 mt-1 text-sm">Share the link with friends and family to start collecting</p>
       </div>
       <div className="p-4 rounded-2xl bg-brand/5 border border-brand/10">
@@ -653,7 +654,7 @@ function StepLaunch({ data, poolSlug }: { data: WizardData; poolSlug: string }) 
           rel="noreferrer"
           className="flex items-center justify-center gap-2 py-3 px-4 bg-green-500 text-white rounded-2xl font-semibold text-sm hover:bg-green-600 transition-colors"
         >
-          <span>📱</span> WhatsApp
+          <MessageCircle className="w-4 h-4" aria-hidden="true" /> WhatsApp
         </a>
         <a
           href={`/pool/${poolSlug}/manage`}

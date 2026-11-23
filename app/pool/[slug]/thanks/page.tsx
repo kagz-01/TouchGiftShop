@@ -82,7 +82,7 @@ export default function ThanksPage() {
           </div>
 
           <h1 className="font-display text-3xl font-bold text-white mb-2">
-            {name ? `Thank you, ${name}! 💛` : "Thank you! 💛"}
+            {name ? `Thank you, ${name}!` : "Thank you!"}
           </h1>
           {amount && (
             <div className="inline-flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 mb-4">
@@ -103,7 +103,7 @@ export default function ThanksPage() {
 
         {/* Invite friends */}
         <div className="bg-rose-500/5 border border-rose-500/15 rounded-3xl p-5 mb-4">
-          <p className="text-sm font-semibold text-white mb-3">🎁 Know others who&apos;d like to contribute?</p>
+          <p className="text-sm font-semibold text-white mb-3">Know others who&apos;d like to contribute?</p>
           <div className="flex gap-2 mb-3">
             <code className="flex-1 text-xs text-white/60 bg-black/30 px-3 py-2 rounded-xl border border-white/10 truncate">{shareUrl}</code>
             <button onClick={copyShare} className="px-3 py-2 bg-rose-500 text-white rounded-xl text-xs font-semibold hover:bg-rose-600 transition-colors">
@@ -123,7 +123,7 @@ export default function ThanksPage() {
         {/* Split with Friend */}
         {contributionId && (
           <div className="bg-white/5 border border-white/10 rounded-3xl p-5 mb-4 text-left">
-            <p className="text-sm font-semibold text-white mb-2">👯‍♀️ Split your contribution?</p>
+            <p className="text-sm font-semibold text-white mb-2">Split your contribution?</p>
             <p className="text-xs text-white/40 mb-3">
               Send this link to a friend so they can pay their half directly into the pool.
             </p>

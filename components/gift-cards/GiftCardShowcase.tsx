@@ -96,7 +96,7 @@ const SNAP_VIEWS = [
   { key: "back", label: "BACK VIEW", rotX: 0, rotY: 0, flipped: true, tilt: "", note: "" },
   { key: "tilt", label: "TILTED VIEW", rotX: 10, rotY: -30, flipped: false, tilt: " t", note: "" },
   { key: "side", label: "SIDE VIEW", rotX: 6, rotY: -74, flipped: false, tilt: " sd", note: "" },
-  { key: "party", label: "USAGE ANIMATION", rotX: -4, rotY: -12, flipped: false, tilt: " pt", note: "✦ ◆ 🎁" },
+  { key: "party", label: "USAGE ANIMATION", rotX: -4, rotY: -12, flipped: false, tilt: " pt", note: "✦ ◆" },
 ] as const;
 
 const FEATURES = [
