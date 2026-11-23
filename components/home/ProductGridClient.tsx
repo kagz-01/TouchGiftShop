@@ -7,7 +7,7 @@ import { formatKsh } from "@/lib/utils";
 import { getProductBadges } from "@/lib/product-badges";
 import type { Product } from "@/lib/types";
 import CategorySuggestions from "./CategorySuggestions";
-import { Loader2, Sparkles, X } from "lucide-react";
+import { Loader2, Pencil, PackageSearch, Sparkles, X } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { MotionCard } from "@/components/motion/MotionCard";
@@ -108,7 +108,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
                   className="inline-flex items-center gap-0.5 text-[12px] bg-gray-50 border border-black/5 text-gray-500 rounded-full px-1.5 py-0.5"
                   title={`${spec.spec_key}: ${spec.spec_value}`}
                 >
-                  {spec.icon && <span>{spec.icon}</span>}
+                  
                   {spec.spec_value}
                 </span>
               ))}
@@ -135,7 +135,7 @@ export function ProductCard({ product, index, categorySlug }: { product: Product
           <div className="flex items-center justify-between gap-2">
             {product.is_personalizable && (
               <span className="text-[12px] font-bold bg-brand/8 text-brand px-1.5 py-0.5 rounded-full flex-shrink-0">
-                ✏️ Custom
+                <Pencil className="w-3 h-3 inline-block -mt-0.5 mr-0.5" aria-hidden="true" /> Custom
               </span>
             )}
             {product.size_variants && product.size_variants.length > 0 && (
@@ -310,18 +310,18 @@ export default function ProductGridClient({
         {category === "drinks" && (
           <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
-              { name: "Wines", subcat: "wine", icon: "🍷" },
-              { name: "Whiskies", subcat: "whisky", icon: "🥃" },
-              { name: "Vodka", subcat: "vodka", icon: "🍸" },
-              { name: "Gin", subcat: "gin", icon: "🍃" },
-              { name: "Rum", subcat: "rum", icon: "🌊" },
-              { name: "Champagne & Sparkling", subcat: "champagne", icon: "🍾" },
-              { name: "Brandy & Cognac", subcat: "brandy", icon: "🥂" },
-              { name: "Tequila", subcat: "tequila", icon: "🌵" },
-              { name: "Liqueurs", subcat: "liqueur", icon: "🍬" },
-              { name: "Ciders", subcat: "cider", icon: "🍏" },
-              { name: "Spirits", subcat: "spirit", icon: "🔥" },
-              { name: "Non-Alcoholic", subcat: "non-alcoholic", icon: "🧃" },
+              { name: "Wines", subcat: "wine" },
+              { name: "Whiskies", subcat: "whisky" },
+              { name: "Vodka", subcat: "vodka" },
+              { name: "Gin", subcat: "gin" },
+              { name: "Rum", subcat: "rum" },
+              { name: "Champagne & Sparkling", subcat: "champagne" },
+              { name: "Brandy & Cognac", subcat: "brandy" },
+              { name: "Tequila", subcat: "tequila" },
+              { name: "Liqueurs", subcat: "liqueur" },
+              { name: "Ciders", subcat: "cider" },
+              { name: "Spirits", subcat: "spirit" },
+              { name: "Non-Alcoholic", subcat: "non-alcoholic" },
             ].map((g) => {
               const isActive = subcat?.toLowerCase() === g.subcat.toLowerCase();
               return (
@@ -342,7 +342,7 @@ export default function ProductGridClient({
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
                   }`}
                 >
-                  <span>{g.icon}</span> {g.name}
+                  {g.name}
                 </button>
               );
             })}
@@ -353,14 +353,14 @@ export default function ProductGridClient({
         {category === "perfumes" && (
           <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
-              { name: "For Him", tag: "men", icon: "🎩" },
-              { name: "For Her", tag: "women", icon: "👠" },
-              { name: "Unisex", tag: "unisex", icon: "✨" },
-              { name: "Arabic", tag: "arabic", icon: "🕌" },
-              { name: "Niche", tag: "niche", icon: "💎" },
-              { name: "EDP", tag: "edp", icon: "💧" },
-              { name: "EDT", tag: "edt", icon: "💦" },
-              { name: "Gift Sets", tag: "gift-set", icon: "🎁" },
+              { name: "For Him", tag: "men" },
+              { name: "For Her", tag: "women" },
+              { name: "Unisex", tag: "unisex" },
+              { name: "Arabic", tag: "arabic" },
+              { name: "Niche", tag: "niche" },
+              { name: "EDP", tag: "edp" },
+              { name: "EDT", tag: "edt" },
+              { name: "Gift Sets", tag: "gift-set" },
             ].map((g) => {
               const isActive = tag === g.tag;
               return (
@@ -381,7 +381,7 @@ export default function ProductGridClient({
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
                   }`}
                 >
-                  <span>{g.icon}</span> {g.name}
+                  {g.name}
                 </button>
               );
             })}
@@ -392,12 +392,12 @@ export default function ProductGridClient({
         {category === "corporate" && (
           <div className="hidden lg:flex flex-wrap items-center justify-center gap-2 mb-4 animate-fade-in-up" style={{ animationDelay: "100ms" }}>
             {[
-              { name: "Gift Sets & Hampers", subcat: "hamper", icon: "🎁" },
-              { name: "Awards & Plaques", subcat: "award", icon: "🏆" },
-              { name: "Drinkware", subcat: "mug", icon: "☕" },
-              { name: "Stationery & Notebooks", subcat: "notebook", icon: "📓" },
-              { name: "Tech & Gadgets", subcat: "tech", icon: "💻" },
-              { name: "Bags", subcat: "bag", icon: "🎒" },
+              { name: "Gift Sets & Hampers", subcat: "hamper" },
+              { name: "Awards & Plaques", subcat: "award" },
+              { name: "Drinkware", subcat: "mug" },
+              { name: "Stationery & Notebooks", subcat: "notebook" },
+              { name: "Tech & Gadgets", subcat: "tech" },
+              { name: "Bags", subcat: "bag" },
             ].map((g) => {
               const isActive = subcat?.toLowerCase() === g.subcat.toLowerCase();
               return (
@@ -418,7 +418,7 @@ export default function ProductGridClient({
                       : "bg-white text-brand-deep border-black/10 hover:border-brand/30 dark:bg-black/40 dark:text-white dark:border-white/20"
                   }`}
                 >
-                  <span>{g.icon}</span> {g.name}
+                  {g.name}
                 </button>
               );
             })}
@@ -453,7 +453,7 @@ export default function ProductGridClient({
 
         {products.length === 0 ? (
           <div className="text-center py-16 max-w-md mx-auto">
-            <span className="text-6xl block mb-4">🫣</span>
+            <PackageSearch className="w-14 h-14 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
             <p className="font-display text-xl font-bold text-brand-deep dark:text-white mb-2">Nothing here yet!</p>
             <p className="text-sm text-brand-muted dark:text-white/65 leading-relaxed mb-6">
               We&apos;re working on getting more gifts for this category. In the meantime, our gifting squad is out there hunting for the perfect items. Check back soon — or browse something else while you wait!
