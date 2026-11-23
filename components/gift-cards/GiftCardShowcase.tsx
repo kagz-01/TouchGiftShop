@@ -193,6 +193,14 @@ export default function GiftCardShowcase() {
     return "";
   };
 
+  // The message shows right under the field it is about.
+  const fieldError = (id: string) =>
+    errorField === id && error ? (
+      <p id={`${id}-error`} className="gc-field-error" role="alert">
+        {error}
+      </p>
+    ) : null;
+
   const handleCheckout = async () => {
     const problem = validate();
     if (problem) {
@@ -349,6 +357,7 @@ export default function GiftCardShowcase() {
                   id="gc-custom-amount"
                   aria-label="Custom amount in KSh"
                   aria-invalid={errorField === "gc-custom-amount" || undefined}
+                aria-describedby={errorField === "gc-custom-amount" ? "gc-custom-amount-error" : undefined}
                   placeholder="Enter amount"
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
@@ -356,6 +365,7 @@ export default function GiftCardShowcase() {
                 />
               </div>
             </div>
+            {fieldError("gc-custom-amount")}
           </div>
 
           {/* Who is it for? */}
@@ -371,12 +381,14 @@ export default function GiftCardShowcase() {
                 id="gc-recipient"
                 type="text"
                 aria-invalid={errorField === "gc-recipient" || undefined}
+                aria-describedby={errorField === "gc-recipient" ? "gc-recipient-error" : undefined}
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 placeholder="Who are you gifting?"
                 className="gc-input"
                 autoComplete="name"
               />
+              {fieldError("gc-recipient")}
             </div>
 
             <div className="gc-field">
@@ -387,6 +399,7 @@ export default function GiftCardShowcase() {
                 id="gc-sender"
                 type="text"
                 aria-invalid={errorField === "gc-sender" || undefined}
+                aria-describedby={errorField === "gc-sender" ? "gc-sender-error" : undefined}
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
                 placeholder={isAnonymous ? "Hidden on the card" : "Your name"}
@@ -394,6 +407,7 @@ export default function GiftCardShowcase() {
                 autoComplete="name"
                 disabled={isAnonymous}
               />
+              {fieldError("gc-sender")}
             </div>
 
             <label className={`gc-toggle ${isAnonymous ? "on" : ""}`}>
@@ -422,6 +436,7 @@ export default function GiftCardShowcase() {
                 id="gc-message"
                 maxLength={MAX_MESSAGE}
                 aria-invalid={errorField === "gc-message" || undefined}
+                aria-describedby={errorField === "gc-message" ? "gc-message-error" : undefined}
                 placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -429,6 +444,7 @@ export default function GiftCardShowcase() {
               />
               <span className="gc-char-count">{message.length} / {MAX_MESSAGE}</span>
             </div>
+            {fieldError("gc-message")}
           </div>
 
           {/* Delivery options */}
@@ -463,11 +479,13 @@ export default function GiftCardShowcase() {
                 id="gc-senddate"
                 type="date"
                 aria-invalid={errorField === "gc-senddate" || undefined}
+                aria-describedby={errorField === "gc-senddate" ? "gc-senddate-error" : undefined}
                 value={sendDate}
                 min={tomorrow}
                 onChange={(e) => setSendDate(e.target.value)}
                 className="gc-input"
               />
+              {fieldError("gc-senddate")}
               <p className="gc-field-hint">Valid for 3 months from the send date.</p>
             </div>
           )}
@@ -481,12 +499,14 @@ export default function GiftCardShowcase() {
                 id="gc-contact"
                 type="text"
                 aria-invalid={errorField === "gc-contact" || undefined}
+                aria-describedby={errorField === "gc-contact" ? "gc-contact-error" : undefined}
                 value={recipientContact}
                 onChange={(e) => setRecipientContact(e.target.value)}
                 placeholder="name@email.com or 07xx xxx xxx"
                 className="gc-input"
                 autoComplete="off"
               />
+              {fieldError("gc-contact")}
               <p className="gc-field-hint">
                 We&rsquo;ll send them the claim link after payment.
               </p>
@@ -521,7 +541,7 @@ export default function GiftCardShowcase() {
             <button
               type="button"
               className="gc-custom-toggle"
-              aria-expanded={showCustomColours || presetKey === "custom"}
+              aria-expanded={showCustomColours}
               aria-controls="gc-custom-colours"
               onClick={() => setShowCustomColours((v) => !v)}
             >
@@ -529,7 +549,7 @@ export default function GiftCardShowcase() {
               <ChevronDown className="w-4 h-4" aria-hidden="true" />
             </button>
 
-            <div className="gc-pickers" id="gc-custom-colours" hidden={!(showCustomColours || presetKey === "custom")}>
+            <div className="gc-pickers" id="gc-custom-colours" hidden={!showCustomColours}>
               <label className="gc-picker">
                 <span className="gc-field-label">Card colour</span>
                 <span className="gc-picker-row">
@@ -558,7 +578,7 @@ export default function GiftCardShowcase() {
             </div>
           </div>
 
-          {error && (
+          {error && !errorField && (
             <p className="gc-error" role="alert">
               {error}
             </p>
@@ -1098,6 +1118,23 @@ export default function GiftCardShowcase() {
         .gc-swatch.active .gc-swatch-label { color: var(--text-primary, #1a1a2e); }
         .gc-pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .gc-pickers[hidden] { display: none; }
+        /* Messages under fields are built by a helper, so they are styled globally. */
+        :global(.gc-field-error) {
+          margin: 6px 0 0;
+          font-size: 13px;
+          font-weight: 600;
+          color: #b3261e;
+        }
+        :global([data-theme="dark"] .gc-field-error) { color: #ff8a80; }
+        /* Dark theme: the surface colours this form uses were never defined for
+           it, so the card stayed white while the text turned white. */
+        :global([data-theme="dark"]) .gc-showcase {
+          --surface-primary: #1d1226;
+          --surface-subtle: rgba(255, 255, 255, 0.06);
+          --surface: #261833;
+          --surface-border: rgba(255, 255, 255, 0.18);
+          --text-primary: #fff3ea;
+        }
         .gc-custom-toggle {
           display: inline-flex; align-items: center; gap: 6px;
           margin: 4px 0 10px; padding: 10px 2px; min-height: 44px;

@@ -16,7 +16,7 @@ export default function GiftCardsPage() {
           <Sparkles className="w-4 h-4 text-brand" />
           <span className="text-xs font-semibold text-brand">Digital Gift Cards</span>
         </div>
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-brand-deep mb-3">
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-brand-deep dark:text-white mb-3">
           Give the <span className="text-brand">Perfect Gift</span>
         </h1>
         <p className="text-brand-muted max-w-lg mx-auto text-sm md:text-base">
