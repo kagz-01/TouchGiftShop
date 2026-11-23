@@ -6,7 +6,7 @@ import Link from "next/link";
 import { formatKsh } from "@/lib/utils";
 import {
   Heart, Share2, Copy, Check, ExternalLink, Gift,
-  ShoppingBag, Sparkles, ChevronRight
+  ShoppingBag, Sparkles, ChevronRight, Cake, Church, Baby, GraduationCap, TreePine, HandHeart, Search, MessageCircle, type LucideIcon
 } from "lucide-react";
 
 type WishlistItem = {
@@ -32,15 +32,15 @@ type Wishlist = {
   created_at: string;
 };
 
-const OCCASION_CONFIG: Record<string, { emoji: string; color: string; bg: string }> = {
-  birthday:    { emoji: "🎂", color: "text-pink-600",   bg: "from-pink-50 to-rose-50" },
-  wedding:     { emoji: "💒", color: "text-rose-600",   bg: "from-rose-50 to-pink-50" },
-  baby:        { emoji: "👶", color: "text-sky-600",    bg: "from-sky-50 to-blue-50" },
-  anniversary: { emoji: "💕", color: "text-red-500",    bg: "from-red-50 to-pink-50" },
-  graduation:  { emoji: "🎓", color: "text-brand",       bg: "from-rose-50 to-pink-50" },
-  christmas:   { emoji: "🎄", color: "text-emerald-600",bg: "from-emerald-50 to-green-50" },
-  "just because": { emoji: "💝", color: "text-pink-500", bg: "from-pink-50 to-rose-50" },
-  other:       { emoji: "🎁", color: "text-amber-600",  bg: "from-amber-50 to-yellow-50" },
+const OCCASION_CONFIG: Record<string, { Icon: LucideIcon; color: string; bg: string }> = {
+  birthday:    { Icon: Cake, color: "text-pink-600",   bg: "from-pink-50 to-rose-50" },
+  wedding:     { Icon: Church, color: "text-rose-600",   bg: "from-rose-50 to-pink-50" },
+  baby:        { Icon: Baby, color: "text-sky-600",    bg: "from-sky-50 to-blue-50" },
+  anniversary: { Icon: Heart, color: "text-red-500",    bg: "from-red-50 to-pink-50" },
+  graduation:  { Icon: GraduationCap, color: "text-brand",       bg: "from-rose-50 to-pink-50" },
+  christmas:   { Icon: TreePine, color: "text-emerald-600",bg: "from-emerald-50 to-green-50" },
+  "just because": { Icon: HandHeart, color: "text-pink-500", bg: "from-pink-50 to-rose-50" },
+  other:       { Icon: Gift, color: "text-amber-600",  bg: "from-amber-50 to-yellow-50" },
 };
 
 export default function WishlistView({ slug }: { slug: string }) {
@@ -103,7 +103,7 @@ export default function WishlistView({ slug }: { slug: string }) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
         <div className="text-center px-6 max-w-sm">
-          <span className="text-6xl block mb-4">🔍</span>
+          <Search className="w-14 h-14 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
           <h1 className="font-display text-2xl font-bold mb-2">Wishlist not found</h1>
           <p className="text-gray-500 mb-6">This wishlist doesn&apos;t exist or has been removed.</p>
           <Link href="/shop" className="inline-flex items-center gap-2 px-6 py-3 bg-rose-500 text-white rounded-2xl font-semibold text-sm hover:bg-rose-600 transition-colors">
@@ -141,10 +141,10 @@ export default function WishlistView({ slug }: { slug: string }) {
             {showShareMenu && (
               <div className="absolute right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 w-52 animate-fade-in">
                 <button onClick={() => { shareWhatsApp(); setShowShareMenu(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-green-50 transition-colors text-left rounded-xl mx-auto">
-                  <span className="text-lg">💬</span> <span className="font-medium">Share on WhatsApp</span>
+                  <MessageCircle className="w-5 h-5" aria-hidden="true" /> <span className="font-medium">Share on WhatsApp</span>
                 </button>
                 <button onClick={() => { shareTwitter(); setShowShareMenu(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-blue-50 transition-colors text-left">
-                  <span className="text-lg">🐦</span> <span className="font-medium">Share on X</span>
+                  <Share2 className="w-5 h-5" aria-hidden="true" /> <span className="font-medium">Share on X</span>
                 </button>
                 <button onClick={() => { copyLink(); setShowShareMenu(false); }} className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors text-left">
                   {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-gray-400" />}
@@ -160,7 +160,7 @@ export default function WishlistView({ slug }: { slug: string }) {
         {/* ── Registry Hero Card ── */}
         <div className="bg-white rounded-3xl shadow-lg border border-white/80 overflow-hidden">
           <div className={`bg-gradient-to-br ${cfg.bg} px-6 pt-10 pb-6 text-center`}>
-            <span className="text-5xl block mb-3 animate-bounce">{cfg.emoji}</span>
+            <cfg.Icon className="w-12 h-12 mx-auto mb-3" aria-hidden="true" />
             <h1 className="font-display text-3xl font-bold text-gray-900 mb-1">
               {wishlist.owner_name}&apos;s
             </h1>
@@ -240,7 +240,7 @@ export default function WishlistView({ slug }: { slug: string }) {
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-3xl">🎁</div>
+                        <div className="w-full h-full flex items-center justify-center text-3xl"><Gift className="w-8 h-8 text-brand-muted" aria-hidden="true" /></div>
                       )}
                     </div>
 
