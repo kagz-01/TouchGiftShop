@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Baby, Briefcase, Gift, Handshake, Heart, House, UserRound, Users, type LucideIcon } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import { getGiftHistory, getGiftSummary } from "@/lib/gift-history";
 
@@ -32,14 +33,14 @@ type RecipientSummary = {
   avgPrice: number;
 };
 
-const RELATION_EMOJI: Record<string, string> = {
-  partner: "❤️",
-  parent: "👨‍👩‍👧",
-  friend: "🤝",
-  colleague: "💼",
-  child: "👶",
-  sibling: "👫",
-  family: "🏠",
+const RELATION_ICON: Record<string, LucideIcon> = {
+  partner: Heart,
+  parent: Users,
+  friend: Handshake,
+  colleague: Briefcase,
+  child: Baby,
+  sibling: Users,
+  family: House,
 };
 
 const OCCASION_COLORS: Record<string, string> = {
@@ -82,7 +83,7 @@ export default function GiftHistoryDashboard() {
     return (
       <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center shadow-sm">
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-50">
-          <span className="text-2xl">🎁</span>
+          <Gift className="w-6 h-6 text-brand-muted" aria-hidden="true" />
         </div>
         <p className="text-sm font-medium text-gray-900">No gift history yet</p>
         <p className="mt-1 text-xs text-gray-500">
@@ -117,7 +118,7 @@ export default function GiftHistoryDashboard() {
       <div className="space-y-3">
         {summaries.map((summary) => {
           const isExpanded = expandedRecipient === summary.recipient;
-          const emoji = RELATION_EMOJI[summary.relation] || "👤";
+          const RelationIcon = RELATION_ICON[summary.relation] || UserRound;
 
           return (
             <div
@@ -132,7 +133,7 @@ export default function GiftHistoryDashboard() {
                 className="flex w-full items-center gap-3 p-4 text-left hover:bg-gray-50 transition-colors"
               >
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 text-lg">
-                  {emoji}
+                  <RelationIcon className="w-5 h-5" aria-hidden="true" />
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-900 truncate">

@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Frown, Gift, MapPin, Sun, Sunrise, Sunset } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const PinMap = dynamic(() => import("./PinMap"), { ssr: false });
 
 const TIME_WINDOWS = [
-  { id: "morning", label: "Morning", desc: "8 AM – 12 PM", emoji: "🌅" },
-  { id: "afternoon", label: "Afternoon", desc: "12 PM – 4 PM", emoji: "☀️" },
-  { id: "evening", label: "Evening", desc: "4 PM – 7 PM", emoji: "🌆" },
+  { id: "morning", label: "Morning", desc: "8 AM – 12 PM", Icon: Sunrise },
+  { id: "afternoon", label: "Afternoon", desc: "12 PM – 4 PM", Icon: Sun },
+  { id: "evening", label: "Evening", desc: "4 PM – 7 PM", Icon: Sunset },
 ];
 
 interface PinDropPageProps {
@@ -103,7 +104,7 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
-          <span className="text-5xl block mb-4">😔</span>
+          <Frown className="w-12 h-12 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
           <p className="font-display text-xl font-semibold mb-2">Link not valid</p>
           <p className="text-sm text-brand-muted">{error}</p>
           {error.includes("expired") || error.includes("already been used") ? (
@@ -123,7 +124,7 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
         <div className="text-center max-w-sm animate-pop">
-          <span className="text-6xl block mb-4">📍</span>
+          <MapPin className="w-14 h-14 mx-auto mb-4 text-brand" aria-hidden="true" />
           <h1 className="font-display text-2xl font-bold mb-2">
             {alreadyPinned ? "You already dropped your pin!" : "Pin dropped!"}
           </h1>
@@ -152,7 +153,7 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
       {/* Header */}
       <div className="bg-white border-b border-surface-border px-4 py-4 safe-area-top">
         <div className="max-w-lg mx-auto">
-          <span className="text-2xl block mb-1">🎁</span>
+          <Gift className="w-6 h-6 mx-auto mb-1" aria-hidden="true" />
           <h2 className="font-display text-lg font-bold">
             Hey {recipientName}!
           </h2>
@@ -240,7 +241,7 @@ export default function PinDropClient({ orderId, token }: PinDropPageProps) {
                       : "border-surface-border hover:border-brand/30"
                   }`}
                 >
-                  <span className="text-2xl">{tw.emoji}</span>
+                  <tw.Icon className="w-6 h-6" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-sm">{tw.label}</p>
                     <p className="text-xs text-brand-muted">{tw.desc}</p>

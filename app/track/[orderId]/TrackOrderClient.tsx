@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { Bike, Camera, Check, CheckCircle2, ClipboardList, Frown, Gift, Mail, MapPin, Package, Truck, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
 const STATUS_STEPS = [
-  { key: "pending_payment", label: "Order placed", icon: "📋" },
-  { key: "processing", label: "Being prepared", icon: "🎁" },
-  { key: "wrapped", label: "Wrapped & ready", icon: "🎀" },
-  { key: "dispatched", label: "On its way!", icon: "🚀" },
-  { key: "delivered", label: "Delivered!", icon: "✅" },
+  { key: "pending_payment", label: "Order placed", Icon: ClipboardList },
+  { key: "processing", label: "Being prepared", Icon: Gift },
+  { key: "wrapped", label: "Wrapped & ready", Icon: Package },
+  { key: "dispatched", label: "On its way!", Icon: Truck },
+  { key: "delivered", label: "Delivered!", Icon: CheckCircle2 },
 ];
 
 const STATUS_INDEX: Record<string, number> = {
@@ -111,7 +112,7 @@ export default function TrackOrderClient({
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
-          <span className="text-5xl block mb-4">😔</span>
+          <Frown className="w-12 h-12 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
           <p className="font-display text-xl font-semibold mb-2">Link not valid</p>
           <p className="text-sm text-brand-muted">{error}</p>
         </div>
@@ -129,7 +130,7 @@ export default function TrackOrderClient({
       {/* Hero */}
       <div className="bg-gradient-to-br from-brand-dark to-brand px-4 py-10 md:py-14">
         <div className="max-w-lg mx-auto text-center">
-          <span className="text-5xl block mb-4">🎁</span>
+          <Gift className="w-12 h-12 mx-auto mb-4 text-white" aria-hidden="true" />
           <h1 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">
             {isAnonymous
               ? "Someone sent you a gift!"
@@ -164,7 +165,7 @@ export default function TrackOrderClient({
                             : "bg-gray-100 text-gray-400"
                         }`}
                       >
-                        {isPast ? "✓" : step.icon}
+                        {isPast ? <Check className="w-4 h-4" aria-hidden="true" /> : <step.Icon className="w-4 h-4" aria-hidden="true" />}
                       </div>
                       {i < STATUS_STEPS.length - 1 && (
                         <div
@@ -199,7 +200,7 @@ export default function TrackOrderClient({
           {order.giftNote && (
             <div className="bg-white rounded-2xl p-5 border border-surface-border">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">💌</span>
+                <Mail className="w-5 h-5" aria-hidden="true" />
                 <p className="text-sm font-semibold">Gift note</p>
               </div>
               <p className="text-sm text-brand-muted italic leading-relaxed">
@@ -212,7 +213,7 @@ export default function TrackOrderClient({
           {order.preDispatchPhotoUrl && (
             <div className="bg-white rounded-2xl p-5 border border-surface-border">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">📸</span>
+                <Camera className="w-5 h-5" aria-hidden="true" />
                 <p className="text-sm font-semibold">Package photo</p>
               </div>
               <div className="aspect-[4/3] bg-gray-100 rounded-xl overflow-hidden relative">
@@ -233,7 +234,7 @@ export default function TrackOrderClient({
           {order.pinDropRequested && (
             <div className="bg-white rounded-2xl p-5 border border-surface-border">
               <div className="flex items-center gap-2 mb-3">
-                <span className="text-lg">📍</span>
+                <MapPin className="w-5 h-5" aria-hidden="true" />
                 <p className="text-sm font-semibold">Delivery details</p>
               </div>
               <div className="space-y-2 text-sm">
@@ -253,7 +254,7 @@ export default function TrackOrderClient({
               href={`/track/${orderId}/live?token=${token}`}
               className="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 text-white rounded-2xl font-semibold text-sm hover:bg-blue-700 transition-colors"
             >
-              <span className="text-lg">🛵</span>
+              <Bike className="w-5 h-5" aria-hidden="true" />
               View Live Rider Tracking
             </Link>
           )}
@@ -262,7 +263,7 @@ export default function TrackOrderClient({
           {isAnonymous && (
             <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4 text-center">
               <p className="text-xs text-brand-muted">
-                🤫 This gift is anonymous — sender identity and price are hidden.
+                This gift is anonymous — sender identity and price are hidden.
               </p>
             </div>
           )}
