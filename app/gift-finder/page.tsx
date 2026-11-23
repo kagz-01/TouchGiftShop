@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Sparkles, Globe, ChevronDown, Send, ArrowLeft, Copy, ExternalLink } from "lucide-react";
+import { Sparkles, Globe, ChevronDown, Send, ArrowLeft, Copy, ExternalLink, Cake, Flower2, Building2, Church, PenLine, Gift } from "lucide-react";
 
 type Message = {
   id: string;
@@ -34,12 +34,12 @@ const LANGUAGES = [
 ];
 
 const QUICK_STARTS = [
-  { emoji: "🎂", text: "Birthday gift for my partner" },
-  { emoji: "💐", text: "Thank you gift for my teacher" },
-  { emoji: "🏢", text: "Corporate hamper for 20 people" },
-  { emoji: "💒", text: "Wedding gift under KSh 10,000" },
-  { emoji: "✍️", text: "Help me write a gift note" },
-  { emoji: "💝", text: "Just because — surprise someone" },
+  { Icon: Cake, text: "Birthday gift for my partner" },
+  { Icon: Flower2, text: "Thank you gift for my teacher" },
+  { Icon: Building2, text: "Corporate hamper for 20 people" },
+  { Icon: Church, text: "Wedding gift under KSh 10,000" },
+  { Icon: PenLine, text: "Help me write a gift note" },
+  { Icon: Gift, text: "Just because — surprise someone" },
 ];
 
 export default function GiftChatPage() {
@@ -336,7 +336,7 @@ export default function GiftChatPage() {
                 className="flex items-center gap-2 bg-white hover:bg-brand/4 border border-black/8 hover:border-brand/25 rounded-xl px-3 py-2.5 text-left transition-all group"
               >
                 <span className="text-lg flex-shrink-0 group-hover:scale-110 transition-transform">
-                  {qs.emoji}
+                  <qs.Icon className="w-4 h-4 text-brand" aria-hidden="true" />
                 </span>
                 <span className="text-[12px] font-medium text-brand-muted group-hover:text-brand leading-tight">
                   {qs.text}
