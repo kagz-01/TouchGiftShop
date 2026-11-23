@@ -591,7 +591,7 @@ export default function WhatsAppBotPage() {
                   onChange={(e) => setUserInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
                   placeholder="Type a message..."
-                  className="flex-1 bg-white dark:bg-[#0B141A] rounded-full px-4 py-2 text-sm text-gray-800 dark:text-white outline-none"
+                  className="flex-1 bg-white dark:bg-[#0B141A] rounded-full px-4 py-2 text-sm text-gray-800 dark:text-white outline-none focus-visible:ring-2 focus-visible:ring-brand/50"
                 />
                 <button onClick={handleSend} className="w-10 h-10 bg-[#075E54] shape-premium-button flex items-center justify-center hover:bg-[#064E46] transition-colors">
                   <Send className="w-4 h-4 text-white" />

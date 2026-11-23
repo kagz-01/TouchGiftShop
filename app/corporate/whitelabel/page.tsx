@@ -460,7 +460,7 @@ export default function WhiteLabelPortal() {
                     type="text"
                     value={brandColor}
                     onChange={(e) => setBrandColor(e.target.value)}
-                    className="w-20 text-xs font-mono font-bold bg-transparent outline-none uppercase"
+                    className="w-20 text-xs font-mono font-bold bg-transparent outline-none focus-visible:ring-2 focus-visible:ring-brand/50 uppercase"
                   />
                   <input
                     type="color"

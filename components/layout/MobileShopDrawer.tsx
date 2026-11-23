@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
 import Link from "next/link";
 import { createPortal } from "react-dom";
 import {
@@ -108,6 +109,8 @@ export default function MobileShopDrawer({
       document.body.style.overflow = original;
     };
   }, [open]);
+
+  useEscapeKey(onClose, open);
 
   if (!open) return null;
 
