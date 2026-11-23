@@ -597,7 +597,7 @@ function StepPreview({ data }: { data: WizardData }) {
             {data.recipientPhoto ? <img src={data.recipientPhoto} className="w-full h-full object-cover rounded-full" alt="" /> : <Gift className="w-8 h-8" aria-hidden="true" />}
           </div>
           <h3 className="font-display text-2xl font-bold ">{data.title || `Gift Pool for ${data.recipientName}`}</h3>
-          <p className="text-white/70 text-sm mt-1">{stripLeadingEmoji(data.occasion === "✨ Other" ? data.customOccasion : data.occasion)}</p>
+          <p className="text-white/70 text-sm mt-1">{data.occasion === "✨ Other" ? data.customOccasion : stripLeadingEmoji(data.occasion)}</p>
         </div>
         <div className="bg-white p-5">
           <div className="mb-4">
