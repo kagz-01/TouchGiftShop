@@ -125,7 +125,7 @@ export default function CorporatePoolCreate() {
             <Link href="/corporate/pools" className="text-white/40 hover:text-white text-sm flex items-center gap-1 transition-colors">
               <ArrowLeft className="w-4 h-4" /> Back
             </Link>
-            <h1 className="font-display italic text-lg font-bold text-white">Team Gift Pool</h1>
+            <h1 className="font-display text-lg font-bold text-white">Team Gift Pool</h1>
             <div className="text-sm text-white/40">
               {step < 4 && <span className="text-xs">Step {step}/3</span>}
             </div>
@@ -161,7 +161,7 @@ export default function CorporatePoolCreate() {
         {step === 1 && (
           <div className="max-w-2xl mx-auto space-y-6">
             <div>
-              <h2 className="font-display italic text-2xl font-bold mb-2 text-white">Who is this gift for?</h2>
+              <h2 className="font-display text-2xl font-bold mb-2 text-white">Who is this gift for?</h2>
               <p className="text-white/50 text-sm">Tell us about the colleague you&apos;re celebrating.</p>
             </div>
 
@@ -237,7 +237,7 @@ export default function CorporatePoolCreate() {
         {step === 2 && (
           <div className="max-w-2xl mx-auto space-y-6">
             <div>
-              <h2 className="font-display italic text-2xl font-bold mb-2 text-white">Set up the pool</h2>
+              <h2 className="font-display text-2xl font-bold mb-2 text-white">Set up the pool</h2>
               <p className="text-white/50 text-sm">
                 Configure the gift pool for <span className="font-semibold text-fuchsia-400">{recipient.name}</span>&apos;s {selectedOccasion?.label}.
               </p>
@@ -354,7 +354,7 @@ export default function CorporatePoolCreate() {
         {step === 3 && (
           <div className="max-w-2xl mx-auto space-y-6">
             <div>
-              <h2 className="font-display italic text-2xl font-bold mb-2 text-white">Pool settings</h2>
+              <h2 className="font-display text-2xl font-bold mb-2 text-white">Pool settings</h2>
               <p className="text-white/50 text-sm">Configure company matching and contributor experience.</p>
             </div>
 
@@ -455,7 +455,7 @@ export default function CorporatePoolCreate() {
                 <div className="w-14 h-14 mx-auto bg-fuchsia-500/20 shape-premium-card flex items-center justify-center text-2xl mb-3">
                   {selectedOccasion?.icon}
                 </div>
-                <h4 className="font-display italic text-lg font-bold text-white/90">{config.title || `Celebrate ${recipient.name}`}</h4>
+                <h4 className="font-display text-lg font-bold text-white/90">{config.title || `Celebrate ${recipient.name}`}</h4>
                 <p className="text-xs text-white/50 mt-1">{recipient.department}</p>
                 <div className="mt-4 flex items-center justify-center gap-6 text-sm">
                   <div className="text-center">
@@ -514,7 +514,7 @@ export default function CorporatePoolCreate() {
             </div>
 
             <div>
-              <h2 className="font-display italic text-3xl font-bold mb-2 text-white">Pool is live!</h2>
+              <h2 className="font-display text-3xl font-bold mb-2 text-white">Pool is live!</h2>
               <p className="text-white/50">Share the link with colleagues to start collecting contributions.</p>
             </div>
 

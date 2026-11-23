@@ -90,7 +90,7 @@ export default function BudgetMode({
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="font-display italic text-xl font-bold mb-2 text-theme-heading">Budget Mode</h3>
+        <h3 className="font-display text-xl font-bold mb-2 text-theme-heading">Budget Mode</h3>
         <p className="text-theme-muted text-sm">Set a budget per hamper and we&apos;ll auto-fill with the best items.</p>
       </div>
 

@@ -595,7 +595,7 @@ function StepPreview({ data }: { data: WizardData }) {
           <div className="w-16 h-16 rounded-full bg-white/20 mx-auto mb-3 flex items-center justify-center text-3xl">
             {data.recipientPhoto ? <img src={data.recipientPhoto} className="w-full h-full object-cover rounded-full" alt="" /> : "🎁"}
           </div>
-          <h3 className="font-display text-2xl font-bold italic">{data.title || `Gift Pool for ${data.recipientName}`}</h3>
+          <h3 className="font-display text-2xl font-bold ">{data.title || `Gift Pool for ${data.recipientName}`}</h3>
           <p className="text-white/70 text-sm mt-1">{data.occasion === "✨ Other" ? data.customOccasion : data.occasion}</p>
         </div>
         <div className="bg-white p-5">
@@ -631,7 +631,7 @@ function StepLaunch({ data, poolSlug }: { data: WizardData; poolSlug: string }) 
         <CheckCircle2 className="w-10 h-10 text-success" />
       </div>
       <div>
-        <h3 className="font-display text-2xl font-bold italic text-brand-deep">Your pool is live! 🎉</h3>
+        <h3 className="font-display text-2xl font-bold text-brand-deep">Your pool is live! 🎉</h3>
         <p className="text-brand-deep/60 mt-1 text-sm">Share the link with friends and family to start collecting</p>
       </div>
       <div className="p-4 rounded-2xl bg-brand/5 border border-brand/10">
@@ -815,7 +815,7 @@ export default function CreatePoolPage() {
             <Gift className="w-4 h-4 text-brand" />
             <span className="text-xs font-semibold text-brand uppercase tracking-widest">Gift Pool</span>
           </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold italic text-brand-deep">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-brand-deep">
             Create a Gift Pool
           </h1>
           <p className="text-brand-deep/60 mt-2 text-sm">Gather friends &amp; family to gift something extraordinary</p>

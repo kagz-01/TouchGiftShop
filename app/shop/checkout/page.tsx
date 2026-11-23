@@ -151,7 +151,7 @@ export default function ShopCheckoutPage() {
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-rose-600 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(217,70,239,0.3)]">
             <Gift className="w-8 h-8 text-white" />
           </div>
-          <h1 className="font-display text-2xl font-bold italic mb-1">Secure Checkout</h1>
+          <h1 className="font-display text-2xl font-bold mb-1">Secure Checkout</h1>
           <p className="text-white/50 text-sm">You are gifting: {product.name}</p>
         </div>
 

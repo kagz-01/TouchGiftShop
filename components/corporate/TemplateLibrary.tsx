@@ -216,7 +216,7 @@ export default function TemplateLibrary({ onSelect, selectedId }: TemplateLibrar
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="font-display italic text-xl font-bold mb-2 text-theme-heading">Start with a Template</h3>
+        <h3 className="font-display text-xl font-bold mb-2 text-theme-heading">Start with a Template</h3>
         <p className="text-theme-muted text-sm">Choose a pre-built corporate hamper template, then customize it to match your brand.</p>
       </div>
 
@@ -271,7 +271,7 @@ export default function TemplateLibrary({ onSelect, selectedId }: TemplateLibrar
                 {template.icon}
               </div>
 
-              <h4 className="font-display italic font-bold text-theme-heading mb-1 group-hover:text-gold transition-colors">
+              <h4 className="font-display font-bold text-theme-heading mb-1 group-hover:text-gold transition-colors">
                 {template.name}
               </h4>
               <p className="text-theme-muted text-xs leading-relaxed mb-3 line-clamp-2">{template.description}</p>

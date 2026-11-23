@@ -1277,7 +1277,7 @@ img, video {
     @apply font-light tracking-wide leading-relaxed;
   }
   .heading-elegant {
-    @apply font-display font-bold italic tracking-wide;
+    @apply font-display font-bold tracking-wide;
   }
 }
 

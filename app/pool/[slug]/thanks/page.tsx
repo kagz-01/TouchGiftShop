@@ -81,7 +81,7 @@ export default function ThanksPage() {
             </div>
           </div>
 
-          <h1 className="font-display text-3xl font-bold italic text-white mb-2">
+          <h1 className="font-display text-3xl font-bold text-white mb-2">
             {name ? `Thank you, ${name}! 💛` : "Thank you! 💛"}
           </h1>
           {amount && (
