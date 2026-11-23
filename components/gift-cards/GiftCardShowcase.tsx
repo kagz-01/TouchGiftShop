@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useMemo } from "react";
+import { CalendarDays, Gift, Lock, Mail, Zap } from "lucide-react";
 import GiftCardPreview from "@/components/gift-cards/GiftCardPreview";
 import type { GiftCardStyle } from "@/components/gift-cards/GiftCardPreview";
 
@@ -100,10 +101,10 @@ const SNAP_VIEWS = [
 ] as const;
 
 const FEATURES = [
-  { icon: "⚡", title: "INSTANT DELIVERY", desc: "Delivered to your email in seconds" },
-  { icon: "🔒", title: "SECURE & SAFE", desc: "Encrypted & secure transactions" },
-  { icon: "📅", title: "3-MONTH VALIDITY", desc: "Use anytime within 3 months" },
-  { icon: "🎁", title: "FLEXIBLE REDEMPTION", desc: "Redeem across all products" },
+  { Icon: Zap, title: "INSTANT DELIVERY", desc: "Delivered to your email in seconds" },
+  { Icon: Lock, title: "SECURE & SAFE", desc: "Encrypted & secure transactions" },
+  { Icon: CalendarDays, title: "3-MONTH VALIDITY", desc: "Use anytime within 3 months" },
+  { Icon: Gift, title: "FLEXIBLE REDEMPTION", desc: "Redeem across all products" },
 ];
 
 export default function GiftCardShowcase() {
@@ -394,9 +395,9 @@ export default function GiftCardShowcase() {
             <h3 className="gc-step-title">4. Delivery option</h3>
             <div className="gc-delivery-grid">
               {[
-                { key: "instant" as const, icon: "⚡", title: "Instant delivery", sub: "To your email" },
-                { key: "schedule" as const, icon: "📅", title: "Schedule", sub: "Pick a date" },
-                { key: "send" as const, icon: "✉️", title: "Send to recipient", sub: "They get it" },
+                { key: "instant" as const, Icon: Zap, title: "Instant delivery", sub: "To your email" },
+                { key: "schedule" as const, Icon: CalendarDays, title: "Schedule", sub: "Pick a date" },
+                { key: "send" as const, Icon: Mail, title: "Send to recipient", sub: "They get it" },
               ].map((opt) => (
                 <button
                   key={opt.key}
@@ -405,7 +406,7 @@ export default function GiftCardShowcase() {
                   onClick={() => setDelivery(opt.key)}
                 >
                   {delivery === opt.key && <span className="gc-delivery-check">✓</span>}
-                  <span className="gc-delivery-icon">{opt.icon}</span>
+                  <span className="gc-delivery-icon"><opt.Icon className="w-5 h-5 inline-block" aria-hidden="true" /></span>
                   <strong>{opt.title}</strong>
                   <span>{opt.sub}</span>
                 </button>
@@ -592,7 +593,7 @@ export default function GiftCardShowcase() {
       <div className="gc-features">
         {FEATURES.map((f) => (
           <div key={f.title} className="gc-feature">
-            <span className="gc-feature-icon">{f.icon}</span>
+            <span className="gc-feature-icon"><f.Icon className="w-5 h-5 inline-block" aria-hidden="true" /></span>
             <div>
               <strong>{f.title}</strong>
               <span>{f.desc}</span>

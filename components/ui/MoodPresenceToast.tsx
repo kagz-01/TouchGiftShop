@@ -16,25 +16,25 @@ type PresenceMessage = {
 
 const PRESENCE_MESSAGES: Record<Mood | "custom", PresenceMessage[]> = {
   default: [
-    { text: "{name}, thought you ghosted on me", emoji: "👀", cta: "Still browsing?", ctaHref: "/shop" },
+    { text: "{name}, thought you ghosted on me.", emoji: "👀", cta: "Still browsing?", ctaHref: "/shop" },
     { text: "Still here, {name}? Great gifts are waiting.", emoji: "🎁", cta: "See what's new", ctaHref: "/shop" },
-    { text: "Hey {name} — your perfect gift isn't going to find itself", emoji: "💡", cta: "Let's find it", ctaHref: "/gift-finder" },
+    { text: "Hey {name} — your perfect gift isn't going to find itself.", emoji: "💡", cta: "Let's find it", ctaHref: "/gift-finder" },
     { text: "Need a hand picking something, {name}?", emoji: "🤝", cta: "Try Gift Match", ctaHref: "/gift-finder" },
   ],
   romantic: [
     { text: "Still dreaming about the perfect gesture, {name}?", emoji: "💕", cta: "Send some love", ctaHref: "/shop" },
     { text: "{name}, they deserve to feel special today.", emoji: "🌹", cta: "Shop romance", ctaHref: "/shop" },
-    { text: "Don't let the moment pass, {name}. Love waits for no one", emoji: "🌷", cta: "Pick something beautiful", ctaHref: "/shop" },
+    { text: "Don't let the moment pass, {name}. Love waits for no one.", emoji: "🌷", cta: "Pick something beautiful", ctaHref: "/shop" },
   ],
   apology: [
     { text: "Still thinking, {name}? The sooner the better.", emoji: "🙏", cta: "Fix it now", ctaHref: "/shop", },
     { text: "{name}, we promise same-day delivery. No excuses needed.", emoji: "⚡", cta: "Make it right", ctaHref: "/shop" },
-    { text: "The clock is ticking, {name}. Let's sort this out", emoji: "⏰", cta: "See fast gifts", ctaHref: "/shop" },
+    { text: "The clock is ticking, {name}. Let's sort this out.", emoji: "⏰", cta: "See fast gifts", ctaHref: "/shop" },
   ],
   celebratory: [
     { text: "Don't let the party start without the perfect gift, {name}!", emoji: "🎉", cta: "Let's celebrate", ctaHref: "/shop" },
     { text: "{name}, this is a BIG moment. Make it unforgettable.", emoji: "🥳", cta: "Shop celebrations", ctaHref: "/shop" },
-    { text: "Still here, {name}? The confetti is waiting", emoji: "🎊", cta: "Shop now", ctaHref: "/shop" },
+    { text: "Still here, {name}? The confetti is waiting.", emoji: "🎊", cta: "Shop now", ctaHref: "/shop" },
   ],
   corporate: [
     { text: "{name}, great impression starts with the right gift.", emoji: "🏢", cta: "View corporate gifts", ctaHref: "/corporate" },
@@ -62,22 +62,22 @@ const PRESENCE_MESSAGES: Record<Mood | "custom", PresenceMessage[]> = {
     { text: "Still here, {name}? Let's find something truly special.", emoji: "💫", cta: "Explore now", ctaHref: "/shop" },
   ],
   flowers: [
-    { text: "Still choosing, {name}? Say it with flowers", emoji: "🌹", cta: "Shop flowers", ctaHref: "/shop" },
+    { text: "Still choosing, {name}? Say it with flowers.", emoji: "🌹", cta: "Shop flowers", ctaHref: "/shop" },
     { text: "{name}, the right arrangement says everything.", emoji: "💐", cta: "See arrangements", ctaHref: "/shop" },
-    { text: "Don't wait for the occasion, {name}. Send them today", emoji: "🌸", cta: "Send flowers", ctaHref: "/shop" },
+    { text: "Don't wait for the occasion, {name}. Send them today.", emoji: "🌸", cta: "Send flowers", ctaHref: "/shop" },
   ],
   liquor: [
-    { text: "Still deciding, {name}? Raise a glass to it", emoji: "🥂", cta: "Shop spirits", ctaHref: "/shop" },
+    { text: "Still deciding, {name}? Raise a glass to it.", emoji: "🥂", cta: "Shop spirits", ctaHref: "/shop" },
     { text: "{name}, milestones deserve something worth toasting.", emoji: "🍾", cta: "See gift boxes", ctaHref: "/shop" },
-    { text: "The celebration's waiting, {name}. Grab the bottle", emoji: "🍷", cta: "Browse liquor", ctaHref: "/shop" },
+    { text: "The celebration's waiting, {name}. Grab the bottle.", emoji: "🍷", cta: "Browse liquor", ctaHref: "/shop" },
   ],
   perfumes: [
     { text: "Still searching for their scent, {name}?", emoji: "✨", cta: "Shop perfumes", ctaHref: "/shop" },
     { text: "{name}, a signature fragrance is never forgotten.", emoji: "🌸", cta: "See designer scents", ctaHref: "/shop" },
-    { text: "Leave a memory behind, {name} — it starts with a bottle", emoji: "💫", cta: "Browse fragrances", ctaHref: "/shop" },
+    { text: "Leave a memory behind, {name} — it starts with a bottle.", emoji: "💫", cta: "Browse fragrances", ctaHref: "/shop" },
   ],
   hampers: [
-    { text: "Still browsing, {name}? The best gifts overflow", emoji: "🧺", cta: "Shop hampers", ctaHref: "/shop" },
+    { text: "Still browsing, {name}? The best gifts overflow.", emoji: "🧺", cta: "Shop hampers", ctaHref: "/shop" },
     { text: "{name}, abundance looks good on everyone.", emoji: "🍎", cta: "See hampers", ctaHref: "/shop" },
     { text: "One basket, every reason to celebrate, {name}", emoji: "🎁", cta: "Build a hamper", ctaHref: "/gift-lab" },
   ],
@@ -85,19 +85,19 @@ const PRESENCE_MESSAGES: Record<Mood | "custom", PresenceMessage[]> = {
 
 // Return time messages — shown when user returns after inactivity
 const RETURN_MESSAGES: Record<Mood | "custom", string[]> = {
-  default:      ["Welcome back, {name}! 🎁 Ready to find something special?", "Missed you, {name}! Let's pick up where we left off."],
-  romantic:     ["You came back, {name} 💕 Love doesn't give up!",  "Welcome back, {name} — they'll love what you choose."],
-  apology:      ["Back again, {name}? Let's make this right. 🙏",   "Still time to fix it, {name}. We've got you."],
-  celebratory:  ["The party's still going, {name}! 🎉",              "You came back — time to make it unforgettable, {name}!"],
+  default:      ["Welcome back, {name}! Ready to find something special?", "Missed you, {name}! Let's pick up where we left off."],
+  romantic:     ["You came back, {name}. Love doesn't give up!",  "Welcome back, {name} — they'll love what you choose."],
+  apology:      ["Back again, {name}? Let's make this right.",   "Still time to fix it, {name}. We've got you."],
+  celebratory:  ["The party's still going, {name}!",              "You came back — time to make it unforgettable, {name}!"],
   corporate:    ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   corp_appreciation: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   corp_milestone: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
   corp_welcome: ["Good timing, {name}. Your team is counting on you.", "Welcome back, {name}. Let's close this with the perfect gift."],
-  custom:       ["Good to see you back, {name}! ✨",                  "Hey {name}, welcome back — let's find that gift."],
-  flowers:      ["Welcome back, {name}! 🌹 Something beautiful is waiting.", "Missed you, {name}! Let's pick out the perfect arrangement."],
-  liquor:       ["You came back, {name} 🥂 The toast is on hold.",    "Welcome back, {name} — let's find something worth opening."],
-  perfumes:     ["Back again, {name}! ✨ Their signature scent is here.", "Welcome back, {name} — a memory in a bottle awaits."],
-  hampers:      ["The basket's still waiting, {name}! 🧺",            "Welcome back, {name} — let's fill it with something wonderful."],
+  custom:       ["Good to see you back, {name}!",                  "Hey {name}, welcome back — let's find that gift."],
+  flowers:      ["Welcome back, {name}! Something beautiful is waiting.", "Missed you, {name}! Let's pick out the perfect arrangement."],
+  liquor:       ["You came back, {name}. The toast is on hold.",    "Welcome back, {name} — let's find something worth opening."],
+  perfumes:     ["Back again, {name}! Their signature scent is here.", "Welcome back, {name} — a memory in a bottle awaits."],
+  hampers:      ["The basket's still waiting, {name}!",            "Welcome back, {name} — let's fill it with something wonderful."],
 };
 
 // ── Idle thresholds ──────────────────────────────────────────────────────────
@@ -255,7 +255,7 @@ export default function MoodPresenceToast({ userName }: Props) {
         {/* Message row */}
         <div className="flex items-start gap-3">
           <span
-            className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-brand"
+            className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-brand dark:text-brand-light"
             style={{ background: "var(--mood-glow, rgba(155,27,90,0.1))" }}
           >
             <ToastIcon emoji={message.emoji} />
@@ -266,7 +266,7 @@ export default function MoodPresenceToast({ userName }: Props) {
             </p>
             {isReturn && (
               <p className="text-[12px] text-theme-muted mt-0.5">
-                {moodMeta.label} mode is still active ✨
+                {moodMeta.label} mode is still active
               </p>
             )}
           </div>
