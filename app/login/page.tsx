@@ -30,7 +30,7 @@ function LoginPage() {
     errorParam === "auth_failed"
       ? "Sign-in was cancelled or failed. Please try again."
       : errorParam === "magic_link_expired"
-      ? "⏱ That magic link has expired or was already used. Please request a new one below."
+      ? "That magic link has expired or was already used. Please request a new one below."
       : ""
   );
 

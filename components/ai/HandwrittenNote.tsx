@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Bot } from "lucide-react";
 import { NOTE_STYLES, type NoteStyle } from "@/lib/handwritten-note";
 
 type HandwrittenNoteProps = {
@@ -69,9 +70,7 @@ export default function HandwrittenNote({
             onClick={() => setMode("generate")}
             className="w-full flex items-center gap-4 p-4 bg-gradient-to-r from-brand/5 to-brand/10 rounded-xl border border-brand/20 hover:border-brand/40 transition-all text-left group"
           >
-            <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-              🤖
-            </div>
+            <div className="w-12 h-12 bg-brand/10 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform"><Bot className="w-6 h-6 text-brand" aria-hidden="true" /></div>
             <div>
               <p className="font-semibold text-sm">AI generates a note for me</p>
               <p className="text-xs text-brand-muted">Tell me the vibe and I&apos;ll write something heartfelt</p>
@@ -157,7 +156,7 @@ export default function HandwrittenNote({
                 Generating...
               </span>
             ) : (
-              "Generate Note ✨"
+              "Generate Note"
             )}
           </button>
         </div>

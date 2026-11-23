@@ -164,7 +164,7 @@ function ContributionFeed({ contributions, privacyMode }: { contributions: Contr
     return (
       <div className="text-center py-6 text-white/30 text-sm">
         <Heart className="w-8 h-8 mx-auto mb-2 opacity-30" />
-        Be the first to contribute ✨
+        Be the first to contribute
       </div>
     );
   }
@@ -405,7 +405,7 @@ export default function PoolLandingPage() {
           <div className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-rose-500/30 overflow-hidden bg-rose-500/10 flex items-center justify-center shadow-[0_0_30px_rgba(217,70,239,0.3)]">
             {pool.recipient_photo_url
               ? <img src={pool.recipient_photo_url} alt={pool.recipient_name} className="w-full h-full object-cover" />
-              : <span className="text-4xl">🎁</span>
+              : <Gift className="w-10 h-10 inline-block" aria-hidden="true" />
             }
           </div>
           {pool.occasion && (

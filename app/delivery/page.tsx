@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Building2, Globe, Truck, Zap } from "lucide-react";
 
 export default function DeliveryPolicyPage() {
   return (
@@ -13,7 +14,7 @@ export default function DeliveryPolicyPage() {
 
         <div className="bg-white rounded-3xl border border-surface-border p-8 md:p-12 space-y-8">
           <div>
-            <span className="text-4xl block mb-4">🚚</span>
+            <Truck className="w-10 h-10 mx-auto mb-4" aria-hidden="true" />
             <h1 className="font-display text-3xl font-bold mb-2">Delivery Policy</h1>
             <p className="text-sm text-brand-muted">Last updated: August 2026</p>
           </div>
@@ -25,7 +26,7 @@ export default function DeliveryPolicyPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <div className="bg-brand/5 border border-brand/10 rounded-2xl p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">🏙️</span>
+                    <Building2 className="w-6 h-6 inline-block" aria-hidden="true" />
                     <h3 className="font-bold text-brand-deep">Nairobi</h3>
                   </div>
                   <ul className="space-y-2 text-sm">
@@ -46,7 +47,7 @@ export default function DeliveryPolicyPage() {
 
                 <div className="bg-gold/10 border border-gold/20 rounded-2xl p-5">
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">🌍</span>
+                    <Globe className="w-6 h-6 inline-block" aria-hidden="true" />
                     <h3 className="font-bold text-brand-deep">Nationwide</h3>
                   </div>
                   <ul className="space-y-2 text-sm">
@@ -210,7 +211,7 @@ export default function DeliveryPolicyPage() {
               <h2 className="font-display text-lg font-bold text-brand-deep mb-3">5. Same-Day Delivery Guarantee</h2>
               <div className="bg-brand-forest/5 border border-brand-forest/20 rounded-2xl p-5 mt-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">⚡</span>
+                  <Zap className="w-5 h-5 inline-block" aria-hidden="true" />
                   <p className="font-bold text-brand-deep">On-time or it&apos;s free</p>
                 </div>
                 <p className="text-sm">

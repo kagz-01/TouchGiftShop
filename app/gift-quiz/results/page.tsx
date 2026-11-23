@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { getDbSlugs } from "@/lib/category-map";
 import { getBudgetRange } from "@/lib/budget-tiers";
 import type { Product } from "@/lib/types";
+import { Gift } from "lucide-react";
 
 export const metadata = {
   title: "Your Gift Recommendations | TouchGift",
@@ -68,7 +69,7 @@ export default async function QuizResults({
       <div className="w-full mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8">
-          <span className="text-5xl mb-4 block animate-float">🎁</span>
+          <Gift className="w-12 h-12 mx-auto mb-4" aria-hidden="true" />
           <h1 className="font-display text-3xl md:text-4xl font-bold mb-3">
             Your Perfect Picks
           </h1>

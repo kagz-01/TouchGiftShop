@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
 import GiftCardRecipientView from "@/components/gift-cards/GiftCardRecipientView";
+import { Hourglass } from "lucide-react";
 
 interface Props {
   params: { code: string };
@@ -47,7 +48,7 @@ export default async function GiftCardViewPage({ params }: Props) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6">
         <div className="text-center max-w-sm">
-          <p className="text-4xl mb-4">⏳</p>
+          <Hourglass className="w-10 h-10 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
           <h1 className="font-display text-2xl font-bold text-theme-heading mb-2">
             Almost ready…
           </h1>

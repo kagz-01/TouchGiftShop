@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { Gift } from "lucide-react";
 
 export default function NotFound() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="text-6xl mb-4">🎁</div>
+      <Gift className="w-14 h-14 mx-auto mb-4" aria-hidden="true" />
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Page not found</h1>
       <p className="text-gray-500 mb-6 max-w-sm">
         The gift you&apos;re looking for doesn&apos;t exist or has been moved.

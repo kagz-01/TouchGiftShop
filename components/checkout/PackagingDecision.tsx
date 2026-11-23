@@ -29,7 +29,7 @@ const OPTION_CARDS = [
     title: "Curate as a Hamper",
     subtitle: "Everything together in one beautiful box",
     image: "/images/wraps/hamper_together.png",
-    badge: "Most Popular 🔥",
+    badge: "Most Popular",
     badgeColor: "bg-amber-400/90 text-amber-950",
     pros: ["One luxurious unboxing moment", "Saves on individual packaging costs", "Perfect for a single recipient"],
     highlight: true,

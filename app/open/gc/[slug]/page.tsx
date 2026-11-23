@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
-import { Phone, CheckCircle2, Play, Pause, Wallet, RefreshCw, Sparkles } from "lucide-react";
+import { Phone, CheckCircle2, Play, Pause, Wallet, RefreshCw, Sparkles, Gift } from "lucide-react";
 import ReactConfetti from "react-confetti";
 import { useWindowSize } from "react-use";
 
@@ -133,7 +133,7 @@ export default function UnboxGiftCardPage() {
   if (!giftCard) {
     return (
       <div className="min-h-screen bg-[#0A0508] flex flex-col items-center justify-center gap-4 text-white/50 px-4 text-center">
-        <div className="text-5xl">🎁</div>
+        <Gift className="w-12 h-12 mx-auto" aria-hidden="true" />
         <p className="text-lg font-semibold">This gift link wasn't found.</p>
         <p className="text-sm">It may have been removed or the link is incorrect.</p>
       </div>
@@ -186,7 +186,7 @@ export default function UnboxGiftCardPage() {
               <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-all duration-1000" />
               <div className="flex flex-col items-center gap-3">
                 <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 shadow-inner">
-                  <span className="text-3xl">🎁</span>
+                  <Gift className="w-8 h-8 inline-block" aria-hidden="true" />
                 </div>
                 <span className="text-white/60 text-sm font-semibold">Tap to open</span>
               </div>
@@ -205,7 +205,7 @@ export default function UnboxGiftCardPage() {
             onClick={handleUnbox}
             className="w-full py-5 bg-gradient-to-r from-rose-600 to-orange-500 rounded-2xl font-bold text-lg shadow-[0_0_40px_rgba(244,63,94,0.3)] hover:shadow-[0_0_60px_rgba(244,63,94,0.5)] hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
           >
-            <Sparkles className="w-5 h-5" /> Open Your Gift ✨
+            <Sparkles className="w-5 h-5" /> Open Your Gift
           </button>
         </div>
       )}
@@ -354,7 +354,7 @@ export default function UnboxGiftCardPage() {
             href="/shop"
             className="block mt-3 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white rounded-2xl font-semibold text-sm transition-all"
           >
-            Shop Now 🛍️
+            Shop Now
           </a>
         </div>
       )}

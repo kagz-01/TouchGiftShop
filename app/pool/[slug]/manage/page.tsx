@@ -8,7 +8,7 @@ import {
   Clock, Target, Zap, Crown, Gift, MessageSquare,
   RefreshCw, CheckCircle, AlertCircle, ExternalLink,
   Trophy, Flame, Heart, Lock, Calendar, DollarSign,
-  RotateCcw, Bell, ChevronRight, XCircle
+  RotateCcw, Bell, ChevronRight, XCircle, PartyPopper, Sprout
 } from "lucide-react";
 
 type Contribution = {
@@ -370,10 +370,10 @@ export default function PoolManagePage() {
               </div>
               <div className="space-y-3">
                 {[
-                  { pct: 25, label: "Quarter way!", reward: "First shout-out unlocked", icon: "🌱" },
-                  { pct: 50, label: "Halfway there!", reward: "Share badge unlocked", icon: "⚡" },
-                  { pct: 75, label: "Almost there!", reward: "Express delivery eligible", icon: "🔥" },
-                  { pct: 100, label: "Goal reached!", reward: "Order the gift now!", icon: "🏆" },
+                  { pct: 25, label: "Quarter way!", reward: "First shout-out unlocked", Icon: Sprout },
+                  { pct: 50, label: "Halfway there!", reward: "Share badge unlocked", Icon: Zap },
+                  { pct: 75, label: "Almost there!", reward: "Express delivery eligible", Icon: Flame },
+                  { pct: 100, label: "Goal reached!", reward: "Order the gift now!", Icon: Trophy },
                 ].map((m) => {
                   const unlocked = unlockedMilestones.includes(m.pct);
                   return (
@@ -388,7 +388,7 @@ export default function PoolManagePage() {
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl ${
                         unlocked ? "bg-rose-500/20" : "bg-white/5"
                       }`}>
-                        {unlocked ? m.icon : <Lock className="w-4 h-4 text-white/20" />}
+                        {unlocked ? <m.Icon className="w-5 h-5" aria-hidden="true" /> : <Lock className="w-4 h-4 text-white/20" />}
                       </div>
                       <div className="flex-1">
                         <p className={`text-sm font-semibold ${unlocked ? "text-white" : "text-white/40"}`}>
@@ -454,7 +454,7 @@ export default function PoolManagePage() {
             {/* Order CTA when completed */}
             {isCompleted && (
               <div className="bg-gradient-to-r from-rose-600/20 to-orange-500/20 border border-rose-500/30 rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(217,70,239,0.1)]">
-                <div className="text-4xl mb-3">🎉</div>
+                <PartyPopper className="w-10 h-10 mx-auto mb-3" aria-hidden="true" />
                 <h3 className="font-display text-xl font-bold text-white mb-1">Goal Reached!</h3>
                 <p className="text-white/60 text-sm mb-4">
                   KES {totalRaised.toLocaleString()} collected from {contributions.length} contributors.

@@ -394,7 +394,7 @@ export default async function ProformaPage({
         <section className="mt-5 grid gap-3 sm:grid-cols-2 text-xs">
           <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3.5">
             <h3 className="font-bold uppercase tracking-wider text-gray-800 flex items-center gap-1.5 mb-2">
-              🏛️ Bank Payment Details
+              Bank Payment Details
             </h3>
             <p className="font-semibold text-gray-900">Family Bank · Donholm Branch</p>
             <p className="text-gray-500">P.O. Box 74145-0020 Nairobi</p>
@@ -405,7 +405,7 @@ export default async function ProformaPage({
 
           <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-3.5">
             <h3 className="font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5 mb-2">
-              📱 M-Pesa Lipa Na M-Pesa
+              M-Pesa Lipa Na M-Pesa
             </h3>
             <div className="flex items-baseline gap-2">
               <span className="text-gray-600">Business No / Paybill:</span>

@@ -6,6 +6,7 @@ import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
 import QuickViewModal from "./QuickViewModal";
+import { Gift } from "lucide-react";
 
 const HAMPER_CATEGORIES = [
   { label: "All", slug: "" },
@@ -534,7 +535,7 @@ export default function HamperBuilder() {
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-3xl">🎁</div>
+                        <Gift className="w-8 h-8 mx-auto w-full h-full flex items-center justify-center" aria-hidden="true" />
                       )}
 
                       {/* Add button */}

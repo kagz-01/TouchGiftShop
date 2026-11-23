@@ -145,7 +145,7 @@ export default function OrdersClient({ initialOrders }: { initialOrders: Order[]
                         <div className="text-right">
                            {order.pre_dispatch_photo_url && (
                             <span className="bg-green-50 text-green-700 text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex items-center gap-1">
-                              📸 Photo
+                              Photo
                             </span>
                           )}
                         </div>

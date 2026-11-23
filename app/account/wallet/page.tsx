@@ -280,7 +280,7 @@ export default function WalletPage() {
             {/* No wallet yet */}
             {!wallet && !loading && (
               <div className="bg-white/5 border border-white/10 rounded-3xl p-8 text-center">
-                <div className="text-4xl mb-3">🎁</div>
+                <Gift className="w-10 h-10 mx-auto mb-3" aria-hidden="true" />
                 <p className="text-white/60 text-sm">No wallet yet.</p>
                 <p className="text-white/30 text-xs mt-1">Open a gift card link to create your wallet automatically.</p>
               </div>

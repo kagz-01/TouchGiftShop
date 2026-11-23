@@ -91,7 +91,7 @@ export default function ThanksPage() {
             </div>
           )}
           <p className="text-white/60 leading-relaxed text-sm">
-            Your contribution has been received. You&apos;re helping make someone&apos;s day truly special. ✨
+            Your contribution has been received. You&apos;re helping make someone&apos;s day truly special.
           </p>
 
           {/* Confirmation */}

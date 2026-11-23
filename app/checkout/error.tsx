@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 
 export default function CheckoutError({
   error,
@@ -13,7 +13,7 @@ export default function CheckoutError({
   return (
     <div className="min-h-screen section-theme-e flex items-center justify-center px-4">
       <div className="text-center">
-        <span className="text-6xl block mb-4">⚠️</span>
+        <AlertTriangle className="w-14 h-14 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
         <p className="font-display text-xl font-semibold mb-2">Checkout Error</p>
         <p className="text-brand-muted mb-6">
           Something went wrong with checkout. Please try again.

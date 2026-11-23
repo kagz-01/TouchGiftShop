@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { AlertTriangle } from "lucide-react";
 
 export default function Error({
   error,
@@ -15,7 +16,7 @@ export default function Error({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-      <div className="text-6xl mb-4">⚠️</div>
+      <AlertTriangle className="w-14 h-14 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
       <p className="text-gray-500 mb-4 max-w-sm">An unexpected error occurred. Please try again.</p>
       <button

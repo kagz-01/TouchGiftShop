@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
-import { MapPin, Navigation, Clock, RefreshCw } from "lucide-react";
+import { MapPin, Navigation, Clock, RefreshCw, Frown } from "lucide-react";
 import { SHOP_LOCATION } from "@/lib/delivery";
 
 type Leaflet = typeof import("leaflet");
@@ -250,7 +250,7 @@ export default function LiveTrackingClient({
     return (
       <div className="min-h-screen bg-gradient-warm flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
-          <span className="text-5xl block mb-4">😔</span>
+          <Frown className="w-12 h-12 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
           <p className="font-display text-xl font-bold mb-2">Tracking unavailable</p>
           <p className="text-sm text-brand-muted">{error}</p>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 import {
   TASTE_QUESTIONS,
   saveTasteProfile,
@@ -88,7 +89,7 @@ export default function TasteQuiz({ recipientName, onComplete, onCancel }: Taste
     return (
       <div className="rounded-2xl border border-gray-100 bg-white p-6 text-center shadow-sm">
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-green-50">
-          <span className="text-2xl">✅</span>
+          <CheckCircle2 className="w-6 h-6 inline-block" aria-hidden="true" />
         </div>
         <h3 className="text-lg font-bold text-gray-900">Profile Created!</h3>
         <p className="mt-1 text-sm text-gray-500">
