@@ -8,7 +8,7 @@ import Image from "next/image";
 import {
   Search, Building2, Loader2, X, CheckCircle, Send,
   ChevronDown, ChevronRight, Package, Star, Tag,
-  Palette, ArrowLeft, Filter, SlidersHorizontal,
+  Palette, ArrowLeft, Filter, SlidersHorizontal, Shirt, PenLine, Coffee, Gift, ShoppingBag, Laptop, Trophy, KeyRound, Clock, MessageCircle
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import CorporateHeader from "@/components/corporate/dashboard/CorporateHeader";
@@ -33,7 +33,7 @@ const CATEGORIES = [
   {
     key: "all",
     label: "All Corporate",
-    emoji: "🏢",
+    Icon: Building2,
     slug: "all",
     moq: null,
     desc: "All brandable corporate gifts",
@@ -41,7 +41,7 @@ const CATEGORIES = [
   {
     key: "apparel",
     label: "Polos & Apparel",
-    emoji: "👕",
+    Icon: Shirt,
     slug: "apparel",
     moq: 20,
     desc: "Premium corporate polos, tees & jackets",
@@ -49,7 +49,7 @@ const CATEGORIES = [
   {
     key: "stationery-office",
     label: "Stationery & Office",
-    emoji: "✏️",
+    Icon: PenLine,
     slug: "stationery-office",
     moq: 20,
     desc: "Notebooks, pens, desk sets",
@@ -57,7 +57,7 @@ const CATEGORIES = [
   {
     key: "drinkware",
     label: "Drinkware",
-    emoji: "☕",
+    Icon: Coffee,
     slug: "drinkware",
     moq: 12,
     desc: "Mugs, tumblers, flasks",
@@ -65,7 +65,7 @@ const CATEGORIES = [
   {
     key: "gift-sets",
     label: "Gift Sets & Hampers",
-    emoji: "🎁",
+    Icon: Gift,
     slug: "gift-sets",
     moq: 10,
     desc: "Curated sets for onboarding & milestones",
@@ -73,7 +73,7 @@ const CATEGORIES = [
   {
     key: "bags",
     label: "Bags & Totes",
-    emoji: "👜",
+    Icon: ShoppingBag,
     slug: "bags",
     moq: 25,
     desc: "Laptop bags, conference totes",
@@ -81,7 +81,7 @@ const CATEGORIES = [
   {
     key: "tech-gadgets",
     label: "Tech & Gadgets",
-    emoji: "💻",
+    Icon: Laptop,
     slug: "tech-gadgets",
     moq: 10,
     desc: "USB drives, wireless chargers, earphones",
@@ -89,7 +89,7 @@ const CATEGORIES = [
   {
     key: "awards-trophies",
     label: "Awards & Trophies",
-    emoji: "🏆",
+    Icon: Trophy,
     slug: "awards-trophies",
     moq: 10,
     desc: "Crystal awards, plaques, recognition gifts",
@@ -97,7 +97,7 @@ const CATEGORIES = [
   {
     key: "accessories",
     label: "Accessories",
-    emoji: "🔑",
+    Icon: KeyRound,
     slug: "accessories",
     moq: 25,
     desc: "Keyrings, lanyards, desk accessories",
@@ -105,7 +105,7 @@ const CATEGORIES = [
   {
     key: "clocks",
     label: "Clocks & Timepieces",
-    emoji: "🕐",
+    Icon: Clock,
     slug: "clocks",
     moq: 5,
     desc: "Desk clocks, executive timepieces",
@@ -392,7 +392,7 @@ function CatalogInner() {
                   ? "bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-900 dark:text-amber-200"
                   : "text-gray-600 dark:text-zinc-300 hover:bg-gray-100 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white"
               }`}>
-              <span className="text-base w-5 text-center shrink-0 mt-0.5">{cat.emoji}</span>
+              <cat.Icon className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold leading-tight">{cat.label}</p>
                 <p className="text-[12px] text-gray-400 dark:text-zinc-500 mt-0.5 leading-tight">{cat.desc}</p>
@@ -409,7 +409,7 @@ function CatalogInner() {
           >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-xs font-bold text-amber-900 dark:text-amber-300 mb-1">🎁 Pack Configurator</p>
+                <p className="text-xs font-bold text-amber-900 dark:text-amber-300 mb-1"><Gift className="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" aria-hidden="true" />Pack Configurator</p>
                 <p className="text-[12px] text-amber-800 dark:text-amber-400/90 mb-0 leading-relaxed">
                   Bulk hampers with instant proforma quotes.
                 </p>
@@ -433,7 +433,7 @@ function CatalogInner() {
                     : "bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-zinc-300 hover:border-brand/40"
                 }`}
               >
-                <span>{cat.emoji}</span>
+                <cat.Icon className="w-4 h-4" aria-hidden="true" />
                 <span>{cat.label}</span>
               </button>
             ))}
@@ -462,7 +462,7 @@ function CatalogInner() {
           {selectedCategory !== "all" && (
             <div className="flex items-center gap-3 mb-4">
               <span className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg">
-                {activeCat.emoji} {activeCat.label}
+                <activeCat.Icon className="w-4 h-4 inline-block -mt-0.5" aria-hidden="true" /> {activeCat.label}
                 <button onClick={() => handleCategory("all")} className="ml-1 hover:text-amber-900">
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -523,7 +523,7 @@ function CatalogInner() {
               <a href="https://wa.me/254183172111?text=Hi!%20I%20need%20branded%20merchandise."
                 target="_blank" rel="noopener noreferrer"
                 className="px-5 py-3 bg-green-50 hover:bg-green-100 border border-green-200 text-green-700 font-bold text-sm rounded-lg flex items-center gap-2 transition-colors">
-                💬 WhatsApp Us
+                <MessageCircle className="w-4 h-4 inline-block -mt-0.5 mr-1" aria-hidden="true" />WhatsApp Us
               </a>
             </div>
           </div>

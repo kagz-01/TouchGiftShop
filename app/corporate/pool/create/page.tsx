@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Users, Gift, Calendar, Target, Building2, Sparkles,
   ArrowRight, ArrowLeft, Check, Upload, Heart, Clock,
-  TrendingUp, Shield, ChevronDown, ChevronUp
+  TrendingUp, Shield, ChevronDown, ChevronUp, Cake, PartyPopper, Hand, Trophy, Baby, Flower2, TreePine
 } from "lucide-react";
 
 type PoolRecipient = {
@@ -30,14 +30,14 @@ type PoolConfig = {
 };
 
 const OCCASIONS = [
-  { id: "birthday", label: "Birthday", icon: "🎂", color: "from-pink-400 to-rose-400" },
-  { id: "work_anniversary", label: "Work Anniversary", icon: "🎉", color: "from-teal-400 to-cyan-400" },
-  { id: "farewell", label: "Farewell / Send-off", icon: "👋", color: "from-blue-400 to-indigo-400" },
-  { id: "promotion", label: "Promotion", icon: "🏆", color: "from-amber-400 to-yellow-400" },
-  { id: "new_baby", label: "New Baby", icon: "👶", color: "from-emerald-400 to-teal-400" },
-  { id: "get_well", label: "Get Well Soon", icon: "💐", color: "from-coral to-pink-400" },
-  { id: "holiday", label: "Holiday / Christmas", icon: "🎄", color: "from-red-400 to-green-400" },
-  { id: "team_celebration", label: "Team Celebration", icon: "🥳", color: "from-brand to-brand-deep" },
+  { id: "birthday", label: "Birthday", Icon: Cake, color: "from-pink-400 to-rose-400" },
+  { id: "work_anniversary", label: "Work Anniversary", Icon: PartyPopper, color: "from-teal-400 to-cyan-400" },
+  { id: "farewell", label: "Farewell / Send-off", Icon: Hand, color: "from-blue-400 to-indigo-400" },
+  { id: "promotion", label: "Promotion", Icon: Trophy, color: "from-amber-400 to-yellow-400" },
+  { id: "new_baby", label: "New Baby", Icon: Baby, color: "from-emerald-400 to-teal-400" },
+  { id: "get_well", label: "Get Well Soon", Icon: Flower2, color: "from-coral to-pink-400" },
+  { id: "holiday", label: "Holiday / Christmas", Icon: TreePine, color: "from-red-400 to-green-400" },
+  { id: "team_celebration", label: "Team Celebration", Icon: PartyPopper, color: "from-brand to-brand-deep" },
 ];
 
 const BUDGET_TIERS = [
@@ -213,7 +213,7 @@ export default function CorporatePoolCreate() {
                           : "border-white/10 bg-white/5 hover:border-fuchsia-400/30 hover:bg-white/10"
                       }`}
                     >
-                      <span className="text-2xl block mb-1">{occ.icon}</span>
+                      <occ.Icon className="w-6 h-6 mx-auto mb-1" aria-hidden="true" />
                       <p className="text-xs font-semibold text-white/80">{occ.label}</p>
                     </button>
                   ))}
@@ -453,7 +453,7 @@ export default function CorporatePoolCreate() {
               <h3 className="text-sm font-semibold text-white/80 mb-3">Preview</h3>
               <div className="bg-black/30 border border-white/10 rounded-xl p-6 text-center">
                 <div className="w-14 h-14 mx-auto bg-fuchsia-500/20 shape-premium-card flex items-center justify-center text-2xl mb-3">
-                  {selectedOccasion?.icon}
+                  {selectedOccasion && <selectedOccasion.Icon className="w-5 h-5 inline-block" aria-hidden="true" />}
                 </div>
                 <h4 className="font-display text-lg font-bold text-white/90">{config.title || `Celebrate ${recipient.name}`}</h4>
                 <p className="text-xs text-white/50 mt-1">{recipient.department}</p>

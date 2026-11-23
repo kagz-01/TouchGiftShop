@@ -23,7 +23,7 @@ import {
   Info,
   Clock,
   ExternalLink,
-  X,
+  X, Backpack, Wine, Target, Gem, TreePine, Flower2, type LucideIcon
 } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 import { createPortal } from "react-dom";
@@ -44,7 +44,7 @@ interface CorporatePack {
   badge?: string;
   baseUnitPrice: number;
   gradient: string;
-  icon: string;
+  Icon: LucideIcon;
   defaultItems: PackItem[];
 }
 
@@ -57,7 +57,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "Most Popular",
     baseUnitPrice: 3200,
     gradient: "from-brand/10 to-amber-500/10 border-brand/20",
-    icon: "🎒",
+    Icon: Backpack,
     defaultItems: [
       { id: "p1", name: "Executive Hardcover Notebook", unitCost: 650, category: "stationery" },
       { id: "p2", name: "Matte Metal Rollerball Pen (Laser Engraved)", unitCost: 450, category: "stationery" },
@@ -74,7 +74,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "High Impact",
     baseUnitPrice: 5400,
     gradient: "from-amber-500/10 to-yellow-600/10 border-amber-300/30",
-    icon: "🥂",
+    Icon: Wine,
     defaultItems: [
       { id: "p6", name: "Robertson Reserve Cabernet Sauvignon (or Non-Alc Sparkler)", unitCost: 1950, category: "drinks" },
       { id: "p7", name: "Handmade Belgian Dark Chocolate Truffles (12pc)", unitCost: 1200, category: "confectionery" },
@@ -91,7 +91,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "Volume Saver",
     baseUnitPrice: 2100,
     gradient: "from-sky-500/10 to-blue-600/10 border-sky-300/30",
-    icon: "🎯",
+    Icon: Target,
     defaultItems: [
       { id: "p11", name: "Heavyweight Cotton Canvas Tote Bag (Screen Printed)", unitCost: 600, category: "merch" },
       { id: "p12", name: "Sleek Stainless Steel Water Bottle (750ml)", unitCost: 850, category: "drinkware" },
@@ -107,7 +107,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "VIP Tier",
     baseUnitPrice: 9800,
     gradient: "from-amber-600/15 to-rose-600/10 border-amber-500/40",
-    icon: "💎",
+    Icon: Gem,
     defaultItems: [
       { id: "p15", name: "Single Malt Glenfiddich 12Y (or Premium Spiced Mocktail Elixir)", unitCost: 4500, category: "drinks" },
       { id: "p16", name: "Full-Grain Genuine Leather Document Folio", unitCost: 2800, category: "leather" },
@@ -123,7 +123,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "Seasonal",
     baseUnitPrice: 4200,
     gradient: "from-emerald-500/10 to-teal-600/10 border-emerald-300/30",
-    icon: "🎄",
+    Icon: TreePine,
     defaultItems: [
       { id: "p19", name: "Holiday Spiced Artisanal Cookies Tin", unitCost: 850, category: "food" },
       { id: "p20", name: "Organic Spiced Ginger Tea Caddy", unitCost: 650, category: "tea" },
@@ -141,7 +141,7 @@ const CORPORATE_PACKS: CorporatePack[] = [
     badge: "Care & Empathy",
     baseUnitPrice: 3600,
     gradient: "from-rose-500/10 to-purple-600/10 border-rose-300/30",
-    icon: "🌸",
+    Icon: Flower2,
     defaultItems: [
       { id: "p25", name: "Ultra-Soft Microfiber Travel Blanket", unitCost: 1200, category: "comfort" },
       { id: "p26", name: "Herbal Chamomile & Lavender Sleep Tea", unitCost: 550, category: "tea" },
@@ -386,7 +386,7 @@ export default function CorporateHamperBuilder() {
                 >
                   {/* Top Badge & Selector */}
                   <div className="flex items-start justify-between gap-2 mb-3">
-                    <span className="text-2xl">{pack.icon}</span>
+                    <pack.Icon className="w-6 h-6" aria-hidden="true" />
                     <div className="flex items-center gap-1.5">
                       {pack.badge && (
                         <span className="text-[12px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400">
