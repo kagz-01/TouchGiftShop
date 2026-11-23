@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef, useCallback, useMemo } from "react";
-import { CalendarDays, Gift, Lock, Mail, Zap } from "lucide-react";
+import { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import { CalendarDays, ChevronDown, Gift, Lock, Mail, Zap } from "lucide-react";
 import GiftCardPreview from "@/components/gift-cards/GiftCardPreview";
 import type { GiftCardStyle } from "@/components/gift-cards/GiftCardPreview";
 
@@ -122,6 +122,13 @@ export default function GiftCardShowcase() {
   const [cardAccent, setCardAccent] = useState<string>(COLOR_PRESETS[0].accent);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [errorField, setErrorField] = useState("");
+  const [showCustomColours, setShowCustomColours] = useState(false);
+
+  // The red outline on a field goes away as soon as the customer edits anything.
+  useEffect(() => {
+    setErrorField("");
+  }, [amount, customAmount, recipientName, senderName, isAnonymous, message, delivery, sendDate, recipientContact]);
 
   // 3D viewer state
   const stageRef = useRef<HTMLDivElement>(null);
@@ -174,13 +181,43 @@ export default function GiftCardShowcase() {
     return "";
   };
 
+  // Maps a validation message to the field it is about so we can take the
+  // customer straight to it. The messages and rules themselves are unchanged.
+  const fieldForProblem = (problem: string): string => {
+    if (problem.startsWith("Minimum amount")) return "gc-custom-amount";
+    if (problem.startsWith("Recipient name")) return "gc-recipient";
+    if (problem.startsWith("Your name")) return "gc-sender";
+    if (problem.startsWith("Message cannot")) return "gc-message";
+    if (problem.startsWith("Choose a date") || problem.startsWith("Pick a date")) return "gc-senddate";
+    if (problem.startsWith("Add the recipient") || problem.startsWith("Enter a valid email")) return "gc-contact";
+    return "";
+  };
+
+  // The message shows right under the field it is about.
+  const fieldError = (id: string) =>
+    errorField === id && error ? (
+      <p id={`${id}-error`} className="gc-field-error" role="alert">
+        {error}
+      </p>
+    ) : null;
+
   const handleCheckout = async () => {
     const problem = validate();
     if (problem) {
       setError(problem);
+      const fieldId = fieldForProblem(problem);
+      setErrorField(fieldId);
+      if (fieldId) {
+        setTimeout(() => {
+          const el = document.getElementById(fieldId) as HTMLElement | null;
+          el?.scrollIntoView({ block: "center", behavior: "smooth" });
+          el?.focus({ preventScroll: true });
+        }, 50);
+      }
       return;
     }
     setError("");
+    setErrorField("");
     setSubmitting(true);
     try {
       const res = await fetch("/api/gift-cards", {
@@ -209,7 +246,13 @@ export default function GiftCardShowcase() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(typeof data?.error === "string" ? data.error : "Could not start checkout. Please try again.");
+        // A server fault (5xx) can carry technical text like "TypeError: fetch failed";
+        // customers get a plain message instead. Validation messages (4xx) still show as sent.
+        setError(
+          res.status < 500 && typeof data?.error === "string"
+            ? data.error
+            : "We couldn't start checkout just now. Please try again in a moment."
+        );
         setSubmitting(false);
         return;
       }
@@ -311,7 +354,10 @@ export default function GiftCardShowcase() {
                   type="number"
                   min={500}
                   step={500}
+                  id="gc-custom-amount"
                   aria-label="Custom amount in KSh"
+                  aria-invalid={errorField === "gc-custom-amount" || undefined}
+                aria-describedby={errorField === "gc-custom-amount" ? "gc-custom-amount-error" : undefined}
                   placeholder="Enter amount"
                   value={customAmount}
                   onChange={(e) => setCustomAmount(e.target.value)}
@@ -319,6 +365,7 @@ export default function GiftCardShowcase() {
                 />
               </div>
             </div>
+            {fieldError("gc-custom-amount")}
           </div>
 
           {/* Who is it for? */}
@@ -333,12 +380,15 @@ export default function GiftCardShowcase() {
               <input
                 id="gc-recipient"
                 type="text"
+                aria-invalid={errorField === "gc-recipient" || undefined}
+                aria-describedby={errorField === "gc-recipient" ? "gc-recipient-error" : undefined}
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
                 placeholder="Who are you gifting?"
                 className="gc-input"
                 autoComplete="name"
               />
+              {fieldError("gc-recipient")}
             </div>
 
             <div className="gc-field">
@@ -348,6 +398,8 @@ export default function GiftCardShowcase() {
               <input
                 id="gc-sender"
                 type="text"
+                aria-invalid={errorField === "gc-sender" || undefined}
+                aria-describedby={errorField === "gc-sender" ? "gc-sender-error" : undefined}
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
                 placeholder={isAnonymous ? "Hidden on the card" : "Your name"}
@@ -355,6 +407,7 @@ export default function GiftCardShowcase() {
                 autoComplete="name"
                 disabled={isAnonymous}
               />
+              {fieldError("gc-sender")}
             </div>
 
             <label className={`gc-toggle ${isAnonymous ? "on" : ""}`}>
@@ -380,7 +433,10 @@ export default function GiftCardShowcase() {
             <p className="gc-step-sub">Add a message to make it special</p>
             <div className="gc-textarea-wrap">
               <textarea
+                id="gc-message"
                 maxLength={MAX_MESSAGE}
+                aria-invalid={errorField === "gc-message" || undefined}
+                aria-describedby={errorField === "gc-message" ? "gc-message-error" : undefined}
                 placeholder="Type your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -388,6 +444,7 @@ export default function GiftCardShowcase() {
               />
               <span className="gc-char-count">{message.length} / {MAX_MESSAGE}</span>
             </div>
+            {fieldError("gc-message")}
           </div>
 
           {/* Delivery options */}
@@ -421,11 +478,14 @@ export default function GiftCardShowcase() {
               <input
                 id="gc-senddate"
                 type="date"
+                aria-invalid={errorField === "gc-senddate" || undefined}
+                aria-describedby={errorField === "gc-senddate" ? "gc-senddate-error" : undefined}
                 value={sendDate}
                 min={tomorrow}
                 onChange={(e) => setSendDate(e.target.value)}
                 className="gc-input"
               />
+              {fieldError("gc-senddate")}
               <p className="gc-field-hint">Valid for 3 months from the send date.</p>
             </div>
           )}
@@ -438,12 +498,15 @@ export default function GiftCardShowcase() {
               <input
                 id="gc-contact"
                 type="text"
+                aria-invalid={errorField === "gc-contact" || undefined}
+                aria-describedby={errorField === "gc-contact" ? "gc-contact-error" : undefined}
                 value={recipientContact}
                 onChange={(e) => setRecipientContact(e.target.value)}
                 placeholder="name@email.com or 07xx xxx xxx"
                 className="gc-input"
                 autoComplete="off"
               />
+              {fieldError("gc-contact")}
               <p className="gc-field-hint">
                 We&rsquo;ll send them the claim link after payment.
               </p>
@@ -470,12 +533,23 @@ export default function GiftCardShowcase() {
                   style={{ background: shade(p.bg) }}
                 >
                   <span className="gc-swatch-dot" style={{ background: p.accent }} />
-                  <span className="gc-swatch-label">{p.label}</span>
+                  <span className="gc-swatch-label" style={{ color: isDark(p.bg) ? "#fff3ea" : "#43102a" }}>{p.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="gc-pickers">
+            <button
+              type="button"
+              className="gc-custom-toggle"
+              aria-expanded={showCustomColours}
+              aria-controls="gc-custom-colours"
+              onClick={() => setShowCustomColours((v) => !v)}
+            >
+              Custom colours
+              <ChevronDown className="w-4 h-4" aria-hidden="true" />
+            </button>
+
+            <div className="gc-pickers" id="gc-custom-colours" hidden={!showCustomColours}>
               <label className="gc-picker">
                 <span className="gc-field-label">Card colour</span>
                 <span className="gc-picker-row">
@@ -504,7 +578,7 @@ export default function GiftCardShowcase() {
             </div>
           </div>
 
-          {error && (
+          {error && !errorField && (
             <p className="gc-error" role="alert">
               {error}
             </p>
@@ -902,6 +976,19 @@ export default function GiftCardShowcase() {
           color: var(--gc-gold, #d8a744);
           font-size: 12px; letter-spacing: 6px;
         }
+        /* Phones: the five card views become one swipeable row so the form
+           starts much sooner instead of sitting below a tall grid. */
+        @media (max-width: 700px) {
+          .gc-thumbnails {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 6px 2px 10px;
+            scroll-snap-type: x proximity;
+            -webkit-overflow-scrolling: touch;
+          }
+          .gc-thumb { flex: 0 0 116px; padding: 8px 8px 8px; scroll-snap-align: start; }
+        }
         .gc-thumb-label {
           font-size: 11px;
           font-weight: 700;
@@ -1030,6 +1117,40 @@ export default function GiftCardShowcase() {
         }
         .gc-swatch.active .gc-swatch-label { color: var(--text-primary, #1a1a2e); }
         .gc-pickers { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .gc-pickers[hidden] { display: none; }
+        /* Messages under fields are built by a helper, so they are styled globally. */
+        :global(.gc-field-error) {
+          margin: 6px 0 0;
+          font-size: 13px;
+          font-weight: 600;
+          color: #b3261e;
+        }
+        :global([data-theme="dark"] .gc-field-error) { color: #ff8a80; }
+        /* Dark theme: the surface colours this form uses were never defined for
+           it, so the card stayed white while the text turned white. */
+        :global([data-theme="dark"]) .gc-showcase {
+          --surface-primary: #1d1226;
+          --surface-subtle: rgba(255, 255, 255, 0.06);
+          --surface: #261833;
+          --surface-border: rgba(255, 255, 255, 0.18);
+          --text-primary: #fff3ea;
+        }
+        .gc-custom-toggle {
+          display: inline-flex; align-items: center; gap: 6px;
+          margin: 4px 0 10px; padding: 10px 2px; min-height: 44px;
+          background: none; border: 0; cursor: pointer;
+          font-size: 13px; font-weight: 600;
+          color: var(--accent-color, #a51b58);
+        }
+        .gc-custom-toggle svg { transition: transform .2s ease; }
+        .gc-custom-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+        /* A field the customer needs to fix */
+        .gc-input[aria-invalid="true"],
+        .gc-textarea[aria-invalid="true"],
+        .gc-custom-input[aria-invalid="true"] {
+          border-color: #b3261e;
+          box-shadow: 0 0 0 3px rgba(179, 38, 30, 0.15);
+        }
         @media (max-width: 520px) {
           .gc-swatches { grid-template-columns: repeat(2, 1fr); }
           .gc-pickers { grid-template-columns: 1fr; }

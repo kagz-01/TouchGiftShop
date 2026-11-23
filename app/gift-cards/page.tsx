@@ -9,12 +9,14 @@ export default function GiftCardsPage() {
     <div className="min-h-screen pb-20">
       {/* Hero */}
       <section className="text-center px-4 pt-12 pb-8">
-        <BackToHome />
+        <div className="mb-4">
+          <BackToHome />
+        </div>
         <div className="inline-flex items-center gap-2 bg-brand/5 border border-brand/15 rounded-full px-4 py-1.5 mb-4">
           <Sparkles className="w-4 h-4 text-brand" />
           <span className="text-xs font-semibold text-brand">Digital Gift Cards</span>
         </div>
-        <h1 className="font-display text-3xl md:text-4xl font-bold text-brand-deep mb-3">
+        <h1 className="font-display text-3xl md:text-4xl font-bold text-brand-deep dark:text-white mb-3">
           Give the <span className="text-brand">Perfect Gift</span>
         </h1>
         <p className="text-brand-muted max-w-lg mx-auto text-sm md:text-base">
