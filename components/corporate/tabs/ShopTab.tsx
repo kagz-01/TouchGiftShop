@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Package, X, Loader2, Send, CheckCircle, Tag, Palette, ShoppingBag } from "lucide-react";
+import { Search, Package, X, Loader2, Send, CheckCircle, Tag, Palette, ShoppingBag, FolderOpen, PenLine, Trophy, Gift, Coffee, KeyRound, Laptop, Clock, ClipboardList, Truck } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 
 interface Product {
@@ -13,15 +13,15 @@ interface Product {
 }
 
 const SHOP_CATEGORIES = [
-  { key: "all",              label: "All Items",           emoji: "🗂️" },
-  { key: "stationery-office",label: "Stationery & Office", emoji: "✏️" },
-  { key: "awards-trophies",  label: "Awards & Trophies",   emoji: "🏆" },
-  { key: "gift-sets",        label: "Gift Sets",           emoji: "🎁" },
-  { key: "drinkware",        label: "Drinkware",           emoji: "☕" },
-  { key: "bags",             label: "Bags & Totes",        emoji: "👜" },
-  { key: "accessories",      label: "Accessories",         emoji: "🔑" },
-  { key: "tech-gadgets",     label: "Tech & Gadgets",      emoji: "💻" },
-  { key: "clocks",           label: "Clocks",              emoji: "🕐" },
+  { key: "all",              label: "All Items",           Icon: FolderOpen },
+  { key: "stationery-office",label: "Stationery & Office", Icon: PenLine },
+  { key: "awards-trophies",  label: "Awards & Trophies",   Icon: Trophy },
+  { key: "gift-sets",        label: "Gift Sets",           Icon: Gift },
+  { key: "drinkware",        label: "Drinkware",           Icon: Coffee },
+  { key: "bags",             label: "Bags & Totes",        Icon: ShoppingBag },
+  { key: "accessories",      label: "Accessories",         Icon: KeyRound },
+  { key: "tech-gadgets",     label: "Tech & Gadgets",      Icon: Laptop },
+  { key: "clocks",           label: "Clocks",              Icon: Clock },
 ] as const;
 type ShopCat = typeof SHOP_CATEGORIES[number]["key"];
 
@@ -180,18 +180,18 @@ export default function ShopTab() {
             {/* Left copy */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">🎁</span>
+                <Gift className="w-6 h-6 text-brand" aria-hidden="true" />
                 <h2 className="text-base font-bold text-gray-900">How corporate ordering works</h2>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
                 {[
-                  { num: "1", icon: "🛍️", text: "Browse & pick items below" },
-                  { num: "2", icon: "📋", text: "Request a quote — we confirm within 2 hrs" },
-                  { num: "3", icon: "🚚", text: "We brand, pack & deliver across Kenya" },
+                  { num: "1", Icon: ShoppingBag, text: "Browse & pick items below" },
+                  { num: "2", Icon: ClipboardList, text: "Request a quote — we confirm within 2 hrs" },
+                  { num: "3", Icon: Truck, text: "We brand, pack & deliver across Kenya" },
                 ].map(s => (
                   <div key={s.num} className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-full bg-amber-500 text-white text-[12px] font-bold flex items-center justify-center shrink-0">{s.num}</div>
-                    <span className="text-xs text-gray-600">{s.icon} {s.text}</span>
+                    <span className="text-xs text-gray-600"><s.Icon className="w-3.5 h-3.5 inline-block" aria-hidden="true" /> {s.text}</span>
                   </div>
                 ))}
               </div>
@@ -206,15 +206,15 @@ export default function ShopTab() {
           <div className="px-6 pb-4 flex flex-wrap gap-2">
             <span className="text-xs text-gray-400 font-semibold mr-1 self-center">Popular:</span>
             {[
-              { emoji: "🏆", label: "Awards & Trophies", key: "awards-trophies" },
-              { emoji: "☕", label: "Branded Drinkware", key: "drinkware" },
-              { emoji: "🎁", label: "Gift Sets", key: "gift-sets" },
-              { emoji: "💻", label: "Tech & Gadgets", key: "tech-gadgets" },
-              { emoji: "✏️", label: "Stationery", key: "stationery-office" },
+              { Icon: Trophy, label: "Awards & Trophies", key: "awards-trophies" },
+              { Icon: Coffee, label: "Branded Drinkware", key: "drinkware" },
+              { Icon: Gift, label: "Gift Sets", key: "gift-sets" },
+              { Icon: Laptop, label: "Tech & Gadgets", key: "tech-gadgets" },
+              { Icon: PenLine, label: "Stationery", key: "stationery-office" },
             ].map(c => (
               <button key={c.key} onClick={() => onCat(c.key as typeof cat)}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-amber-200 hover:border-amber-400 hover:bg-amber-50 text-xs font-semibold text-amber-700 rounded-lg transition-all">
-                {c.emoji} {c.label}
+                <c.Icon className="w-4 h-4 inline-block -mt-0.5" aria-hidden="true" /> {c.label}
               </button>
             ))}
           </div>
@@ -231,7 +231,7 @@ export default function ShopTab() {
                 ? "bg-amber-500 text-white shadow-sm"
                 : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-700"
             }`}>
-            <span>{c.emoji}</span><span>{c.label}</span>
+            <c.Icon className="w-4 h-4" aria-hidden="true" /><span>{c.label}</span>
           </button>
         ))}
       </div>
