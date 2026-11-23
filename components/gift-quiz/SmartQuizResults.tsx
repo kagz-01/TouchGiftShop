@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import ProductCard from "@/components/product/ProductCard";
@@ -114,7 +115,7 @@ export default function SmartQuizResults({ answers, preFetchedProducts = [] }: S
     <div className="space-y-12">
       {/* AI Explanation Card */}
       <div className="bg-gradient-to-br from-brand/5 to-gold/5 rounded-2xl p-6 border border-brand/10 shadow-sm relative overflow-hidden">
-        <div className="absolute -top-10 -right-10 text-9xl opacity-5">🤖</div>
+        <div className="absolute -top-10 -right-10 opacity-5"><Bot className="w-32 h-32" aria-hidden="true" /></div>
         <div className="flex items-start gap-4 relative z-10">
           <div className="w-12 h-12 bg-brand text-white rounded-xl flex items-center justify-center text-xl shrink-0 shadow-lg">
             🤖
@@ -218,7 +219,7 @@ export default function SmartQuizResults({ answers, preFetchedProducts = [] }: S
                 onClick={() => setShowFollowUp(true)}
                 className="px-6 py-3 rounded-xl font-medium bg-surface hover:bg-brand hover:text-white text-brand transition-all shadow-sm"
               >
-                💬 Tell T-Gifter what&apos;s wrong
+                Tell T-Gifter what&apos;s wrong
               </button>
             )}
           </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, TrendingUp, Building, Mail, Phone, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, TrendingUp, Building, Mail, Phone, CheckCircle2, Store } from "lucide-react";
 
 export default function MarketplacePage() {
   const [vendors, setVendors] = useState<any[]>([]);
@@ -71,7 +71,7 @@ export default function MarketplacePage() {
                       {vendor.logo_url ? (
                         <img src={vendor.logo_url} alt={vendor.business_name} className="w-full h-full object-cover rounded-xl" />
                       ) : (
-                        "🏪"
+                        <Store className="w-6 h-6 text-brand-muted" aria-hidden="true" />
                       )}
                     </div>
                     <div>

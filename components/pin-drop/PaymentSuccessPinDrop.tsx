@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import PinDropSendModal from "./PinDropSendModal";
+import { MapPin } from "lucide-react";
 
 interface PaymentSuccessPinDropProps {
   orderId: string;
@@ -37,7 +38,7 @@ export default function PaymentSuccessPinDrop({
           onClick={() => setShowModal(true)}
           className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-brand/10 border border-brand/20 rounded-xl text-sm font-semibold text-brand hover:bg-brand/15 transition-colors"
         >
-          <span className="text-lg">📍</span>
+          <MapPin className="w-5 h-5 inline-block" aria-hidden="true" />
           Send pin-drop link to {order.recipient_name}
         </button>
       ) : (

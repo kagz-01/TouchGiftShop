@@ -250,7 +250,7 @@ export default function UnboxGiftPage() {
             </div>
             <h2 className="font-display text-4xl font-bold tracking-tight mb-4">Confirmed!</h2>
             <p className="text-white/60 text-base leading-relaxed mb-8 font-medium">
-              We've securely logged your details. Your gift is being prepared and will be dispatched shortly. ✨
+              We've securely logged your details. Your gift is being prepared and will be dispatched shortly.
             </p>
             <div className="p-5 bg-white/[0.03] border border-white/10 rounded-3xl text-left backdrop-blur-md">
                <div className="flex items-center gap-2 mb-3 text-emerald-400 text-xs uppercase tracking-[0.2em] font-bold">

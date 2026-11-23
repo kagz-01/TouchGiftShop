@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Lock } from "lucide-react";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -13,7 +14,7 @@ export default function PrivacyPolicyPage() {
 
         <div className="bg-white rounded-3xl border border-surface-border p-8 md:p-12 space-y-8">
           <div>
-            <span className="text-4xl block mb-4">🔒</span>
+            <Lock className="w-10 h-10 mx-auto mb-4" aria-hidden="true" />
             <h1 className="font-display text-3xl font-bold mb-2">Privacy Policy</h1>
             <p className="text-sm text-brand-muted">Last updated: August 2026</p>
           </div>

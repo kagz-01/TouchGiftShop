@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CheckCircle2 } from "lucide-react";
 
 interface PinDropSendModalProps {
   orderId: string;
@@ -77,7 +78,7 @@ export default function PinDropSendModal({
     return (
       <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4">
         <div className="flex items-center gap-3">
-          <span className="text-xl">✅</span>
+          <CheckCircle2 className="w-5 h-5 inline-block" aria-hidden="true" />
           <div>
             <p className="text-xs font-semibold">Link ready</p>
             <p className="text-xs text-brand-muted">

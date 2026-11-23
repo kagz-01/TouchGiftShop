@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CheckCircle2 } from "lucide-react";
 
 export default function ReturnsPage() {
   return (
@@ -35,35 +36,35 @@ export default function ReturnsPage() {
 
               <div className="bg-brand/5 border border-brand/10 rounded-2xl p-5 mt-4 space-y-3">
                 <div className="flex items-start gap-3">
-                  <span className="text-lg shrink-0">✅</span>
+                  <CheckCircle2 className="w-5 h-5 inline-block shrink-0" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-brand-deep text-sm">Wrong item delivered</p>
                     <p className="text-xs">The product received is significantly different from what was ordered (wrong flower arrangement, wrong hamper contents, etc.)</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-lg shrink-0">✅</span>
+                  <CheckCircle2 className="w-5 h-5 inline-block shrink-0" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-brand-deep text-sm">Item arrives damaged or defective</p>
                     <p className="text-xs">The product was damaged during delivery or arrived in an unusable condition (wilted flowers, broken items, crushed packaging)</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-lg shrink-0">✅</span>
+                  <CheckCircle2 className="w-5 h-5 inline-block shrink-0" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-brand-deep text-sm">Delivery failed</p>
                     <p className="text-xs">We were unable to deliver the gift after reasonable attempts and the order cannot be rescheduled</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-lg shrink-0">✅</span>
+                  <CheckCircle2 className="w-5 h-5 inline-block shrink-0" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-brand-deep text-sm">Payment processed, order not fulfilled</p>
                     <p className="text-xs">Your payment was confirmed but we did not process or deliver the order</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <span className="text-lg shrink-0">✅</span>
+                  <CheckCircle2 className="w-5 h-5 inline-block shrink-0" aria-hidden="true" />
                   <div>
                     <p className="font-semibold text-brand-deep text-sm">Duplicate charge</p>
                     <p className="text-xs">You were charged multiple times for the same order</p>

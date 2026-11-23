@@ -15,7 +15,7 @@ import {
   Sparkles,
   ArrowRight,
   Gift,
-  Package,
+  Package, Lock
 } from "lucide-react";
 
 interface CartDrawerProps {
@@ -129,9 +129,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                         sizes="64px"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-xl">
-                        🎁
-                      </div>
+                      <div className="w-full h-full flex items-center justify-center text-xl"><Gift className="w-6 h-6 text-brand/50" aria-hidden="true" /></div>
                     )}
                   </div>
 
@@ -262,7 +260,7 @@ export default function CartDrawer({ open, onClose }: CartDrawerProps) {
                 ))}
               </div>
               <p className="text-[12px] text-center text-brand-muted">
-                🔒 Secured by Paystack · Touch Line Ltd
+                <Lock className="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" aria-hidden="true" />Secured by Paystack · Touch Line Ltd
               </p>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { MessageCircle } from "lucide-react";
 import ReviewCard from "./ReviewCard";
 import type { ReviewWithMedia } from "@/lib/types";
 
@@ -121,7 +122,7 @@ export default function ReviewList({ productId, limit = 10 }: ReviewListProps) {
         </div>
       ) : reviews.length === 0 ? (
         <div className="text-center py-12">
-          <span className="text-4xl block mb-3">💬</span>
+          <MessageCircle className="w-10 h-10 mx-auto mb-3 text-brand-muted" aria-hidden="true" />
           <p className="text-sm text-brand-muted">
             No reviews yet. Be the first to share your experience!
           </p>

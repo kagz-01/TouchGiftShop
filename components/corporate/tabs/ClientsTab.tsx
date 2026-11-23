@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Users, Search, Plus, Mail, Phone, Building2, ChevronRight,
-  X, Loader2, User, Tag, Star } from "lucide-react";
+  X, Loader2, User, Tag, Star, Cake, PartyPopper, MessageCircle } from "lucide-react";
 
 // DB columns: name, company, role, email, phone, location, tier, 
 //             birthday, work_anniversary, total_gifts_sent, total_amount_spent, notes
@@ -115,12 +115,12 @@ function ClientDetail({ c, onClose }: { c: Client; onClose: () => void }) {
             <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Key Dates</p>
             {c.birthday && (
               <div className="flex items-center gap-2 text-sm text-gray-700">
-                <span>🎂</span> Birthday: <strong>{new Date(c.birthday).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</strong>
+                <Cake className="w-3.5 h-3.5 inline-block -mt-0.5" aria-hidden="true" /> Birthday: <strong>{new Date(c.birthday).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</strong>
               </div>
             )}
             {c.work_anniversary && (
               <div className="flex items-center gap-2 text-sm text-gray-700">
-                <span>🎊</span> Work Anniversary: <strong>{new Date(c.work_anniversary).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</strong>
+                <PartyPopper className="w-3.5 h-3.5 inline-block -mt-0.5" aria-hidden="true" /> Work Anniversary: <strong>{new Date(c.work_anniversary).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}</strong>
               </div>
             )}
           </div>
@@ -137,7 +137,7 @@ function ClientDetail({ c, onClose }: { c: Client; onClose: () => void }) {
           {c.phone && (
             <a href={`https://wa.me/${c.phone.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-4 py-2.5 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold rounded-lg hover:bg-green-100 transition-colors">
-              💬 WhatsApp
+              <MessageCircle className="w-4 h-4 inline-block -mt-0.5 mr-1" aria-hidden="true" />WhatsApp
             </a>
           )}
           <button className="flex items-center gap-1.5 px-3 py-2.5 bg-white border border-gray-200 text-gray-600 text-sm font-medium rounded-lg hover:border-amber-300 transition-all">

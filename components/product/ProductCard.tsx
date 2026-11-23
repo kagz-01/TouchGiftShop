@@ -6,6 +6,7 @@ import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { useState } from "react";
 import { useSubscription } from "@/components/reminders/SubscriptionProvider";
+import { Gift } from "lucide-react";
 
 interface ProductCardProps {
   product: Product;
@@ -92,9 +93,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
               unoptimized
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-warm">
-              🎁
-            </div>
+            <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-warm"><Gift className="w-12 h-12 text-brand/50" aria-hidden="true" /></div>
           )}
 
           {/* Gradient overlay */}
@@ -194,7 +193,7 @@ export default function ProductCard({ product, index = 0, className }: ProductCa
           {isPopular && (
             <div className="gift-tag">
               <span className="flex items-center gap-1">
-                <span className="animate-wiggle inline-block">🎁</span>
+                <Gift className="w-4 h-4 inline-block" aria-hidden="true" />
                 Popular
               </span>
             </div>

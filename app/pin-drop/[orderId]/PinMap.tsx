@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { MousePointerClick } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 interface PinMapProps {
@@ -115,7 +116,7 @@ export default function PinMap({ onPinDrop, initialPosition }: PinMapProps) {
       {/* Tap hint overlay */}
       <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-card-hover border border-surface-border">
         <p className="text-xs font-semibold text-brand flex items-center gap-1.5">
-          <span className="animate-pulse">👆</span>
+          <MousePointerClick className="w-4 h-4 inline-block" aria-hidden="true" />
           Tap anywhere to drop your pin
         </p>
       </div>

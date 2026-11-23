@@ -6,6 +6,7 @@ import { formatKsh, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 
 import QuickViewModal from "./QuickViewModal";
+import { Gift, ShoppingBasket } from "lucide-react";
 
 const HAMPER_CATEGORIES = [
   { label: "All", slug: "" },
@@ -354,7 +355,7 @@ export default function HamperBuilder() {
 
             {items.length === 0 ? (
               <div className="text-center py-6">
-                <span className="text-4xl block mb-2 animate-basket-bob">🧺</span>
+                <ShoppingBasket className="w-10 h-10 mx-auto mb-2 text-brand-muted" aria-hidden="true" />
                 <p className="text-xs text-brand-muted">
                   Tap products on the right to add them
                 </p>
@@ -443,7 +444,7 @@ export default function HamperBuilder() {
                   : "hover:shadow-lg hover:-translate-y-0.5"
               )}
             >
-              {isFull ? "🎉 " : ""}Gift / Buy Hamper — {formatKsh(displayTotal)}
+              Gift / Buy Hamper — {formatKsh(displayTotal)}
             </button>
 
             {/* Confetti overlay */}
@@ -534,7 +535,7 @@ export default function HamperBuilder() {
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-3xl">🎁</div>
+                        <Gift className="w-8 h-8 mx-auto w-full h-full flex items-center justify-center" aria-hidden="true" />
                       )}
 
                       {/* Add button */}

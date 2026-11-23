@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { Sparkles } from "lucide-react";
 import StarRating from "./StarRating";
 import RatingDistribution from "./RatingDistribution";
 import ReviewForm from "./ReviewForm";
@@ -98,7 +99,7 @@ export default function ProductReviews({
       {/* Empty State */}
       {stats.totalReviews === 0 && !showForm && (
         <div className="bg-surface-secondary/50 rounded-2xl p-8 text-center animate-fade-in mb-8">
-          <span className="text-4xl mb-3 block">✨</span>
+          <Sparkles className="w-10 h-10 mx-auto mb-3 text-brand-muted" aria-hidden="true" />
           <h3 className="font-display font-semibold text-lg text-brand-deep mb-2">
             No reviews yet
           </h3>

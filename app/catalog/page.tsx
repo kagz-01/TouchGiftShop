@@ -238,7 +238,7 @@ function CatalogPage() {
       <main className="max-w-7xl mx-auto px-6 py-6">
         {!loading && products.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-            <span className="text-4xl block mb-3">🔍</span>
+            <Search className="w-10 h-10 mx-auto mb-3 text-brand-muted" aria-hidden="true" />
             <p className="text-gray-500 font-medium">No products found</p>
             <p className="text-sm text-gray-400 mt-1">Try adjusting your search or category</p>
           </div>

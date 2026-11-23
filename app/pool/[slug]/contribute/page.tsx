@@ -14,9 +14,9 @@ type PoolSummary = {
 };
 
 const PAYMENT_METHODS = [
-  { id: "mpesa", label: "M-Pesa", icon: "📱", desc: "STK push to your phone" },
-  { id: "card", label: "Card", icon: "💳", desc: "Visa / Mastercard" },
-  { id: "airtel", label: "Airtel Money", icon: "📲", desc: "Airtel Money push" },
+  { id: "mpesa", label: "M-Pesa", Icon: Smartphone, desc: "STK push to your phone" },
+  { id: "card", label: "Card", Icon: CreditCard, desc: "Visa / Mastercard" },
+  { id: "airtel", label: "Airtel Money", Icon: Smartphone, desc: "Airtel Money push" },
 ];
 
 const QUICK_AMOUNTS = [200, 500, 1000, 2000, 5000];
@@ -417,7 +417,7 @@ export default function ContributePage() {
                       : "border-white/10 hover:border-white/20 bg-white/3"
                   }`}
                 >
-                  <span className="text-2xl">{pm.icon}</span>
+                  <pm.Icon className="w-6 h-6" aria-hidden="true" />
                   <div className="flex-1">
                     <p className="font-semibold text-white text-sm">{pm.label}</p>
                     <p className="text-xs text-white/40">{pm.desc}</p>

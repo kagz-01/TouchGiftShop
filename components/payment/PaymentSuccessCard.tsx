@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Copy, Check, Package, Sparkles, ArrowRight, ShieldCheck, Clock, MapPin } from "lucide-react";
+import { CheckCircle2, Copy, Check, Package, Sparkles, ArrowRight, ShieldCheck, Clock, MapPin, Gift, PartyPopper } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 
 interface PaymentSuccessCardProps {
@@ -84,9 +84,9 @@ export default function PaymentSuccessCard({
           <div className="absolute inset-0 rounded-full bg-emerald-500/20 dark:bg-emerald-500/35 blur-xl animate-pulse" />
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-emerald-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/30 relative z-10 border border-emerald-300/40">
             {isGiftCard ? (
-              <span className="text-3xl">🎁</span>
+              <Gift className="w-8 h-8" aria-hidden="true" />
             ) : isPool ? (
-              <span className="text-3xl">🎉</span>
+              <PartyPopper className="w-8 h-8" aria-hidden="true" />
             ) : (
               <CheckCircle2 className="w-10 h-10 text-white" strokeWidth={2.5} />
             )}

@@ -84,7 +84,7 @@ export default function ReferralsPage() {
     return (
       <div className="min-h-screen section-theme-e flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
-          <span className="text-4xl block mb-4">🎁</span>
+          <Gift className="w-10 h-10 mx-auto mb-4" aria-hidden="true" />
           <p className="font-display text-lg font-bold text-brand-deep mb-2">Sign in to Refer &amp; Earn</p>
           <p className="text-sm text-brand-muted mb-6">
             Create an account or sign in to get your referral code and start earning.
@@ -189,7 +189,7 @@ export default function ReferralsPage() {
         {/* Points explainer */}
         <div className="bg-brand/5 border border-brand/10 rounded-2xl p-4 space-y-1.5">
           <p className="text-sm font-semibold text-brand-deep">
-            🎉 Both sides earn {data.referralBonusPoints.toLocaleString()} pts
+            Both sides earn {data.referralBonusPoints.toLocaleString()} pts
             <span className="text-brand-muted font-normal"> (≈ KSh {Math.round(data.referralBonusPoints / 2).toLocaleString()})</span>
           </p>
           <p className="text-xs text-brand-muted">

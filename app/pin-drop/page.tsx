@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BackToHome from "@/components/ui/BackToHome";
+import { Gift, MapPin } from "lucide-react";
 
 export default function PinDropLandingPage() {
   const [phone, setPhone] = useState("");
@@ -37,7 +38,7 @@ export default function PinDropLandingPage() {
       {/* Header */}
       <div className="bg-white border-b border-surface-border px-4 py-4 safe-area-top">
         <div className="max-w-lg mx-auto">
-          <span className="text-2xl block mb-1">📍</span>
+          <MapPin className="w-6 h-6 mx-auto mb-1" aria-hidden="true" />
           <h1 className="font-display text-lg font-bold">Drop your delivery pin</h1>
           <p className="text-xs text-brand-muted">
             Enter the phone number used for the order to find your pin-drop link.
@@ -107,7 +108,7 @@ export default function PinDropLandingPage() {
                   className="block bg-white rounded-2xl p-4 border border-surface-border hover:border-brand/30 hover:shadow-card transition-all"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xl">🎁</span>
+                    <Gift className="w-5 h-5 inline-block" aria-hidden="true" />
                     <div className="flex-1">
                       <p className="text-sm font-semibold">Gift for {order.recipient_name}</p>
                       <p className="text-xs text-brand-muted">

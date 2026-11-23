@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { LoyaltyTierInfo } from "@/lib/loyalty";
+import { Medal, Crown, Gem } from "lucide-react";
 
 interface LoyaltyData {
   tier: string;
@@ -28,11 +29,11 @@ export default function LoyaltyNavBadge({ user }: { user: any }) {
 
   const getTierIcon = (tier: string) => {
     switch (tier.toLowerCase()) {
-      case "bronze": return "🥉";
-      case "silver": return "🥈";
-      case "gold": return "🥇";
-      case "platinum": return "👑";
-      default: return "💎";
+      case "bronze": return Medal;
+      case "silver": return Medal;
+      case "gold": return Medal;
+      case "platinum": return Crown;
+      default: return Gem;
     }
   };
 
@@ -55,7 +56,7 @@ export default function LoyaltyNavBadge({ user }: { user: any }) {
       )}
       title={`${loyalty.tierConfig.name} Tier — ${loyalty.totalPoints.toLocaleString()} points`}
     >
-      <span className="text-sm">{getTierIcon(loyalty.tier)}</span>
+      <span className="text-sm">{(() => { const TierIcon = getTierIcon(loyalty.tier); return <TierIcon className="w-4 h-4" aria-hidden="true" />; })()}</span>
       <span>{loyalty.totalPoints.toLocaleString()} pts</span>
     </Link>
   );

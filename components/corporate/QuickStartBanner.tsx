@@ -79,7 +79,7 @@ export default function QuickStartBanner({ onNavigate }: Props) {
             <Sparkles className="w-4 h-4 text-amber-500" />
             <h2 className="text-sm font-bold text-gray-900">Quick Start — 3 steps to your first order</h2>
             {done.length === STEPS.length && (
-              <span className="text-[12px] font-bold px-2 py-0.5 bg-green-100 text-green-700 rounded-full border border-green-200">All done! 🎉</span>
+              <span className="text-[12px] font-bold px-2 py-0.5 bg-green-100 text-green-700 rounded-full border border-green-200">All done!</span>
             )}
           </div>
           <p className="text-xs text-gray-400">New to the corporate portal? Here's how to get your first gift out the door.</p>

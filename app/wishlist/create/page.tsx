@@ -4,18 +4,18 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft, ArrowRight, Check, Sparkles, Gift, Heart
+  ArrowLeft, ArrowRight, Check, Sparkles, Gift, Heart, Cake, Church, Baby, GraduationCap, TreePine, HandHeart, Mail, type LucideIcon
 } from "lucide-react";
 
 const OCCASIONS = [
-  { id: "birthday",       label: "Birthday",       emoji: "🎂" },
-  { id: "wedding",        label: "Wedding",        emoji: "💒" },
-  { id: "baby",           label: "New Baby",       emoji: "👶" },
-  { id: "anniversary",    label: "Anniversary",    emoji: "💕" },
-  { id: "graduation",     label: "Graduation",     emoji: "🎓" },
-  { id: "christmas",      label: "Christmas",      emoji: "🎄" },
-  { id: "just because",   label: "Just Because",   emoji: "💝" },
-  { id: "other",          label: "Other",          emoji: "🎁" },
+  { id: "birthday",       label: "Birthday",       Icon: Cake },
+  { id: "wedding",        label: "Wedding",        Icon: Church },
+  { id: "baby",           label: "New Baby",       Icon: Baby },
+  { id: "anniversary",    label: "Anniversary",    Icon: Heart },
+  { id: "graduation",     label: "Graduation",     Icon: GraduationCap },
+  { id: "christmas",      label: "Christmas",      Icon: TreePine },
+  { id: "just because",   label: "Just Because",   Icon: HandHeart },
+  { id: "other",          label: "Other",          Icon: Gift },
 ];
 
 const WISHLIST_SLUG_KEY = "touchgift_wishlist_slug";
@@ -93,7 +93,7 @@ export default function CreateWishlistPage() {
         {step === 1 && (
           <div className="space-y-6">
             <div className="text-center">
-              <span className="text-5xl block mb-3">🌟</span>
+              <Sparkles className="w-12 h-12 mx-auto mb-3 text-brand" aria-hidden="true" />
               <h1 className="font-display text-3xl font-bold text-gray-900 mb-2">Create Your Wishlist</h1>
               <p className="text-gray-500 text-sm max-w-sm mx-auto">
                 Tell friends & family exactly what you&apos;d love — no more guessing!
@@ -125,7 +125,7 @@ export default function CreateWishlistPage() {
                           : "border-gray-100 bg-white hover:border-rose-200 hover:bg-rose-50/50"
                       }`}
                     >
-                      <span className="text-2xl">{occ.emoji}</span>
+                      <occ.Icon className="w-6 h-6" aria-hidden="true" />
                       <span className="text-[12px] font-semibold text-gray-600 leading-tight">{occ.label}</span>
                     </button>
                   ))}
@@ -147,7 +147,7 @@ export default function CreateWishlistPage() {
         {step === 2 && (
           <div className="space-y-6">
             <div className="text-center">
-              <span className="text-5xl block mb-3">💌</span>
+              <Mail className="w-12 h-12 mx-auto mb-3 text-brand" aria-hidden="true" />
               <h2 className="font-display text-3xl font-bold text-gray-900 mb-2">Add a Message</h2>
               <p className="text-gray-500 text-sm max-w-xs mx-auto">
                 Give your gifters some context — totally optional but adds a personal touch!

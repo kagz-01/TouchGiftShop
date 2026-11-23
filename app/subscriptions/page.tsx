@@ -207,7 +207,7 @@ export default function SubscriptionsPage() {
         <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
           <Check className="w-10 h-10 text-emerald-500" />
         </div>
-        <h2 className="font-display text-2xl font-bold text-theme-heading mb-3">You&apos;re saving! 🎉</h2>
+        <h2 className="font-display text-2xl font-bold text-theme-heading mb-3">You&apos;re saving!</h2>
         <p className="text-theme-body mb-2">
           {fmtKsh(monthlySavings)} will be added to your Gift Wallet every month.
         </p>

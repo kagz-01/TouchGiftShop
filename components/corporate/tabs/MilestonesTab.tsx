@@ -10,13 +10,13 @@ interface MilestoneRule {
 }
 
 const TRIGGER_LABELS: Record<string, string> = {
-  birthday:         "🎂 Birthday",
-  work_anniversary: "🎊 Work Anniversary",
-  promotion:        "🚀 Promotion",
-  new_hire:         "🤝 New Hire",
-  farewell:         "👋 Farewell",
-  holiday:          "🎉 Holiday",
-  custom:           "📅 Custom",
+  birthday:         "Birthday",
+  work_anniversary: "Work Anniversary",
+  promotion:        "Promotion",
+  new_hire:         "New Hire",
+  farewell:         "Farewell",
+  holiday:          "Holiday",
+  custom:           "Custom",
 };
 const GIFT_LABELS: Record<string, string> = {
   voucher:  "Gift Voucher",

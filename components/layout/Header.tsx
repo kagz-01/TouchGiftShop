@@ -16,10 +16,10 @@ import SeasonalPromptBar from "@/components/home/SeasonalPromptBar";
 import type { SessionUser } from "@/components/layout/LayoutWrapper";
 
 const ANNOUNCEMENTS = [
-  "🚀 Nairobi Same-Day Dispatch (from KES 300 · Free above KES 8,000) · Order by 2 PM",
-  "🎁 Anonymous gifting available — surprise someone special",
-  "✨ Free gift wrapping on all orders above KSh 3,000",
-  "🏢 Corporate & bulk orders? Get a dedicated account manager",
+  "Nairobi Same-Day Dispatch (from KES 300 · Free above KES 8,000) · Order by 2 PM",
+  "Anonymous gifting available — surprise someone special",
+  "Free gift wrapping on all orders above KSh 3,000",
+  "Corporate & bulk orders? Get a dedicated account manager",
 ];
 
 export default function Header({ user, guest }: { user: SessionUser; guest: boolean }) {

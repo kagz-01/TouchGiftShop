@@ -7,7 +7,7 @@ import CountrySelect from "@/components/ui/CountrySelect";
 import { formatKsh } from "@/lib/utils";
 import { maxRedeemablePoints, pointsDiscountKsh, pointsToKsh, MIN_REDEEM_POINTS, POINTS_PER_KSH_REDEEM } from "@/lib/points";
 import { CardIcon, MobileMoneyIcon, SecureIcon } from "@/components/ui/icons/PaymentIcons";
-import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound, Layers, Users, CreditCard, Smartphone } from "lucide-react";
+import { ShieldCheck, Package, Zap, ArrowLeft, ExternalLink, Copy, CheckCircle2, Gift, Tag, Crown, UserRound, Layers, Users, CreditCard, Smartphone, AlertTriangle, Wallet } from "lucide-react";
 import type { PackagingMode } from "@/components/checkout/PackagingDecision";
 import type { CartItem } from "@/lib/cart";
 import { createClient } from "@/lib/supabase-browser";
@@ -541,7 +541,7 @@ export default function CheckoutForm({
         <div className="space-y-4">
           {step === "error" && (
             <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-600 flex items-start gap-3">
-              <span className="text-lg flex-shrink-0">⚠️</span>
+              <AlertTriangle className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
               <p>{errorMessage}</p>
             </div>
           )}
@@ -901,7 +901,7 @@ export default function CheckoutForm({
 
               {walletDiscount > 0 && (
                 <div className="flex justify-between text-emerald-600">
-                  <span className="flex items-center gap-1.5">👛 Wallet credit</span>
+                  <span className="flex items-center gap-1.5"><Wallet className="w-4 h-4" aria-hidden="true" /> Wallet credit</span>
                   <span className="font-medium">-{formatKsh(walletDiscount)}</span>
                 </div>
               )}
@@ -989,7 +989,7 @@ export default function CheckoutForm({
           {/* Wallet Balance */}
           <div className="bg-white rounded-3xl border border-black/6 shadow-sm p-4 space-y-3">
             <div className="flex items-center gap-2">
-              <span className="text-lg">👛</span>
+              <Wallet className="w-5 h-5" aria-hidden="true" />
               <p className="text-sm font-semibold text-brand-deep">Pay with Wallet</p>
               {walletBalance !== null && (
                 <span className="ml-auto text-xs font-bold text-emerald-600">KES {walletBalance.toLocaleString()} available</span>

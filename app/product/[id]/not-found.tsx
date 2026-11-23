@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Search } from "lucide-react";
 
 export default function ProductNotFound() {
   return (
     <div className="min-h-screen section-theme-a flex items-center justify-center px-4">
       <div className="text-center">
-        <span className="text-6xl block mb-4">🔍</span>
+        <Search className="w-14 h-14 mx-auto mb-4 text-brand-muted" aria-hidden="true" />
         <p className="font-display text-xl font-semibold mb-2">Product not found</p>
         <p className="text-brand-muted mb-6">This gift doesn&apos;t exist or has been removed.</p>
         <Link

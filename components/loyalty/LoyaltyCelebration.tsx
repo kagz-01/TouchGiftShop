@@ -88,7 +88,7 @@ export default function LoyaltyCelebration() {
           <Crown className="w-10 h-10 text-brand-deep" />
         </div>
         <h2 className="text-3xl font-display font-bold text-brand-deep mb-2">
-          Congratulations! 🎉
+          Congratulations!
         </h2>
         <p className="text-brand-muted mb-6">
           You just unlocked the{" "}
@@ -99,7 +99,7 @@ export default function LoyaltyCelebration() {
           onClick={() => setShow(false)}
           className="w-full py-3 bg-brand text-white font-bold rounded-xl hover:bg-brand-dark transition-colors"
         >
-          Awesome, let's go! 🚀
+          Awesome, let's go!
         </button>
       </div>
     </div>

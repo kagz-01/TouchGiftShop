@@ -7,7 +7,7 @@ import ProductAIHelper from "@/components/product/ProductAIHelper";
 import WishlistButton from "@/components/product/WishlistButton";
 import ProductReviews from "@/components/reviews/ProductReviews";
 import ProductGallery from "@/components/product/ProductGallery";
-import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Zap, Camera, EyeOff, CheckCircle, ShoppingBag, Building2 } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase";
@@ -452,7 +452,7 @@ export default async function ProductPage({
               className="group flex items-center gap-3.5 bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white/5 dark:to-white/3 border border-slate-700/60 dark:border-white/10 hover:border-amber-500/40 rounded-2xl p-3.5 transition-all min-h-[44px]"
             >
               <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
-                <span className="text-xl">🏢</span>
+                <Building2 className="w-5 h-5 inline-block" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-amber-400 group-hover:text-amber-300 transition-colors">

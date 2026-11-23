@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, MouseEvent, useEffect } from "react";
+import { Gift } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import dynamic from 'next/dynamic';
@@ -108,7 +109,7 @@ export default function ProductGallery({
               />
             </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-8xl">🎁</div>
+            <div className="w-full h-full flex items-center justify-center"><Gift className="w-20 h-20 text-brand/40" aria-hidden="true" /></div>
           )}
 
           {/* Badges */}
