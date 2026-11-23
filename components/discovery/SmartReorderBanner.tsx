@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Gift } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   getReorderSuggestions,
@@ -74,7 +75,7 @@ export default function SmartReorderBanner() {
 
           {/* Last gift info */}
           <div className="mt-2 flex items-center gap-2 rounded-lg bg-white px-3 py-2">
-            <span className="text-sm">🎁</span>
+            <Gift className="w-4 h-4" aria-hidden="true" />
             <div className="min-w-0">
               <p className="truncate text-xs font-medium text-gray-700">
                 {suggestion.lastGift.productName}

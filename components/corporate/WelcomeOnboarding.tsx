@@ -21,7 +21,6 @@ const PATHS = [
   {
     id: "shop",
     icon: Package,
-    emoji: "🛍️",
     headline: "I want to browse & order gifts",
     sub: "Branded merchandise, hampers, trophies, tech — with MOQ pricing and instant quote",
     badge: "Most Popular",
@@ -32,7 +31,6 @@ const PATHS = [
   {
     id: "hamper",
     icon: Gift,
-    emoji: "🎁",
     headline: "I want to build a custom gift hamper",
     sub: "Pick items, add recipients, submit — we handle packaging, branding and delivery",
     badge: "Best Experience",
@@ -43,7 +41,6 @@ const PATHS = [
   {
     id: "pools",
     icon: Target,
-    emoji: "🏆",
     headline: "My team wants to pool money for a gift",
     sub: "Create a shared gift fund, share a link — colleagues contribute towards one great gift",
     badge: "Teams Love This",
@@ -138,10 +135,10 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
             {/* Trust badges */}
             <div className="px-8 py-5 flex flex-wrap items-center justify-center gap-4 border-b border-gray-100">
               {[
-                "✅ Official Invoice & LPO",
-                "🚀 Same-day Nairobi delivery",
-                "🎁 Custom branding on all items",
-                "📞 Dedicated account manager",
+                "Official Invoice & LPO",
+                "Same-day Nairobi delivery",
+                "Custom branding on all items",
+                "Dedicated account manager",
               ].map(b => (
                 <span key={b} className="text-xs text-gray-600 font-medium">{b}</span>
               ))}
@@ -176,7 +173,7 @@ export default function WelcomeOnboarding({ onNavigate }: Props) {
                 <button key={p.id} onClick={() => choose(p.id)}
                   className="w-full flex items-center gap-4 p-4 rounded-2xl border border-gray-200 hover:border-amber-300 hover:bg-amber-50/50 text-left transition-all group hover:-translate-y-0.5 hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0 text-2xl">
-                    {p.emoji}
+                    <p.icon className="w-6 h-6 text-amber-600" aria-hidden="true" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">

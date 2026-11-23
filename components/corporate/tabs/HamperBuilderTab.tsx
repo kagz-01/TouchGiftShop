@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Package, Plus, Minus, Trash2, Users, ChevronRight, ChevronLeft, CheckCircle, Loader2, Gift, ArrowRight } from "lucide-react";
+import { Package, Plus, Minus, Trash2, Users, ChevronRight, ChevronLeft, CheckCircle, Loader2, Gift, ArrowRight, Coffee, PenLine, Trophy, KeyRound, Laptop } from "lucide-react";
 import { formatKsh } from "@/lib/utils";
 
 interface HamperItem {
@@ -13,12 +13,12 @@ interface HamperItem {
 interface Recipient { name: string; email: string; department: string; }
 
 const HAMPER_CATEGORIES = [
-  { key: "gift-sets",        label: "Gift Sets",    emoji: "🎁" },
-  { key: "drinkware",        label: "Drinkware",    emoji: "☕" },
-  { key: "stationery-office",label: "Stationery",   emoji: "✏️" },
-  { key: "awards-trophies",  label: "Awards",       emoji: "🏆" },
-  { key: "accessories",      label: "Accessories",  emoji: "🔑" },
-  { key: "tech-gadgets",     label: "Tech",         emoji: "💻" },
+  { key: "gift-sets",        label: "Gift Sets",    Icon: Gift },
+  { key: "drinkware",        label: "Drinkware",    Icon: Coffee },
+  { key: "stationery-office",label: "Stationery",   Icon: PenLine },
+  { key: "awards-trophies",  label: "Awards",       Icon: Trophy },
+  { key: "accessories",      label: "Accessories",  Icon: KeyRound },
+  { key: "tech-gadgets",     label: "Tech",         Icon: Laptop },
 ];
 
 type Step = 1 | 2 | 3;
@@ -134,7 +134,7 @@ export default function HamperBuilderTab() {
                   className={`shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
                     cat === c.key ? "bg-amber-500 text-white" : "bg-white border border-gray-200 text-gray-600 hover:border-amber-300"
                   }`}>
-                  {c.emoji} {c.label}
+                  <c.Icon className="w-4 h-4 inline-block -mt-0.5" aria-hidden="true" /> {c.label}
                 </button>
               ))}
             </div>

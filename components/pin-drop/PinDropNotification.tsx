@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { MapPin, AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 
@@ -98,7 +99,7 @@ export default function PinDropNotification({
         }`}
       >
         <span className="text-xl">
-          {notification.type === "pin-dropped" ? "📍" : "⚠️"}
+          {notification.type === "pin-dropped" ? <MapPin className="w-5 h-5" aria-hidden="true" /> : <AlertTriangle className="w-5 h-5" aria-hidden="true" />}
         </span>
         <div>
           <p className="text-sm font-semibold">{notification.message}</p>

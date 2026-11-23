@@ -166,7 +166,7 @@ export default function OrderFulfillmentStatus({
               </div>
               <div className="flex-1">
                 <h3 className="text-sm font-bold text-gray-900">
-                  Delivered with Care 🎉
+                  Delivered with Care
                 </h3>
                 <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                   This gift was safely handed over to {recipientName}. Thank you for gifting with TouchGift!
