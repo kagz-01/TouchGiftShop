@@ -28,6 +28,9 @@ const SUPPRESSED_PREFIXES = [
 const SNOOZE_STORAGE_KEY = "touchgift_pwa_dismissed_until";
 const INSTALLED_STORAGE_KEY = "touchgift_pwa_installed";
 const SNOOZE_DURATION_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
+// Was 4s, which put an install card over the hero on first paint. 45s lets a
+// visitor browse first; people who want the app can still open it from the footer.
+const INSTALL_PROMPT_DELAY_MS = 45_000;
 
 export default function PWAInstallPrompt() {
   const pathname = usePathname();
@@ -92,7 +95,7 @@ export default function PWAInstallPrompt() {
     };
   }, []);
 
-  // 2. 4-second HCI delay before showing prompt
+  // 2. Wait until the visitor has had time to look around before asking
   useEffect(() => {
     if (typeof window === "undefined" || isInstalled) return;
 
@@ -115,7 +118,7 @@ export default function PWAInstallPrompt() {
 
     const timer = setTimeout(() => {
       setOpen(true);
-    }, 4000);
+    }, INSTALL_PROMPT_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, [pathname, isInstalled]);

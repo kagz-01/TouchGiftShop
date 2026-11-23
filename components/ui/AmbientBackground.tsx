@@ -59,6 +59,10 @@ export default function AmbientBackground() {
   /* Corporate is the one route with its own identity. /admin stays on the
      consumer palette because it's an internal tool, not a branded surface. */
   const isCorporate = pathname?.startsWith("/corporate") ?? false;
+  /* Ambient motion is for the landing page only. On shop, product, checkout,
+     account and the corporate tools people are completing a task, and a loop
+     playing behind the content competes with it. The gradient stays everywhere. */
+  const showMotion = pathname === "/";
   const P = isCorporate ? PALETTE.corporate : PALETTE.consumer;
   const pick = <T,>(dark: T, light: T) => (isDark ? dark : light);
   
@@ -122,8 +126,9 @@ export default function AmbientBackground() {
       )}
       </div>
 
+      {showMotion && (<>
       {/* ── Falling Glowing Strings (Layer 1 — medium depth) ── */}
-      <div className="parallax-amb absolute inset-0">
+      <div className="parallax-amb absolute inset-0 hidden md:block motion-reduce:hidden">
       {fallingItems.map((item, i) => {
         const Icon = item.Icon;
         const scale = 0.5 + (item.z * 0.7); // 0.5 to 1.2
@@ -168,7 +173,7 @@ export default function AmbientBackground() {
       </div>
 
       {/* ── Swaying Hanging Gifts (Layer 1 — medium depth) ── */}
-      <div className="parallax-amb absolute inset-0">
+      <div className="parallax-amb absolute inset-0 hidden md:block motion-reduce:hidden">
       {hangingItems.map((item, i) => {
         const scale = 0.5 + (item.z * 0.7);
         const opacity = 0.4 + (item.z * 0.6);
@@ -214,11 +219,11 @@ export default function AmbientBackground() {
       </div>
 
       {/* ── Central Arching Particle Cluster (Layer 1 — medium depth) ── */}
-      <div className="parallax-amb absolute inset-0">
+      <div className="parallax-amb absolute inset-0 hidden md:block motion-reduce:hidden">
         {particles.map((p, i) => (
           <div
             key={`particle-${i}`}
-            className="absolute rounded-full animate-pulse"
+            className="absolute rounded-full"
             style={{
               left: `${p.left}%`,
               top: `${p.top}%`,
@@ -232,7 +237,7 @@ export default function AmbientBackground() {
           />
         ))}
       </div>
-
+      </>)}
 
     </div>
   );

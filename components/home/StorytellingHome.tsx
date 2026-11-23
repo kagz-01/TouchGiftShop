@@ -335,7 +335,7 @@ export function HeroCinematic() {
                 <Link
                   href={moodMeta.shopHref ?? "/shop"}
                   className="group relative px-8 py-3.5 font-bold rounded-full text-base md:text-lg overflow-hidden transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto text-center min-w-[180px]"
-                  style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)" }}
+                  style={{ background: "var(--mood-gradient, linear-gradient(to right, #D4A853, #E8C97A))", color: "var(--mood-on-gradient, #1A0A10)", boxShadow: "0 8px 30px rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.4)" }}
                 >
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     <span key={moodMeta.cta} className="animate-fade-in">{moodMeta.cta}</span>
