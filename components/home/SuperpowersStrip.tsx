@@ -73,7 +73,7 @@ function PoolScene() {
           </linearGradient>
         </defs>
         {/* sparkle on complete */}
-        <g className="sp-potgift-svg"><Gift x={82} y={75} size={16} color="#9B1B5A" strokeWidth={1.6} /></g>
+        <g className="sp-potgift-svg"><Gift x={82} y={75} size={16} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
       </svg>
     </div>
   );
@@ -120,7 +120,7 @@ function FinderScene() {
         <text x="45" y="76" textAnchor="middle" fill="white" fontSize="9" fontWeight="600" className="sp-chip-svg">Under Ksh 3,000</text>
         {/* result card */}
         <rect x="130" y="20" width="44" height="58" rx="8" fill="white" stroke="#9B1B5A" strokeWidth="1.2" className="sp-result-svg" filter="url(#shadow1)"/>
-        <g className="sp-result-svg"><Gift x={140.5} y={35.5} size={23} color="#9B1B5A" strokeWidth={1.6} /></g>
+        <g className="sp-result-svg"><Gift x={140.5} y={35.5} size={23} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
         <rect x="136" y="66" width="32" height="5" rx="2.5" fill="#D4A853" opacity="0.6" className="sp-result-svg"/>
         {/* check */}
         <circle cx="152" cy="100" r="10" fill="#22c55e" className="sp-rcheck-svg"/>
@@ -152,7 +152,7 @@ function AnonScene() {
         {/* redact bar */}
         <rect x="24" y="69" width="0" height="11" rx="2" fill="#221512" className="sp-redact-svg"/>
         {/* anon gift */}
-        <g className="sp-anongift-svg"><Gift x={115.5} y={56.5} size={41} color="#9B1B5A" strokeWidth={1.4} /></g>
+        <g className="sp-anongift-svg"><Gift x={115.5} y={56.5} size={41} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.4} /></g>
         <text x="136" y="116" textAnchor="middle" fontSize="9" fill="#9B1B5A" fontWeight="700" className="sp-anongift-svg">Anonymous ✓</text>
       </svg>
     </div>
@@ -165,7 +165,7 @@ function ProofScene() {
     <div className={`${SCENE} h-[140px]`}>
       <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
         {/* package */}
-        <Package x={36} y={54} size={44} color="#9B1B5A" strokeWidth={1.4} />
+        <Package x={36} y={54} size={44} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.4} />
         {/* camera */}
         <rect x="90" y="50" width="52" height="40" rx="7" fill="#221512" opacity="0.85"/>
         <circle cx="116" cy="70" r="13" fill="none" stroke="white" strokeWidth="2" opacity="0.7"/>
@@ -177,7 +177,7 @@ function ProofScene() {
         {/* polaroid notification */}
         <rect x="108" y="85" width="62" height="48" rx="7" fill="white" className="sp-notif-svg" filter="url(#shadow2)"/>
         <rect x="114" y="91" width="50" height="30" rx="4" fill="#f0f0f0" className="sp-notif-svg"/>
-        <g className="sp-notif-svg"><Camera x={131} y={97} size={16} color="#9B1B5A" strokeWidth={1.6} /></g>
+        <g className="sp-notif-svg"><Camera x={131} y={97} size={16} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
         <text x="139" y="124" textAnchor="middle" fill="#22c55e" fontSize="8" fontWeight="800" className="sp-notif-svg">Delivered ✓</text>
         <defs>
           <filter id="shadow2" x="-20%" y="-20%" width="140%" height="140%">
@@ -210,7 +210,7 @@ function CardsScene() {
         {/* send arrow */}
         <text x="152" y="74" fontSize="18" fill="#9B1B5A" className="sp-sendfly-svg">➤</text>
         {/* phone */}
-        <Smartphone x={167.5} y={94.5} size={25} color="#9B1B5A" strokeWidth={1.5} />
+        <Smartphone x={167.5} y={94.5} size={25} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} />
         {/* check */}
         <circle cx="157" cy="106" r="9" fill="#22c55e" className="sp-pcheck-svg"/>
         <text x="157" y="110" textAnchor="middle" fill="white" fontSize="10" fontWeight="800" className="sp-pcheck-svg">✓</text>
@@ -250,8 +250,8 @@ function SubsScene() {
         {/* auto-refresh arrow */}
         <text x="118" y="50" textAnchor="middle" fontSize="28" fill="#D4A853" className="sp-autospin-svg">⟳</text>
         {/* gift boxes */}
-        <g className="sp-sub1-svg"><Gift x={106.5} y={76.5} size={23} color="#9B1B5A" strokeWidth={1.6} /></g>
-        <g className="sp-sub2-svg"><Gift x={136.5} y={76.5} size={23} color="#9B1B5A" strokeWidth={1.6} /></g>
+        <g className="sp-sub1-svg"><Gift x={106.5} y={76.5} size={23} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
+        <g className="sp-sub2-svg"><Gift x={136.5} y={76.5} size={23} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.6} /></g>
         <text x="133" y="125" textAnchor="middle" fontSize="11" fill="#9B1B5A" fontWeight="600">Auto-send</text>
       </svg>
     </div>
@@ -265,10 +265,10 @@ function RewardsScene() {
       <svg viewBox="0 0 180 140" className="w-full h-full" aria-hidden>
         {/* person 1 */}
         <circle cx="32" cy="70" r="18" fill="url(#personGrad1)"/>
-        <Smile x={21.5} y={58.5} size={21} color="#9B1B5A" strokeWidth={1.5} />
+        <Smile x={21.5} y={58.5} size={21} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} />
         {/* person 2 */}
         <circle cx="148" cy="70" r="18" fill="url(#personGrad2)"/>
-        <Smile x={137.5} y={58.5} size={21} color="#9B1B5A" strokeWidth={1.5} />
+        <Smile x={137.5} y={58.5} size={21} color="currentColor" className="text-[#9B1B5A] dark:text-brand-light" strokeWidth={1.5} />
         {/* link bar */}
         <rect x="50" y="68" width="80" height="4" rx="2" fill="rgba(0,0,0,0.08)"/>
         <rect x="50" y="68" width="0" height="4" rx="2" fill="url(#linkGrad)" className="sp-linkfill-svg"/>
