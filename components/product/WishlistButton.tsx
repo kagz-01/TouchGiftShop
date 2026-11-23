@@ -230,12 +230,12 @@ export default function WishlistButton({
                       className="w-full border border-surface-border rounded-xl px-4 py-3 text-sm outline-none focus:border-brand bg-white"
                     >
                       <option value="">No specific occasion</option>
-                      <option value="birthday">🎂 Birthday</option>
-                      <option value="wedding">💒 Wedding</option>
-                      <option value="anniversary">💕 Anniversary</option>
-                      <option value="baby">👶 Baby Shower</option>
-                      <option value="graduation">🎓 Graduation</option>
-                      <option value="christmas">🎄 Christmas</option>
+                      <option value="birthday">Birthday</option>
+                      <option value="wedding">Wedding</option>
+                      <option value="anniversary">Anniversary</option>
+                      <option value="baby">Baby Shower</option>
+                      <option value="graduation">Graduation</option>
+                      <option value="christmas">Christmas</option>
                       <option value="just because">Just Because</option>
                     </select>
                   </div>

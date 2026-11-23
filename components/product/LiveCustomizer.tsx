@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
   X, Type, Image as ImageIcon, Download, Trash2, Bold,
-  Italic, AlignCenter, AlignLeft, AlignRight, Layers,
+  Italic, AlignCenter, AlignLeft, AlignRight, Layers, Palette, Zap, Stamp, Sparkles, Scissors, Printer, Droplets, Target, Lightbulb, MousePointerClick, Building2, type LucideIcon
 } from "lucide-react";
 import { fabric } from "fabric";
 
@@ -23,15 +23,15 @@ const FONTS = [
   { label: "Bold — Oswald", value: "'Oswald', sans-serif" },
 ];
 
-const MATERIAL_EFFECTS: Record<string, { label: string; emoji: string; filters: any[] }> = {
-  none:        { label: "Original",        emoji: "🎨", filters: [] },
-  laser:       { label: "Laser Engrave",   emoji: "⚡", filters: [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.6 })] },
-  deboss:      { label: "Leather Deboss",  emoji: "🟤", filters: [new (fabric.Image.filters as any).Sepia(), new (fabric.Image.filters as any).Contrast({ contrast: 0.3 })] },
-  foil:        { label: "Gold Foil",       emoji: "✨", filters: [new (fabric.Image.filters as any).HueRotation({ rotation: 0.15 }), new (fabric.Image.filters as any).Brightness({ brightness: 0.2 })] },
-  embroidery:  { label: "Embroidery",      emoji: "🧵", filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.4 }), new (fabric.Image.filters as any).Pixelate({ blocksize: 2 })] },
-  screenprint: { label: "Screen Print",   emoji: "🖨️", filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.5 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.3 })] },
-  sublimation: { label: "Sublimation",     emoji: "🌈", filters: [new (fabric.Image.filters as any).Brightness({ brightness: 0.05 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.5 })] },
-  dtg:         { label: "DTG / Full Color",emoji: "🎯", filters: [] },
+const MATERIAL_EFFECTS: Record<string, { label: string; Icon: LucideIcon; filters: any[] }> = {
+  none:        { label: "Original",        Icon: Palette, filters: [] },
+  laser:       { label: "Laser Engrave",   Icon: Zap, filters: [new (fabric.Image.filters as any).Grayscale(), new (fabric.Image.filters as any).Contrast({ contrast: 0.6 })] },
+  deboss:      { label: "Leather Deboss",  Icon: Stamp, filters: [new (fabric.Image.filters as any).Sepia(), new (fabric.Image.filters as any).Contrast({ contrast: 0.3 })] },
+  foil:        { label: "Gold Foil",       Icon: Sparkles, filters: [new (fabric.Image.filters as any).HueRotation({ rotation: 0.15 }), new (fabric.Image.filters as any).Brightness({ brightness: 0.2 })] },
+  embroidery:  { label: "Embroidery",      Icon: Scissors, filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.4 }), new (fabric.Image.filters as any).Pixelate({ blocksize: 2 })] },
+  screenprint: { label: "Screen Print",   Icon: Printer, filters: [new (fabric.Image.filters as any).Contrast({ contrast: 0.5 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.3 })] },
+  sublimation: { label: "Sublimation",     Icon: Droplets, filters: [new (fabric.Image.filters as any).Brightness({ brightness: 0.05 }), new (fabric.Image.filters as any).Saturation({ saturation: 0.5 })] },
+  dtg:         { label: "DTG / Full Color",Icon: Target, filters: [] },
 };
 
 // Smart default effects per material type
@@ -537,7 +537,7 @@ export default function LiveCustomizer({
               </div>
 
               <div className="bg-brand/4 border border-brand/15 rounded-2xl p-4 space-y-2">
-                <p className="text-xs font-bold text-brand-deep dark:text-white uppercase tracking-wide">💡 Tips</p>
+                <p className="text-xs font-bold text-brand-deep dark:text-white uppercase tracking-wide"><Lightbulb className="w-3.5 h-3.5 inline-block -mt-0.5 mr-1" aria-hidden="true" />Tips</p>
                 <ul className="text-[12px] text-brand-muted space-y-1">
                   <li>• Double-click text to edit it directly</li>
                   <li>• Drag to reposition · use corners to resize</li>
@@ -561,7 +561,7 @@ export default function LiveCustomizer({
             <div className="space-y-5">
               {!selectedObject && (
                 <div className="text-center py-8">
-                  <div className="text-3xl mb-2">👆</div>
+                  <MousePointerClick className="w-8 h-8 mx-auto mb-2 text-brand-muted" aria-hidden="true" />
                   <p className="text-sm text-brand-muted">Select an element on the canvas to style it</p>
                 </div>
               )}
@@ -702,7 +702,7 @@ export default function LiveCustomizer({
                                 : "border-black/10 dark:border-white/10 hover:border-brand/40 text-brand-deep dark:text-white"
                             }`}
                           >
-                            <span>{effect.emoji}</span>
+                            <effect.Icon className="w-4 h-4" aria-hidden="true" />
                             <span>{effect.label}</span>
                           </button>
                         );
@@ -741,7 +741,7 @@ export default function LiveCustomizer({
           {activeTab === "bulk" && (
             <div className="space-y-4">
               <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-4">
-                <p className="text-sm font-bold text-amber-900 dark:text-amber-300 mb-1">🏢 Corporate Bulk Orders</p>
+                <p className="text-sm font-bold text-amber-900 dark:text-amber-300 mb-1"><Building2 className="w-4 h-4 inline-block -mt-0.5 mr-1" aria-hidden="true" />Corporate Bulk Orders</p>
                 <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
                   Enter one name per line. The same logo/design will be applied to all — each item will have its own unique name engraved.
                 </p>
@@ -760,7 +760,7 @@ export default function LiveCustomizer({
               </div>
               <div className="bg-brand/5 border border-brand/15 rounded-xl p-3">
                 <p className="text-xs text-brand-muted">
-                  💡 You can also upload a <strong>.txt file</strong> with names, or copy-paste from Excel. Each line = one item.
+                  You can also upload a <strong>.txt file</strong> with names, or copy-paste from Excel. Each line = one item.
                 </p>
               </div>
             </div>

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { formatKsh } from "@/lib/utils";
 import {
   Heart, Share2, Copy, Check, Trash2, ExternalLink,
-  Plus, Gift, Sparkles, ShoppingBag
+  Plus, Gift, Sparkles, ShoppingBag, Cake, Church, Baby, GraduationCap, TreePine, HandHeart, type LucideIcon
 } from "lucide-react";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://touchgiftshop.co.ke";
@@ -31,15 +31,15 @@ type Wishlist = {
   occasion: string | null;
 };
 
-const OCCASION_CONFIG: Record<string, { emoji: string; gradient: string }> = {
-  birthday:       { emoji: "🎂", gradient: "from-pink-400 to-rose-500" },
-  wedding:        { emoji: "💒", gradient: "from-rose-400 to-red-500" },
-  baby:           { emoji: "👶", gradient: "from-sky-400 to-blue-500" },
-  anniversary:    { emoji: "💕", gradient: "from-red-400 to-pink-500" },
-  graduation:     { emoji: "🎓", gradient: "from-teal-400 to-cyan-500" },
-  christmas:      { emoji: "🎄", gradient: "from-emerald-400 to-green-500" },
-  "just because": { emoji: "💝", gradient: "from-pink-400 to-fuchsia-500" },
-  other:          { emoji: "🎁", gradient: "from-amber-400 to-orange-500" },
+const OCCASION_CONFIG: Record<string, { Icon: LucideIcon; gradient: string }> = {
+  birthday:       { Icon: Cake, gradient: "from-pink-400 to-rose-500" },
+  wedding:        { Icon: Church, gradient: "from-rose-400 to-red-500" },
+  baby:           { Icon: Baby, gradient: "from-sky-400 to-blue-500" },
+  anniversary:    { Icon: Heart, gradient: "from-red-400 to-pink-500" },
+  graduation:     { Icon: GraduationCap, gradient: "from-teal-400 to-cyan-500" },
+  christmas:      { Icon: TreePine, gradient: "from-emerald-400 to-green-500" },
+  "just because": { Icon: HandHeart, gradient: "from-pink-400 to-fuchsia-500" },
+  other:          { Icon: Gift, gradient: "from-amber-400 to-orange-500" },
 };
 
 export default function WishlistPage() {
@@ -171,7 +171,7 @@ export default function WishlistPage() {
         <div className="bg-white rounded-3xl shadow-lg border border-white/80 overflow-hidden">
           {/* gradient header */}
           <div className={`bg-gradient-to-r ${cfg.gradient} p-6 text-white text-center`}>
-            <span className="text-4xl block mb-2">{cfg.emoji}</span>
+            <cfg.Icon className="w-10 h-10 mx-auto mb-2" aria-hidden="true" />
             <h2 className="font-display text-2xl font-bold">{wishlist?.owner_name}&apos;s</h2>
             <p className="text-white/80 text-sm capitalize mt-0.5">
               {wishlist?.occasion ? `${wishlist.occasion} Wishlist` : "Gift Registry"}
@@ -253,7 +253,7 @@ export default function WishlistPage() {
                       className={`object-cover ${item.is_fulfilled ? "grayscale" : ""}`}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-2xl">🎁</div>
+                    <div className="w-full h-full flex items-center justify-center text-2xl"><Gift className="w-7 h-7 text-brand-muted" aria-hidden="true" /></div>
                   )}
                 </div>
 
